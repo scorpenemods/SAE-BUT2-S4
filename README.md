@@ -5,4 +5,4 @@
 # Bourgeois Julien
 # Newerkowitsch Lucien
 # Hethuin Marion 
-# Louvinhov Valerii
+# Lohvinov Valerii
