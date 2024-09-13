@@ -1,2 +1,8 @@
 # SAE-BUT2
-le projet sur seulement une introduction
+
+Boulet Rémy
+Lemaire Noah
+Bourgeois Julien
+Newerkowitsch Lucien
+Hethuin Marion 
+Louvinhov Valerii
