@@ -26,5 +26,5 @@ VALUES (1, 'noahlemr', 'noahlemr@gmail.com');
 INSERT INTO passwords (user_id, password_hash)
 VALUES (1, '$2y$10$6HX9s8Jz1PkM5wx8Lz751Ov5eyOKMQHxIdQLGDVpY1CKhtgTO7Zg2');
 
-
+#changer de mdp
 UPDATE passwords SET password_hash =  WHERE (Select id from users where login =  && email = ) = user_id;
