@@ -1,3 +1,24 @@
+<?php
+require_once 'Database.php';
+
+// Connexion à la base de données
+$db = new Database('localhost', 'dbsae', 'scorpene', '8172');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Vérifier les informations de connexion
+    if ($db->authenticateUser($username, $password)) {
+        header("Location: acc.php");
+        exit();
+    } else {
+        $error = "Nom d'utilisateur ou mot de passe incorrect.";
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -25,39 +46,4 @@
 </div>
 </body>
 </html>
-
-
-<?php
-include 'db.php';
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = htmlspecialchars($_POST["username"]);
-    $password = htmlspecialchars($_POST["password"]);
-
-    try {
-        // Prepare and execute query to fetch user info
-        $stmt = $pdo->prepare("SELECT u.id, p.password_hash FROM users u JOIN passwords p ON u.id = p.user_id WHERE u.login = :username");
-        $stmt->bindParam(':username', $username);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($result) {
-            $password_hash = $result['password_hash'];
-
-            // Verify password
-            if (password_verify($password, $password_hash)) {
-                echo "Connexion réussie !";
-                header('Location: example.html');
-                // Start session and store user info if needed
-            } else {
-                echo "Mot de passe incorrect.";
-            }
-        } else {
-            echo "Nom d'utilisateur inconnu.";
-        }
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
-    }
-}
-?>
 

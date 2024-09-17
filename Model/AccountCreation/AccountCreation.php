@@ -6,7 +6,7 @@ session_start();
 
 #Si le formulaire est rempli correctement on redirige vers une page de validation
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    header('location: index/index.php');
+    header('location: accuil.php');
 }
 
 ?>
