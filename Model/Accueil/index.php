@@ -19,7 +19,7 @@ session_start();
 <!-- Navbar -->
 <nav class="navbar">
     <div class="navbar-left">
-        <img src="/Model/CreationDeCompte/LPS1.0.png" alt="Logo" class="logo"/>
+        <img src="/Model/Accueil/LPS1.0.png" alt="Logo" class="logo"/>
         <span class="app-name">Le Petit Stage</span>
     </div>
     <div class="navbar-right">
