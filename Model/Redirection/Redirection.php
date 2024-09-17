@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-<h1>Demande envoyée</h1>
+<h1>Redirection...</h1>
 <p>Retour à la page d'accueil dans 3 secondes...</p>
 
 <script>

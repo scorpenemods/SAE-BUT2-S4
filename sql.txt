@@ -8,3 +8,9 @@ CREATE TABLE passwords (
     password_hash VARCHAR(255) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+
+INSERT INTO users (id, login, email)
+VALUES (1, 'noahlemr', 'noahlemr@gmail.com');
+INSERT INTO passwords (user_id, password_hash)
+VALUES (1, '$2y$10$6HX9s8Jz1PkM5wx8Lz751Ov5eyOKMQHxIdQLGDVpY1CKhtgTO7Zg2');
