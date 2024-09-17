@@ -1,6 +1,5 @@
 
-DROP TABLE IF EXISTS users,passwords;
-CREATE USER 'secretariat'@'localhost' IDENTIFIED BY 'secretariat';
+DROP  TABLE IF EXISTS users,passwords CASCADE;
 
 CREATE TABLE users (
                        id INT AUTO_INCREMENT PRIMARY KEY,
@@ -21,10 +20,10 @@ CREATE TABLE passwords (
 
 
 
-INSERT INTO users (id, login, email)
-VALUES (1, 'noahlemr', 'noahlemr@gmail.com');
+INSERT INTO users (id, login,email,telephone,prenom,activite,role,nom)
+VALUES (1, 'noahlemr', 'noahlemr@gmail.com','1255','11dqsd','azeadsqd',1,'a');
 INSERT INTO passwords (user_id, password_hash)
 VALUES (1, '$2y$10$6HX9s8Jz1PkM5wx8Lz751Ov5eyOKMQHxIdQLGDVpY1CKhtgTO7Zg2');
 
-#changer de mdp
-UPDATE passwords SET password_hash =  WHERE (Select id from users where login =  && email = ) = user_id;
+#requete permettant de modifier les mots de passe 
+#UPDATE passwords SET password_hash =  WHERE (Select id from users where login =  && email = ) = user_id;
