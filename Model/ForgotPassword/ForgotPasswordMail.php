@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mot de passe oublié</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="">
 </head>
 <body>
 <div class="ForgotPassword-container">
@@ -12,7 +12,7 @@
     <form action="" method="POST">
         <div class="form-group">
             <label for="password" id="password" name="password" required </label>
-            <input type="text" id="password" name="password" placeholder="Email" required><br>
+            <input type="email" id="password" name="password" placeholder="Email" required><br>
             <button type="submit" class="btn-password">Envoyer le code</button>
         </div>
 
