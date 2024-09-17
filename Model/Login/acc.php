@@ -1,7 +1,8 @@
-<?php
+<?php/*
 include 'method.php'; // Include the method file
 
 checkSession(); // Call the function to check session status
+*/
 ?>
 
 <!DOCTYPE html>
