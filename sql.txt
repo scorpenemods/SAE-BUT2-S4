@@ -1,16 +1,30 @@
+
+DROP TABLE IF EXISTS users,passwords;
+CREATE USER 'secretariat'@'localhost' IDENTIFIED BY 'secretariat';
+
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    login VARCHAR(50) NOT NULL,
-    email VARCHAR(100)
+                       id INT AUTO_INCREMENT PRIMARY KEY,
+                       login VARCHAR(50) NOT NULL,
+                       email VARCHAR(100) NOT NULL ,
+                       telephone VARCHAR(10) NOT NULL,
+                       nom text not null,
+                       prenom text not null,
+                       role int not null ,
+                       activite text not null
 );
+
 CREATE TABLE passwords (
-    user_id INT PRIMARY KEY,
-    password_hash VARCHAR(255) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+                           user_id INT PRIMARY KEY,
+                           password_hash VARCHAR(255) NOT NULL,
+                           FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
 
 
 INSERT INTO users (id, login, email)
 VALUES (1, 'noahlemr', 'noahlemr@gmail.com');
 INSERT INTO passwords (user_id, password_hash)
 VALUES (1, '$2y$10$6HX9s8Jz1PkM5wx8Lz751Ov5eyOKMQHxIdQLGDVpY1CKhtgTO7Zg2');
+
+
+UPDATE passwords SET password_hash =  WHERE (Select id from users where login =  && email = ) = user_id;
