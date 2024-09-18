@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mot de passe oublié</title>
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="ForgotPasswordCode.css">
 </head>
 <body>
 <div class="ForgotPassword-container">
@@ -24,28 +24,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <p style="color:red;"><?php echo $error_message; ?></p>
     <?php endif; ?>
     <form action="" method="POST">
+        <div class="password-container">
+            <input type="password" id="password1" name="password1" placeholder="Nouveau mot de passe" required>
+            <img src="eye1.jpeg" id="eye" onclick="togglePasswordVisibility()" width="5%">
+        </div>
+        <div class="password-container">
+            <input type="password" id="password2" name="password2" placeholder="Confirmer mot de passe" required>
+            <img src="eye1.jpeg" id="eye" onclick="togglePasswordVisibility()" width="5%">
+        </div>
         <div class="form-group">
-            <input type="password" id="password1" name="password1" placeholder="Nouveau mot de passe" required><br>
-            <img src="eye1.jpeg" id="eye" onclick="togglePasswordVisibility()" width= "5%">
-            <input type="password" id="password2" name="password2" placeholder="Confirmer mot de passe" required><br>
             <button type="submit" class="btn-password">Confirmer</button>
         </div>
     </form>
     <script>
         let isPasswordVisible = false;
         function togglePasswordVisibility() {
-            const passwordField1 = document.getElementById('password1');
-            const passwordField2 = document.getElementById('password2');
-            const eyeIcon = document.getElementById('eye');
-            if (isPasswordVisible) {
-                passwordField1.setAttribute('type', 'password');
-                passwordField2.setAttribute('type', 'password');
-                eyeIcon.src = 'eye1.jpeg';
-            } else {
-                passwordField1.setAttribute('type', 'text');
-                passwordField2.setAttribute('type', 'text');
-                eyeIcon.src = 'eye2.jpeg';
-            }
+            const passwordFields = document.querySelectorAll('.password-container input[type="password"]');
+            const eyeIcons = document.querySelectorAll('.password-container img');
+            passwordFields.forEach((passwordField, index) => {
+                if (isPasswordVisible) {
+                    passwordField.setAttribute('type', 'password');
+                    eyeIcons[index].src = 'eye1.jpeg';
+                } else {
+                    passwordField.setAttribute('type', 'text');
+                    eyeIcons[index].src = 'eye2.jpeg';
+                }
+            });
             isPasswordVisible = !isPasswordVisible;
         }
     </script>

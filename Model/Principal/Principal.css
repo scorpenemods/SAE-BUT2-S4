@@ -2,41 +2,174 @@
     margin: 0;
     padding: 0;
 }
+
+/* Style du header */
 header {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    border-bottom: solid 1px;
 }
 header .nameapp{
     display: flex;
     flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
 }
-
-.mainmenubtn {
-    background-color: skyblue;
-    color: white;
+header .nameapp img{
+    width: 10%;
+}
+header .nameapp p{
+    font-size: xx-large;
+}
+header .rightheader{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+header .rightheader *{
+    display: flex;
+    flex-direction: row;
+}
+header .rightheader .trad{
+    justify-content: flex-end;
+    padding-top: 2%;
+}
+header .rightheader .trad p {
+    font-size: x-large;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+header .rightheader .infos {
+    position: relative;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+header .rightheader .infos a{
+    height: 50%;
+    width: 25%;
+    text-decoration: none;
+}
+header .rightheader .infos a button {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+header .rightheader .infos p {
+    margin: 3%;
+    padding: 2%;
+    background-color: lightgray;
+    border: solid 1px;
+    border-radius: 50px;
+}
+header .rightheader .infos .mainbtn {
+    width: 10%;
+    background-color: transparent;
+    align-items: center;
+}
+header .rightheader .infos .mainbtn img{
+    width: 100%;
+}
+header .rightheader .infos .mainbtn {
     border: none;
     cursor: pointer;
-    padding:20px;
-    margin-top:20px;
 }
-.mainmenubtn:hover {
-    background-color: blue;
+header .rightheader .infos .mainbtn:hover {
+    background-color: lightgray;
 }
-.dropdown {
-    position: relative;
-    display: inline-block;
+
+/* Style du menu paramètre  */
+header div.show-list {
+    margin-top: 38%;
+    display: block;
+    unicode-bidi: isolate;
+    position: absolute;
+    background-color: lightgray;
+    color: black;
+    box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
+    z-index: 15;
+    right: 0;
+    text-align: initial;
+    visibility: visible;
+    opacity: 1;
 }
-.dropdown-child {
-    display: none;
-    background-color: skyblue;
-    min-width: 200px;
-}
-.dropdown-child a {
-    color: blue;
+header .rightheader .infos .show-list a {
+    color: black;
     padding: 20px;
     text-decoration: none;
-    display: block;
 }
-.dropdown:hover .dropdown-child {
+/* cache le menu paramètre */
+header .rightheader .infos .hide-list {
+    position : absolute;
+    visibility: hidden;
+    opacity: 0;
+}
+
+/* Style du corps de la page */
+section {
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 3%;
+    box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
+}
+section nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+section span{
+    cursor: pointer;
+    border: solid 2px;
+    width: 100%;
+    padding: 2%;
+    text-align: center;
+    box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
+}
+section span:hover{
+    background-color: #f5f9fb;
+}
+section .Current{
+    border-bottom: transparent;
+    background-color: #f5f9fb;
+}
+section div.Contenus .Contenu {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+}
+section div.Contenus .Visible {
+    height: 270px;
     display: block;
+    unicode-bidi: isolate;
+    background-color: #f5f9fb;
+    color: black;
+    z-index: 15;
+    right: 0;
+    visibility: visible;
+    opacity: 1;
+    border: solid 2px;
+    border-top: transparent;
+    margin-bottom: 10%;
+    padding: 2%;
+}
+
+
+
+/* Style du pied de page */
+footer {
+    padding: 2%;
+    border-top: solid 1px;
+    display: flex;
+    padding-right: 5%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    bottom: 0;
+    width: 93%;
+}
+footer a{
+    text-decoration: none;
+    color : black;
 }
