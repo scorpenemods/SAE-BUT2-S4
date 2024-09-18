@@ -1,7 +1,7 @@
 
 DROP  TABLE IF EXISTS users,passwords CASCADE;
 
-CREATE TABLE users (
+CREATE TABLE user (
                        id INT AUTO_INCREMENT PRIMARY KEY,
                        login VARCHAR(50) NOT NULL,
                        email VARCHAR(100) NOT NULL ,
@@ -12,7 +12,7 @@ CREATE TABLE users (
                        activite text not null
 );
 
-CREATE TABLE passwords (
+CREATE TABLE password (
                            user_id INT PRIMARY KEY,
                            password_hash VARCHAR(255) NOT NULL,
                            FOREIGN KEY (user_id) REFERENCES users(id)
@@ -20,10 +20,10 @@ CREATE TABLE passwords (
 
 
 
-INSERT INTO users (id, login,email,telephone,prenom,activite,role,nom)
+INSERT INTO user (id, login,email,telephone,prenom,activite,role,nom)
 VALUES (1, 'noahlemr', 'noahlemr@gmail.com','1255','11dqsd','azeadsqd',1,'a');
-INSERT INTO passwords (user_id, password_hash)
+INSERT INTO password (user_id, password_hash)
 VALUES (1, '$2y$10$6HX9s8Jz1PkM5wx8Lz751Ov5eyOKMQHxIdQLGDVpY1CKhtgTO7Zg2');
 
 #requete permettant de modifier les mots de passe 
-#UPDATE passwords SET password_hash =  WHERE (Select id from users where login =  && email = ) = user_id;
+#UPDATE password SET password_hash =  WHERE (Select id from user where login =  && email = ) = user_id;
