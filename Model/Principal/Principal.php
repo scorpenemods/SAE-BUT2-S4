@@ -32,11 +32,11 @@
     </header>
     <section class="Menus">
         <nav>
-            <span onmouseenter="widget(0)">Onglet 1</span>
-            <span onmouseenter="widget(1)">Onglet 2</span>
-            <span onmouseenter="widget(2)">Onglet 3</span>
-            <span onmouseenter="widget(3)">Onglet 4</span>
-            <span onmouseenter="widget(4)">Onglet 5</span>
+            <span onclick="widget(0)" class="Current">Onglet 1</span>
+            <span onclick="widget(1)">Onglet 2</span>
+            <span onclick="widget(2)">Onglet 3</span>
+            <span onclick="widget(3)">Onglet 4</span>
+            <span onclick="widget(4)">Onglet 5</span>
         </nav>
         <div class="Contenus">
             <div class="Visible">Contenu1</div>

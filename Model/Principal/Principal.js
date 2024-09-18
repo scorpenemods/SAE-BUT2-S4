@@ -13,23 +13,23 @@ function hide(header){
 function turn() {
     var header = document.querySelector('div.hide-list');
     try { (header.classList.contains("show-list"))
-        show(header)
+        show(header);
     }
     catch{
         var header = document.querySelector('div.show-list');
-        hide(header)
+        hide(header);
     }
 }
 
 // Code menus principaux
 function widget(x) {
     // Récupère la ligne ayant la classe "Visible" pour la supprimer et la remplacer par la classe "Contenu"
-    var See = document.querySelector(".Visible")
-    See.classList.remove("Visible")
-    See.classList.add("Contenu")
+    var See = document.querySelector(".Visible");
+    See.classList.remove("Visible");
+    See.classList.add("Contenu");
     // Liste toutes les lignes ayant la classe "Contenu"
-    let contents = document.querySelectorAll(".Contenu")
+    let contents = document.querySelectorAll(".Contenu");
     // Supprime de la ligne ayant la meme position que le nombre en paramètre la classe "Contenu" pour la remplacer par "Visible"
-    contents[x].classList.remove("Contenu")
-    contents[x].classList.add("Visible")
+    contents[x].classList.remove("Contenu");
+    contents[x].classList.add("Visible");
 }
