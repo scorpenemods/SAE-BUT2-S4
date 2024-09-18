@@ -15,7 +15,7 @@
         </div>
 
         <div class="navbar-right">
-            <p>Prenom nom</p>
+            <p>Lucien Newerkauswitchz</p>
             <!-- Language Switch -->
             <label class="switch">
                 <input type="checkbox" id="language-switch" onchange="toggleLanguage()">

@@ -85,6 +85,7 @@ header .navbar-right p {
     background-color: lightgray;
     border: solid 1px;
     border-radius: 50px;
+    text-align: center;
 }
 /* Les switchers */
 .switch {
