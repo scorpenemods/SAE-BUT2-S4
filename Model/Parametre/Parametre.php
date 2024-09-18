@@ -1,17 +1,36 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
+    <link rel="stylesheet" href="Parametre.css">
 </head>
 <body>
-<h1>Parametre</h1>
-<h2>Changer de mot de passe</h2>
-<a href="../ForgotPassword/ForgotPassword3.php">modifier</a>
-<h2>Modifier ses préférences</h2>
-<a href="../Preferences/Preferences.php">modifier</a>
-<h2>Information du compte</h2>
-<a href="../InformationDuCompte/InformationDuCompte.php">modifier</a>
+<div class="container">
+    <div class="vertical-menu">
+        <div class="menu-item" onclick="toggleMenu('account-info', '../InformationDuCompte/InformationDuCompte.php')">
+            <span>Information du compte</span>
+            <span class="arrow">&#9660;</span>
+        </div>
+        <div class="menu-item" onclick="toggleMenu('preferences', '../Preferences/Preferences.php')">
+            <span>Modifier ses préférences</span>
+            <span class="arrow">&#9660;</span>
+        </div>
+    </div>
+    <div id="main-content" class="main-content">
+        <!-- Content will be loaded here -->
+    </div>
+</div>
+<script>
+    function toggleMenu(id, url) {
+        var mainContent = document.getElementById('main-content');
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                mainContent.innerHTML = data;
+            });
+    }
+</script>
 </body>
 </html>
