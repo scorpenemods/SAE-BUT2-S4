@@ -32,18 +32,18 @@
     </header>
     <section class="Menus">
         <nav>
-            <span onmouseenter="widget(0)">Onglet 1</span>
-            <span onmouseenter="widget(1)">Onglet 2</span>
-            <span onmouseenter="widget(2)">Onglet 3</span>
-            <span onmouseenter="widget(3)">Onglet 4</span>
-            <span onmouseenter="widget(4)">Onglet 5</span>
+            <span onclick="widget(0)" class="Current">Accueil</span>
+            <span onclick="widget(1)">Messagerie</span>
+            <span onclick="widget(2)">Offres</span>
+            <span onclick="widget(3)">Documents</span>
+            <span onclick="widget(4)">Livret de suivi</span>
         </nav>
         <div class="Contenus">
-            <div class="Visible">Contenu1</div>
-            <div class="Contenu">Contenu2</div>
-            <div class="Contenu">Contenu3</div>
-            <div class="Contenu">Contenu4</div>
-            <div class="Contenu">Contenu5</div>
+            <div class="Visible">Contenu Accueil</div>
+            <div class="Contenu">Contenu Messagerie</div>
+            <div class="Contenu">Contenu Offres</div>
+            <div class="Contenu">Contenu Documents</div>
+            <div class="Contenu">Contenu Livret de suivi</div>
         </div>
     </section>
 

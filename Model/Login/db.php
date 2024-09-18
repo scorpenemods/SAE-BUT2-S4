@@ -1,10 +1,12 @@
 <?php
-$dsn = "mysql:host=localhost;dbname=dbsae;charset=utf8";
-$username = "scorpene";
-$password = "8172";
+$host = 'localhost';
+$port = '3306';
+$db = 'saeDB';
+$user = 'root';
+$pass = 'loptro342004';
 
 try {
-    $pdo = new PDO($dsn, $username, $password);
+    $pdo = new PDO($host,$host, $user, $pass);
     // Set the PDO error mode to exception
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
@@ -14,5 +16,11 @@ try {
 #$password = 'sae';
 #$password_hash = password_hash($password, PASSWORD_BCRYPT);
 #echo $password_hash;
+
+/* Noah connection DB
+$dsn = "mysql:host=localhost;dbname=dbsae;charset=utf8";
+$username = "scorpene";
+$password = "8172";
+*/
 
 ?>

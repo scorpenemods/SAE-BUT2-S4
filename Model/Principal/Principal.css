@@ -8,17 +8,20 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    border-bottom: solid 1px;
 }
 header .nameapp{
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    width: 50%;
-    height: 10%;
+    width: 100%;
 }
 header .nameapp img{
     width: 10%;
+}
+header .nameapp p{
+    font-size: xx-large;
 }
 header .rightheader{
     display: flex;
@@ -31,7 +34,7 @@ header .rightheader *{
 }
 header .rightheader .trad{
     justify-content: flex-end;
-    padding: 2%;
+    padding-top: 2%;
 }
 header .rightheader .trad p {
     font-size: x-large;
@@ -41,8 +44,6 @@ header .rightheader .trad p {
 header .rightheader .infos {
     position: relative;
     display: flex;
-    padding: 2%;
-    padding-left: 45%;
     justify-content: space-evenly;
     align-items: center;
 }
@@ -106,32 +107,51 @@ header .rightheader .infos .hide-list {
     opacity: 0;
 }
 
-
 /* Style du corps de la page */
-section p {
-    display: flex;
-    height: 800px;
+section {
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 3%;
+    box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
 }
-
+section nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
 section span{
     cursor: pointer;
+    border: solid 2px;
+    width: 100%;
+    padding: 2%;
+    text-align: center;
+    box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
 }
 section span:hover{
-    background-color: lightgray;
+    background-color: #f5f9fb;
+}
+section .Current{
+    border-bottom: transparent;
+    background-color: #f5f9fb;
 }
 section div.Contenus .Contenu {
     visibility: hidden;
     opacity: 0;
+    position: absolute;
 }
 section div.Contenus .Visible {
+    height: 800px;
     display: block;
     unicode-bidi: isolate;
-    background-color: lightgray;
+    background-color: #f5f9fb;
     color: black;
     z-index: 15;
     right: 0;
     visibility: visible;
     opacity: 1;
+    border: solid 2px;
+    border-top: transparent;
+    margin-bottom: 10%;
 }
 
 
@@ -145,6 +165,8 @@ footer {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    bottom: 0;
+    width: 93%;
 }
 footer a{
     text-decoration: none;

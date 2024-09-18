@@ -1,7 +1,8 @@
 <?php
+/*
 session_start();
 // A realiser logique de connection et changement de theme
-
+*/
 ?>
 
 <!DOCTYPE html>
@@ -11,13 +12,14 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="lobby.css">
+    <link rel="stylesheet" href="login.css">
     <script src="accueil.js" defer></script>
 </head>
 <body>
 <!-- Navbar -->
 <nav class="navbar">
     <div class="navbar-left">
-        <img src="/Model/CreationDeCompte/LPS1.0.png" alt="Logo" class="logo"/>
+        <img src="/Model/Accueil/LPS1.0.png" alt="Logo" class="logo"/>
         <span class="app-name">Le Petit Stage</span>
     </div>
     <div class="navbar-right">
@@ -47,9 +49,23 @@ session_start();
         Une application innovante pour les étudiants, enseignants et personnel de l'UPHF. Gérez vos stages et restez connectés avec toutes les parties prenantes facilement et efficacement.
     </p>
 
+    <div class="login-container">
+        <h2>Connexion</h2>
+        <form action="" method="POST">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur :</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button class="primary-button">Se connecter</button>
+        </form>
+    </div>
+
     <div class="button-group">
-        <button class="primary-button">Demander la création de compte</button>
-        <button class="secondary-button">Se connecter</button>
+        <p style="font-size: large"><b>ou</b></p>
         <button class="secondary-button">S’enregistrer</button>
     </div>
 </div>
