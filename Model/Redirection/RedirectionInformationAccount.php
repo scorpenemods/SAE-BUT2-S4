@@ -9,14 +9,15 @@
 <body>
 <div class="container">
     <h1>Redirection...</h1>
-    <p>Retour à la page d'accueil dans 3 secondes...</p>
+    <p>Retour aux informations du compte dans 3 secondes...</p>
 </div>
 
 <script>
-    // JavaScript redirige vers l'index après 3 seconds
+    // JavaScript redirige vers les informations du compte après 3 seconds
     setTimeout(function() {
-        window.location.href = "Accueil/index.php";
+        window.location.href = "../InformationAccount/Information.php";
     }, 3000);
 </script>
 </body>
 </html>
+
