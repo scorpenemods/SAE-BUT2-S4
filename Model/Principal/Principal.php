@@ -10,21 +10,20 @@
 <body>
     <header class="Entete">
         <div class="nameapp">
-            <img src="../../LPS%201.0.png" alt="Logo" class="logo" width="5%"/>
+            <img src="../../Ressources/Logo_UPHF.png" alt="Logo" class="logo" width="5%"/>
             <p class="app-name">Le Petit Stage</p>
         </div>
         <div class="rightheader">
             <div class="trad">
-                <img src="../../LogoTrad.png" alt="logo traduction" width="5%">
+                <img src="../../Ressources/LogoTrad.png" alt="logo traduction" width="5%">
                 <p> Francais </p>
             </div>
             <div class="infos">
                 <a href="../Redirection/Redirection.php"><button>Deconnexion</button></a>
                 <p>Prenom nom</p>
-                <button class="mainbtn" onclick="turn()"><img src="../../Param.png"></button>
+                <button class="mainbtn" onclick="turn()"><img src="../../Ressources/Param.png"></button>
                 <div class="hide-list">
                     <a href="../Redirection/Redirection.php">Information</a>
-                    <a href="../ForgotPassword/ForgotPasswordCode.php">Modifier le mot de passe</a>
                     <a href="../Login/Login.php">Deconnexion</a>
                 </div>
             </div>
@@ -48,7 +47,7 @@
     </section>
 
     <footer class="PiedDePage">
-        <img src="../../Logo_UPHF.png" alt="Logo uphf" width="10%">
+        <img src="../../Ressources/Logo_UPHF.png" alt="Logo uphf" width="10%">
         <a href="../Redirection/Redirection.php">Informations</a>
         <a href="../Redirection/Redirection.php">A propos</a>
     </footer>

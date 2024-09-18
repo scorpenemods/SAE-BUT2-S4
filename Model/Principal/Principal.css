@@ -82,7 +82,7 @@ header .rightheader .infos .mainbtn:hover {
 
 /* Style du menu paramètre  */
 header div.show-list {
-    margin-top: 34%;
+    margin-top: 38%;
     display: block;
     unicode-bidi: isolate;
     position: absolute;
@@ -140,7 +140,7 @@ section div.Contenus .Contenu {
     position: absolute;
 }
 section div.Contenus .Visible {
-    height: 800px;
+    height: 270px;
     display: block;
     unicode-bidi: isolate;
     background-color: #f5f9fb;
@@ -152,6 +152,7 @@ section div.Contenus .Visible {
     border: solid 2px;
     border-top: transparent;
     margin-bottom: 10%;
+    padding: 2%;
 }
 
 
