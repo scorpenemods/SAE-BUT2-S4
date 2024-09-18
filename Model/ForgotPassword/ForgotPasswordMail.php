@@ -11,7 +11,7 @@
     <h2>Récupération mot de passe</h2>
     <form action="" method="POST">
         <div class="form-group">
-            <label for="password" id="password" name="password" required </label>
+            <label for="password" id="password" name="password" </label>
             <input type="email" id="password" name="password" placeholder="Email" required><br>
         </div>
         <div class="form-group">

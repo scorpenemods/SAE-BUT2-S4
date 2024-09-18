@@ -25,7 +25,7 @@
         <tr>
             <td>Email :</td>
             <td></td>
-            <td><button onclick="window.location.href='modifier_email.php'">Modifier Email</button></td>
+            <td><a href="../MailChange/MailChange.php"><button>Modifier adresse e-mail</button></a></td>
         </tr>
         <tr>
             <td>Numéro de téléphone :</td>
