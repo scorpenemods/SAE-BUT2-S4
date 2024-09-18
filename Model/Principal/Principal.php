@@ -8,27 +8,39 @@
     <script type="text/javascript" src="./Principal.js"></script>
 </head>
 <body>
-    <header class="Entete">
-        <div class="nameapp">
-            <img src="../../Ressources/Logo_UPHF.png" alt="Logo" class="logo" width="5%"/>
-            <p class="app-name">Le Petit Stage</p>
+    <header class="navbar">
+        <div class="navbar-left">
+            <img src="/Model/Accueil/LPS1.0.png" alt="Logo" class="logo"/>
+            <span class="app-name">Le Petit Stage</span>
         </div>
-        <div class="rightheader">
-            <div class="trad">
-                <img src="../../Ressources/LogoTrad.png" alt="logo traduction" width="5%">
-                <p> Francais </p>
-            </div>
-            <div class="infos">
-                <a href="../Redirection/Redirection.php"><button>Deconnexion</button></a>
-                <p>Prenom nom</p>
-                <button class="mainbtn" onclick="turn()"><img src="../../Ressources/Param.png"></button>
-                <div class="hide-list">
-                    <a href="../Redirection/Redirection.php">Information</a>
-                    <a href="../Login/Login.php">Deconnexion</a>
-                </div>
+
+        <div class="navbar-right">
+            <p>Lucien Newerkauswitchz</p>
+            <!-- Language Switch -->
+            <label class="switch">
+                <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
+                <span class="slider round">
+                    <span class="switch-sticker">🇫🇷</span> <!-- Sticker Français -->
+                    <span class="switch-sticker switch-sticker-right">🇬🇧</span> <!-- Sticker English -->
+                </span>
+            </label>
+            <!-- Theme Switch -->
+            <label class="switch">
+                <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
+                <span class="slider round">
+                    <span class="switch-sticker switch-sticker-right">🌙</span> <!-- Sticker Dark Mode -->
+                    <span class="switch-sticker">☀️</span> <!-- Sticker Light Mode -->
+                </span>
+            </label>
+            <button class="mainbtn" onclick="turn()"><img src="../../Ressources/Param.png"></button>
+            <div class="hide-list">
+                <a href="../Parametre/Parametre.php">Information</a>
+                <a href="../Login/Login.php">Deconnexion</a>
             </div>
         </div>
     </header>
+
+
     <section class="Menus">
         <nav>
             <span onclick="widget(0)" class="Current">Accueil</span>
