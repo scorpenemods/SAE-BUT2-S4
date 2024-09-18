@@ -60,13 +60,13 @@ session_start();
                 <label for="password">Mot de passe :</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button class="primary-button">Se connecter</button>
+            <button class="primary-button" ><a href="/Model/Login/Login.php">Se connecter</a></button>
         </form>
     </div>
 
     <div class="button-group">
         <p style="font-size: large"><b>ou</b></p>
-        <button class="secondary-button">S’enregistrer</button>
+        <button class="secondary-button"><a href="/Model/AccountCreation/AccountCreation.php">S’enregistrer</a></button>
     </div>
 </div>
 </body>
