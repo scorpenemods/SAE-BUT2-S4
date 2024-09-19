@@ -18,10 +18,12 @@
                 <input type="text" name="code[]" maxlength="1" required>
                 <input type="text" name="code[]" maxlength="1" required><br>
         </div>
+
         <div class="form-group">
             <button type="submit" class="btn-password">Confirmer</button>
         </div>
     </form>
+</div>
 </body>
 <script src="ForgotPasswordCode.js"></script>
 </html>
