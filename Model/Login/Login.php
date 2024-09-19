@@ -10,14 +10,12 @@ session_start();
 echo($_SESSION['user']);
 
 include "../../Model/DB.php";
-include "../../Class/Personne.php";
-include "../../Class/Etudiant.php";
-include "../../Class/Professeur.php";
-include "../../Class/Tuteur.php";
-include "../../Class/Secretariat.php";
+require "../../Class/Personne.php";
+require "../../Class/Etudiant.php";
+require "../../Class/Professeur.php";
+require "../../Class/Tuteur.php";
+require "../../Class/Secretariat.php";
 
-$role = $DB $_SESSION['user'];
-if ()
 
 
 
