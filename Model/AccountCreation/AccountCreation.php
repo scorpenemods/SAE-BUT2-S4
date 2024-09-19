@@ -1,5 +1,5 @@
 <?php
-
+/*
 include 'Service/DB.php';
 session_start();
 
@@ -8,11 +8,16 @@ session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header('location: accuil.php');
 }
-
+*/
 ?>
 <!DOCTYPE html>
 <html>
+<head>
+    <link rel="stylesheet" href="/Model/DefaultStyles/styles.css ">
+</head>
 <body>
+
+<div class="container">
 <h1>Création du compte</h1>
 <form action="AccountCreation.php" method="post">
     <p>
@@ -49,6 +54,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <button type="submit">Valider</button>
 </form>
-
+</div>
 </body>
 </html>
