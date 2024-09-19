@@ -19,7 +19,9 @@
             <span class="arrow">▼</span>
         </div>
         <div class="user-profile">
-            <button class="logout-btn">Déconnexion</button>
+            <form action="../Deconnexion/Deconnexion.php" method="POST">
+                <button class="logout-btn">Déconnexion</button>
+
             <span>Nom Prenom</span>
             <div class="user-avatar">
                 <img src="default-avatar.png" alt="Avatar">
