@@ -38,7 +38,7 @@ body.dark-mode {
 }
 
 /* Navigation Bar */
-.navbar {
+header.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -55,26 +55,21 @@ header .navbar-left{
     display: flex;
     align-items: center;
 }
-.logo {
+header .logo {
     height: 45px;
 }
 
-.navbar-left .app-name {
+header .navbar-left .app-name {
     margin-left: 10px;
     font-size: 24px;
     font-weight: bold;
     color: white;
     top: 27px;
 }
-.navbar-right {
-    display: flex;
-    align-items: center;
+header .navbar-right {
     gap: 20px;
     padding-right: 40px;
-}
-
-header .navbar-right {
-    width: 30%;
+    width: 40%;
     position: relative;
     display: flex;
     justify-content: space-evenly;
@@ -90,20 +85,20 @@ header .navbar-right p {
     text-align: center;
 }
 /* Les switchers */
-.switch {
+header .switch {
     position: relative;
     display: inline-block;
     width: 80px;
     height: 40px;
 }
 
-.switch input {
+header .switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.slider {
+header .slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -119,7 +114,8 @@ header .navbar-right p {
     padding: 0 5px;
 }
 
-.switch-sticker {
+header .switch-sticker {
+    color: black;
     position: absolute;
     width: 30px;
     text-align: center;
@@ -128,24 +124,24 @@ header .navbar-right p {
     transition: opacity 0.3s ease;
 }
 
-.switch-sticker-right {
+header .switch-sticker-right {
     right: 5px;
     opacity: 0;
 }
 
-input:checked + .slider {
+header input:checked + .slider {
     background-color: #3498db; /* For active condition */
 }
 
-input:checked + .slider .switch-sticker {
+header input:checked + .slider .switch-sticker {
     opacity: 0;
 }
 
-input:checked + .slider .switch-sticker-right {
+header input:checked + .slider .switch-sticker-right {
     opacity: 1;
 }
 
-.slider:before {
+header .slider:before {
     position: absolute;
     content: "";
     height: 34px;
@@ -158,12 +154,12 @@ input:checked + .slider .switch-sticker-right {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-input:checked + .slider:before {
+header input:checked + .slider:before {
     transform: translateX(40px);
 }
 
 header .navbar-right .mainbtn {
-    width: 10%;
+    width: 7%;
     background-color: transparent;
     align-items: center;
 }
