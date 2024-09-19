@@ -13,7 +13,7 @@
             <span>Information du compte</span>
             <span class="arrow">&#9660;</span>
         </div>
-        <div class="menu-item" onclick="toggleMenu('preferences', '../Preferences/Preferences.php')">
+        <div class="menu-item" onclick="toggleMenu('preferences', 'Preference.php')">
             <span>Modifier ses préférences</span>
             <span class="arrow">&#9660;</span>
         </div>
