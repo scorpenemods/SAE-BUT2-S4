@@ -13,7 +13,11 @@ class Database {
         }
     }
 
-    public function authenticateUser($username, $password) {
+    /**
+     * @throws Exception
+     */
+    public function authenticateUser($username, $password): bool
+    {
         try {
             $stmt = $this->pdo->prepare("SELECT p.password_hash FROM user u JOIN password p ON u.user_id = p.user_id WHERE u.login = :login");
             $stmt->execute([':login' => $username]);
