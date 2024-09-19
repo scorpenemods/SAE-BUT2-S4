@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS passwordsae, messagesae, conventionsae, gourpesae, user CASCADE;
+DROP TABLE IF EXISTS a_passwordsae, a_messagesae, a_conventionsae, a_gourpesae, a_usersae CASCADE;
 
 -- Table des utilisateurs
-CREATE TABLE user (
+CREATE TABLE a_usersae (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     nom TEXT NOT NULL,
     prenom TEXT NOT NULL,
@@ -12,41 +12,41 @@ CREATE TABLE user (
     activite TEXT NOT NULL
 );
 
--- Table des mots de passe (liée à la table user)
-CREATE TABLE passwordsae (
+-- Table des mots de passe (liée à la table a_usersae)
+CREATE TABLE a_passwordsae (
     user_id INT PRIMARY KEY,
     passwordsae_hash VARCHAR(255) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user(user_id)
+    FOREIGN KEY (user_id) REFERENCES a_usersae(user_id)
 );
 
--- Table des conventionsaes
-CREATE TABLE conventionsae (
+-- Table des conventions
+CREATE TABLE a_conventionsae (
     conv_id INT AUTO_INCREMENT PRIMARY KEY,
     conventionsae TEXT
 );
 
--- Table gourpesae qui fait le lien entre user et conventionsae
-CREATE TABLE gourpesae (
+-- Table gourpe qui fait le lien entre a_usersae et a_conventionsae
+CREATE TABLE a_gourpesae (
     user_id INT,
     conv_id INT,
     PRIMARY KEY (user_id, conv_id),
-    FOREIGN KEY (user_id) REFERENCES user(user_id),
-    FOREIGN KEY (conv_id) REFERENCES conventionsae(conv_id)
+    FOREIGN KEY (user_id) REFERENCES a_usersae(user_id),
+    FOREIGN KEY (conv_id) REFERENCES a_conventionsae(conv_id)
 );
 
--- Table des messagesaes, qui relie le gourpesae (user + conv) à chaque messagesae
-CREATE TABLE messagesae (
+-- Table des messages qui relie le a_gourpesae (user + conv) à chaque message
+CREATE TABLE a_messagesae (
     msg_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     conv_id INT,
     contenu TEXT NOT NULL,
-    FOREIGN KEY (user_id, conv_id) REFERENCES gourpesae(user_id, conv_id)
+    FOREIGN KEY (user_id, conv_id) REFERENCES a_gourpesae(user_id, conv_id)
 );
 
 -- Insérer un utilisateur exemple
-INSERT INTO user (user_id, login, email, telephone, prenom, activite, role, nom)
+INSERT INTO a_usersae (user_id, login, email, telephone, prenom, activite, role, nom)
 VALUES (1, 'noahlemr', 'noahlemr@gmail.com', '1255', '11dqsd', 'azeadsqd', 1, 'a');
 
 -- Insérer le mot de passe correspondant (mot de passe haché)
-INSERT INTO passwordsae (user_id, passwordsae_hash)
+INSERT INTO a_passwordsae (user_id, passwordsae_hash)
 VALUES (1, '$2y$10$6HX9s8Jz1PkM5wx8Lz751Ov5eyOKMQHxIdQLGDVpY1CKhtgTO7Zg2');
