@@ -19,15 +19,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div class="container">
 <h1>Création du compte</h1>
-<form action="AccountCreation.php" method="post">
+<form action="../Redirection/Redirection.php" method="post">
     <p>
         <input type="radio" name="choice" value="student" id="student" required />
         <label for="student">Étudiant</label>
 
-        <input type="radio" name="choix" value="tutorprofessor" id="tutorprofessor" required />
+        <input type="radio" name="choice" value="tutorprofessor" id="tutorprofessor" required />
         <label for="tutorprofessor">Professeur referant :</label>
 
-        <input type="radio" name="choix" value="tutorcompany" id="tutorcompany" required />
+        <input type="radio" name="choice" value="tutorcompany" id="tutorcompany" required />
         <label for="tutorcompany">Tuteur professionnel :</label>
     </p>
     <p>
