@@ -11,8 +11,9 @@ class Personne
     private string $login;
     private string $role;
     private string $activite;
+    private int $id;
 
-    public function __construct($nom, $prenom, $telephone,$login , $role, $activite,$email){
+    public function __construct($nom, $prenom, $telephone,$login , $role, $activite,$email,$id){
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->telephone = $telephone;
@@ -20,6 +21,8 @@ class Personne
         $this->role = $role;
         $this->activite = $activite;
         $this->email = $email;
+        $this->id = $id;
+
 
     }
 
@@ -62,6 +65,10 @@ class Personne
   #  public function setPassword($password){
    #     password_hash($password, PASSWORD_BCRYPT);
     #    $pdo->prepare("UPDATE passwords SET password_hash =  WHERE (Select id from users where login = this->getNom() && email = this->getEmail()) = user_id;")->execute([]);
+
+    #}
+    #  public function setEmail($email){
+    #    $pdo->prepare("UPDATE users SET email = $email WHERE this->getId() = user_id ->execute([]);
 
     #}
 
