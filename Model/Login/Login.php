@@ -1,4 +1,26 @@
+
 <?php
+/*
+ * Page qui permet de créer l'objet en fonction du rôle
+ *
+ */
+require "../../Service/DB.php";
+session_start();
+
+echo($_SESSION['user']);
+
+include "../../Model/DB.php";
+include "../../Class/Personne.php";
+include "../../Class/Etudiant.php";
+include "../../Class/Professeur.php";
+include "../../Class/Tuteur.php";
+include "../../Class/Secretariat.php";
+
+$role = $DB $_SESSION['user'];
+if ()
+
+
+
 /*
 require_once 'Database.php';
 
