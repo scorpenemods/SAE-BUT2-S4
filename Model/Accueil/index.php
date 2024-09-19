@@ -53,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Authenticate user
     if ($db->authenticateUser($username, $password)) {
         echo "Connexion réussie !";
-        // You can store session data and redirect to a dashboard or another page
         $_SESSION['user'] = $username;
         header('Location: /SAE-BUT2-1.1/Model/Principal/Principal.php');
         exit;

@@ -1,4 +1,16 @@
+
 <?php
+/*
+ * Page qui permet de créer l'objet en fonction du rôle
+ *
+ */
+require "../../Service/DB.php";
+session_start();
+
+
+
+
+
 /*
 require_once 'Database.php';
 
