@@ -1,12 +1,11 @@
 <?php
 
-include '../../Class/DataBase.php';
+
+global $db;
+include '../../Class/Database.php';
 include '../../Service/DB.php';
 
 session_start();
-
-// Initialize the Database connection
-$db = new Database("141.94.245.139", "s3081_BDD_Barkhane", "u3081_erRWAWL7zt", "ODyKebC@rSeyavay2Olz4!K!");
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     // Authenticate user
-    try {
         if ($db->authenticateUser($username, $password)) {
             echo "Connexion réussie !";
             // You can store session data and redirect to a dashboard or another page
@@ -24,9 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo "Échec de la connexion. Vérifiez vos identifiants.";
         }
-    } catch (Exception $e) {
-
-    }
 }
 ?>
 

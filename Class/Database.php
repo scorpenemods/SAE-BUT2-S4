@@ -1,7 +1,7 @@
 <?php
 
 class Database {
-    private $pdo;
+    private PDO $pdo;
 
     public function __construct($host, $dbname, $username, $password) {
         $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8";
