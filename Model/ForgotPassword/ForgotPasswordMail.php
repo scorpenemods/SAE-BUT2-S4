@@ -18,5 +18,7 @@
             <button type="submit" class="btn-password">Envoyer le code</button>
         </div>
 
-    <form/>
+    </form>
+</div>
 </body>
+</html>

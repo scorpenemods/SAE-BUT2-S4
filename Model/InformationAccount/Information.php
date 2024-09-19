@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Informations du compte</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="">
 </head>
 <body>
 <div class="compte-info">
@@ -30,7 +30,7 @@
         <tr>
             <td>Numéro de téléphone :</td>
             <td></td>
-            <td><button onclick="window.location.href='modifier_tel.php'">Modifier numéro de téléphone</button></td>
+            <td><a href="../ChangePhoneNumber/ChangePhoneNumber.php"><button>Modifier numéro de téléphone</button></a></td>
         </tr>
         <tr>
             <td>Mot de passe :</td>
