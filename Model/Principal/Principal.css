@@ -51,7 +51,10 @@ body.dark-mode {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
-
+header .navbar-left{
+    display: flex;
+    align-items: center;
+}
 .logo {
     height: 45px;
 }
@@ -61,7 +64,6 @@ body.dark-mode {
     font-size: 24px;
     font-weight: bold;
     color: white;
-    position: absolute;
     top: 27px;
 }
 .navbar-right {
@@ -193,6 +195,7 @@ header .navbar-right .show-list a {
     color: black;
     padding: 20px;
     text-decoration: none;
+    border-bottom: solid 1px;
 }
 /* cache le menu paramètre */
 header .navbar-right .hide-list {
