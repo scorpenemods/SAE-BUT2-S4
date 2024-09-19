@@ -119,6 +119,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="password" id="password" name="password" required>
             </div>
             <button class="primary-button" ><a>Se connecter</a></button>
+            <p>Un problème pour se connecter ?</p>
+            <a href="../Parametre/Parametre.php">Changer le mot de passe</a>
         </form>
     </div>
 
