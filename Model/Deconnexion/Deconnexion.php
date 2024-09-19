@@ -21,6 +21,7 @@ session_destroy();
     <meta charset="UTF-8">
     <title> Déconnexion </title>
     <link rel="stylesheet" href="Deconnexion.css">
+    <link rel="stylesheet" href="../DefaultStyles/styles.css">
 </head>
 <body>
 <nav class="navbar">
@@ -45,6 +46,12 @@ session_destroy();
     Si vous ne souhaitez pas revenir à l'accueil, pour des raisons de sécurité, veuillez fermer cette page.
 </p>
 </article>
+
+<footer>
+    <img src="../../Ressources/Logo_UPHF.png" alt="Logo uphf" width="10%">
+    <a href="../Redirection/Redirection.php">Informations</a>
+    <a href="../Redirection/Redirection.php">A propos</a>
+</footer>
 
 </body>
 </html>
