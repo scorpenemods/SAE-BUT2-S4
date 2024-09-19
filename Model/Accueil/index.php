@@ -1,11 +1,19 @@
 <?php
+require '../../Class/Database.php' ;
 
-
-global $db;
-include '../../Class/Database.php';
 include '../../Service/DB.php';
 
+
 session_start();
+// Test de la connexion à la base de données
+try {
+    $db = new Database("141.94.245.139", "s3081_BDD_Barkhane", "u3081_erRWAWL7zt", "ODyKebC@rSeyavay2Olz4!K!");
+    echo "Connexion à la base de données réussie";
+} catch (Exception $e) {
+    echo "Erreur lors de la connexion à la base de données : " . $e->getMessage();
+}
+// Instanciation de la base de données
+$db = new Database("141.94.245.139", "s3081_BDD_Barkhane", "u3081_erRWAWL7zt", "ODyKebC@rSeyavay2Olz4!K!");
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -13,17 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     // Authenticate user
-        if ($db->authenticateUser($username, $password)) {
-            echo "Connexion réussie !";
-            // You can store session data and redirect to a dashboard or another page
-            $_SESSION['user'] = $username;
-            header('Location: /SAE-BUT2-1.1/Model/Login/Login.php');
-            exit;
-        } else {
-            echo "Échec de la connexion. Vérifiez vos identifiants.";
-        }
+    if ($db->authenticateUser($username, $password)) {
+        echo "Connexion réussie !";
+        // Store session data and redirect
+        $_SESSION['user'] = $username;
+        header('Location: /SAE-BUT2-1.1/Model/Login/Login.php');
+        exit;
+    } else {
+        echo "Échec de la connexion. Vérifiez vos identifiants.";
+    }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
