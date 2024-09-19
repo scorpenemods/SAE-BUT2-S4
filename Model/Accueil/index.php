@@ -1,44 +1,7 @@
 <?php
 
 
-class Database
-{
-    private $pdo;
-
-    public function __construct($host, $dbname, $username, $password)
-    {
-        $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8";
-        try {
-            $this->pdo = new PDO($dsn, $username, $password);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            die("Erreur de connexion : " . $e->getMessage());
-        }
-    }
-
-    public function authenticateUser($username, $password)
-    {
-        try {
-            // Correct field names according to your schema
-            $stmt = $this->pdo->prepare("
-                SELECT p.passwordsae_hash 
-                FROM a_usersae u 
-                JOIN a_passwordsae p ON u.user_id = p.user_id 
-                WHERE u.login = :login
-            ");
-            $stmt->execute([':login' => $username]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            // Verifying the password
-            if ($user && password_verify($password, $user['passwordsae_hash'])) {
-                return true;
-            }
-            return false;
-        } catch (PDOException $e) {
-            throw new Exception("Erreur lors de l'authentification : " . $e->getMessage());
-        }
-    }
-}
+include 'Service/DB.php';
 
 session_start();
 
@@ -55,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Connexion réussie !";
         // You can store session data and redirect to a dashboard or another page
         $_SESSION['user'] = $username;
-        header('Location: /SAE-BUT2-1.1/Model/Principal/Principal.php');
+        header('Location: /SAE-BUT2-1.1/Model/Login/Login.php');
         exit;
     } else {
         echo "Échec de la connexion. Vérifiez vos identifiants.";
