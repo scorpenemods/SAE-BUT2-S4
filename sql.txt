@@ -1,54 +1,52 @@
+DROP TABLE IF EXISTS passwordsae, messagesae, conventionsae, gourpesae, user CASCADE;
 
-DROP  TABLE IF EXISTS password,message,convention,groupe,user CASCADE;
 -- Table des utilisateurs
 CREATE TABLE user (
-                      user_id INT AUTO_INCREMENT PRIMARY KEY,
-                      nom TEXT NOT NULL,
-                      prenom TEXT NOT NULL,
-                      login VARCHAR(50) NOT NULL,
-                      email VARCHAR(100) NOT NULL,
-                      telephone VARCHAR(10) NOT NULL,
-                      role INT NOT NULL,
-                      activite TEXT NOT NULL
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    nom TEXT NOT NULL,
+    prenom TEXT NOT NULL,
+    login VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    telephone VARCHAR(10) NOT NULL,
+    role INT NOT NULL,
+    activite TEXT NOT NULL
 );
 
 -- Table des mots de passe (liée à la table user)
-CREATE TABLE password (
-                          user_id INT PRIMARY KEY,
-                          password_hash VARCHAR(255) NOT NULL,
-                          FOREIGN KEY (user_id) REFERENCES user(user_id)
+CREATE TABLE passwordsae (
+    user_id INT PRIMARY KEY,
+    passwordsae_hash VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
--- Table des conventions
-CREATE TABLE convention (
-                            conv_id INT AUTO_INCREMENT PRIMARY KEY,
-                            convention TEXT
+-- Table des conventionsaes
+CREATE TABLE conventionsae (
+    conv_id INT AUTO_INCREMENT PRIMARY KEY,
+    conventionsae TEXT
 );
 
--- Table groupe qui fait le lien entre user et convention
-CREATE TABLE groupe (
-                        user_id INT,
-                        conv_id INT,
-                        PRIMARY KEY (user_id, conv_id),
-                        FOREIGN KEY (user_id) REFERENCES user(user_id),
-                        FOREIGN KEY (conv_id) REFERENCES convention(conv_id)
+-- Table gourpesae qui fait le lien entre user et conventionsae
+CREATE TABLE gourpesae (
+    user_id INT,
+    conv_id INT,
+    PRIMARY KEY (user_id, conv_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id),
+    FOREIGN KEY (conv_id) REFERENCES conventionsae(conv_id)
 );
 
--- Table des messages, qui relie le groupe (user + conv) à chaque message
-CREATE TABLE message (
-                         msg_id INT AUTO_INCREMENT PRIMARY KEY,
-                         user_id INT,
-                         conv_id INT,
-                         contenu TEXT NOT NULL,
-                         FOREIGN KEY (user_id, conv_id) REFERENCES groupe(user_id, conv_id)
+-- Table des messagesaes, qui relie le gourpesae (user + conv) à chaque messagesae
+CREATE TABLE messagesae (
+    msg_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    conv_id INT,
+    contenu TEXT NOT NULL,
+    FOREIGN KEY (user_id, conv_id) REFERENCES gourpesae(user_id, conv_id)
 );
 
+-- Insérer un utilisateur exemple
+INSERT INTO user (user_id, login, email, telephone, prenom, activite, role, nom)
+VALUES (1, 'noahlemr', 'noahlemr@gmail.com', '1255', '11dqsd', 'azeadsqd', 1, 'a');
 
-
-INSERT INTO user (user_id, login,email,telephone,prenom,activite,role,nom)
-VALUES (1, 'noahlemr', 'noahlemr@gmail.com','1255','11dqsd','azeadsqd',1,'a');
-INSERT INTO password (user_id, password_hash)
+-- Insérer le mot de passe correspondant (mot de passe haché)
+INSERT INTO passwordsae (user_id, passwordsae_hash)
 VALUES (1, '$2y$10$6HX9s8Jz1PkM5wx8Lz751Ov5eyOKMQHxIdQLGDVpY1CKhtgTO7Zg2');
-
-#requete permettant de modifier les mots de passe
-#UPDATE passwords SET password_hash =  WHERE (Select user_id from users where login =  && email = ) = user_id;
