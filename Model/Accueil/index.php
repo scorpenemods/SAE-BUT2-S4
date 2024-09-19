@@ -1,7 +1,9 @@
 <?php
+global $db;
+/*
 require '../../Class/Database.php' ;
 include '../../Service/DB.php';
-
+*/
 session_start();
 
 
@@ -80,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="password">Mot de passe :</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button class="primary-button" ><a>Se connecter</a></button>
+            <button class="primary-button" ><a class="login-link">Se connecter</a></button>
             <p>Un problème pour se connecter ?</p>
             <a href="../Parametre/Parametre.php">Changer le mot de passe</a>
         </form>
@@ -88,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="button-group">
         <p style="font-size: large"><b>ou</b></p>
-        <button class="secondary-button"><a href="/Model/AccountCreation/AccountCreation.php">S’enregistrer</a></button>
+        <button class="secondary-button"><a class="login-link" href="/Model/AccountCreation/AccountCreation.php">S’enregistrer</a></button>
     </div>
 </div>
 </body>
