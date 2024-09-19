@@ -1,7 +1,7 @@
 <?php
 
-
-include 'Service/DB.php';
+include '../../Class/DataBase.php';
+include '../../Service/DB.php';
 
 session_start();
 
@@ -14,14 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     // Authenticate user
-    if ($db->authenticateUser($username, $password)) {
-        echo "Connexion réussie !";
-        // You can store session data and redirect to a dashboard or another page
-        $_SESSION['user'] = $username;
-        header('Location: /SAE-BUT2-1.1/Model/Login/Login.php');
-        exit;
-    } else {
-        echo "Échec de la connexion. Vérifiez vos identifiants.";
+    try {
+        if ($db->authenticateUser($username, $password)) {
+            echo "Connexion réussie !";
+            // You can store session data and redirect to a dashboard or another page
+            $_SESSION['user'] = $username;
+            header('Location: /SAE-BUT2-1.1/Model/Login/Login.php');
+            exit;
+        } else {
+            echo "Échec de la connexion. Vérifiez vos identifiants.";
+        }
+    } catch (Exception $e) {
+
     }
 }
 ?>
