@@ -7,14 +7,6 @@
 require "../../Service/DB.php";
 session_start();
 
-echo($_SESSION['user']);
-
-include "../../Model/DB.php";
-require "../../Class/Personne.php";
-require "../../Class/Etudiant.php";
-require "../../Class/Professeur.php";
-require "../../Class/Tuteur.php";
-require "../../Class/Secretariat.php";
 
 
 
