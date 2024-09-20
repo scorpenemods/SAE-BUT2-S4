@@ -10,7 +10,7 @@
 <body>
     <header class="navbar">
         <div class="navbar-left">
-            <img src="/Model/Accueil/LPS1.0.png" alt="Logo" class="logo"/>
+            <img src="../../Ressources/LPS 1.0.png" alt="Logo" class="logo"/>
             <span class="app-name">Le Petit Stage</span>
         </div>
 

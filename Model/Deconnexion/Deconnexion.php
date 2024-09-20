@@ -3,7 +3,7 @@ session_start();
 
 $_SESSION = array();
 
-
+/* Efface les données de la session */
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(session_name(), '', time() - 42000,
@@ -26,7 +26,7 @@ session_destroy();
 <body>
 <nav class="navbar">
 <div class="navbar-left">
-    <img src="/Model/Accueil/LPS1.0.png" alt="Logo" class="logo"/>
+    <img src="../../Ressources/LPS 1.0.png" alt="Logo" class="logo"/>
     <span class="app-name">Le Petit Stage</span>
 </div>
 </nav>
