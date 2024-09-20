@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </label>
     </div>
 </nav>
-
+<article>
 <!-- Main Content -->
 <div class="main-content">
     <h1 class="main-heading">Vous êtes un étudiant en stage à UPHF?<br> Nous avons la solution!</h1>
@@ -88,6 +88,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p style="font-size: large"><b>ou</b></p>
         <button class="secondary-button"><a class="login-link" href="../AccountCreation/AccountCreation.php">S’enregistrer</a></button>
     </div>
-</div>
+</div></article>
+<footer class="PiedDePage">
+    <img src="../../Ressources/Logo_UPHF.png" alt="Logo uphf" width="10%">
+    <a href="../Redirection/Redirection.php">Informations</a>
+    <a href="../Redirection/Redirection.php">A propos</a>
+</footer>
 </body>
 </html>
