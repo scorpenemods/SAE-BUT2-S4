@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($db->authenticateUser($username, $password)) {
         // Successful login
         $_SESSION['user'] = $username;
-        header('Location: /SAE-BUT2-1.1/Model/Login/Login.php');
+        header('Location: /../Model/Login/Login.php');
         exit;
     } else {
         // Failed login
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="button-group">
         <p style="font-size: large"><b>ou</b></p>
-        <button class="secondary-button"><a class="login-link" href="/Model/AccountCreation/AccountCreation.php">S’enregistrer</a></button>
+        <button class="secondary-button"><a class="login-link" href="../AccountCreation/AccountCreation.php">S’enregistrer</a></button>
     </div>
 </div>
 </body>

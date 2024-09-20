@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="/Model/DefaultStyles/styles.css">
+    <link rel="stylesheet" href="../DefaultStyles/styles.css">
 </head>
 <body>
     <header class="navbar">
