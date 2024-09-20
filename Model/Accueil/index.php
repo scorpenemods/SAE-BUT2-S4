@@ -1,27 +1,23 @@
 <?php
-global $db;
-
-require_once '../../Class/DataBase.php' ;
-include_once '../../Service/DB.php';
-
+// index.php
+require '../../Class/Database.php';
 session_start();
-
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Authenticate user
+    $db = new Database();
+
     if ($db->authenticateUser($username, $password)) {
-        echo "Connexion réussie !";
-        // Store session data and redirect
+        // Successful login
         $_SESSION['user'] = $username;
         header('Location: /SAE-BUT2-1.1/Model/Login/Login.php');
         exit;
     } else {
-        echo "Échec de la connexion. Vérifiez vos identifiants.";
-
+        // Failed login
+        $error = "Échec de la connexion. Vérifiez vos identifiants.";
     }
 }
 ?>
