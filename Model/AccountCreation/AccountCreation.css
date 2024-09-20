@@ -199,49 +199,113 @@ header .navbar-right .hide-list {
     visibility: hidden;
     opacity: 0;
 }
-
-/* Style du corps de la page */
-section {
-    width: 80%;
-    margin-top: 20%;
-}
-section nav{
+/* Basic styles for body */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    flex-direction: column;
+    min-height: 100vh;
 }
-section span{
-    cursor: pointer;
-    border: solid 2px;
+
+/* Headers  */
+h1, h2, h3, h4, h5, h6 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+/* Links */
+a {
+    text-decoration: none;
+    color: #3498db;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #1abc9c;
+}
+
+/* Containers with content */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    padding-top: 30%;
+}
+
+.main-content {
+    padding: 40px 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 40px;
+}
+
+/* Styles for form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="text"], input[type="password"], input[type="email"], textarea {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
     width: 100%;
-    padding: 2%;
-    text-align: center;
-    box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
+    transition: border 0.3s ease;
 }
-section span:hover{
-    background-color: #f5f9fb;
+
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, textarea:focus {
+    border-color: #3498db;
+    outline: none;
 }
-section .Current{
-    border-bottom: transparent;
-    box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
+
+label {
+    font-weight: 500;
+    color: #555;
 }
-section div.Contenus .Contenu {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
+
+/* Styles for buttons */
+button {
+    padding: 12px 20px;
+    background-color: #3498db;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
-section div.Contenus .Visible {
-    height: 270px;
-    display: block;
-    unicode-bidi: isolate;
-    z-index: 15;
-    right: 0;
-    visibility: visible;
-    opacity: 1;
-    border: solid 2px;
-    border-top: transparent;
-    padding: 2%;
-    box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button.secondary {
+    background-color: #7f8c8d;
+}
+
+button.secondary:hover {
+    background-color: #636e72;
 }
 
 
@@ -263,4 +327,4 @@ footer {
 footer a{
     text-decoration: none;
     color : black;
-}Z
+}
