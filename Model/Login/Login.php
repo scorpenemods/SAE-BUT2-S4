@@ -9,7 +9,7 @@ session_start();
 
 
 // Connexion à la base de données
-
+$db = new Database();
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
