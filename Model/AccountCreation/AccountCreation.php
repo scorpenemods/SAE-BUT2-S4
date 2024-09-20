@@ -13,7 +13,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../DefaultStyles/styles.css">
+    <link rel="stylesheet" href="../AccountCreation/AccountCreation.css">
+    <script type="text/javascript" src="../Accueil/accueil.js"></script>
 </head>
 <body>
     <header class="navbar">

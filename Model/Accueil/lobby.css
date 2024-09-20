@@ -142,6 +142,7 @@ input:checked + .slider:before {
     transform: translateX(40px);
 }
 
+
 /* Main container */
 .main-content {
     display: flex;
