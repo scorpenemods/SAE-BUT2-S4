@@ -28,6 +28,8 @@ body {
 
 .container {
     display: flex;
+    width: 100%;
+    flex-direction: row;
 }
 
 .vertical-menu {
@@ -35,6 +37,9 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     overflow: hidden;
+    position: absolute;
+    left: 0;
+    margin-top: 11%;
 }
 
 .menu-item {
