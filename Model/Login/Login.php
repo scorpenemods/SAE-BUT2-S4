@@ -19,11 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Vérifier les informations de connexion
     try {
         #Secrétariat ou prof et tuteur
-        if ($db->authenticateUser($username, $password) &&  ($db->query("SELECT role FROM a_usersae where login = $username") == 1 ||  db->query("SELECT role FROM a_usersae where login = $username") == 2 )) {
+        if ($db->authenticateUser($username, $password) &&  () == 1 ||  == 2 )) {
+            if ($role == 1){
+                $_SESSION['user'] = new Secretariat();
+            }
             header("Location: ../Principal/PrincipalAdministration.php");
             exit();
         }
-        elseif ($db->authenticateUser($username, $password) && ( $db->query("SELECT role FROM a_usersae where login = $username") == 1 ||  db->query("SELECT role FROM a_usersae where login = $username") == 2 )){
+        elseif ($db->authenticateUser($username, $password) && ( == 3 )){
 
             header("Location: ../Principal/PrincipalStudent.php");
             exit();
