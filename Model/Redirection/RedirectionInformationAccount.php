@@ -15,7 +15,7 @@
 <script>
     // JavaScript redirige vers les informations du compte après 3 seconds
     setTimeout(function() {
-        window.location.href = "../InformationAccount/Information.php";
+        window.location.href = "../Parametre/Information.php";
     }, 3000);
 </script>
 </body>

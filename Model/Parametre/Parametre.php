@@ -9,7 +9,7 @@
 <body>
 <div class="container">
     <div class="vertical-menu">
-        <div class="menu-item" onclick="toggleMenu('account-info', '../InformationAccount/Information.php')">
+        <div class="menu-item" onclick="toggleMenu('account-info', './Information.php')">
             <span>Information du compte</span>
             <span class="arrow">&#9660;</span>
         </div>

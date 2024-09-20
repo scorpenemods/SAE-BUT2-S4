@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Informations du compte</title>
     <link rel="stylesheet" href="Information.css">
-    <script type="text/javascript" src="./Information.js"></script>
+    <script type="text/javascript" src="Information.js"></script>
 </head>
 <body>
     <header class="navbar">
@@ -34,7 +34,7 @@
             </label>
             <button class="mainbtn" onclick="turn()"><img src="../../Ressources/Param.png"></button>
             <div class="hide-list">
-                <a href="../Parametre/Parametre.php">Information</a>
+                <a href="Parametre.php">Information</a>
                 <a href="../Deconnexion/Deconnexion.php">Deconnexion</a>
             </div>
         </div>
