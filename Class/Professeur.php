@@ -1,6 +1,6 @@
 <?php
 
-
+require_once (Personne::class);
 class Professeur extends Personne
 {
     private array $lstEtudiant;

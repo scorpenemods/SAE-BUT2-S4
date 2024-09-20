@@ -1,5 +1,5 @@
 <?php
-
+require_once (Personne::class);
 
 class Etudiant extends Personne
 {
