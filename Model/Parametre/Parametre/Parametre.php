@@ -9,7 +9,7 @@
 </head>
     <header class="navbar">
         <div class="navbar-left">
-            <img src="/Model/Accueil/LPS1.0.png" alt="Logo" class="logo"/>
+            <img src="../../../Ressources/LPS 1.0.png" alt="Logo" class="logo"/>
             <span class="app-name">Le Petit Stage</span>
         </div>
 
@@ -47,6 +47,10 @@
         </div>
         <div class="menu-item" onclick="toggleMenu('preferences', '../Preference/Preference.php')">
             <span>Modifier ses préférences</span>
+            <span class="arrow">&#9660;</span>
+        </div>
+        <div class="menu-item" onclick="window.location.href='../../Deconnexion/Deconnexion.php'">
+            <span>Déconnexion</span>
             <span class="arrow">&#9660;</span>
         </div>
     </div>

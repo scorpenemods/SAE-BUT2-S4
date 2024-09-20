@@ -1,4 +1,11 @@
 body {
+    background: var(--background-gradient);
+    animation: lightGradientAnimation 15s ease infinite; /* fluid anim */
+    background-size: 200% 200%;
+    transition: background 1s ease, color 1s ease;
+    color: var(--text-color); /* Font color */
+}
+article{
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
@@ -8,11 +15,6 @@ body {
     align-items: center;
     justify-content: center;
     height: 100%;
-    background: var(--background-gradient);
-    animation: lightGradientAnimation 15s ease infinite; /* fluid anim */
-    background-size: 200% 200%;
-    transition: background 1s ease, color 1s ease;
-    color: var(--text-color); /* Font color */
 }
 
 /* Default Light theme */
@@ -142,6 +144,7 @@ input:checked + .slider:before {
     transform: translateX(40px);
 }
 
+
 /* Main container */
 .main-content {
     display: flex;
@@ -224,6 +227,19 @@ a:hover{
 .secondary-button:hover {
     transform: scale(1.1);
     box-shadow: 0 0 20px rgba(0, 102, 204, 0.5);
+}
+
+footer {
+    background-color: #2c3e50;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: auto;
+}
+
+footer a {
+    color: #fff;
+    margin-left: 15px;
 }
 
 /* Background animation */
