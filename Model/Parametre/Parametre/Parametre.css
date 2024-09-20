@@ -222,12 +222,12 @@ header .navbar-right .hide-list {
 
 .vertical-menu {
     width: 200px;
-    border: 1px solid #ccc;
     border-radius: 5px;
     overflow: hidden;
-    position: absolute;
-    margin-top: 7%;
-    left: 0;
+    padding-top: 7%;
+    position: relative;
+    top: 0;
+    background-color: #ecf0f1;
 }
 
 .menu-item {
@@ -275,14 +275,13 @@ footer {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    bottom: 0;
-    position: relative;
     position: absolute;
-    bottom: 0;
+    bottom: -20vh;
     width: 100%;
     padding-bottom: 1%;
 }
 footer a{
     text-decoration: none;
     color : black;
+    background-color: #ecf0f1;
 }
