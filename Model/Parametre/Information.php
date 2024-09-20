@@ -13,7 +13,7 @@
             <img src="/Model/Accueil/LPS1.0.png" alt="Logo" class="logo"/>
             <span class="app-name">Le Petit Stage</span>
         </div>
-
+d
         <div class="navbar-right">
             <p>Lucien Newerkauswitchz</p>
             <!-- Language Switch -->

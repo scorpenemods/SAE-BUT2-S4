@@ -1,19 +1,11 @@
 <?php
+global $db;
+/*
 require '../../Class/Database.php' ;
-
 include '../../Service/DB.php';
-
-
+*/
 session_start();
-// Test de la connexion à la base de données
-try {
-    $db = new Database("141.94.245.139", "s3081_BDD_Barkhane", "u3081_erRWAWL7zt", "ODyKebC@rSeyavay2Olz4!K!");
-    echo "Connexion à la base de données réussie";
-} catch (Exception $e) {
-    echo "Erreur lors de la connexion à la base de données : " . $e->getMessage();
-}
-// Instanciation de la base de données
-$db = new Database("141.94.245.139", "s3081_BDD_Barkhane", "u3081_erRWAWL7zt", "ODyKebC@rSeyavay2Olz4!K!");
+
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -29,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     } else {
         echo "Échec de la connexion. Vérifiez vos identifiants.";
+
     }
 }
 ?>
@@ -89,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="password">Mot de passe :</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button class="primary-button" ><a>Se connecter</a></button>
+            <button class="primary-button" ><a class="login-link">Se connecter</a></button>
             <p>Un problème pour se connecter ?</p>
             <a href="../Parametre/Parametre.php">Changer le mot de passe</a>
         </form>
@@ -97,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="button-group">
         <p style="font-size: large"><b>ou</b></p>
-        <button class="secondary-button"><a href="/Model/AccountCreation/AccountCreation.php">S’enregistrer</a></button>
+        <button class="secondary-button"><a class="login-link" href="/Model/AccountCreation/AccountCreation.php">S’enregistrer</a></button>
     </div>
 </div>
 </body>

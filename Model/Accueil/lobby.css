@@ -7,7 +7,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 100%;
     background: var(--background-gradient);
     animation: lightGradientAnimation 15s ease infinite; /* fluid anim */
     background-size: 200% 200%;
@@ -17,7 +17,7 @@ body {
 
 /* Default Light theme */
 :root {
-    --background-gradient: linear-gradient(120deg, #ffffff, #f5f5f5, #eaeaea);
+    --background-gradient: linear-gradient(180deg,  #33ccff, #ffffff, #00c6ff);
     --text-color: #333;
     --container-bg: rgba(255, 255, 255, 0.9);
     --text-gradient: #005c97, #00c6ff;
@@ -151,7 +151,7 @@ input:checked + .slider:before {
     z-index: 1;
     padding: 5%;
     max-width: 800px;
-    margin-top: 25%; /* For Fixed navbar */
+    margin-top: 15%; /* For Fixed navbar */
     margin-bottom: 5%;
     background: var(--container-bg); /* dynamic background */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -178,6 +178,16 @@ input:checked + .slider:before {
     color: var(--text-color); /* dynamic color changes */
 }
 
+a {
+    /* color: var(--text-color);dynamic color changes */
+    color: #88e67b;
+    transition: color 0.5s ease;
+}
+a:hover{
+    text-decoration: none;
+    color: #ffce0b;
+    transition: color 0.5s ease;
+}
 /* Icons */
 .button-group {
     display: flex;
@@ -203,6 +213,11 @@ input:checked + .slider:before {
 .secondary-button {
     background: linear-gradient(90deg, #b6ecac, #33ccff);
     color: #333;
+}
+
+.login-link{
+    text-decoration: none;
+    color: whitesmoke;
 }
 
 .primary-button:hover,
