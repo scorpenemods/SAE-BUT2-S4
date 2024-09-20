@@ -1,9 +1,9 @@
 <?php
 global $db;
-/*
-require '../../Class/Database.php' ;
-include '../../Service/DB.php';
-*/
+
+require_once '../../Class/DataBase.php' ;
+include_once '../../Service/DB.php';
+
 session_start();
 
 

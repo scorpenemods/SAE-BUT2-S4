@@ -21,8 +21,8 @@ class Database {
         try {
             $stmt = $this->pdo->prepare("
             SELECT p.password_hash 
-            FROM user u 
-            JOIN password p ON u.user_id = p.user_id 
+            FROM a_usersae u 
+            JOIN a_passwordsae p ON u.user_id = p.user_id 
             WHERE u.login = :login
         ");
             $stmt->execute([':login' => $username]);
