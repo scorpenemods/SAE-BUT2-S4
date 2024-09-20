@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: ../Principal/PrincipalAdministration.php");
             exit();
         }
-        elseif ($db->authenticateUser($username, $password) && ( db->query("SELECT role FROM a_usersae where login = $username") == 1 ||  db->query("SELECT role FROM a_usersae where login = $username") == 2 )){
+        elseif ($db->authenticateUser($username, $password) && ( $db->query("SELECT role FROM a_usersae where login = $username") == 1 ||  db->query("SELECT role FROM a_usersae where login = $username") == 2 )){
 
             header("Location: ../Principal/PrincipalStudent.php");
             exit();
