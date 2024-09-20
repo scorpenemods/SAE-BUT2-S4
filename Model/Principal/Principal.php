@@ -34,7 +34,7 @@
             </label>
             <button class="mainbtn" onclick="turn()"><img src="../../Ressources/Param.png"></button>
             <div class="hide-list">
-                <a href="../Parametre/Information.php">Information</a>
+                <a href="../Parametre/Parametre/Parametre.php">Information</a>
                 <a href="../Deconnexion/Deconnexion.php">Deconnexion</a>
             </div>
         </div>

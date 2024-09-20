@@ -43,3 +43,15 @@ function toggleTheme() {
         console.log('Light theme enabled');
     }
 }
+
+// Function to toggle the menu content
+function toggleMenu(id, url) {
+    const mainContent = document.getElementById('main-content');
+    // Make a request to fetch the content from the specified URL
+    fetch(url)
+        .then(response => response.text())
+        .then(data => {
+            // Update the main content with the fetched data
+            mainContent.innerHTML = data;
+        });
+}
