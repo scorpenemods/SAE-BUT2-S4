@@ -49,6 +49,10 @@
             <span>Modifier ses préférences</span>
             <span class="arrow">&#9660;</span>
         </div>
+        <div class="menu-item" onclick="window.location.href='../../Deconnexion/Deconnexion.php'">
+            <span>Déconnexion</span>
+            <span class="arrow">&#9660;</span>
+        </div>
     </div>
     <div id="main-content" class="main-content">
 
