@@ -52,4 +52,8 @@ class Database {
         $info = $this->pdo->query("SELECT * FROM a_usersae where login = $username");
         return $info->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function execute($text) {
+        return $this->pdo->exec($this->prepared($text));
+    }
 }

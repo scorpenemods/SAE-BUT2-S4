@@ -9,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     $db = new Database();
-    $_POST['role'] = $db->query('select role from a_usersae where username = $username');
+
+    $_POST['role'] = $db->execute('select role from a_usersae where username = $username');
 
     try {
         if ($db->authenticateUser($username, $password)) {
