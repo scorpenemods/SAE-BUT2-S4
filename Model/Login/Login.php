@@ -15,18 +15,16 @@ $db = new Database();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
-
+    $role = $_POST['role'];
     // Vérifier les informations de connexion
     try {
         #Secrétariat ou prof et tuteur
-        if ($db->authenticateUser($username, $password) &&  () == 1 ||  == 2 )) {
-            if ($role == 1){
-                $_SESSION['user'] = new Secretariat();
-            }
+        if ($db->authenticateUser($username, $password) &&  ($role) == 1 || ($role == 2 )) {
+
             header("Location: ../Principal/PrincipalAdministration.php");
             exit();
         }
-        elseif ($db->authenticateUser($username, $password) && ( == 3 )){
+        elseif ($db->authenticateUser($username, $password) && ($role == 3 )){
 
             header("Location: ../Principal/PrincipalStudent.php");
             exit();

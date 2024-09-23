@@ -9,15 +9,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     $db = new Database();
+    $_POST['role'] = $db->query('select role from a_usersae where username = $username');
 
-    if ($db->authenticateUser($username, $password)) {
-        // Successful login
-        $_SESSION['user'] = $username;
-        header('Location: /../Model/Login/Login.php');
-        exit;
-    } else {
-        // Failed login
-        $error = "Échec de la connexion. Vérifiez vos identifiants.";
+    try {
+        if ($db->authenticateUser($username, $password)) {
+            // Successful login
+            $_SESSION['user'] = $username;
+            header('Location: /../Model/Login/Login.php');
+            exit;
+        } else {
+            // Failed login
+            $error = "Échec de la connexion. Vérifiez vos identifiants.";
+        }
+    } catch (Exception $e) {
+
     }
 }
 ?>
