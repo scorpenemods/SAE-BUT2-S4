@@ -54,6 +54,7 @@ class Database {
     }
 
     public function execute($text) {
-        return $this->pdo->exec($this->prepared($text));
+        $a = $this->pdo->prepare($text);
+        return $this->pdo->exec($a);
     }
 }
