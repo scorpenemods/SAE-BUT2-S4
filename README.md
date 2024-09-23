@@ -1,8 +1,6 @@
 # SAE-BUT2
 
-# Boulet Rémy
-# Lemaire Noah
-# Bourgeois Julien
-# Newerkowitsch Lucien
-# Hethuin Marion 
-# Lohvinov Valerii
+## WARNIER Lorenzo 
+## MASSY Thibault
+## TERRIER Margot
+## TCHIMOU Acka
