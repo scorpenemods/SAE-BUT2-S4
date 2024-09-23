@@ -1,6 +1,6 @@
 # SAE-BUT2
 
 ## WARNIER Lorenzo 
-## MASSY Thibault
+## MASSY Thibaut
 ## TERRIER Margot
 ## TCHIMOU Acka
