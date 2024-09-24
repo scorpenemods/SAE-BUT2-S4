@@ -1,5 +1,8 @@
 <?php
 
+
+
+
 class Database {
     private $connection;
 
@@ -9,7 +12,6 @@ class Database {
 
     private function connect() {
         try {
-            // Remplacez 'require_once' par le chemin correct vers votre fichier 'config.php'
             require_once '../../Service/config.php';
             $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -71,6 +73,39 @@ class Database {
             return false;
         }
     }
+
+    public function getPersonByUsername($username) {
+        // Requête SQL pour récupérer les données d'une personne par son username
+        $sql = "SELECT nom, prenom, telephone, login, role, activite, email, user_id FROM a_usersae WHERE login = :login";
+
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':login', $username, PDO::PARAM_STR); // Lie le username à la requête
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                require_once "Personne.php";
+                // Créer une instance de Personne avec les données récupérées
+                return new Personne(
+                    $result['nom'],
+                    $result['prenom'],
+                    $result['telephone'],
+                    $result['login'],
+                    $result['role'],
+                    $result['activite'],
+                    $result['email'],
+                    $result['user_id'] // Utiliser user_id récupéré de la base de données
+                );
+            }
+            return null; // Retourne null si aucun utilisateur n'est trouvé
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return null;
+        }
+    }
+
+
 
     public function closeConnection() {
         $this->connection = null;

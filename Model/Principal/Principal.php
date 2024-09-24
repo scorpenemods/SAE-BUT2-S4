@@ -1,3 +1,26 @@
+<?php
+session_start(); // Start the session at the beginning of the script
+
+require_once "../../Class/Database.php"; // Assuming your Personne class is here, or included in Database.php
+require_once "../../Class/Personne.php"; // Ensure Personne class is correctly included
+
+// Initialize user name as Guest in case no user is logged in
+$userName = "Guest";
+
+// Check if the user is logged in and retrieve their name
+if (isset($_SESSION['user'])) {
+    $person = unserialize($_SESSION['user']);
+    if ($person instanceof Personne) { // Check if the unserialized object is indeed a Personne object
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom()); // Safely encode output to prevent XSS
+    }
+} else {
+    // If no user is found in session, redirect to the login page
+    header("Location: ../Deconnexion/Deconnexion.php");
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -15,7 +38,7 @@
     </div>
 
     <div class="navbar-right">
-        <p>Lucien Newerkauswitchz</p>
+        <p><?php echo $userName; ?></p> <!-- Display the dynamically retrieved user name -->
         <!-- Language Switch -->
         <label class="switch">
             <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
