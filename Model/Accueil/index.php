@@ -1,28 +1,23 @@
 <?php
-global $db;
+require '../../Class/Database.php';
 
-require_once '../../Class/DataBase.php' ;
-include_once '../../Service/DB.php';
+$database = new Database();
+$errorMessage = '';
 
-session_start();
-
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Vérifier si le formulaire a été soumis
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $isValid = $database->verifyLogin($username, $password);
 
-    // Authenticate user
-    if ($db->authenticateUser($username, $password)) {
-        echo "Connexion réussie !";
-        // Store session data and redirect
-        $_SESSION['user'] = $username;
-        header('Location: /SAE-BUT2-1.1/Model/Login/Login.php');
-        exit;
+    if ($isValid) {
+        header("Location: ../Redirection/Redirection.php");
+        exit();
     } else {
-        echo "Échec de la connexion. Vérifiez vos identifiants.";
-
+        $errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
     }
+
+    $database->closeConnection();
 }
 ?>
 
@@ -38,33 +33,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="accueil.js" defer></script>
 </head>
 <body>
-<!-- Navbar -->
+
+
 <nav class="navbar">
     <div class="navbar-left">
-        <img src="/Model/Accueil/LPS1.0.png" alt="Logo" class="logo"/>
+        <img src="../../Ressources/LPS 1.0.png" alt="Logo" class="logo"/>
         <span class="app-name">Le Petit Stage</span>
     </div>
     <div class="navbar-right">
-        <!-- Language Switch -->
         <label class="switch">
             <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
             <span class="slider round">
-                <span class="switch-sticker">🇫🇷</span> <!-- Sticker Français -->
-                <span class="switch-sticker switch-sticker-right">🇬🇧</span> <!-- Sticker English -->
+                <span class="switch-sticker">🇫🇷</span>
+                <span class="switch-sticker switch-sticker-right">🇬🇧</span>
             </span>
         </label>
-        <!-- Theme Switch -->
         <label class="switch">
             <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
             <span class="slider round">
                 <span class="switch-sticker">🌙</span> <!-- Sticker Dark Mode -->
-                <span class="switch-sticker switch-sticker-right">☀️</span> <!-- Sticker Light Mode -->
+                <span class="switch-sticker switch-sticker-right">☀️</span>
             </span>
         </label>
     </div>
 </nav>
-
-<!-- Main Content -->
+<script>
+    window.onload = function() {
+        var errorMessage = <?php echo json_encode($errorMessage); ?>;
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+    };
+</script>
+<article>
 <div class="main-content">
     <h1 class="main-heading">Vous êtes un étudiant en stage à UPHF?<br> Nous avons la solution!</h1>
     <p class="sub-text">
@@ -84,14 +85,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <button class="primary-button" ><a class="login-link">Se connecter</a></button>
             <p>Un problème pour se connecter ?</p>
-            <a href="../Parametre/Parametre.php">Changer le mot de passe</a>
+            <a href="../Parametre/Parametre/Parametre.php">Changer le mot de passe</a>
         </form>
     </div>
 
     <div class="button-group">
         <p style="font-size: large"><b>ou</b></p>
-        <button class="secondary-button"><a class="login-link" href="/Model/AccountCreation/AccountCreation.php">S’enregistrer</a></button>
+        <button class="secondary-button"><a class="login-link" href="../AccountCreation/AccountCreation.php">S’enregistrer</a></button>
     </div>
-</div>
+</div></article>
+<footer class="PiedDePage">
+    <img src="../../Ressources/Logo_UPHF.png" alt="Logo uphf" width="10%">
+    <a href="../Redirection/Redirection.php">Informations</a>
+    <a href="../Redirection/Redirection.php">A propos</a>
+</footer>
 </body>
 </html>

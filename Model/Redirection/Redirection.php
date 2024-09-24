@@ -15,7 +15,7 @@
 <script>
     // JavaScript redirige vers l'index après 3 seconds
     setTimeout(function() {
-        window.location.href = "../Accueil/index.php";
+        window.location.href = "../Principal/Principal.php";
     }, 3000);
 </script>
 </body>

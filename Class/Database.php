@@ -1,60 +1,83 @@
 <?php
 
+const DB_HOST = '141.94.245.139';
+const DB_NAME = 's3081_BDD_Barkhane';
+const DB_USER = 'u3081_erRWAWL7zt';
+const DB_PASSWORD = 'ODyKebC@rSeyavay2Olz4!K!';
+
 
 class Database {
-    private PDO $pdo;
+    private $connection;
 
     public function __construct() {
-        // Database connection details
-        $host = '141.94.245.139';
-        $dbname = 's3081_BDD_Barkhane';
-        $username = 'u3081_erRWAWL7zt';
-        $password = 'ODyKebC@rSeyavay2Olz4!K!';
-        $charset = 'utf8';
+        $this->connect();
+    }
 
-        // Data Source Name (DSN)
-        $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
-
+    private function connect() {
         try {
-            // Create a PDO instance (connect to the database)
-            $this->pdo = new PDO($dsn, $username, $password);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            die("Erreur de connexion à la base de données : " . $e->getMessage());
+            echo "Connection error: " . $e->getMessage();
+            exit;
         }
     }
 
-    // Function to authenticate the user
-    public function authenticateUser($username, $password): bool
-    {
-        try {
-            $stmt = $this->pdo->prepare("
-                SELECT p.passwordsae_hash 
-                FROM a_usersae u 
-                JOIN a_passwordsae p ON u.user_id = p.user_id 
-                WHERE u.login = :login
-            ");
-            $stmt->execute([':login' => $username]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    public function verifyLogin($login, $password) {
+        $sql = "SELECT a_passwordsae.passwordsae_hash FROM a_usersae
+                JOIN a_passwordsae ON a_usersae.user_id = a_passwordsae.user_id
+                WHERE a_usersae.login = :login";
 
-            // Verify the hashed password
-            if ($user && password_verify($password, $user['passwordsae_hash'])) {
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':login', $login);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result && password_verify($password, $result['passwordsae_hash'])) {
                 return true;
             }
-
             return false;
         } catch (PDOException $e) {
-            throw new Exception("Erreur lors de l'authentification : " . $e->getMessage());
+            echo "Error: " . $e->getMessage();
+            return false;
         }
     }
 
-    public function getUserByLogin($username) {
-        $info = $this->pdo->query("SELECT * FROM a_usersae where login = $username");
-        return $info->fetch(PDO::FETCH_ASSOC);
+    public function addUser($login, $password, $email, $telephone, $prenom, $activite, $role, $nom) {
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+        $sqlUser = "INSERT INTO a_usersae (login, email, telephone, prenom, activite, role, nom) VALUES (:login, :email, :telephone, :prenom, :activite, :role, :nom)";
+
+        try {
+            $stmt = $this->connection->prepare($sqlUser);
+            $stmt->execute([
+                ':login' => $login,
+                ':email' => $email,
+                ':telephone' => $telephone,
+                ':prenom' => $prenom,
+                ':activite' => $activite,
+                ':role' => $role,
+                ':nom' => $nom
+            ]);
+            $userId = $this->connection->lastInsertId();
+
+            $sqlPassword = "INSERT INTO a_passwordsae (user_id, passwordsae_hash) VALUES (:user_id, :passwordsae_hash)";
+            $stmt = $this->connection->prepare($sqlPassword);
+            $stmt->execute([
+                ':user_id' => $userId,
+                ':passwordsae_hash' => $passwordHash
+            ]);
+
+            return true;
+        } catch (PDOException $e) {
+            echo "Insert error: " . $e->getMessage();
+            return false;
+        }
     }
 
-    public function execute($text) {
-        $a = $this->pdo->prepare($text);
-        return $this->pdo->exec($a);
+    public function closeConnection() {
+        $this->connection = null;
     }
 }
+
