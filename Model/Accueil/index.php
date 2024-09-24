@@ -1,28 +1,26 @@
 <?php
-// index.php
-require '../../Class/Database.php';
+global $db;
+
+require_once '../../Class/DataBase.php' ;
+include_once '../../Service/DB.php';
+
 session_start();
+
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $db = new Database();
-
-    $_POST['role'] = $db->execute('select role from a_usersae where username = $username');
-
-    try {
-        if ($db->authenticateUser($username, $password)) {
-            // Successful login
-            $_SESSION['user'] = $username;
-            header('Location: /../Model/Login/Login.php');
-            exit;
-        } else {
-            // Failed login
-            $error = "Échec de la connexion. Vérifiez vos identifiants.";
-        }
-    } catch (Exception $e) {
+    // Authenticate user
+    if ($db->authenticateUser($username, $password)) {
+        echo "Connexion réussie !";
+        // Store session data and redirect
+        $_SESSION['user'] = $username;
+        header('Location: /SAE-BUT2-1.1/Model/Login/Login.php');
+        exit;
+    } else {
+        echo "Échec de la connexion. Vérifiez vos identifiants.";
 
     }
 }
@@ -43,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- Navbar -->
 <nav class="navbar">
     <div class="navbar-left">
-        <img src="../../Ressources/LPS 1.0.png" alt="Logo" class="logo"/>
+        <img src="/Model/Accueil/LPS1.0.png" alt="Logo" class="logo"/>
         <span class="app-name">Le Petit Stage</span>
     </div>
     <div class="navbar-right">
@@ -65,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </label>
     </div>
 </nav>
-<article>
+
 <!-- Main Content -->
 <div class="main-content">
     <h1 class="main-heading">Vous êtes un étudiant en stage à UPHF?<br> Nous avons la solution!</h1>
@@ -86,19 +84,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <button class="primary-button" ><a class="login-link">Se connecter</a></button>
             <p>Un problème pour se connecter ?</p>
-            <a href="../Parametre/Parametre/Parametre.php">Changer le mot de passe</a>
+            <a href="../Parametre/Parametre.php">Changer le mot de passe</a>
         </form>
     </div>
 
     <div class="button-group">
         <p style="font-size: large"><b>ou</b></p>
-        <button class="secondary-button"><a class="login-link" href="../AccountCreation/AccountCreation.php">S’enregistrer</a></button>
+        <button class="secondary-button"><a class="login-link" href="/Model/AccountCreation/AccountCreation.php">S’enregistrer</a></button>
     </div>
-</div></article>
-<footer class="PiedDePage">
-    <img src="../../Ressources/Logo_UPHF.png" alt="Logo uphf" width="10%">
-    <a href="../Redirection/Redirection.php">Informations</a>
-    <a href="../Redirection/Redirection.php">A propos</a>
-</footer>
+</div>
 </body>
 </html>
