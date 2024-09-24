@@ -85,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <button class="primary-button" ><a class="login-link">Se connecter</a></button>
             <p>Un problème pour se connecter ?</p>
-            <a href="../Parametre/Parametre/Parametre.php">Changer le mot de passe</a>
+            <a href="../ForgotPassword/ForgotPasswordMail.php">Changer le mot de passe</a>
         </form>
     </div>
 
