@@ -60,7 +60,7 @@ if (isset($_SESSION['user'])) {
             <img src="../../Ressources/Param.png" alt="Settings">
         </button>
         <div class="hide-list" id="settingsMenu">
-            <a href="../Parametre/Information/Information.php">Information</a>
+            <a href="../Parametre/Parametre/Parametre.php">Information</a>
             <a href="../Deconnexion/Deconnexion.php">Deconnexion</a>
         </div>
     </div>
