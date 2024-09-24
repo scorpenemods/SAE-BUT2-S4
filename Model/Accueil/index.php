@@ -1,30 +1,23 @@
 <?php
-// index.php
 require '../../Class/Database.php';
-session_start();
 
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$database = new Database();
+$errorMessage = '';
+
+// Vérifier si le formulaire a été soumis
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $isValid = $database->verifyLogin($username, $password);
 
-    $db = new Database();
-
-    $_POST['role'] = $db->execute('select role from a_usersae where username = $username');
-
-    try {
-        if ($db->authenticateUser($username, $password)) {
-            // Successful login
-            $_SESSION['user'] = $username;
-            header('Location: /../Model/Login/Login.php');
-            exit;
-        } else {
-            // Failed login
-            $error = "Échec de la connexion. Vérifiez vos identifiants.";
-        }
-    } catch (Exception $e) {
-
+    if ($isValid) {
+        header("Location: ../Redirection/Redirection.php");
+        exit();
+    } else {
+        $errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
     }
+
+    $database->closeConnection();
 }
 ?>
 
@@ -40,33 +33,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="accueil.js" defer></script>
 </head>
 <body>
-<!-- Navbar -->
+
+
 <nav class="navbar">
     <div class="navbar-left">
         <img src="../../Ressources/LPS 1.0.png" alt="Logo" class="logo"/>
         <span class="app-name">Le Petit Stage</span>
     </div>
     <div class="navbar-right">
-        <!-- Language Switch -->
         <label class="switch">
             <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
             <span class="slider round">
-                <span class="switch-sticker">🇫🇷</span> <!-- Sticker Français -->
-                <span class="switch-sticker switch-sticker-right">🇬🇧</span> <!-- Sticker English -->
+                <span class="switch-sticker">🇫🇷</span>
+                <span class="switch-sticker switch-sticker-right">🇬🇧</span>
             </span>
         </label>
-        <!-- Theme Switch -->
         <label class="switch">
             <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
             <span class="slider round">
                 <span class="switch-sticker">🌙</span> <!-- Sticker Dark Mode -->
-                <span class="switch-sticker switch-sticker-right">☀️</span> <!-- Sticker Light Mode -->
+                <span class="switch-sticker switch-sticker-right">☀️</span>
             </span>
         </label>
     </div>
 </nav>
+<script>
+    window.onload = function() {
+        var errorMessage = <?php echo json_encode($errorMessage); ?>;
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+    };
+</script>
 <article>
-<!-- Main Content -->
 <div class="main-content">
     <h1 class="main-heading">Vous êtes un étudiant en stage à UPHF?<br> Nous avons la solution!</h1>
     <p class="sub-text">
