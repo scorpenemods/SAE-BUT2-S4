@@ -1,3 +1,31 @@
+<?php
+
+session_start(); // Start the session
+
+require_once "../../../Class/Personne.php"; // Make sure the Personne class is included
+
+// Check if the user is logged in
+if (isset($_SESSION['user'])) {
+    $person = unserialize($_SESSION['user']);
+    if ($person instanceof Personne) { // Check if the unserialized object is a valid Personne object
+        // Retrieve user information
+        $userName = htmlspecialchars($person->getLogin());
+        $prenom = htmlspecialchars($person->getPrenom());
+        $nom = htmlspecialchars($person->getNom());
+        $email = htmlspecialchars($person->getEmail());
+        $telephone = htmlspecialchars($person->getTelephone());
+    } else {
+        // Invalid session, redirect to deconnexion
+        header("Location: ../Deconnexion/Deconnexion.php");
+        exit();
+    }
+} else {
+    // No user session found, redirect to deconnexion
+    header("Location: ../Deconnexion/Deconnexion.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,38 +36,37 @@
     <script type="text/javascript" src="./Parametre/Paremetre.js"></script>
 </head>
 <body>
-    <section class="compte-info">
-        <h2>Informations du compte</h2>
-        <table>
-            <tr>
-                <td>Compte :</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Prénom :</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Nom :</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Email :</td>
-                <td></td>
-                <td><a href="../../MailChange/MailChange.php"><button>Modifier adresse e-mail</button></a></td>
-            </tr>
-            <tr>
-                <td>Numéro de téléphone :</td>
-                <td></td>
-                <td><a href="../../ChangePhoneNumber/ChangePhoneNumber.php"><button>Modifier numéro de téléphone</button></a></td>
-            </tr>
-            <tr>
-                <td>Mot de passe :</td>
-                <td></td>
-                <td><a href="../../ForgotPassword/ForgotPasswordMail.php"><button>Modifier mot de passe</button></a></td>
-
-            </tr>
-        </table>
-    </section>
+<section class="compte-info">
+    <h2>Informations du compte</h2>
+    <table>
+        <tr>
+            <td>Compte :</td>
+            <td><?php echo $userName; ?></td> <!-- Display the username -->
+        </tr>
+        <tr>
+            <td>Prénom :</td>
+            <td><?php echo $prenom; ?></td> <!-- Display the first name -->
+        </tr>
+        <tr>
+            <td>Nom :</td>
+            <td><?php echo $nom; ?></td> <!-- Display the last name -->
+        </tr>
+        <tr>
+            <td>Email :</td>
+            <td><?php echo $email; ?></td> <!-- Display the email -->
+            <td><a href="../../MailChange/MailChange.php"><button>Modifier adresse e-mail</button></a></td>
+        </tr>
+        <tr>
+            <td>Numéro de téléphone :</td>
+            <td><?php echo $telephone; ?></td> <!-- Display the phone number -->
+            <td><a href="../../ChangePhoneNumber/ChangePhoneNumber.php"><button>Modifier numéro de téléphone</button></a></td>
+        </tr>
+        <tr>
+            <td>Mot de passe :</td>
+            <td>********</td> <!-- Password is not displayed -->
+            <td><a href="../../ForgotPassword/ForgotPasswordMail.php"><button>Modifier mot de passe</button></a></td>
+        </tr>
+    </table>
+</section>
 </body>
 </html>

@@ -1,8 +1,5 @@
 <?php
 
-use Couchbase\Role;
-
-include 'Service/DB.php';
 class Personne
 {
     private string $nom;
@@ -12,6 +9,7 @@ class Personne
     private string $role;
     private string $activite;
     private int $id;
+    private string $email;
 
     public function __construct($nom, $prenom, $telephone,$login, $role, $activite,$email,$id)
     {
@@ -61,16 +59,5 @@ class Personne
         return $this->email;
     }
 
-
-    #a tester avec la bdd
-  #  public function setPassword($password){
-   #     password_hash($password, PASSWORD_BCRYPT);
-    #    $pdo->prepare("UPDATE passwords SET password_hash =  WHERE (Select id from users where login = this->getNom() && email = this->getEmail()) = user_id;")->execute([]);
-
-    #}
-    #  public function setEmail($email){
-    #    $pdo->prepare("UPDATE users SET email = $email WHERE this->getId() = user_id ->execute([]);
-
-    #}
 
 }

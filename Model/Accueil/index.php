@@ -1,16 +1,20 @@
 <?php
+session_start();  // Start the session at the beginning
+
 require '../../Class/Database.php';
 
 $database = new Database();
 $errorMessage = '';
 
-// Vérifier si le formulaire a été soumis
+// Verify if the form has been submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
     $isValid = $database->verifyLogin($username, $password);
 
     if ($isValid) {
+        $person = $database->getPersonByUsername($username);
+        $_SESSION['user'] = serialize($person);  // Serialize the Personne object
         header("Location: ../Redirection/Redirection.php");
         exit();
     } else {
@@ -85,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <button class="primary-button" ><a class="login-link">Se connecter</a></button>
             <p>Un problème pour se connecter ?</p>
-            <a href="../Parametre/Parametre/Parametre.php">Changer le mot de passe</a>
+            <a href="../ForgotPassword/ForgotPasswordMail.php">Changer le mot de passe</a>
         </form>
     </div>
 
