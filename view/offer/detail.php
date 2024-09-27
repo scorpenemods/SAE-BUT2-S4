@@ -24,10 +24,12 @@ $offer = Offer::getById($offerId);
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Détails de l'offre - Le Petit Stage</title>
-        <link rel="stylesheet" href="/view/css/view.css">
+
+        <link rel="stylesheet" href="/view/css/detail.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     </head>
     <body>
         <?php include dirname(__FILE__) . '/../header.php'; ?>
@@ -58,7 +60,7 @@ $offer = Offer::getById($offerId);
                         <div class="detail-item">
                             <i class="fas fa-map-marker-alt"></i>
                             <span>
-                                <?php echo $offer->getLocation(); ?>
+                                <?php echo $offer->getAddress(); ?>
                             </span>
                         </div>
                         <div class="detail-item">

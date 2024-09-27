@@ -4,6 +4,8 @@ session_start();
 require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Media.php';
 require dirname(__FILE__) . '/../../models/Company.php';
+
+require dirname(__FILE__) . '/../../presenter/utils.php';
 ?>
 
 <!DOCTYPE html>
@@ -13,9 +15,9 @@ require dirname(__FILE__) . '/../../models/Company.php';
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Le Petit Stage - Advanced</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="/view/css/list.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
+        <link rel="stylesheet" href="/view/css/list.css">
 
     </head>
     <body>
@@ -54,8 +56,8 @@ require dirname(__FILE__) . '/../../models/Company.php';
                             echo "</div>";
                         echo "</div>";
                         echo "<div class='company-info'>";
-                            echo "<h3>" . $offer->getTitle() . "</h3>";
-                            echo "<p>" . $offer->getDescription() . "</p>";
+                            echo "<h3><a href='/view/offer/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
+                            echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
                             echo "<div class='company-meta'>";
                                 echo "<span>" . $offer->getCompany()->getName() . "</span>";
                                 echo "<span>" . $offer->getAddress() . "</span>";

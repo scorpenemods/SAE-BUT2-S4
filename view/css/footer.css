@@ -1,9 +1,8 @@
-/* Footer styles */
 footer {
     background-color: #fff;
     border-top: 1px solid #e5e7eb;
     padding: 2rem 0;
-    margin-top: 3rem;
+    margin-top: 5vh;
 }
 .footer-content {
     max-width: 1200px;
@@ -20,8 +19,8 @@ footer {
     gap: 0.5rem;
 }
 .footer-logo img {
-    width: 40px;
-    height: 40px;
+    width: 90px;
+    height: 65px;
 }
 .footer-links {
     display: flex;
