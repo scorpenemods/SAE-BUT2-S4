@@ -131,4 +131,40 @@ class Offer {
             date("Y-m-d H:i:s")
         );
     }
+
+    public function getRealDuration() {
+        $duration = $this->getDuration();
+
+        //années
+        $years = intdiv($duration, 365);
+        $remainingDays = $duration % 365;
+
+        //mois
+        $months = intdiv($remainingDays, 30);
+        $remainingDays = $remainingDays % 30;
+
+        //semaines
+        $weeks = intdiv($remainingDays, 7);
+        $days = $remainingDays % 7;
+
+        //on retourne la bonne chaine
+        $result = '';
+
+        if ($years > 0) {
+            $result .= $years . ' an' . ($years > 1 ? 's' : '') . ', ';
+        }
+        if ($months > 0) {
+            $result .= $months . ' mois, ';
+        }
+        if ($weeks > 0) {
+            $result .= $weeks . ' semaine' . ($weeks > 1 ? 's' : '') . ', ';
+        }
+        if ($days > 0) {
+            $result .= $days . ' jour' . ($days > 1 ? 's' : '');
+        }
+
+        return rtrim($result, ', ');
+    }
+
+
 }
