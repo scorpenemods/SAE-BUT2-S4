@@ -1,4 +1,5 @@
 <?php include dirname(__FILE__) . '/../header.php'; ?>
+
 <!DOCTYPE html>
 <html lang="fr">
     <head>
@@ -522,9 +523,7 @@
         </div>
     </div>
 
-    <?php
-    include "footer.php";
-    ?>
+    <?php include dirname(__FILE__) . '/../footer.php'; ?>
 
     <script>
         // Carousel functionality
@@ -604,3 +603,4 @@
     </script>
     </body>
 </html>
+

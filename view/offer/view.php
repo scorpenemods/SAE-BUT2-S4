@@ -1,4 +1,15 @@
-<?php include dirname(__FILE__) . '/../header.php'; ?>
+<?php
+include dirname(__FILE__) . '/../header.php';
+
+// get id from URL query string
+$offerId = $_GET['id'];
+if (!isset($offerId)) {
+    exit();
+}
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
     <head>
