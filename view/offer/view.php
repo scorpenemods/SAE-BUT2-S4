@@ -1,11 +1,13 @@
 <?php
+require dirname(__FILE__) . '/../../models/Offer.php';
+
 $offerId = $_GET['id'];
 if (!isset($offerId)) {
     exit();
 }
 
 //$offer = Offer::getById($offerId);
-$offer = new Offer(1, "developpeur web", "developpeur web pour faire un site de gestion d'offres de stage", "developpeur", 30, 300, true, "27-09-2024", "27-09-2024");
+$offer = new Offer(1, 1,new Company(1, "e", 1, "e", "", "", ""), "developpeur web", "developpeur web pour faire un site de gestion d'offres de stage", "developpeur", 30, 300, "true", true, "27-09-2024", "27-09-2024");
 ?>
 
 <!DOCTYPE html>

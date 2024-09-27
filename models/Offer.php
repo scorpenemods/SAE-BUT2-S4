@@ -8,13 +8,15 @@ class Offer {
     private string $description;
     private string $job;
     private int $duration;
+    private string $begin_date;
     private int $salary;
     private string $location;
+    private string $study_level;
     private bool $is_active;
     private string $created_at;
     private string $updated_at;
 
-    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, int $salary, string $location, bool $is_active, string $created_at, string $updated_at) {
+    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $location, string $study_level, bool $is_active, string $created_at, string $updated_at) {
         $this->id = $id;
         $this->company_id = $company_id;
         $this->company = $company;
@@ -22,8 +24,10 @@ class Offer {
         $this->description = $description;
         $this->job = $job;
         $this->duration = $duration;
+        $this->begin_date = $begin_date;
         $this->salary = $salary;
         $this->location = $location;
+        $this->study_level = $study_level;
         $this->is_active = $is_active;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
@@ -57,12 +61,20 @@ class Offer {
         return $this->duration;
     }
 
+    public function getBeginDate(): string {
+        return $this->begin_date;
+    }
+
     public function getSalary(): int {
         return $this->salary;
     }
 
     public function getLocation(): string {
         return $this->location;
+    }
+
+    public function getStudyLevel(): string {
+        return $this->study_level;
     }
 
     public function getIsActive(): bool {
@@ -150,11 +162,13 @@ class Offer {
             $result["description"],
             $result["job"],
             $result["duration"],
+            $result["begin_date"],
             $result["salary"],
             $result["location"],
+            $result["study_level"],
             $result["is_active"],
-            $result["created_at"],
-            $result["updated_at"]
+            date("Y-m-d H:i:s", strtotime($result["created_at"])),
+            date("Y-m-d H:i:s", strtotime($result["updated_at"]))
         );
     }
 
@@ -179,25 +193,27 @@ class Offer {
             }
 
             $offers[] = new Offer(
-                $row["id"],
-                $row["company_id"],
+                $result["id"],
+                $result["company_id"],
                 $company,
-                $row["title"],
-                $row["description"],
-                $row["job"],
-                $row["duration"],
-                $row["salary"],
-                $row["location"],
-                $row["is_active"],
-                $row["created_at"],
-                $row["updated_at"]
+                $result["title"],
+                $result["description"],
+                $result["job"],
+                $result["duration"],
+                $result["begin_date"],
+                $result["salary"],
+                $result["location"],
+                $result["study_level"],
+                $result["is_active"],
+                date("Y-m-d H:i:s", strtotime($result["created_at"])),
+                date("Y-m-d H:i:s", strtotime($result["updated_at"]))
             );
         }
 
         return $offers;
     }
 
-    public static function create(int $company_id, Company $company, string $title, string $description, string $job, int $duration, int $salary, string $location, bool $is_active): ?Offer {
+    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $location, bool $is_active): ?Offer {
         global $db;
 
         $stmt = $db->prepare("INSERT INTO offers (company_id, title, description, job, duration, salary, location, is_active) VALUES (:company_id, :title, :description, :job, :duration, :salary, :location, :is_active)");
@@ -217,38 +233,38 @@ class Offer {
 
         $id = $db->lastInsertId();
 
+        $result = $stmt->fetch();
+
         return new Offer(
             $id,
-            $company_id,
-            $company,
-            $title,
-            $description,
-            $job,
-            $duration,
-            $salary,
-            $location,
-            $is_active,
-            date("Y-m-d H:i:s"),
-            date("Y-m-d H:i:s")
+            $result["company_id"],
+            Company::getById($result["company_id"]),
+            $result["title"],
+            $result["description"],
+            $result["job"],
+            $result["duration"],
+            $result["begin_date"],
+            $result["salary"],
+            $result["location"],
+            $result["study_level"],
+            $result["is_active"],
+            date("Y-m-d H:i:s", strtotime($result["created_at"])),
+            date("Y-m-d H:i:s", strtotime($result["updated_at"]))
         );
     }
 
-    public function getRealDuration() {
+    public function getRealDuration(): string {
         $duration = $this->getDuration();
 
-        //années
         $years = intdiv($duration, 365);
         $remainingDays = $duration % 365;
 
-        //mois
         $months = intdiv($remainingDays, 30);
         $remainingDays = $remainingDays % 30;
 
-        //semaines
         $weeks = intdiv($remainingDays, 7);
         $days = $remainingDays % 7;
 
-        //on retourne la bonne chaine
         $result = '';
 
         if ($years > 0) {
@@ -266,6 +282,4 @@ class Offer {
 
         return rtrim($result, ', ');
     }
-
-
 }
