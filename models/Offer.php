@@ -193,20 +193,20 @@ class Offer {
             }
 
             $offers[] = new Offer(
-                $result["id"],
-                $result["company_id"],
+                $row["id"],
+                $row["company_id"],
                 $company,
-                $result["title"],
-                $result["description"],
-                $result["job"],
-                $result["duration"],
-                $result["begin_date"],
-                $result["salary"],
-                $result["location"],
-                $result["study_level"],
-                $result["is_active"],
-                date("Y-m-d H:i:s", strtotime($result["created_at"])),
-                date("Y-m-d H:i:s", strtotime($result["updated_at"]))
+                $row["title"],
+                $row["description"],
+                $row["job"],
+                $row["duration"],
+                $row["begin_date"],
+                $row["salary"],
+                $row["location"],
+                $row["study_level"],
+                $row["is_active"],
+                date("Y-m-d H:i:s", strtotime($row["created_at"])),
+                date("Y-m-d H:i:s", strtotime($row["updated_at"]))
             );
         }
 
