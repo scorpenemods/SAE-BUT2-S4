@@ -4,6 +4,7 @@ session_start();
 require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Media.php';
 require dirname(__FILE__) . '/../../models/Company.php';
+require dirname(__FILE__) . '/../../presenter/apply-filter.php';
 ?>
 
 <!DOCTYPE html>
@@ -70,16 +71,20 @@ require dirname(__FILE__) . '/../../models/Company.php';
 
         <div class="filter-panel" id="filterPanel">
             <div class="filter-panel-content">
+                <form action="../../presenter/apply-filter.php" id="sortForm" method="post" >
+
                 <h2>Trier</h2>
                 <div>
-                    <label><input type="checkbox" name="recentes">   Les plus récentes</label>
-                    <label><input type="checkbox" name="anciennes">   Les plus anciennes</label>
-                    <label><input type="checkbox" name="consultees">   Les plus consultées</label>
-                </div>
-                <br>
+                    <label><input type="radio" name="sort" value="recentes">   Les plus récentes</label>
+                    <label><input type="radio" name="sort" value="anciennes">   Les plus anciennes</label>
+                    <label><input type="radio" name="sort" value="consultees">   Les plus consultées</label>
+                </div><br>
+
+                </form>
+
 
                 <h2>Filtrer</h2>
-                <form id="filterForm">
+                <form id="filterForm" action="../../presenter/apply-filter.php" method="post">
 
                     <div class="filter-section">
                         <h3>Date de début</h3>
@@ -88,20 +93,20 @@ require dirname(__FILE__) . '/../../models/Company.php';
 
                     <div class="filter-section">
                         <h3>Niveau d'étude</h3>
-                            <label><input type="checkbox" name="diploma" value="1-3"> Pas de niveau prérequis</label>
-                            <label><input type="checkbox" name="diploma" value="3-6">Bac, Bac Pro, CAP</label>
-                            <label><input type="checkbox" name="diploma" value="6+">Bac+2</label>
-                            <label><input type="checkbox" name="diploma" value="3-6">Bac+3, Bachelor</label>
-                            <label><input type="checkbox" name="diploma" value="6+">Bac+5, Master, diplôme d'ingénieur</label>
-                            <label><input type="checkbox" name="diploma" value="3-6">Bac+8, Doctorat</label>
+                            <label><input type="radio" name="diploma" value="1-3"> Pas de niveau prérequis</label>
+                            <label><input type="radio" name="diploma" value="3-6">Bac, Bac Pro, CAP</label>
+                            <label><input type="radio" name="diploma" value="6+">Bac+2</label>
+                            <label><input type="radio" name="diploma" value="3-6">Bac+3, Bachelor</label>
+                            <label><input type="radio" name="diploma" value="6+">Bac+5, Master, diplôme d'ingénieur</label>
+                            <label><input type="radio" name="diploma" value="3-6">Bac+8, Doctorat</label>
                     </div>
 
                     <div class="filter-section">
                         <h3>Montant du salaire</h3>
                         <label for="mini">Salaire minimum</label>
-                        <input type="text" id="mini" placeholder="Sans préférences">
+                        <input type="text" id="mini" name="minSalary" placeholder="Sans préférences">
                         <label for="maxi">Salaire maximum</label>
-                        <input type="text" id="maxi" placeholder="Sans préférences">
+                        <input type="text" id="maxi" name="maxSalary" placeholder="Sans préférences">
 
                     </div>
 
@@ -110,9 +115,6 @@ require dirname(__FILE__) . '/../../models/Company.php';
                         <h3>Localisation</h3>
                         <label for="city">Ville</label>
                         <input type="text" id="city" name="city" placeholder="Entrez une ville">
-
-                        <label for="distance">Distance (km)</label>
-                        <input type="number" id="distance" name="distance" min="0" max="500" step="10" value="50">
                     </div>
 
                     <div class="filter-section">
@@ -140,7 +142,7 @@ require dirname(__FILE__) . '/../../models/Company.php';
 
                     <div class="filter-section">
                         <h3>Mots clés</h3>
-                        <input type="text" id="skills" name="skills" placeholder="Ex: JavaScript, Marketing, Finance">
+                        <input type="text" id="skills" name="keywords" placeholder="Ex: JavaScript, Marketing, Finance">
                     </div>
                 </form>
             </div>
