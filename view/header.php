@@ -15,7 +15,7 @@
     </div>
 </header>
 
-<nav>
+<nav class="nav-bar">
     <ul>
         <li><a href="#accueil" class="active">Accueil</a></li>
         <li><a href="#messagerie">Messagerie</a></li>
@@ -24,5 +24,3 @@
         <li><a href="#livret">Livret de suivi</a></li>
     </ul>
 </nav>
-</body>
-</html>

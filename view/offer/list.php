@@ -107,7 +107,6 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 
                     </div>
 
-
                     <div class="filter-section">
                         <h3>Localisation</h3>
                         <label for="city">Ville</label>
@@ -126,7 +125,6 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
                         </div>
                     </div>
 
-
                     <div class="filter-section">
                         <h3>Secteur d'activité</h3>
                         <select id="sector" name="sector">
@@ -138,7 +136,6 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
                             <option value="education">Éducation</option>
                         </select>
                     </div>
-
 
                     <div class="filter-section">
                         <h3>Mots clés</h3>
@@ -155,7 +152,6 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
         </div>
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
         <script>
-            // Carousel functionality
             document.querySelectorAll('.company-carousel').forEach(carousel => {
                 const images = carousel.querySelectorAll('img');
                 const buttons = carousel.querySelectorAll('.carousel-nav button');
@@ -181,7 +177,6 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
                 }, 5000);
             });
 
-            // Filter panel functionality
             const filterPanel = document.getElementById('filterPanel');
             const blurOverlay = document.getElementById('blurOverlay');
             const openFilterBtn = document.getElementById('openFilter');
@@ -207,24 +202,22 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
             closeFilterBtn.addEventListener('click', closeFilterPanel);
             blurOverlay.addEventListener('click', closeFilterPanel);
 
-            // Handle form submission
+            
             filterForm.addEventListener('submit', (event) => {
                 event.preventDefault();
                 const formData = new FormData(filterForm);
                 const filters = Object.fromEntries(formData.entries());
                 console.log('Applied filters:', filters);
-                // Here you would typically send these filters to your backend or update the UI
                 closeFilterPanel();
             });
 
-            // Close filter panel when pressing Escape key
             document.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
                     closeFilterPanel();
                 }
             });
 
-            // Create notification button functionality
+            
             const createNotificationBtn = document.getElementById('createNotification');
             createNotificationBtn.addEventListener('click', () => {
                 alert('Fonctionnalité de création de demande de notification à implémenter');

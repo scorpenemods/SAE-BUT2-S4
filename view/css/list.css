@@ -52,34 +52,6 @@ body {
     border-radius: 50%;
     margin-right: 0.5rem;
 }
-nav {
-    background-color: var(--primary-color);
-    padding: 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-}
-nav ul li {
-    margin: 0 0.5rem;
-}
-nav ul li a {
-    text-decoration: none;
-    color: white;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    transition: background-color 0.3s ease;
-}
-nav ul li a:hover, nav ul li a.active {
-    background-color: rgba(255, 255, 255, 0.2);
-}
 main {
     flex: 1;
     padding: 3rem;
@@ -314,12 +286,6 @@ main {
     .search-bar {
         width: 100%;
         margin-bottom: 1rem;
-    }
-    nav ul {
-        flex-wrap: wrap;
-    }
-    nav ul li {
-        margin-bottom: 0.5rem;
     }
     .filter-panel {
         width: 100%;
