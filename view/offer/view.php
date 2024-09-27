@@ -1,5 +1,7 @@
 <?php
 include dirname(__FILE__) . '/../header.php';
+require dirname(__FILE__) . '/../../models/Offer.php';
+require dirname(__FILE__) . '/../../models/Company.php';
 
 // get id from URL query string
 $offerId = $_GET['id'];
@@ -7,8 +9,6 @@ if (!isset($offerId)) {
     exit();
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="fr">

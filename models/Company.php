@@ -49,13 +49,22 @@ class Company {
         return $this->updated_at;
     }
 
-    public static function getById(int $id): Company {
+    public static function getById(int $id): ?Company {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM companies WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
         $result = $stmt->fetch();
+
+        if (!$result) {
+            return null;
+        }
 
         return new Company(
             $result["id"],
@@ -68,11 +77,16 @@ class Company {
         );
     }
 
-    public static function getAll(): array {
+    public static function getAll(): ?array {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM companies");
         $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
         $result = $stmt->fetchAll();
 
         $companies = [];
@@ -91,7 +105,7 @@ class Company {
         return $companies;
     }
 
-    public static function create(string $name, int $size, string $address, string $siren): Company {
+    public static function create(string $name, int $size, string $address, string $siren): ?Company {
         global $db;
 
         $stmt = $db->prepare("INSERT INTO companies (name, size, address, siren) VALUES (:name, :size, :address, :siren)");
@@ -100,6 +114,10 @@ class Company {
         $stmt->bindParam(":address", $address);
         $stmt->bindParam(":siren", $siren);
         $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
 
         $id = $db->lastInsertId();
 
