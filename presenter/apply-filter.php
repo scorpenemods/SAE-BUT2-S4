@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sector = $_POST["sector"];
     $keywords = $_POST["keywords"];
 
+
     $filters = array(
         "sort" => $sort,
         "startDate" => $startDate,
