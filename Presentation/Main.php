@@ -12,7 +12,7 @@ $userName = "Guest";
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) { // Check if the unserialized object is indeed a Person object
-        $userName = htmlspecialchars($person->getPrenom()) . ' Main.php' . htmlspecialchars($person->getNom()); // Safely encode output to prevent XSS
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom()); // Safely encode output to prevent XSS
     }
 } else {
     // If no user is found in session, redirect to the login page
