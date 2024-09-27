@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails de l'offre - Le Petit Stage</title>
+    <link rel="stylesheet" href="/view/css/footer.css">
 
 
 
