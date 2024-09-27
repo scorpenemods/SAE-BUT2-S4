@@ -54,7 +54,7 @@ body {
 }
 main {
     flex: 1;
-    padding: 3rem;
+    padding: 2rem 2rem;
     max-width: 95%;
     width: 95%;
     margin: 0 auto;
