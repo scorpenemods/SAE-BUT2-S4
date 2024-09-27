@@ -5,6 +5,8 @@ require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Media.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../presenter/apply-filter.php';
+
+require dirname(__FILE__) . '/../../presenter/utils.php';
 ?>
 
 <!DOCTYPE html>
@@ -17,6 +19,7 @@ require dirname(__FILE__) . '/../../presenter/apply-filter.php';
         <link rel="stylesheet" href="/view/css/list.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
+        <link rel="stylesheet" href="/view/css/list.css">
 
     </head>
     <body>
@@ -55,8 +58,8 @@ require dirname(__FILE__) . '/../../presenter/apply-filter.php';
                             echo "</div>";
                         echo "</div>";
                         echo "<div class='company-info'>";
-                            echo "<h3>" . $offer->getTitle() . "</h3>";
-                            echo "<p>" . $offer->getDescription() . "</p>";
+                            echo "<h3><a href='/view/offer/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
+                            echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
                             echo "<div class='company-meta'>";
                                 echo "<span>" . $offer->getCompany()->getName() . "</span>";
                                 echo "<span>" . $offer->getAddress() . "</span>";
@@ -115,6 +118,9 @@ require dirname(__FILE__) . '/../../presenter/apply-filter.php';
                         <h3>Localisation</h3>
                         <label for="city">Ville</label>
                         <input type="text" id="city" name="city" placeholder="Entrez une ville">
+
+                        <label for="distance">Distance (km)</label>
+                        <input type="number" id="distance" name="distance" min="0" max="500" step="10" value="50">
                     </div>
 
                     <div class="filter-section">
@@ -207,7 +213,7 @@ require dirname(__FILE__) . '/../../presenter/apply-filter.php';
             closeFilterBtn.addEventListener('click', closeFilterPanel);
             blurOverlay.addEventListener('click', closeFilterPanel);
 
-            // Handle form submission
+
             filterForm.addEventListener('submit', (event) => {
                 event.preventDefault();
                 const formData = new FormData(filterForm);
@@ -224,7 +230,7 @@ require dirname(__FILE__) . '/../../presenter/apply-filter.php';
                 }
             });
 
-            // Create notification button functionality
+
             const createNotificationBtn = document.getElementById('createNotification');
             createNotificationBtn.addEventListener('click', () => {
                 alert('Fonctionnalité de création de demande de notification à implémenter');

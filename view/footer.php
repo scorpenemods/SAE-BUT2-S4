@@ -1,29 +1,28 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails de l'offre - Le Petit Stage</title>
-    <link rel="stylesheet" href="/view/css/footer.css">
-
-
-
-    <footer>
+<footer>
+    <div class="container">
         <div class="footer-content">
-            <div class="footer-logo">
-                <img src="https://via.placeholder.com/40" alt="Université logo">
-                <span>Université Polytechnique</span>
+            <div class="footer-row">
+                <div class="logo-container">
+                    <img src="/Ressources/iut.jpg" alt="IUT Logo" width="120" height="60" />
+                </div>
+
+                <nav class="nav-footer">
+                    <a href="/informations">Informations</a>
+                    <a href="/a-propos">À propos</a>
+                    <a href="/confidentialite">Confidentialité</a>
+                    <a href="/conditions-utilisation">Conditions d'utilisation</a>
+                </nav>
+                <div class="logo-container">
+                    <img src="/Ressources/uphf.png" alt="Université Polytechnique Logo" width="120" height="60" />
+                </div>
             </div>
-            <div class="footer-links">
-                <a href="#">Informations</a>
-                <a href="#">À propos</a>
-                <a href="#">Confidentialité</a>
-                <a href="#">Conditions d'utilisation</a>
+            <div class="copyright">
+                © <span id="current-year"></span> Tous droits réservés
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
-    <!-- Font Awesome for icons -->
-    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
-
-</html>
+<script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>
