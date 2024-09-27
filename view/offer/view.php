@@ -27,6 +27,7 @@ $offer = Offer::getById($offerId);
         <link rel="stylesheet" href="/view/css/view.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
+        <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <?php include dirname(__FILE__) . '/../header.php'; ?>
@@ -78,6 +79,5 @@ $offer = Offer::getById($offerId);
             </div>
         </main>
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
-        <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
     </body>
 </html>

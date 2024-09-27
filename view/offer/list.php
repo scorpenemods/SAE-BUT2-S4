@@ -16,12 +16,121 @@ require dirname(__FILE__) . '/../../models/Company.php';
         <link rel="stylesheet" href="/view/css/list.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
+
+    </head>
+    <body>
+        <?php include dirname(__FILE__) . '/../header.php'; ?>
+        <div class="blur-overlay" id="blurOverlay"></div>
+        <main>
+            <div class="search-filter">
+                <div class="search-bar">
+                    <input type="text" placeholder="Rechercher une offre" aria-label="Rechercher une offre">
+                    <button id="openFilter" aria-label="Ouvrir les filtres">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                    </button>
+                    <button id="createNotification" aria-label="Créer une demande de notification">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    </button>
+                    <button id="search" aria-label="Rechercher">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="company-listings">
+                <?php
+                $offers = Offer::getAll();
+
+                foreach ($offers as $offer) {
+                    echo "<div class='company-card'>";
+                        echo "<div class='company-carousel'>";
+                            foreach ($offer->getMedias() as $media) {
+                                echo "<img src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . ">";
+                            }
+                            echo "<div class='carousel-nav'>";
+                                foreach ($offer->getMedias() as $media) {
+                                    echo "<button " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . "></button>";
+                                }
+                            echo "</div>";
+                        echo "</div>";
+                        echo "<div class='company-info'>";
+                            echo "<h3>" . $offer->getTitle() . "</h3>";
+                            echo "<p>" . $offer->getDescription() . "</p>";
+                            echo "<div class='company-meta'>";
+                                echo "<span>" . $offer->getCompany()->getName() . "</span>";
+                                echo "<span>" . $offer->getAddress() . "</span>";
+                                echo "<span>" . $offer->getRealDuration() . "</span>";
+                            echo "</div>";
+                        echo "</div>";
+                    echo "</div>";
+                }
+                ?>
+            </div>
+        </main>
+
+        <div class="filter-panel" id="filterPanel">
+            <div class="filter-panel-content">
+                <h2>Filtres avancés</h2>
+                <form id="filterForm">
+                    <div class="filter-section">
+                        <h3>Localisation</h3>
+                        <label for="city">Ville</label>
+                        <input type="text" id="city" name="city" placeholder="Entrez une ville">
+
+                        <label for="distance">Distance (km)</label>
+                        <input type="number" id="distance" name="distance" min="0" max="500" step="10" value="50">
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>Durée du stage</h3>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="duration" value="1-3"> 1 à 3 mois</label>
+                            <label><input type="checkbox" name="duration" value="3-6"> 3 à 6 mois</label>
+                            <label><input type="checkbox" name="duration" value="6+"> Plus de 6 mois</label>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>Secteur d'activité</h3>
+                        <select id="sector" name="sector">
+                            <option value="">Tous les secteurs</option>
+                            <option value="tech">Technologie</option>
+                            <option value="finance">Finance</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="sante">Santé</option>
+                            <option value="education">Éducation</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>Type de stage</h3>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="type" value="fulltime"> Temps plein</label>
+                            <label><input type="checkbox" name="type" value="parttime"> Temps partiel</label>
+                            <label><input type="checkbox" name="type" value="remote"> Télétravail</label>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>Compétences requises</h3>
+                        <input type="text" id="skills" name="skills" placeholder="Ex: JavaScript, Marketing, Finance">
+                    </div>
+                </form>
+            </div>
+            <div class="filter-panel-footer">
+                <button type="submit" form="filterForm">Appliquer les filtres</button>
+                <button class="close-filter" id="closeFilter" aria-label="Fermer les filtres">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+        </div>
+        <?php include dirname(__FILE__) . '/../footer.php'; ?>
         <script>
             // Carousel functionality
             document.querySelectorAll('.company-carousel').forEach(carousel => {
                 const images = carousel.querySelectorAll('img');
                 const buttons = carousel.querySelectorAll('.carousel-nav button');
-                let currentIndex = 0;
+                let currentIndex = 1;
 
                 function showImage(index) {
                     images.forEach(img => img.classList.remove('active'));
@@ -92,134 +201,5 @@ require dirname(__FILE__) . '/../../models/Company.php';
                 alert('Fonctionnalité de création de demande de notification à implémenter');
             });
         </script>
-    </head>
-    <body>
-        <?php include dirname(__FILE__) . '/../header.php'; ?>
-        <div class="blur-overlay" id="blurOverlay"></div>
-        <main>
-            <div class="search-filter">
-                <div class="search-bar">
-                    <input type="text" placeholder="Rechercher une offre" aria-label="Rechercher une offre">
-                    <button id="openFilter" aria-label="Ouvrir les filtres">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-                    </button>
-                    <button id="createNotification" aria-label="Créer une demande de notification">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                    </button>
-                    <button id="search" aria-label="Rechercher">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    </button>
-                </div>
-            </div>
-
-            <div class="company-listings">
-                <?php
-                $offers = Offer::getAll();
-                foreach ($offers as $offer) {
-                /*
-                <div class="company-card">
-                    <div class="company-carousel">
-                        <img src="/placeholder.svg" alt="Entreprise Innovante 1" class="active">
-                        <img src="/placeholder.svg" alt="Entreprise Innovante 2">
-                        <img src="/placeholder.svg" alt="Entreprise Innovante 3">
-                        <div class="carousel-nav">
-                            <button class="active"></button>
-                            <button></button>
-                            <button></button>
-                        </div>
-                    </div>
-                    <div class="company-info">
-                        <h3>Entreprise Innovante</h3>
-                        <p>Stage passionnant dans une startup dynamique spécialisée dans l'intelligence artificielle. Vous travaillerez sur des projets cutting-edge et aurez l'opportunité d'apprendre des meilleurs dans le domaine.</p>
-                        <div class="company-meta">
-                            <span>Paris</span>
-                            <span>6 mois</span>
-                        </div>
-                    </div>
-                </div>
-                 */
-                    echo "<div class='company-card'>";
-                        echo "<div class='company-carousel'>";
-                            foreach ($offer->getMedias() as $media) {
-                                echo "<img src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' class='active'>";
-                            }
-                            echo "<div class='carousel-nav'>";
-                                echo "<button class='active'></button>";
-                                echo "<button></button>";
-                                echo "<button></button>";
-                            echo "</div>";
-                        echo "</div>";
-                        echo "<div class='company-info'>";
-                            echo "<h3>" . $offer->getTitle() . "</h3>";
-                            echo "<p>" . $offer->getDescription() . "</p>";
-                            echo "<div class='company-meta'>";
-                                echo "<span>" . $offer->getCompany()->getName() . "</span>";
-                                echo "<span>" . $offer->getLocation() . "</span>";
-                                echo "<span>" . $offer->getRealDuration() . "</span>";
-                            echo "</div>";
-                        echo "</div>";
-                    echo "</div>";
-                }
-                ?>
-            </div>
-        </main>
-
-        <div class="filter-panel" id="filterPanel">
-            <div class="filter-panel-content">
-                <h2>Filtres avancés</h2>
-                <form id="filterForm">
-                    <div class="filter-section">
-                        <h3>Localisation</h3>
-                        <label for="city">Ville</label>
-                        <input type="text" id="city" name="city" placeholder="Entrez une ville">
-
-                        <label for="distance">Distance (km)</label>
-                        <input type="number" id="distance" name="distance" min="0" max="500" step="10" value="50">
-                    </div>
-
-                    <div class="filter-section">
-                        <h3>Durée du stage</h3>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="duration" value="1-3"> 1 à 3 mois</label>
-                            <label><input type="checkbox" name="duration" value="3-6"> 3 à 6 mois</label>
-                            <label><input type="checkbox" name="duration" value="6+"> Plus de 6 mois</label>
-                        </div>
-                    </div>
-
-                    <div class="filter-section">
-                        <h3>Secteur d'activité</h3>
-                        <select id="sector" name="sector">
-                            <option value="">Tous les secteurs</option>
-                            <option value="tech">Technologie</option>
-                            <option value="finance">Finance</option>
-                            <option value="marketing">Marketing</option>
-                            <option value="sante">Santé</option>
-                            <option value="education">Éducation</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-section">
-                        <h3>Type de stage</h3>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="type" value="fulltime"> Temps plein</label>
-                            <label><input type="checkbox" name="type" value="parttime"> Temps partiel</label>
-                            <label><input type="checkbox" name="type" value="remote"> Télétravail</label>
-                        </div>
-                    </div>
-
-                    <div class="filter-section">
-                        <h3>Compétences requises</h3>
-                        <input type="text" id="skills" name="skills" placeholder="Ex: JavaScript, Marketing, Finance">
-                    </div>
-                </form>
-            </div>
-            <div class="filter-panel-footer">
-                <button type="submit" form="filterForm">Appliquer les filtres</button>
-                <button class="close-filter" id="closeFilter" aria-label="Fermer les filtres">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-        </div>
-        <?php include dirname(__FILE__) . '/../footer.php'; ?>
     </body>
 </html>

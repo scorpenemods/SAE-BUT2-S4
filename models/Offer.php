@@ -10,13 +10,13 @@ class Offer {
     private int $duration;
     private string $begin_date;
     private int $salary;
-    private string $location;
+    private string $address;
     private string $study_level;
     private bool $is_active;
     private string $created_at;
     private string $updated_at;
 
-    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $location, string $study_level, bool $is_active, string $created_at, string $updated_at) {
+    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $created_at, string $updated_at) {
         $this->id = $id;
         $this->company_id = $company_id;
         $this->company = $company;
@@ -26,7 +26,7 @@ class Offer {
         $this->duration = $duration;
         $this->begin_date = $begin_date;
         $this->salary = $salary;
-        $this->location = $location;
+        $this->address = $address;
         $this->study_level = $study_level;
         $this->is_active = $is_active;
         $this->created_at = $created_at;
@@ -69,8 +69,8 @@ class Offer {
         return $this->salary;
     }
 
-    public function getLocation(): string {
-        return $this->location;
+    public function getAddress(): string {
+        return $this->address;
     }
 
     public function getStudyLevel(): string {
@@ -113,7 +113,7 @@ class Offer {
     public function getMedias(): ?array {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM offers_media WHERE offer_id = :offer_id");
+        $stmt = $db->prepare("SELECT * FROM offers_media WHERE offer_id = :offer_id ORDER BY display_order");
         $stmt->bindParam(":offer_id", $this->id);
         $stmt->execute();
 
@@ -129,7 +129,8 @@ class Offer {
                 $row["id"],
                 $row["url"],
                 $row["type"],
-                $row["description"]
+                $row["description"],
+                $row["display_order"]
             );
         }
 
@@ -164,7 +165,7 @@ class Offer {
             $result["duration"],
             $result["begin_date"],
             $result["salary"],
-            $result["location"],
+            $result["address"],
             $result["study_level"],
             $result["is_active"],
             date("Y-m-d H:i:s", strtotime($result["created_at"])),
@@ -202,7 +203,7 @@ class Offer {
                 $row["duration"],
                 $row["begin_date"],
                 $row["salary"],
-                $row["location"],
+                $row["address"],
                 $row["study_level"],
                 $row["is_active"],
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
@@ -213,17 +214,17 @@ class Offer {
         return $offers;
     }
 
-    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $location, bool $is_active): ?Offer {
+    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, bool $is_active): ?Offer {
         global $db;
 
-        $stmt = $db->prepare("INSERT INTO offers (company_id, title, description, job, duration, salary, location, is_active) VALUES (:company_id, :title, :description, :job, :duration, :salary, :location, :is_active)");
+        $stmt = $db->prepare("INSERT INTO offers (company_id, title, description, job, duration, salary, address, is_active) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :is_active)");
         $stmt->bindParam(":company_id", $company_id);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":description", $description);
         $stmt->bindParam(":job", $job);
         $stmt->bindParam(":duration", $duration);
         $stmt->bindParam(":salary", $salary);
-        $stmt->bindParam(":location", $location);
+        $stmt->bindParam(":address", $address);
         $stmt->bindParam(":is_active", $is_active);
         $stmt->execute();
 
@@ -245,7 +246,7 @@ class Offer {
             $result["duration"],
             $result["begin_date"],
             $result["salary"],
-            $result["location"],
+            $result["address"],
             $result["study_level"],
             $result["is_active"],
             date("Y-m-d H:i:s", strtotime($result["created_at"])),
