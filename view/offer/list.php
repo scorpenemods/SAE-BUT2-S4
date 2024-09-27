@@ -72,8 +72,42 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 
         <div class="filter-panel" id="filterPanel">
             <div class="filter-panel-content">
-                <h2>Filtres avancés</h2>
+                <h2>Trier</h2>
+                <div>
+                    <label><input type="checkbox" name="recentes">   Les plus récentes</label>
+                    <label><input type="checkbox" name="anciennes">   Les plus anciennes</label>
+                    <label><input type="checkbox" name="consultees">   Les plus consultées</label>
+                </div>
+                <br>
+
+                <h2>Filtrer</h2>
                 <form id="filterForm">
+
+                    <div class="filter-section">
+                        <h3>Date de début</h3>
+                        <input type="date" id="start-date" name="calendar">
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>Niveau d'étude</h3>
+                            <label><input type="checkbox" name="diploma" value="1-3"> Pas de niveau prérequis</label>
+                            <label><input type="checkbox" name="diploma" value="3-6">Bac, Bac Pro, CAP</label>
+                            <label><input type="checkbox" name="diploma" value="6+">Bac+2</label>
+                            <label><input type="checkbox" name="diploma" value="3-6">Bac+3, Bachelor</label>
+                            <label><input type="checkbox" name="diploma" value="6+">Bac+5, Master, diplôme d'ingénieur</label>
+                            <label><input type="checkbox" name="diploma" value="3-6">Bac+8, Doctorat</label>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>Montant du salaire</h3>
+                        <label for="mini">Salaire minimum</label>
+                        <input type="text" id="mini" placeholder="Sans préférences">
+                        <label for="maxi">Salaire maximum</label>
+                        <input type="text" id="maxi" placeholder="Sans préférences">
+
+                    </div>
+
+
                     <div class="filter-section">
                         <h3>Localisation</h3>
                         <label for="city">Ville</label>
@@ -92,6 +126,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
                         </div>
                     </div>
 
+
                     <div class="filter-section">
                         <h3>Secteur d'activité</h3>
                         <select id="sector" name="sector">
@@ -104,17 +139,9 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
                         </select>
                     </div>
 
-                    <div class="filter-section">
-                        <h3>Type de stage</h3>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="type" value="fulltime"> Temps plein</label>
-                            <label><input type="checkbox" name="type" value="parttime"> Temps partiel</label>
-                            <label><input type="checkbox" name="type" value="remote"> Télétravail</label>
-                        </div>
-                    </div>
 
                     <div class="filter-section">
-                        <h3>Compétences requises</h3>
+                        <h3>Mots clés</h3>
                         <input type="text" id="skills" name="skills" placeholder="Ex: JavaScript, Marketing, Finance">
                     </div>
                 </form>
