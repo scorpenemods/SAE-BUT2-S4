@@ -66,6 +66,7 @@ $offer = new Offer(1, 1,new Company(1, "e", 1, "e", "", "", ""), "developpeur we
                     </div>
                 </div>
             </div>
+
         </main>
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
     <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
