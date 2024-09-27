@@ -1,13 +1,21 @@
 <?php
-require dirname(__FILE__) . '/../../models/Offer.php';
+session_start();
 
-$offerId = $_GET['id'];
-if (!isset($offerId)) {
-    exit();
+require dirname(__FILE__) . '/../../models/Offer.php';
+require dirname(__FILE__) . '/../../models/Company.php';
+
+$returnUrl = "/view/offer/list.php";
+if (isset($_SERVER["HTTP_REFERER"])) {
+    $returnUrl = $_SERVER["HTTP_REFERER"];
 }
 
-//$offer = Offer::getById($offerId);
-$offer = new Offer(1, 1,new Company(1, "e", 1, "e", "", "", ""), "developpeur web", "developpeur web pour faire un site de gestion d'offres de stage", "developpeur", 30, 300, "true", true, "27-09-2024", "27-09-2024");
+$offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+if ($offerId == null) {
+    header("Location: " . $returnUrl);
+    die();
+}
+
+$offer = Offer::getById($offerId);
 ?>
 
 <!DOCTYPE html>
@@ -16,10 +24,13 @@ $offer = new Offer(1, 1,new Company(1, "e", 1, "e", "", "", ""), "developpeur we
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Détails de l'offre - Le Petit Stage</title>
+        <link rel="stylesheet" href="/view/css/view.css">
+        <link rel="stylesheet" href="/view/css/header.css">
+        <link rel="stylesheet" href="/view/css/footer.css">
     </head>
     <body>
-    <?php include dirname(__FILE__) . '/../header.php'; ?>
-    <main>
+        <?php include dirname(__FILE__) . '/../header.php'; ?>
+        <main>
             <div class="offer-card">
                 <div class="offer-header">
                     <div class="offer-title">
@@ -34,7 +45,7 @@ $offer = new Offer(1, 1,new Company(1, "e", 1, "e", "", "", ""), "developpeur we
                 <div class="offer-content">
                     <h3 class="company-name">
                         <i class="fas fa-building"></i>
-                        <?php echo "le nom de la compagnie à mettre"; ?>
+                        <?php echo $offer->getCompany()->getName(); ?>
                     </h3>
                     <div class="offer-details">
                         <div class="detail-item">
@@ -45,15 +56,17 @@ $offer = new Offer(1, 1,new Company(1, "e", 1, "e", "", "", ""), "developpeur we
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>A FAIRE</span>
+                            <span>
+                                <?php echo $offer->getLocation(); ?>
+                            </span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-calendar"></i>
-                            <span><?php echo "Debut : ";?></span>
+                            <span><?php echo "Début: " . $offer->getBeginDate(); ?></span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-graduation-cap"></i>
-                            <span><?php echo "diplome requis"; ?></span>
+                            <span><?php echo "Diplôme requis: " . $offer->getStudyLevel(); ?></span>
                         </div>
                     </div>
                     <div class="separator"></div>

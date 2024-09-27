@@ -2,7 +2,7 @@
 global $db;
 
 try {
-    $db = new pdo('mysql:host=mysql:3306;dbname=app_notes','root','root');
+    $db = new pdo('mysql:host=87.88.66.186:64893;dbname=offers_tables','sae','sae2024');
 } catch(PDOException $ex) {
     echo $ex->getMessage();
     die(
