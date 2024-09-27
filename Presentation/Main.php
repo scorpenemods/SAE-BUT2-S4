@@ -137,27 +137,5 @@ if (isset($_SESSION['user'])) {
     <a href="Redirection.php">À propos</a>
 </footer>
 
-<script>
-    function toggleMenu() {
-        const menu = document.getElementById('settingsMenu');
-        menu.classList.toggle('hide-list');
-        menu.classList.toggle('show-list');
-    }
-
-    function widget(index) {
-        // Получаем все элементы содержимого и кнопки меню
-        const contents = document.querySelectorAll('.Contenus .Contenu');
-        const buttons = document.querySelectorAll('.widget-button');
-
-        // Убираем активный класс "Visible" с контента и "Current" с кнопок
-        contents.forEach((content) => content.classList.remove('Visible'));
-        buttons.forEach((button) => button.classList.remove('Current'));
-
-        // Добавляем активный класс к выбранному контенту и кнопке
-        contents[index].classList.add('Visible');
-        buttons[index].classList.add('Current');
-    }
-    }
-</script>
 </body>
 </html>
