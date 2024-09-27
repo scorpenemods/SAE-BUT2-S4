@@ -62,3 +62,45 @@ function widget(x) {
     let span =  document.querySelectorAll("section span");
     span[x].classList.add("Current")
 }
+
+function sendMessage() {
+    const messageInput = document.getElementById('message-input');
+    const message = messageInput.value;
+    if (message.trim() !== "") {
+        const timestamp = new Date().toLocaleTimeString('fr-FR', { timeZone: 'Europe/Paris' });
+        displayMessage(`${message} <span class="timestamp">${timestamp}</span>`, 'self');
+        messageInput.value = ''; // Очистить поле после отправки
+    }
+}
+
+function sendFile(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const fileURL = URL.createObjectURL(file); // Генерация ссылки для скачивания
+        displayMessage(`<a href="${fileURL}" download="${file.name}">${file.name}</a>`, 'self', true);
+    }
+}
+
+function displayMessage(content, sender, isFile = false) {
+    const chatBody = document.getElementById('chat-body');
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', sender);
+    messageElement.innerHTML = content;
+    chatBody.appendChild(messageElement);
+    chatBody.scrollTop = chatBody.scrollHeight; // Автопрокрутка вниз
+}
+
+function searchContacts() {
+    const input = document.getElementById('search-input');
+    const filter = input.value.toLowerCase();
+    const contacts = document.querySelectorAll('#contacts-list li');
+
+    contacts.forEach(contact => {
+        const text = contact.textContent.toLowerCase();
+        if (text.includes(filter)) {
+            contact.style.display = '';
+        } else {
+            contact.style.display = 'none';
+        }
+    });
+}

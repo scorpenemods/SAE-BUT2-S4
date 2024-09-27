@@ -4,7 +4,7 @@ session_start(); // Start the session at the beginning of the script
 require_once "../../Class/Database.php"; // Assuming your Personne class is here, or included in Database.php
 require_once "../../Class/Personne.php"; // Ensure Personne class is correctly included
 
-// Initialize user name as Guest in case no user is logged in
+// Initialize username as Guest in case no user is logged in
 $userName = "Guest";
 
 // Check if the user is logged in and retrieve their name
@@ -36,9 +36,8 @@ if (isset($_SESSION['user'])) {
         <img src="../../Ressources/LPS 1.0.png" alt="Logo" class="logo"/>
         <span class="app-name">Le Petit Stage</span>
     </div>
-
     <div class="navbar-right">
-        <p><?php echo $userName; ?></p> <!-- Display the dynamically retrieved user name -->
+        <p><?php echo $userName; ?></p>
         <!-- Language Switch -->
         <label class="switch">
             <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
@@ -55,7 +54,6 @@ if (isset($_SESSION['user'])) {
                 <span class="switch-sticker">☀️</span> <!-- Sticker Light Mode -->
             </span>
         </label>
-        <!-- Settings Button with Dropdown -->
         <button class="mainbtn" onclick="toggleMenu()">
             <img src="../../Ressources/Param.png" alt="Settings">
         </button>
@@ -75,14 +73,30 @@ if (isset($_SESSION['user'])) {
         <span onclick="widget(4)" class="widget-button">Livret de suivi</span>
     </nav>
     <div class="Contenus">
-        <div class="Visible" id="content-0">Contenu Accueil</div>
+        <!-- Accueil Content -->
+        <div class="Visible" id="content-0">
+            <h2>Bienvenue à Le Petit Stage!</h2><br>
+            <p>
+                Cette application est conçue pour faciliter la gestion des stages pour les étudiants de l'UPHF, les enseignants, les tuteurs et le secrétariat.
+                Voici ce que vous pouvez faire :
+            </p><br>
+            <ul>
+                <li><strong>Messagerie:</strong> Communiquez facilement avec votre tuteur, enseignant, ou autres contacts.</li><br>
+                <li><strong>Offres de stage:</strong> Consultez les offres de stage disponibles et postulez directement.</li><br>
+                <li><strong>Documents:</strong> Téléchargez et partagez des documents nécessaires pour votre stage.</li><br>
+                <li><strong>Livret de suivi:</strong> Suivez votre progression et recevez des retours de votre tuteur ou enseignant.</li><br>
+            </ul><br>
+        </div>
 
-        <!-- Messenger interface -->
+        <!-- Messenger Content -->
         <div class="Contenu" id="content-1">
             <div class="messenger">
                 <div class="contacts">
+                    <div class="search-bar">
+                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                    </div>
                     <h3>Contacts</h3>
-                    <ul>
+                    <ul id="contacts-list">
                         <li>Contact 1</li>
                         <li>Contact 2</li>
                         <li>Contact 3</li>
@@ -90,22 +104,28 @@ if (isset($_SESSION['user'])) {
                 </div>
                 <div class="chat-window">
                     <div class="chat-header">
-                        <h3>Chat avec Contact 1</h3>
+                        <h3 id="chat-header-title">Chat avec Contact 1</h3>
                     </div>
-                    <div class="chat-body">
-                        <div class="message">Message de Contact 1</div>
-                        <div class="message">Votre message</div>
+                    <div class="chat-body" id="chat-body">
+                        <!-- Тут будут отображаться сообщения -->
                     </div>
                     <div class="chat-footer">
-                        <input type="text" placeholder="Tapez un message...">
-                        <button>Envoyer</button>
+                        <input type="file" id="file-input" style="display:none" onchange="sendFile(event)">
+                        <button class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
+                        <input type="text" id="message-input" placeholder="Tapez un message...">
+                        <button onclick="sendMessage()">Envoyer</button>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Offres Content -->
         <div class="Contenu" id="content-2">Contenu Offres</div>
+
+        <!-- Documents Content -->
         <div class="Contenu" id="content-3">Contenu Documents</div>
+
+        <!-- Livret de suivi Content -->
         <div class="Contenu" id="content-4">Contenu Livret de suivi</div>
     </div>
 </section>
@@ -124,16 +144,18 @@ if (isset($_SESSION['user'])) {
     }
 
     function widget(index) {
+        // Получаем все элементы содержимого и кнопки меню
         const contents = document.querySelectorAll('.Contenus .Contenu');
         const buttons = document.querySelectorAll('.widget-button');
 
-        // Убираем активный класс с кнопок и содержимого
-        buttons.forEach(btn => btn.classList.remove('Current'));
-        contents.forEach(content => content.classList.remove('Visible'));
+        // Убираем активный класс "Visible" с контента и "Current" с кнопок
+        contents.forEach((content) => content.classList.remove('Visible'));
+        buttons.forEach((button) => button.classList.remove('Current'));
 
-        // Добавляем активный класс к выбранному содержимому и кнопке
-        buttons[index].classList.add('Current');
+        // Добавляем активный класс к выбранному контенту и кнопке
         contents[index].classList.add('Visible');
+        buttons[index].classList.add('Current');
+    }
     }
 </script>
 </body>

@@ -167,8 +167,8 @@ header .navbar-right .mainbtn {
 }
 
 header .navbar-right .mainbtn img {
-    width: 80px;
-    height: 80px;
+    width: 35px;
+    height: 35px;
 }
 
 /* Выпадающий список */
@@ -294,6 +294,7 @@ header .hide-list {
 
 /* Основная часть */
 section.Menus {
+    flex-grow: 1;
     width: 90%;
     margin: 100px auto;
     display: flex;
@@ -333,6 +334,11 @@ section .Contenus .Contenu {
     display: none;
 }
 
+.Contenus {
+    flex-grow: 1;
+    padding-bottom: 80px; /* Учитываем высоту футера */
+}
+
 section .Contenus .Visible {
     display: block;
     border: 2px solid #3498db;
@@ -340,7 +346,7 @@ section .Contenus .Visible {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Стиль футера */
+/* Исправление футера */
 footer.PiedDePage {
     display: flex;
     justify-content: space-between;
@@ -351,9 +357,228 @@ footer.PiedDePage {
     width: 100%;
     position: fixed;
     bottom: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 footer a {
     color: white;
     text-decoration: none;
+}
+
+/*-------------------------------- Messenger -----------------------------------------------------------*/
+
+.messenger {
+    display: flex;
+    height: calc(100vh - 160px); /* Отступ под header и footer */
+    max-width: 100%; /* Используем все свободное место */
+}
+/* Fullscreen? */
+.messenger,
+.section {
+    height: calc(100vh - 160px);
+    max-width: 100%;
+    padding: 0 20px;
+}
+
+/* updated styles */
+.contacts {
+    width: 30%;
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    position: relative;
+}
+
+.contacts h3 {
+    font-size: 1.4em;
+    margin-bottom: 15px;
+}
+
+.contacts ul li {
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.contacts ul li:hover {
+    background-color: #3498db;
+    color: white;
+}
+
+.chat-window {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    border-left: 1px solid #ddd;
+    background-color: white;
+}
+
+.chat-header {
+    background-color: #3498db;
+    color: white;
+    padding: 15px;
+    font-size: 1.5em;
+    border-radius: 8px 8px 0 0;
+}
+
+.chat-body {
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.message {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    background-color: #ecf0f1;
+    position: relative;
+}
+
+.message .timestamp {
+    font-size: 0.7em;
+    color: #95a5a6;
+    text-align: right;
+    margin-top: 5px;
+    padding: 5px;
+    border: 1px ;
+}
+.timestamp {
+    display: flex;
+    max-width: 55px;
+    justify-content: right;
+
+}
+
+.message.self {
+
+    background-color: #d1f7d6;
+    text-align: right;
+}
+
+.chat-footer {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+}
+
+.chat-footer input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.chat-footer button {
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-footer button:hover {
+    background-color: #2980b9;
+}
+
+.attach-button {
+    font-size: 18px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+/* new ui*/
+button,
+.widget-button {
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button:hover,
+.widget-button:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.widget-button.Current {
+    background-color: #3498db;
+    color: white;
+    box-shadow: 0 6px 10px rgba(0, 102, 204, 0.2);
+}
+
+/*------------------ Search  -------------------*/
+
+.search-bar {
+    margin-bottom: 15px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 1em;
+}
+
+/****************************  DARK MODE MESSAGES  *******************************************************/
+
+body.dark-mode .messenger {
+    background-color: #2c3e50;
+}
+
+body.dark-mode .contacts {
+    background-color: #34495e;
+    color: #ecf0f1;
+}
+
+body.dark-mode .contacts ul li {
+    background-color: #3d556f;
+    color: #ecf0f1;
+}
+
+body.dark-mode .contacts ul li:hover {
+    background-color: #1abc9c;
+}
+
+body.dark-mode .chat-window {
+    background-color: #34495e;
+    color: #ecf0f1;
+}
+
+body.dark-mode .chat-body {
+    background-color: #3d556f;
+}
+
+body.dark-mode .message {
+    background-color: #5a5f7d;
+    color: #ecf0f1;
+}
+
+body.dark-mode .chat-footer {
+    background-color: #2c3e50;
+}
+
+body.dark-mode .chat-footer input[type="text"] {
+    background-color: #34495e;
+    color: white;
+}
+
+body.dark-mode .chat-footer button {
+    background-color: #1abc9c;
+    color: white;
 }
