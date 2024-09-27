@@ -1,14 +1,14 @@
 <?php
-include dirname(__FILE__) . '/../header.php';
-require dirname(__FILE__) . '/../../models/Offer.php';
-require dirname(__FILE__) . '/../../models/Company.php';
-
-// get id from URL query string
 $offerId = $_GET['id'];
 if (!isset($offerId)) {
     exit();
 }
+
+//$offer = Offer::getById($offerId);
+$offer = new Offer(1, "developpeur web", "developpeur web pour faire un site de gestion d'offres de stage", "developpeur", 30, 300, true, "27-09-2024", "27-09-2024");
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -175,72 +175,69 @@ if (!isset($offerId)) {
         </style>
     </head>
     <body>
-
-
-    <main>
-        <div class="offer-card">
-            <div class="offer-header">
-                <div class="offer-title">
-                    <div>
-                        <span class="offer-badge">Stage</span>
-                        <h2>Développeur Full Stack</h2>
-                        <p class="offer-date">Publiée le 15 juin 2023</p>
+        <?php include dirname(__FILE__) . '/../header.php'; ?>
+        <main>
+            <div class="offer-card">
+                <div class="offer-header">
+                    <div class="offer-title">
+                        <div>
+                            <span class="offer-badge">Stage</span>
+                            <h2>Développeur Full Stack</h2>
+                            <p class="offer-date">Publiée le 15 juin 2023</p>
+                        </div>
+                        <button class="apply-button">Postuler</button>
                     </div>
-                    <button class="apply-button">Postuler</button>
+                </div>
+                <div class="offer-content">
+                    <h3 class="company-name">
+                        <i class="fas fa-building"></i>
+                        TechInnovate Solutions
+                    </h3>
+                    <div class="offer-details">
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span>6 mois</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Paris, France</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>Début : 1 septembre 2023</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Bac +4/5</span>
+                        </div>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="offer-description">
+                        <h3>Description de l'offre</h3>
+                        <p>
+                            Nous recherchons un stagiaire développeur Full Stack passionné pour rejoindre notre équipe dynamique.
+                            Vous travaillerez sur des projets innovants utilisant les dernières technologies web.
+                            C'est une opportunité unique d'apprendre et de grandir dans un environnement stimulant.
+                        </p>
+                        <h4>Responsabilités :</h4>
+                        <ul>
+                            <li>Développer et maintenir des applications web full stack</li>
+                            <li>Collaborer avec l'équipe de design pour implémenter des interfaces utilisateur réactives</li>
+                            <li>Participer à la conception et à l'optimisation de bases de données</li>
+                            <li>Contribuer à l'amélioration continue de nos processus de développement</li>
+                        </ul>
+                        <h4>Compétences requises :</h4>
+                        <ul>
+                            <li>Connaissance en HTML, CSS, JavaScript, et frameworks modernes (React, Vue.js)</li>
+                            <li>Expérience avec Node.js et bases de données SQL/NoSQL</li>
+                            <li>Familiarité avec les principes de conception responsive et les bonnes pratiques UX</li>
+                            <li>Capacité à travailler en équipe et à communiquer efficacement</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="offer-content">
-                <h3 class="company-name">
-                    <i class="fas fa-building"></i>
-                    TechInnovate Solutions
-                </h3>
-                <div class="offer-details">
-                    <div class="detail-item">
-                        <i class="fas fa-clock"></i>
-                        <span>6 mois</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Paris, France</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-calendar"></i>
-                        <span>Début : 1 septembre 2023</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Bac +4/5</span>
-                    </div>
-                </div>
-                <div class="separator"></div>
-                <div class="offer-description">
-                    <h3>Description de l'offre</h3>
-                    <p>
-                        Nous recherchons un stagiaire développeur Full Stack passionné pour rejoindre notre équipe dynamique.
-                        Vous travaillerez sur des projets innovants utilisant les dernières technologies web.
-                        C'est une opportunité unique d'apprendre et de grandir dans un environnement stimulant.
-                    </p>
-                    <h4>Responsabilités :</h4>
-                    <ul>
-                        <li>Développer et maintenir des applications web full stack</li>
-                        <li>Collaborer avec l'équipe de design pour implémenter des interfaces utilisateur réactives</li>
-                        <li>Participer à la conception et à l'optimisation de bases de données</li>
-                        <li>Contribuer à l'amélioration continue de nos processus de développement</li>
-                    </ul>
-                    <h4>Compétences requises :</h4>
-                    <ul>
-                        <li>Connaissance en HTML, CSS, JavaScript, et frameworks modernes (React, Vue.js)</li>
-                        <li>Expérience avec Node.js et bases de données SQL/NoSQL</li>
-                        <li>Familiarité avec les principes de conception responsive et les bonnes pratiques UX</li>
-                        <li>Capacité à travailler en équipe et à communiquer efficacement</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <?php include dirname(__FILE__) . '/../footer.php'; ?>
-
-    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
+        </main>
+        <?php include dirname(__FILE__) . '/../footer.php'; ?>
+        <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
     </body>
 </html>
