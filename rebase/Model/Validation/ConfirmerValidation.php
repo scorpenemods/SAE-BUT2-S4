@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="/rebase/Modele/Model/DefaultStyles/styles.css ">
+    <link rel="stylesheet" href="/rebase/Model/DefaultStyles/styles.css ">
 </head>
 <body>
 <form action="../../../Index.php" method="post">

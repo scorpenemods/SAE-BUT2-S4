@@ -59,5 +59,10 @@ class Person
         return $this->email;
     }
 
+    public function getUserId()
+    {
+        return $this->id;
+    }
+
 
 }
