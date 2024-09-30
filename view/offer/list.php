@@ -64,7 +64,7 @@ if (isset($_SESSION['page-size'])) {
                 if ($max > count($offers)) {
                     $max = count($offers);
                 }
-                for  ($i = $count*$page-1; $i < $max; $i++) {
+                for  ($i = $count*($page-1); $i < $max; $i++) {
                     echo "<div class='company-card'>";
                         echo "<div class='company-carousel'>";
                         $offer = $offers[$i];
