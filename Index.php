@@ -102,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2>Connexion</h2>
             <form action="" method="POST">
                 <div class="form-group">
-                    <label for="username">Nom d'utilisateur :</label>
+                    <label for="username">Nom d'utilisateur / Email :</label>
                     <input type="text" id="username" name="username" required>
                 </div>
                 <div class="form-group">
