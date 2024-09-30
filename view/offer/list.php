@@ -33,6 +33,7 @@ if (isset($_SESSION['page-size'])) {
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <link rel="stylesheet" href="/view/css/list.css">
+	<link rel="stylesheet" href="/view/css/pagination.css">
 
     </head>
     <body>
