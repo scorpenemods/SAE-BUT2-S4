@@ -58,7 +58,7 @@ if (isset($_SESSION['page-size'])) {
                 <?php
                 $offers = Offer::getAll();
                 $max = $count*($page+1);
-                $totalPages = floor(count($offers) / $count);
+                $totalPages = ceil(count($offers) / $count);
                 if ($max > count($offers)) {
                     $max = count($offers);
                 }
@@ -99,10 +99,10 @@ if (isset($_SESSION['page-size'])) {
                 <form action="" id="sortForm" method="post">
                     <label for="page-size">Nombre d'annonces par page : </label>
                     <select name="page-size" id="page-size">
-                        <option value="5">6</option>
-                        <option value="10">12</option>
-                        <option value="20">24</option>
-                        <option value="50">48</option>
+                        <option value="6">6</option>
+                        <option value="12">12</option>
+                        <option value="24">24</option>
+                        <option value="48">48</option>
                     </select>
                 </form>
             </div>
@@ -320,7 +320,7 @@ if (isset($_SESSION['page-size'])) {
             document.getElementById('page-size').addEventListener('change', () => {
                 const pageSize = document.getElementById('page-size').value;
                 if (pageSize) {
-                    window.location.href = `/view/offer/list.php?page=${currentPage}&page-size=${pageSize}`;
+                    window.location.href = `/view/offer/list.php?page=1&page-size=${pageSize}`;
                 }
             });
 

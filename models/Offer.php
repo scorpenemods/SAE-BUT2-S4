@@ -178,7 +178,7 @@ class Offer {
     public static function getAll(): ?array {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM offers LIMIT 10");
+        $stmt = $db->prepare("SELECT * FROM offers");
         $stmt->execute();
 
         if ($db->errorCode() != 0) {
