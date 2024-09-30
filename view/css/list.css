@@ -90,7 +90,7 @@ main {
 }
 .company-listings {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 2fr));
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
     gap: 2rem;
 }
 .company-card {
@@ -283,4 +283,74 @@ main {
     .filter-panel.open {
         transform: translateX(-100%);
     }
+}
+
+
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
+    padding-top: 20px;
+}
+
+.pagination button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.pagination button:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: var(--secondary-color);
+}
+
+#page-numbers {
+    display: flex;
+    gap: 10px;
+}
+
+.page-number {
+    background-color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.page-number.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.page-number:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.page-size {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+#page-size {
+    background-color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
 }

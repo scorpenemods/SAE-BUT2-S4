@@ -6,6 +6,20 @@ require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../presenter/apply-filter.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';
+
+$count = 10;
+$page = 0;
+if (isset($_GET['page'])) {
+    $page = $_GET['page'];
+}
+
+if (isset($_GET['page-size'])) {
+    $_SESSION['page-size'] = $_GET['page-size'];
+}
+
+if (isset($_SESSION['page-size'])) {
+    $count = $_SESSION['page-size'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -43,10 +57,15 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
             <div class="company-listings">
                 <?php
                 $offers = Offer::getAll();
-
-                foreach ($offers as $offer) {
+                $max = $count*($page+1);
+                $totalPages = floor(count($offers) / $count);
+                if ($max > count($offers)) {
+                    $max = count($offers);
+                }
+                for  ($i = $count*$page; $i < $max; $i++) {
                     echo "<div class='company-card'>";
                         echo "<div class='company-carousel'>";
+                        $offer = $offers[$i];
                             foreach ($offer->getMedias() as $media) {
                                 echo "<img loading=\"lazy\" src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . ">";
                             }
@@ -68,6 +87,24 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
                     echo "</div>";
                 }
                 ?>
+            </div>
+            <div class="pagination">
+                <button class="first-page">⟸</button>
+                <button class="prev-page">‹</button>
+                <div id="page-numbers"></div>
+                <button class="next-page">›</button>
+                <button class="last-page">⟹</button>
+            </div>
+            <div class="page-size">
+                <form action="" id="sortForm" method="post">
+                    <label for="page-size">Nombre d'annonces par page : </label>
+                    <select name="page-size" id="page-size">
+                        <option value="5">6</option>
+                        <option value="10">12</option>
+                        <option value="20">24</option>
+                        <option value="50">48</option>
+                    </select>
+                </form>
             </div>
         </main>
 
@@ -234,6 +271,60 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
             createNotificationBtn.addEventListener('click', () => {
                 alert('Fonctionnalité de création de demande de notification à implémenter');
             });
+
+            // Pagination
+            const totalPages = <?php echo $totalPages; ?>;
+            let currentPage = <?php echo $page; ?>;
+
+            const pageNumbersDiv = document.getElementById('page-numbers');
+            const firstPageButton = document.querySelector('.first-page');
+            const prevPageButton = document.querySelector('.prev-page');
+            const nextPageButton = document.querySelector('.next-page');
+            const lastPageButton = document.querySelector('.last-page');
+
+            function renderPageNumbers() {
+                pageNumbersDiv.innerHTML = '';
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageNumber = document.createElement('span');
+                    pageNumber.classList.add('page-number');
+                    pageNumber.textContent = i;
+                    if (i === currentPage) {
+                        pageNumber.classList.add('active');
+                    }
+                    pageNumber.addEventListener('click', () => goToPage(i));
+                    pageNumbersDiv.appendChild(pageNumber);
+                }
+
+                firstPageButton.disabled = currentPage === 1;
+                prevPageButton.disabled = currentPage === 1;
+                nextPageButton.disabled = currentPage === totalPages;
+                lastPageButton.disabled = currentPage === totalPages;
+            }
+
+            // Functions to navigate pages
+            function goToPage(page) {
+                currentPage = page;
+                window.location.href = `/view/offer/list.php?page=${currentPage}`;
+            }
+
+            firstPageButton.addEventListener('click', () => goToPage(1));
+            prevPageButton.addEventListener('click', () => goToPage(currentPage - 1));
+            nextPageButton.addEventListener('click', () => goToPage(currentPage + 1));
+            lastPageButton.addEventListener('click', () => goToPage(totalPages));
+
+            // Initial render
+            renderPageNumbers();
+
+            // Update page numbers when page size changes
+            document.getElementById('page-size').addEventListener('change', () => {
+                const pageSize = document.getElementById('page-size').value;
+                if (pageSize) {
+                    window.location.href = `/view/offer/list.php?page=${currentPage}&page-size=${pageSize}`;
+                }
+            });
+
+            document.getElementById('page-size').value = <?php echo $count; ?>;
         </script>
     </body>
 </html>
