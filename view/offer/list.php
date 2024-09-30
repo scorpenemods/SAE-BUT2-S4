@@ -3,6 +3,7 @@ session_start();
 
 require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
+require dirname(__FILE__) . '/../../presenter/apply-filter.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';
 ?>
@@ -14,6 +15,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Le Petit Stage - Advanced</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/view/css/list.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <link rel="stylesheet" href="/view/css/list.css">
@@ -71,16 +73,20 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 
         <div class="filter-panel" id="filterPanel">
             <div class="filter-panel-content">
+                <form action="../../presenter/apply-filter.php" id="sortForm" method="post" >
+
                 <h2>Trier</h2>
                 <div>
-                    <label><input type="checkbox" name="recentes">   Les plus récentes</label>
-                    <label><input type="checkbox" name="anciennes">   Les plus anciennes</label>
-                    <label><input type="checkbox" name="consultees">   Les plus consultées</label>
-                </div>
-                <br>
+                    <label><input type="radio" name="sort" value="recentes">   Les plus récentes</label>
+                    <label><input type="radio" name="sort" value="anciennes">   Les plus anciennes</label>
+                    <label><input type="radio" name="sort" value="consultees">   Les plus consultées</label>
+                </div><br>
+
+                </form>
+
 
                 <h2>Filtrer</h2>
-                <form id="filterForm">
+                <form id="filterForm" action="../../presenter/apply-filter.php" method="post">
 
                     <div class="filter-section">
                         <h3>Date de début</h3>
@@ -89,22 +95,23 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 
                     <div class="filter-section">
                         <h3>Niveau d'étude</h3>
-                            <label><input type="checkbox" name="diploma" value="1-3"> Pas de niveau prérequis</label>
-                            <label><input type="checkbox" name="diploma" value="3-6">Bac, Bac Pro, CAP</label>
-                            <label><input type="checkbox" name="diploma" value="6+">Bac+2</label>
-                            <label><input type="checkbox" name="diploma" value="3-6">Bac+3, Bachelor</label>
-                            <label><input type="checkbox" name="diploma" value="6+">Bac+5, Master, diplôme d'ingénieur</label>
-                            <label><input type="checkbox" name="diploma" value="3-6">Bac+8, Doctorat</label>
+                            <label><input type="radio" name="diploma" value="1-3"> Pas de niveau prérequis</label>
+                            <label><input type="radio" name="diploma" value="3-6">Bac, Bac Pro, CAP</label>
+                            <label><input type="radio" name="diploma" value="6+">Bac+2</label>
+                            <label><input type="radio" name="diploma" value="3-6">Bac+3, Bachelor</label>
+                            <label><input type="radio" name="diploma" value="6+">Bac+5, Master, diplôme d'ingénieur</label>
+                            <label><input type="radio" name="diploma" value="3-6">Bac+8, Doctorat</label>
                     </div>
 
                     <div class="filter-section">
                         <h3>Montant du salaire</h3>
                         <label for="mini">Salaire minimum</label>
-                        <input type="text" id="mini" placeholder="Sans préférences">
+                        <input type="text" id="mini" name="minSalary" placeholder="Sans préférences">
                         <label for="maxi">Salaire maximum</label>
-                        <input type="text" id="maxi" placeholder="Sans préférences">
+                        <input type="text" id="maxi" name="maxSalary" placeholder="Sans préférences">
 
                     </div>
+
 
                     <div class="filter-section">
                         <h3>Localisation</h3>
@@ -124,6 +131,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
                         </div>
                     </div>
 
+
                     <div class="filter-section">
                         <h3>Secteur d'activité</h3>
                         <select id="sector" name="sector">
@@ -136,9 +144,10 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
                         </select>
                     </div>
 
+
                     <div class="filter-section">
                         <h3>Mots clés</h3>
-                        <input type="text" id="skills" name="skills" placeholder="Ex: JavaScript, Marketing, Finance">
+                        <input type="text" id="skills" name="keywords" placeholder="Ex: JavaScript, Marketing, Finance">
                     </div>
                 </form>
             </div>
@@ -151,6 +160,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
         </div>
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
         <script>
+            // Carousel functionality
             document.querySelectorAll('.company-carousel').forEach(carousel => {
                 const images = carousel.querySelectorAll('img');
                 const buttons = carousel.querySelectorAll('.carousel-nav button');
@@ -176,6 +186,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
                 }, 5000);
             });
 
+            // Filter panel functionality
             const filterPanel = document.getElementById('filterPanel');
             const blurOverlay = document.getElementById('blurOverlay');
             const openFilterBtn = document.getElementById('openFilter');
@@ -201,22 +212,24 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
             closeFilterBtn.addEventListener('click', closeFilterPanel);
             blurOverlay.addEventListener('click', closeFilterPanel);
 
-            
+
             filterForm.addEventListener('submit', (event) => {
                 event.preventDefault();
                 const formData = new FormData(filterForm);
                 const filters = Object.fromEntries(formData.entries());
                 console.log('Applied filters:', filters);
+                // Here you would typically send these filters to your backend or update the UI
                 closeFilterPanel();
             });
 
+            // Close filter panel when pressing Escape key
             document.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
                     closeFilterPanel();
                 }
             });
 
-            
+
             const createNotificationBtn = document.getElementById('createNotification');
             createNotificationBtn.addEventListener('click', () => {
                 alert('Fonctionnalité de création de demande de notification à implémenter');
