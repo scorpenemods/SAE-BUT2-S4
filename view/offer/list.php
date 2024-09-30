@@ -10,7 +10,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 $count = 12;
 $page = 0;
 if (isset($_GET['page'])) {
-    $page = $_GET['page'];
+    $page = $_GET['page']-1;
 }
 
 if (isset($_GET['page-size'])) {
