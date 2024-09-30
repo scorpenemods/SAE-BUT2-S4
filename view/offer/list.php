@@ -7,7 +7,7 @@ require dirname(__FILE__) . '/../../presenter/apply-filter.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';
 
-$count = 10;
+$count = 12;
 $page = 0;
 if (isset($_GET['page'])) {
     $page = $_GET['page'];
@@ -60,6 +60,7 @@ if (isset($_SESSION['page-size'])) {
                 $offers = Offer::getAll();
                 $max = $count*($page+1);
                 $totalPages = ceil(count($offers) / $count);
+
                 if ($max > count($offers)) {
                     $max = count($offers);
                 }
