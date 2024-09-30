@@ -25,22 +25,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Перенаправление на главную страницу в зависимости от роли
         switch ($_SESSION['user_role']) {
             case 1: // Student
-                header("Location: ../Presentation/etudiant.php");
+                header("Location: Presentation/etudiant.php");
                 break;
             case 2: // Professor
-                header("Location: ../Presentation/professeur.php");
+                header("Location: Presentation/professeur.php");
                 break;
             case 3: // Professional Mentor
-                header("Location: ../Presentation/maitreStage.php");
+                header("Location: Presentation/maitreStage.php");
                 break;
             case 4: // Secretariat
-                header("Location: ../Presentation/secritariat.php");
+                header("Location: Presentation/secritariat.php");
                 break;
             default:
-                header("Location: ./Presentation/Redirection.php");
+                header("Location: Presentation/Redirection.php");
                 break;
         }
-        exit();
     } else {
         $errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
     }
@@ -55,9 +54,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage</title>
-    <link rel="stylesheet" href="View/Home/Lobby.css">
-    <link rel="stylesheet" href="View/Home/Login.css">
-    <script src="View/Home/Lobby.js" defer></script>
+    <link rel="stylesheet" href="/View/Home/Lobby.css">
+    <link rel="stylesheet" href="/View/Home/Login.css">
+    <script src="/View/Home/Lobby.js" defer></script>
 </head>
 <body>
 <nav class="navbar">
