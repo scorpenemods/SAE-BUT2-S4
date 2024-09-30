@@ -58,10 +58,10 @@
 
     </div>
 </div>
+</body>
 <footer class="PiedDePage">
     <img src="../Resources/Logo_UPHF.png" alt="Logo uphf" width="10%">
     <a href="Redirection.php">Informations</a>
     <a href="Redirection.php">A propos</a>
 </footer>
-</body>
 </html>
