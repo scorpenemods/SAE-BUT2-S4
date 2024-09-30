@@ -10,7 +10,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 $count = 12;
 $page = 0;
 if (isset($_GET['page'])) {
-    $page = $_GET['page']-1;
+    $page = $_GET['page'];
 }
 
 if (isset($_GET['page-size'])) {
@@ -58,13 +58,13 @@ if (isset($_SESSION['page-size'])) {
             <div class="company-listings">
                 <?php
                 $offers = Offer::getAll();
-                $max = $count*($page+1);
+                $max = $count*($page);
                 $totalPages = ceil(count($offers) / $count);
 
                 if ($max > count($offers)) {
                     $max = count($offers);
                 }
-                for  ($i = $count*$page; $i < $max; $i++) {
+                for  ($i = $count*$page-1; $i < $max; $i++) {
                     echo "<div class='company-card'>";
                         echo "<div class='company-carousel'>";
                         $offer = $offers[$i];
