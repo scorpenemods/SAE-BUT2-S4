@@ -1,9 +1,10 @@
 <?php
 
+global $database;
 session_start(); // Start the session at the beginning of the script
 
-require "../Model/Database.php"; // Assuming your Person class is here, or included in Database.php
-require "../Model/Person.php"; // Ensure Person class is correctly included
+require_once "../Model/Database.php"; // Assuming your Person class is here, or included in Database.php
+require_once "../Model/Person.php"; // Ensure Person class is correctly included
 
 // Initialize username as Guest in case no user is logged in
 $userName = "Guest";
@@ -29,7 +30,7 @@ if (isset($_SESSION['user'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
-    <script type="text/javascript" src="../View/Principal/Principal.js"></script>
+    <script src="/View/Principal/Principal.js" defer></script>
 </head>
 <body>
 <header class="navbar">
@@ -108,13 +109,33 @@ if (isset($_SESSION['user'])) {
                         <h3 id="chat-header-title">Chat avec Contact 1</h3>
                     </div>
                     <div class="chat-body" id="chat-body">
-                        <!-- Тут будут отображаться сообщения -->
+                        <?php
+                        $database = new Database();
+                        $senderId = $_SESSION['user_id'] ?? null; // Проверка наличия user_id в сессии
+                        if (!$senderId) {
+                            die("Ошибка: ID пользователя не установлен в сессии.");
+                        }
+                        $receiverId = 2; // ID получателя (установите значение в соответствии с текущим собеседником)
+                        $messages = $database->getMessages($senderId, $receiverId);
+                        foreach ($messages as $msg) {
+                            echo "<div class='message'>";
+                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Защита от XSS
+                            if ($msg['file_path']) {
+                                echo "<a href='" . htmlspecialchars($msg['file_path']) . "' download>Скачать файл</a>";
+                            }
+                            echo "<span class='timestamp'>" . htmlspecialchars($msg['timestamp']) . "</span>";
+                            echo "</div>";
+                        }
+                        ?>
                     </div>
                     <div class="chat-footer">
-                        <input type="file" id="file-input" style="display:none" onchange="sendFile(event)">
-                        <button class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                        <input type="text" id="message-input" placeholder="Tapez un message...">
-                        <button onclick="sendMessage()">Envoyer</button>
+                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="sendMessage.php">
+                            <input type="file" id="file-input" name="file" style="display:none" onchange="document.getElementById('messageForm').submit();">
+                            <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
+                            <input type="hidden" name="receiver_id" value="2"> <!-- Замените на нужный ID -->
+                            <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
+                            <button type="submit" onclick="sendMessage()">Envoyer</button>
+                        </form>
                     </div>
                 </div>
             </div>
