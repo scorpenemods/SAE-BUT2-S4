@@ -6,7 +6,7 @@ function truncateUTF8($string, $length) {
 
     $truncated = mb_substr($string, 0, $length, 'UTF-8');
 
-    if (substr($truncated, -1) === ' ') {
+    if (str_ends_with($truncated, ' ')) {
         $truncated = substr($truncated, 0, -1);
     }
 
