@@ -31,14 +31,18 @@ main {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .offer-header {
-    background: linear-gradient(to right, #1F363D, #1F362D);
-    color: #FFFFFF;
-    padding: 2rem;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 0;
 }
 .offer-title {
+    backdrop-filter: blur(10px);
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    padding: 2rem;
+    color: #FFFFFF;
 }
 .offer-badge {
     background-color: #80A9A1;

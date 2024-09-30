@@ -1,5 +1,7 @@
 <?php
 
+require dirname(__FILE__) . '/../models/Media.php';
+
 class Offer {
     private int $id;
     private int $company_id;
@@ -176,7 +178,7 @@ class Offer {
     public static function getAll(): ?array {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM offers");
+        $stmt = $db->prepare("SELECT * FROM offers LIMIT 10");
         $stmt->execute();
 
         if ($db->errorCode() != 0) {

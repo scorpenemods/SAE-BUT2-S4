@@ -2,7 +2,6 @@
 session_start();
 
 require dirname(__FILE__) . '/../../models/Offer.php';
-require dirname(__FILE__) . '/../../models/Media.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';
@@ -47,7 +46,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
                     echo "<div class='company-card'>";
                         echo "<div class='company-carousel'>";
                             foreach ($offer->getMedias() as $media) {
-                                echo "<img src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . ">";
+                                echo "<img loading=\"lazy\" src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . ">";
                             }
                             echo "<div class='carousel-nav'>";
                                 foreach ($offer->getMedias() as $media) {
