@@ -112,14 +112,15 @@ class Database
     // ----------------------- Messenger realisation ------------------------------------------ //
 
     public function sendMessage($senderId, $receiverId, $message, $filePath = null) {
-        $sql = "INSERT INTO Message (sender_id, receiver_id, contenu, file_path) VALUES (:sender_id, :receiver_id, :contenu, :file_path)";
+        $sql = "INSERT INTO Message (sender_id, receiver_id, contenu, file_path, timestamp) VALUES (:sender_id, :receiver_id, :contenu, :file_path, :timestamp)";
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([
                 ':sender_id' => $senderId,
                 ':receiver_id' => $receiverId,
                 ':contenu' => $message,
-                ':file_path' => $filePath
+                ':file_path' => $filePath,
+                ':timestamp' => date("Y-m-d H:i:s") // Устанавливаем временную метку с учетом часового пояса
             ]);
             return true;
         } catch (PDOException $e) {
@@ -142,6 +143,33 @@ class Database
             echo "Error: " . $e->getMessage();
             return [];
         }
+    }
+
+    public function deleteMessage($messageId) {
+        $sql = "DELETE FROM Message WHERE id = :message_id";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':message_id', $messageId, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function getMessageById($messageId) {
+        try {
+            $stmt = $this->connection->prepare("SELECT * FROM Message WHERE id = :id");
+            $stmt->bindParam(':id', $messageId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function getLastMessageId() {
+        return $this->connection->lastInsertId();
     }
 
     public function getConnection() {

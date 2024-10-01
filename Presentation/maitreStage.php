@@ -13,6 +13,15 @@ if (isset($_SESSION['user'])) {
     header("Location: Logout.php");
     exit();
 }
+
+$userRole = $person->getRole(); // Получение роли пользователя
+
+// Ограничение доступа по ролям (настройте в зависимости от ролей)
+$allowedRoles = [4]; // Здесь указаны роли, которым разрешен доступ к странице. Например, роль 2 — преподаватель.
+if (!in_array($userRole, $allowedRoles)) {
+    header("Location: access_denied.php");  // Перенаправление на страницу отказа в доступе
+    exit();
+}
 ?>
 
 <!DOCTYPE html>

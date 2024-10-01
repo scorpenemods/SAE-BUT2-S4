@@ -8,18 +8,31 @@ require_once "../Model/Person.php"; // Ensure Person class is correctly included
 
 // Initialize username as Guest in case no user is logged in
 $userName = "Guest";
+date_default_timezone_set('Europe/Paris');
 
-// Check if the user is logged in and retrieve their name
-if (isset($_SESSION['user'])) {
-    $person = unserialize($_SESSION['user']);
-    if ($person instanceof Person) { // Check if the unserialized object is indeed a Person object
-        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom()); // Safely encode output to prevent XSS
-    }
-} else {
-    // If no user is found in session, redirect to the login page
+// Проверка, что пользователь залогинен
+if (!isset($_SESSION['user'])) {
     header("Location: Logout.php");
     exit();
 }
+
+// Получение данных пользователя из сессии
+$person = unserialize($_SESSION['user']);
+$userName = $person->getPrenom() . ' ' . $person->getNom();
+$senderId = $person->getUserId();  // ID текущего пользователя
+$userRole = $person->getRole(); // Получение роли пользователя
+
+// Ограничение доступа по ролям (настройте в зависимости от ролей)
+$allowedRoles = [1]; // Здесь указаны роли, которым разрешен доступ к странице. Например, роль 2 — преподаватель.
+if (!in_array($userRole, $allowedRoles)) {
+    header("Location: access_denied.php");  // Перенаправление на страницу отказа в доступе
+    exit();
+}
+
+$receiverId = 2; // Установите динамически, на основе выбранного контакта в мессенджере
+
+$database = new Database();
+$messages = $database->getMessages($senderId, $receiverId); // Получение сообщений между пользователями
 ?>
 
 
@@ -29,8 +42,9 @@ if (isset($_SESSION['user'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage</title>
-    <link rel="stylesheet" href="../View/Principal/Principal.css">
+    <link rel="stylesheet" href="/View/Principal/Principal.css">
     <script src="/View/Principal/Principal.js" defer></script>
+    <script src="/View/Principal/deleteMessage.js" defer></script>
 </head>
 <body>
 <header class="navbar">
@@ -104,37 +118,61 @@ if (isset($_SESSION['user'])) {
                         <li>Contact 3</li>
                     </ul>
                 </div>
+
+                <!-- Right click for delete -->
+                <div id="context-menu" class="context-menu">
+                    <ul>
+                        <li id="copy-text">Copy</li>
+                        <li id="delete-message">Delete</li>
+                    </ul>
+                </div>
+
                 <div class="chat-window">
                     <div class="chat-header">
                         <h3 id="chat-header-title">Chat avec Contact 1</h3>
                     </div>
                     <div class="chat-body" id="chat-body">
                         <?php
-                        $database = new Database();
-                        $senderId = $_SESSION['user_id'] ?? null; // Проверка наличия user_id в сессии
-                        if (!$senderId) {
-                            die("Ошибка: ID пользователя не установлен в сессии.");
+                        // Функция для форматирования даты
+                        function formatTimestamp($timestamp) {
+                            $date = new DateTime($timestamp);
+                            $now = new DateTime();
+                            $yesterday = new DateTime('yesterday');
+
+                            // Сравнение даты сообщения с сегодняшней датой
+                            if ($date->format('Y-m-d') == $now->format('Y-m-d')) {
+                                return 'Today ' . $date->format('H:i');
+                            }
+                            // Сравнение даты сообщения со вчерашней датой
+                            elseif ($date->format('Y-m-d') == $yesterday->format('Y-m-d')) {
+                                return 'Yesterday ' . $date->format('H:i');
+                            } else {
+                                return $date->format('d.m.Y H:i'); // Короткий формат даты и времени
+                            }
                         }
-                        $receiverId = 2; // ID получателя (установите значение в соответствии с текущим собеседником)
-                        $messages = $database->getMessages($senderId, $receiverId);
+
+                        // Пример использования в вашем цикле для вывода сообщений
                         foreach ($messages as $msg) {
-                            echo "<div class='message'>";
+                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Определение класса в зависимости от отправителя
+                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
                             echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Защита от XSS
                             if ($msg['file_path']) {
-                                echo "<a href='" . htmlspecialchars($msg['file_path']) . "' download>Скачать файл</a>";
+                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path']));
+                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
                             }
-                            echo "<span class='timestamp'>" . htmlspecialchars($msg['timestamp']) . "</span>";
+                            // Используем функцию formatTimestamp для вывода форматированной даты и времени
+                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
                             echo "</div>";
                         }
                         ?>
                     </div>
                     <div class="chat-footer">
                         <form id="messageForm" enctype="multipart/form-data" method="POST" action="sendMessage.php">
-                            <input type="file" id="file-input" name="file" style="display:none" onchange="document.getElementById('messageForm').submit();">
+                            <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                             <input type="hidden" name="receiver_id" value="2"> <!-- Замените на нужный ID -->
                             <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="submit" onclick="sendMessage()">Envoyer</button>
+                            <button type="button" onclick="sendMessage(event)">Envoyer</button> <!-- dynamic messages sending -->
                         </form>
                     </div>
                 </div>

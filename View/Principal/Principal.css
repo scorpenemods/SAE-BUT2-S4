@@ -257,46 +257,12 @@ header .hide-list {
     background-color: #f9f9f9;
 }
 
-.message {
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    background-color: #e0e0e0;
-}
-
-.chat-footer {
-    display: flex;
-    padding: 10px;
-    background-color: #fff;
-    border-top: 1px solid #ddd;
-}
-
-.chat-footer input[type="text"] {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
-.chat-footer button {
-    padding: 10px 20px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.chat-footer button:hover {
-    background-color: #2980b9;
-}
-
 /* Основная часть */
 section.Menus {
     flex-grow: 1;
     width: 90%;
     margin: 100px auto;
+    margin-bottom: 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -355,7 +321,6 @@ footer.PiedDePage {
     color: white;
     padding: 20px;
     width: 100%;
-    position: fixed;
     bottom: 0;
     left: 0;
     z-index: 1000;
@@ -438,62 +403,81 @@ footer a {
     border-radius: 8px;
 }
 
+/* Основные стили для сообщений */
 .message {
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    background-color: #ecf0f1;
-    position: relative;
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 15px;
+    margin: 5px;
+    max-width: 60%;
+    word-wrap: break-word;
 }
 
-.message .timestamp {
-    font-size: 0.7em;
-    color: #95a5a6;
-    text-align: right;
-    margin-top: 5px;
-    padding: 5px;
-    border: 1px ;
-}
-.timestamp {
-    display: flex;
-    max-width: 55px;
-    justify-content: right;
-
-}
-
+/* Стили для сообщений отправителя */
 .message.self {
-
-    background-color: #d1f7d6;
+    background-color: #DCF8C6;
+    align-self: flex-end;
     text-align: right;
+    border-top-right-radius: 0;
+}
+
+/* Стили для сообщений получателя */
+.message.other {
+    background-color: #F1F0F0;
+    align-self: flex-start;
+    text-align: left;
+    border-top-left-radius: 0;
+}
+
+/* Контейнер для сообщений */
+.chat-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 400px;
+}
+
+/* Контейнер для времени */
+.timestamp-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 3px;
+}
+
+/* Стили для времени */
+.timestamp {
+    font-size: 12px;
+    color: #999;
+    padding: 5px;
+    border-radius: 10px;
+    border: 0 #999;}
+
+/* Поле ввода */
+.chat-footer input[type="text"] {
+    width: 70%; /* Увеличиваем длину поля ввода */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
 }
 
 .chat-footer {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border-top: 1px solid #ddd;
+    padding-top: 10px;
 }
 
-.chat-footer input[type="text"] {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
+/* Кнопка отправки */
 .chat-footer button {
-    padding: 10px;
-    background-color: #3498db;
+    padding: 10px 20px;
+    margin-left: 10px;
+    background-color: #0084FF;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
 }
 
 .chat-footer button:hover {
-    background-color: #2980b9;
+    background-color: #005bb5;
 }
 
 .attach-button {
@@ -519,6 +503,30 @@ button:hover,
     background-color: #3498db;
     color: white;
     box-shadow: 0 6px 10px rgba(0, 102, 204, 0.2);
+}
+
+.context-menu {
+    position: absolute;
+    display: none;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.context-menu ul {
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+}
+
+.context-menu ul li {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.context-menu ul li:hover {
+    background-color: #f2f2f2;
 }
 
 /*------------------ Search  -------------------*/
@@ -564,13 +572,19 @@ body.dark-mode .chat-body {
     background-color: #3d556f;
 }
 
-body.dark-mode .message {
-    background-color: #5a5f7d;
+body.dark-mode .message.self {
+    background-color: #1abc9c;
+    color: #ecf0f1; ;
+}
+
+body.dark-mode .message.other {
+    background-color: #58499c;
     color: #ecf0f1;
 }
 
 body.dark-mode .chat-footer {
     background-color: #2c3e50;
+    padding-bottom: 10px;
 }
 
 body.dark-mode .chat-footer input[type="text"] {
@@ -582,3 +596,4 @@ body.dark-mode .chat-footer button {
     background-color: #1abc9c;
     color: white;
 }
+

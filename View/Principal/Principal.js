@@ -45,6 +45,7 @@ function toggleTheme() {
 }
 
 
+
 // Code menus principaux
 function widget(x) {
     // Récupère la ligne ayant la classe "Visible" pour la supprimer et la remplacer par la classe "Contenu"
@@ -62,32 +63,178 @@ function widget(x) {
     let span =  document.querySelectorAll("section span");
     span[x].classList.add("Current")
 }
+function sendMessage(event) {
+    event.preventDefault();
 
-function sendMessage() {
     const messageInput = document.getElementById('message-input');
-    const message = messageInput.value;
-    if (message.trim() !== "") {
-        const timestamp = new Date().toLocaleTimeString('fr-FR', { timeZone: 'Europe/Paris' });
-        displayMessage(`${message} <span class="timestamp">${timestamp}</span>`, 'self');
-        messageInput.value = ''; // Очистить поле после отправки
+    const message = messageInput.value.trim();
+    const fileInput = document.getElementById('file-input');
+    const receiverId = document.querySelector('input[name="receiver_id"]').value;
+
+    if (!message && !fileInput.files.length) {
+        alert("Veuillez entrer un message ou sélectionner un fichier.");
+        return;
     }
+
+    const formData = new FormData();
+    formData.append("receiver_id", receiverId);
+    formData.append("message", message);
+    if (fileInput.files.length > 0) {
+        formData.append("file", fileInput.files[0]);
+    }
+
+    fetch("sendMessage.php", {
+        method: "POST",
+        body: formData
+    })
+        .then(response => response.text())
+        .then(text => {
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (error) {
+                console.error("Erreur lors de l'analyse du JSON: ", error);
+                console.error("Réponse du serveur: ", text);
+                alert("Erreur lors de l'envoi du message. Veuillez réessayer plus tard.");
+                return;
+            }
+            if (data.status === 'success') {
+                displayMessage(
+                    data.message,
+                    data.file_path,
+                    data.file_name,
+                    'self',
+                    data.timestamp,
+                    data.message_id
+                );
+                messageInput.value = '';
+                fileInput.value = '';
+            } else {
+                alert("Erreur: " + data.message);
+            }
+        })
+        .catch(error => console.error("Erreur lors de l'envoi du message: ", error));
 }
 
-function sendFile(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const fileURL = URL.createObjectURL(file); // Генерация ссылки для скачивания
-        displayMessage(`<a href="${fileURL}" download="${file.name}">${file.name}</a>`, 'self', true);
-    }
-}
-
-function displayMessage(content, sender, isFile = false) {
-    const chatBody = document.getElementById('chat-body');
+function displayMessage(messageContent, filePath = null, fileName = '', messageType, timestamp, messageId) {
     const messageElement = document.createElement('div');
-    messageElement.classList.add('message', sender);
-    messageElement.innerHTML = content;
+    messageElement.classList.add('message', messageType);
+    messageElement.dataset.messageId = messageId; // Assign the message ID
+
+    // Add message text if any
+    if (messageContent) {
+        const messageText = document.createElement('p');
+        messageText.innerHTML = messageContent;
+        messageElement.appendChild(messageText);
+    }
+
+    // Add file link if file exists
+    if (filePath) {
+        const fileLink = document.createElement('a');
+        fileLink.href = filePath;
+        fileLink.download = true;
+        fileLink.textContent = fileName || 'Télécharger le fichier';
+        messageElement.appendChild(fileLink);
+    }
+
+    // Add timestamp
+    const timestampContainer = document.createElement('div');
+    timestampContainer.classList.add('timestamp-container');
+    timestampContainer.innerHTML = `<span class="timestamp">${formatTimestamp(timestamp)}</span>`;
+
+    messageElement.appendChild(timestampContainer);
+
+    const chatBody = document.getElementById('chat-body');
     chatBody.appendChild(messageElement);
-    chatBody.scrollTop = chatBody.scrollHeight; // Автопрокрутка вниз
+    chatBody.scrollTop = chatBody.scrollHeight; // Scroll to the bottom
+}
+
+function fetchMessages() {
+    const receiverId = document.querySelector('input[name="receiver_id"]').value;
+    const formData = new FormData();
+    formData.append("receiver_id", receiverId);
+
+    fetch("fetchMessages.php", {
+        method: "POST",
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                updateChat(data.messages);
+            } else {
+                console.error("Erreur: " + data.message);
+            }
+        })
+        .catch(error => console.error("Erreur lors de la récupération des messages: ", error));
+}
+
+function updateChat(messages) {
+    const chatBody = document.getElementById('chat-body');
+    chatBody.innerHTML = ''; // Clear existing messages
+
+    messages.forEach(msg => {
+        const messageType = msg.sender_id == currentUserId ? 'self' : 'other';
+        displayMessage(msg.content, msg.file_path, messageType, msg.timestamp);
+    });
+}
+
+// setInterval(fetchMessages, 5000); // Fetch messages every 5 seconds
+
+function sendFile(fileInput) {
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("receiver_id", document.querySelector('input[name="receiver_id"]').value);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "uploadFile.php", true);
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if (response.status === 'success') {
+                displayMessage(`<a href="${response.file_path}" download="${file.name}">${file.name}</a>`, 'self', response.timestamp);
+            } else {
+                alert('Ошибка при загрузке файла: ' + response.message);
+            }
+        }
+    };
+
+    xhr.send(formData);
+
+    // Очистка выбранного файла
+    fileInput.value = '';
+}
+
+// Форматирование даты и времени
+function formatTimestamp(timestamp) {
+    const optionsTime = { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' };
+    const optionsDate = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Europe/Paris' };
+
+    // Получаем текущую дату и время в часовом поясе Europe/Paris
+    const nowParis = new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris' });
+    const now = new Date(nowParis);
+
+    // Получаем дату и время сообщения в часовом поясе Europe/Paris
+    const messageDateParis = new Date(timestamp).toLocaleString('en-US', { timeZone: 'Europe/Paris' });
+    const messageDate = new Date(messageDateParis);
+
+    // Проверяем, является ли сообщение сегодняшним
+    const isToday = now.toDateString() === messageDate.toDateString();
+
+    // Проверяем, является ли сообщение вчерашним
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const isYesterday = yesterday.toDateString() === messageDate.toDateString();
+
+    if (isToday) {
+        return 'Today ' + messageDate.toLocaleTimeString('fr-FR', optionsTime);
+    }
+    if (isYesterday) {
+        return 'Yesterday ' + messageDate.toLocaleTimeString('fr-FR', optionsTime);
+    }
+    return messageDate.toLocaleDateString('fr-FR', optionsDate) + ' ' + messageDate.toLocaleTimeString('fr-FR', optionsTime);
 }
 
 function searchContacts() {
@@ -103,23 +250,24 @@ function searchContacts() {
             contact.style.display = 'none';
         }
     });
-
-    function toggleMenu() {
-        const menu = document.getElementById('settingsMenu');
-        menu.classList.toggle('hide-list');
-        menu.classList.toggle('show-list');
-    }
-    function widget(index) {
-        // Получаем все элементы содержимого и кнопки меню
-        const contents = document.querySelectorAll('.Contenus .Contenu');
-        const buttons = document.querySelectorAll('.widget-button');
-
-        // Убираем активный класс "Visible" с контента и "Current" с кнопок
-        contents.forEach((content) => content.classList.remove('Visible'));
-        buttons.forEach((button) => button.classList.remove('Current'));
-
-        // Добавляем активный класс к выбранному контенту и кнопке
-        contents[index].classList.add('Visible');
-        buttons[index].classList.add('Current');
-    }
 }
+function toggleMenu() {
+    const menu = document.getElementById('settingsMenu');
+    menu.classList.toggle('hide-list');
+    menu.classList.toggle('show-list');
+}
+// send a message only by clicking the button
+document.getElementById('message-input').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+    }
+});
+
+
+// ---------------------------------- Close the session -------------------------------------//
+
+window.onbeforeunload = function() {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "Logout.php", false);  // Используем синхронный запрос, чтобы завершить сессию
+    xhr.send(null);
+};

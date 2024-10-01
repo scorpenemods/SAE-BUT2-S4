@@ -4,6 +4,7 @@ body {
     background-size: 200% 200%;
     transition: background 1s ease, color 1s ease;
     color: var(--text-color); /* Font color */
+    margin: 0;
 }
 article{
     margin: 0;
@@ -36,6 +37,7 @@ body.dark-mode {
 
 /* Navigation Bar */
 .navbar {
+    font-family: 'Poppins', sans-serif;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -50,8 +52,8 @@ body.dark-mode {
     z-index: 1000;
 }
 
-.logo {
-    height: 45px;
+.navbar .logo {
+    height: 50px;
 }
 
 .navbar-left .app-name {
@@ -235,6 +237,8 @@ footer {
     padding: 20px 0;
     text-align: center;
     margin-top: auto;
+    width: 100%;
+
 }
 
 footer a {

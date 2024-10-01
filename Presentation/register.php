@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit();
     } else {
-        echo "Error while registering!.";
+        echo "Error while registering!";
     }
 }
 ?>

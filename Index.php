@@ -42,9 +42,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } else {
         $errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
-        $_SESSION['error'] = $errorMessage;
-        header("Location: Index.php");
-        exit();
     }
 
     $database->closeConnection();
@@ -57,9 +54,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage</title>
-    <link rel="stylesheet" href="View/Home/Lobby.css">
-    <link rel="stylesheet" href="View/Home/Login.css">
-    <script src="View/Home/Lobby.js" defer></script>
+    <!-- <link rel="stylesheet" href="rebase/Model/DefaultStyles/styles.css"> -->
+    <link rel="stylesheet" href="./View/Home/Lobby.css">
+    <link rel="stylesheet" href="./View/Home/Login.css">
+    <script src="./View/Home/Lobby.js" defer></script>
 </head>
 <body>
 <nav class="navbar">
@@ -105,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2>Connexion</h2>
             <form action="" method="POST">
                 <div class="form-group">
-                    <label for="username">Nom d'utilisateur / Email :</label>
+                    <label for="username">Nom d'utilisateur :</label>
                     <input type="text" id="username" name="username" required>
                 </div>
                 <div class="form-group">
