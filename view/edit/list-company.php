@@ -10,7 +10,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 $pageId = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
 $company_id = 1;
 
-// Check if user is logged in and has a company
+// Check if user has a company
 //if ($_SESSION['company_id']) {
 //    $company_id = $_SESSION['company_id'];
 //}
@@ -35,7 +35,6 @@ if ($pageId == null) {
     <link rel="stylesheet" href="/view/css/header.css">
     <link rel="stylesheet" href="/view/css/footer.css">
     <link rel="stylesheet" href="/view/css/list.css">
-    <link rel="stylesheet" href="/view/css/pagination.css">
 
 </head>
 <body>
@@ -47,9 +46,6 @@ if ($pageId == null) {
             <input type="text" placeholder="Rechercher une offre" aria-label="Rechercher une offre">
             <button id="openFilter" aria-label="Ouvrir les filtres">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-            </button>
-            <button id="createNotification" aria-label="Créer une demande de notification">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             </button>
             <button id="search" aria-label="Rechercher">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -96,13 +92,13 @@ if ($pageId == null) {
         ?>
     </div>
     <div class="pagination">
-        <a href="/view/offer/list.php?page=1" class="first-page">⟸</a>
-        <a href="/view/offer/list.php?page=<?php if ($pageId > 1) { echo $pageId - 1; } else { echo $pageId; }?>" class="prev-page">‹</a>
+        <a href="/view/edit/list-company.php?page=1" class="first-page">⟸</a>
+        <a href="/view/edit/list-company.php?page=<?php if ($pageId > 1) { echo $pageId - 1; } else { echo $pageId; }?>" class="prev-page">‹</a>
         <form method="GET">
             <input type="number" name="page" min="1" max="<?php echo $totalPages; ?>" value="<?php echo $pageId; ?>">
         </form>
-        <a href="/view/offer/list.php?page=<?php if ($pageId < $totalPages) { echo $pageId + 1; } else { echo $pageId; }?>" class="next-page">›</a>
-        <a href="/view/offer/list.php?page=<?php echo $totalPages; ?>" class="last-page">⟹</a>
+        <a href="/view/edit/list-company.php?page=<?php if ($pageId < $totalPages) { echo $pageId + 1; } else { echo $pageId; }?>" class="next-page">›</a>
+        <a href="/view/edit/list-company.php?page=<?php echo $totalPages; ?>" class="last-page">⟹</a>
     </div>
 </main>
 
@@ -269,11 +265,6 @@ if ($pageId == null) {
         }
     });
 
-
-    const createNotificationBtn = document.getElementById('createNotification');
-    createNotificationBtn.addEventListener('click', () => {
-        alert('Fonctionnalité de création de demande de notification à implémenter');
-    });
 </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require dirname(__FILE__) . '/../../models/Offer.php';
+require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
@@ -24,7 +24,6 @@ if ($pageId == null) {
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <link rel="stylesheet" href="/view/css/list.css">
-	<link rel="stylesheet" href="/view/css/pagination.css">
 
     </head>
     <body>
@@ -48,7 +47,7 @@ if ($pageId == null) {
 
             <div class="company-listings">
                 <?php
-                $offers = Offer::getAllPendingOffers();
+                $offers = PendingOffer::getAll();
                 $totalPages = ceil(count($offers) / 12);
 
                 $startIndex = ($pageId - 1) * 12;
@@ -68,7 +67,7 @@ if ($pageId == null) {
                             echo "</div>";
                         echo "</div>";
                         echo "<div class='company-info'>";
-                            echo "<h3><a href='/view/offer/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
+                            echo "<h3><a href='/view/pending/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
                             echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
                             echo "<div class='company-meta'>";
                                 echo "<span>" . $offer->getCompany()->getName() . "</span>";
@@ -81,13 +80,13 @@ if ($pageId == null) {
                 ?>
             </div>
             <div class="pagination">
-                <a href="/view/offer/list.php?page=1" class="first-page">⟸</a>
-                <a href="/view/offer/list.php?page=<?php if ($pageId > 1) { echo $pageId - 1; } else { echo $pageId; }?>" class="prev-page">‹</a>
+                <a href="/view/pending/list.php?page=1" class="first-page">⟸</a>
+                <a href="/view/pending/list.php?page=<?php if ($pageId > 1) { echo $pageId - 1; } else { echo $pageId; }?>" class="prev-page">‹</a>
                 <form method="GET">
                     <input type="number" name="page" min="1" max="<?php echo $totalPages; ?>" value="<?php echo $pageId; ?>">
                 </form>
-                <a href="/view/offer/list.php?page=<?php if ($pageId < $totalPages) { echo $pageId + 1; } else { echo $pageId; }?>" class="next-page">›</a>
-                <a href="/view/offer/list.php?page=<?php echo $totalPages; ?>" class="last-page">⟹</a>
+                <a href="/view/pending/list.php?page=<?php if ($pageId < $totalPages) { echo $pageId + 1; } else { echo $pageId; }?>" class="next-page">›</a>
+                <a href="/view/pending/list.php?page=<?php echo $totalPages; ?>" class="last-page">⟹</a>
             </div>
         </main>
 

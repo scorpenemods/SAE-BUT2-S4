@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require dirname(__FILE__) . '/../../models/Offer.php';
+require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 
 $returnUrl = "/view/offer/list-company.php";
@@ -15,7 +15,7 @@ if ($offerId == null) {
     die();
 }
 
-$offer = Offer::getById($offerId);
+$offer = PendingOffer::getById($offerId);
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +42,16 @@ $offer = Offer::getById($offerId);
                             <?php echo "<h2>" . $offer->getTitle() . "</h2>"; ?>
                             <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
                         </div>
-                        <button class="apply-button">Postuler</button>
+                        <div class="apply-button-container">
+                            <form action="../edit/edit-company.php" method="get">
+                                <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
+                                <button class="apply-button-edit" >Refuser</button>
+                            </form>
+                            <form action="../../presenter/pending/apply.php" method="post">
+                                <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
+                                <button class="apply-button-edit">Valider></button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <div class="offer-content">

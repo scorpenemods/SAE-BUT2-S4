@@ -3,6 +3,16 @@ session_start();
 global $tags;
 
 require dirname(__FILE__) . '/../../models/Offer.php';
+require dirname(__FILE__) . '/../../models/Company.php';
+
+// Check if user has a company
+//if ($_SESSION['company_id']) {
+//    $company_id = $_SESSION['company_id'];
+//}
+//else {
+//    header("Location: ../offer/list-company.php");
+//    die();
+//}
 
 if ($_GET['id']) {
     $offer = Offer::getById($_GET['id']);

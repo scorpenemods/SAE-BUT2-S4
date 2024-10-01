@@ -15,11 +15,12 @@ if ($offerId == null) {
     die();
 }
 
-// Check if user is logged in and has a company
 $company_id = 1;
+// Check if user has a company
 //if ($_SESSION['company_id']) {
 //    $company_id = $_SESSION['company_id'];
-//} else {
+//}
+//else {
 //    header("Location: ../offer/list-company.php");
 //    die();
 //}
@@ -42,7 +43,7 @@ if ($offer->getCompany()->getId() != $company_id) {
         <link rel="stylesheet" href="/view/css/detail.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
-        <link rel="stylesheet" href="/view/css/detail-company.css">
+        <link rel="stylesheet" href="/view/css/button.css">
         <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     </head>
@@ -60,7 +61,7 @@ if ($offer->getCompany()->getId() != $company_id) {
                         <div class="apply-button-container">
                             <form action="../edit/edit-company.php" method="get">
                                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
-                                <button class="apply-button-edit" onclick="">Modifier</button>
+                                <button class="apply-button-edit">Modifier</button>
                             </form>
                             <form action="../../presenter/edit/cacher.php" method="post">
                                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
