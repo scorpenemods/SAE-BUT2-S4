@@ -3,7 +3,7 @@ session_start();
 
 require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
-require dirname(__FILE__) . '/../../presenter/apply-filter.php';
+require dirname(__FILE__) . '/../../presenter/filter.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';
 
@@ -93,7 +93,7 @@ if ($pageId == null) {
 
         <div class="filter-panel" id="filterPanel">
             <div class="filter-panel-content">
-                <form action="../../presenter/apply-filter.php" id="sortForm" method="post" >
+                <form action="../../presenter/offer/filter.php" id="sortForm" method="post" >
 
                 <h2>Trier</h2>
                 <div>
@@ -106,7 +106,7 @@ if ($pageId == null) {
 
 
                 <h2>Filtrer</h2>
-                <form id="filterForm" action="../../presenter/apply-filter.php" method="post">
+                <form id="filterForm" action="../../presenter/offer/filter.php" method="post">
 
                     <div class="filter-section">
                         <h3>Date de début</h3>

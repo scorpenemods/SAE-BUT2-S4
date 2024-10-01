@@ -1,12 +1,14 @@
 <?php
 session_start();
 
+require dirname(__FILE__)."/../../models/Offer.php";
+
 global $company_id;
 if (isset($_SESSION['user'])) {
     $company_id = $_SESSION['company_id'];
 }
 
-if (isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) && isset($_POST['description']) && isset($_POST['duration']) && isset($_POST['salary']) && isset($_POST['education']) && isset($_POST['start-date']) && isset($_POST['tags']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_FILES['file-upload']) && isset($_POST['selected-tags'])) {
+if (isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) && isset($_POST['description']) && isset($_POST['duration']) && isset($_POST['salary']) && isset($_POST['education']) && isset($_POST['start-date'])&& isset($_POST['email']) && isset($_POST['phone']) && isset($_FILES['file-upload'])) {
     $title = $_POST['title'];
     $address = $_POST['address'];
     $job = $_POST['job'];
@@ -15,17 +17,21 @@ if (isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) &
     $salary = $_POST['salary'];
     $education = $_POST['education'];
     $startDate = $_POST['start-date'];
-    $tags = $_POST['tags'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $file = $_FILES['file-upload'];
 
-    $selectedTags = $_POST['selected-tags'];
-
-    echo $selectedTags;
+    $selectedTags = array();
+    $tags = Offer::getAllTags();
+    foreach ($tags as $tag) {
+        if (isset($_POST["tag_".$tag])) {
+            $selectedTags[] = $tag;
+        }
+    }
 
     if ($file['error'] !== UPLOAD_ERR_OK) {
         echo "Erreur lors du téléchargement du fichier";
+        die();
     }
 
     $fileName = $file['name'];
@@ -40,7 +46,6 @@ if (isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) &
         echo "Le fichier a été téléchargé avec succès";
     } else {
         echo "Erreur lors du téléchargement du fichier";
+        die();
     }
-
-    Offer::create($company_id, $title, $description, $job, $duration, $salary, $address, true,  $education, $startDate, $tags, $email, $phone, $fileName, $fileType, $fileSize);
 }
