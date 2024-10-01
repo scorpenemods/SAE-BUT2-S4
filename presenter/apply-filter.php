@@ -12,7 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sector = $_POST["sector"];
     $keywords = $_POST["keywords"];
 
-
     $filters = array(
         "sort" => $sort,
         "startDate" => $startDate,
@@ -25,59 +24,84 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         "keywords" => $keywords
     );
 
-    function getQuery($filters)
+    function getQuery($filters): array
     {
 
-        $query = "SELECT id FROM offers";
+        $query = "SELECT DISTINCT offers.id
+              FROM offers 
+              LEFT JOIN tags_offers ON offers.id = tags_offers.offer_id
+              LEFT JOIN tags  ON tags_offers.tag_id = tags.id
+              WHERE 1=1";
 
-        if (!empty($filters['sort'])) { //revoir valeurs du filtre
-            if ($filters['sort'] == 'recente') {
-                $query .= ' ORDER BY created_at DESC';
-            }
-            if ($filters['sort'] == 'ancienne') {
-                $query .= ' ORDER BY created_at ASC';
-            }
-        }
+        $params = [];
 
         if (!empty($filters['startDate'])) {
-            $query .= ' WHERE created_at >= "' . $filters['startDate'] . '"';
+            $query .= ' AND offers.begin_date >= :startDate';
+            $params[':startDate'] = $filters['startDate'];
         }
 
-        if (!empty($filters["diploma"])) {
-            $query .= ' AND study_level = "' . $filters["diploma"] . '"';
+        if (!empty($filters['diploma'])) {
+            $query .= ' AND offers.study_level = :diploma';
+            $params[':diploma'] = $filters['diploma'];
         }
 
-        if (!empty($filters["minSalary"])) {
-            $query .= ' AND salary >= "' . $filters["minSalary"] . '"';
+        if (!empty($filters['minSalary'])) {
+            $query .= ' AND offers.salary >= :minSalary';
+            $params[':minSalary'] = $filters['minSalary'];
         }
 
-        if (!empty($filters["maxSalary"])) {
-            $query .= ' AND salary <= "' . $filters["maxSalary"] . '"';
+        if (!empty($filters['maxSalary'])) {
+            $query .= ' AND offers.salary <= :maxSalary';
+            $params[':maxSalary'] = $filters['maxSalary'];
         }
 
-        if (!empty($filters["city"])) {
-            $query .= ' AND address LIKE "%' . $filters["city"] . '%"';
+        if (!empty($filters['city'])) {
+            $query .= ' AND offers.address LIKE :city';
+            $params[':city'] = '%' . $filters['city'] . '%';
         }
 
-        if (!empty($filters["duration"])) {
-            //revoir valeurs du filtre
+        if (!empty($filters['duration'])) {
+            $query .= ' AND duration = :duration';
+            $params[':duration'] = $filters['duration'];
         }
 
-        if (!empty($filters["sector"])) {
-            //revoir le filtre
+        if (!empty($filters['sector'])) {
+            $query .= ' AND offers.job = :sector';
+            $params[':sector'] = $filters['sector'];
         }
 
-        if (!empty($filters["keywords"])) {
-            //Ya pas les tags dans la classe Offer.php
+        if (!empty($filters['keywords'])) {
+            $query .= ' AND tags.name LIKE :keywords';
+            $params[':keywords'] = '%' . $filters['keywords'] . '%';
         }
 
-        return $query;
+        if (!empty($filters['sort'])) {
+            if ($filters['sort'] == 'recente') {
+                $query .= ' ORDER BY offers.created_at DESC';
+            } elseif ($filters['sort'] == 'ancienne') {
+                $query .= ' ORDER BY offers.created_at ASC';
+            }
+        }
+
+        return [$query, $params];
     }
 
-    function getFilteredOffers($filters){
-        $sql = getQuery($filters);
+
+    function getFilteredOffers($filters) {
         global $db;
+        list($sql, $params) = getQuery($filters);
+        $stmt = $db->prepare($sql);
 
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
 
 }
+?>

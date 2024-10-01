@@ -74,34 +74,31 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 
         <div class="filter-panel" id="filterPanel">
             <div class="filter-panel-content">
-                <form action="../../presenter/apply-filter.php" id="sortForm" method="post" >
+                <form action="../../presenter/apply-filter.php" id="filterForm" method="post">
 
-                <h2>Trier</h2>
-                <div>
-                    <label><input type="radio" name="sort" value="recentes">   Les plus récentes</label>
-                    <label><input type="radio" name="sort" value="anciennes">   Les plus anciennes</label>
-                    <label><input type="radio" name="sort" value="consultees">   Les plus consultées</label>
-                </div><br>
+                    <h2>Trier</h2>
+                    <div>
+                        <label><input type="radio" name="sort" value="recente"> Les plus récentes</label>
+                        <label><input type="radio" name="sort" value="ancienne"> Les plus anciennes</label>
+                        <label><input type="radio" name="sort" value="consultees"> Les plus consultées</label>
+                    </div>
+                    <br>
 
-                </form>
-
-
-                <h2>Filtrer</h2>
-                <form id="filterForm" action="../../presenter/apply-filter.php" method="post">
+                    <h2>Filtrer</h2>
 
                     <div class="filter-section">
                         <h3>Date de début</h3>
-                        <input type="date" id="start-date" name="calendar">
+                        <input type="date" id="start-date" name="startDate">
                     </div>
 
                     <div class="filter-section">
                         <h3>Niveau d'étude</h3>
-                            <label><input type="radio" name="diploma" value="1-3"> Pas de niveau prérequis</label>
-                            <label><input type="radio" name="diploma" value="3-6">Bac, Bac Pro, CAP</label>
-                            <label><input type="radio" name="diploma" value="6+">Bac+2</label>
-                            <label><input type="radio" name="diploma" value="3-6">Bac+3, Bachelor</label>
-                            <label><input type="radio" name="diploma" value="6+">Bac+5, Master, diplôme d'ingénieur</label>
-                            <label><input type="radio" name="diploma" value="3-6">Bac+8, Doctorat</label>
+                        <label><input type="radio" name="diploma" value="Pas de niveau prérequis"> Pas de niveau prérequis</label>
+                        <label><input type="radio" name="diploma" value="Bac"> Bac, Bac Pro, CAP</label>
+                        <label><input type="radio" name="diploma" value="Bac+2"> Bac+2</label>
+                        <label><input type="radio" name="diploma" value="Bac+3"> Bac+3, Bachelor</label>
+                        <label><input type="radio" name="diploma" value="Bac+5"> Bac+5, Master, diplôme d'ingénieur</label>
+                        <label><input type="radio" name="diploma" value="Bac+8"> Bac+8, Doctorat</label>
                     </div>
 
                     <div class="filter-section">
@@ -110,9 +107,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
                         <input type="text" id="mini" name="minSalary" placeholder="Sans préférences">
                         <label for="maxi">Salaire maximum</label>
                         <input type="text" id="maxi" name="maxSalary" placeholder="Sans préférences">
-
                     </div>
-
 
                     <div class="filter-section">
                         <h3>Localisation</h3>
@@ -125,38 +120,41 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 
                     <div class="filter-section">
                         <h3>Durée du stage</h3>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="duration" value="1-3"> 1 à 3 mois</label>
-                            <label><input type="checkbox" name="duration" value="3-6"> 3 à 6 mois</label>
-                            <label><input type="checkbox" name="duration" value="6+"> Plus de 6 mois</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="duration" value="3"> 1 à 3 mois</label>
+                            <label><input type="radio" name="duration" value="6"> 3 à 6 mois</label>
+                            <label><input type="radio" name="duration" value="6+"> Plus de 6 mois</label>
                         </div>
                     </div>
-
 
                     <div class="filter-section">
                         <h3>Secteur d'activité</h3>
                         <select id="sector" name="sector">
                             <option value="">Tous les secteurs</option>
-                            <option value="tech">Technologie</option>
-                            <option value="finance">Finance</option>
-                            <option value="marketing">Marketing</option>
-                            <option value="sante">Santé</option>
-                            <option value="education">Éducation</option>
+                            <option value="Engineering">Ingénierie</option>
+                            <option value="Research">Recherche</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Design">Design</option>
+                            <option value="Marketing">Marketing</option>
                         </select>
                     </div>
-
 
                     <div class="filter-section">
                         <h3>Mots clés</h3>
                         <input type="text" id="skills" name="keywords" placeholder="Ex: JavaScript, Marketing, Finance">
                     </div>
+
+                    <!-- Ajout du bouton submit -->
+                    <div class="filter-panel-footer">
+                        <button type="submit" form="filterForm">Appliquer les filtres</button>
+                        <button class="close-filter" id="closeFilter" aria-label="Fermer les filtres">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </form>
-            </div>
-            <div class="filter-panel-footer">
-                <button type="submit" form="filterForm">Appliquer les filtres</button>
-                <button class="close-filter" id="closeFilter" aria-label="Fermer les filtres">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
             </div>
         </div>
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
