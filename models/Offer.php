@@ -1,5 +1,6 @@
 <?php
 
+require dirname(__FILE__) . '/../presenter/database.php';
 require dirname(__FILE__) . '/../models/Media.php';
 
 class Offer {
@@ -17,8 +18,10 @@ class Offer {
     private bool $is_active;
     private string $created_at;
     private string $updated_at;
+    private string $email;
+    private string $phone;
 
-    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $created_at, string $updated_at) {
+    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $created_at, string $updated_at, string $email, string $phone) {
         $this->id = $id;
         $this->company_id = $company_id;
         $this->company = $company;
@@ -33,6 +36,8 @@ class Offer {
         $this->is_active = $is_active;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
+        $this->email = $email;
+        $this->phone = $phone;
     }
 
     public function getId(): int {
@@ -170,6 +175,8 @@ class Offer {
             $result["address"],
             $result["study_level"],
             $result["is_active"],
+            $result["email"],
+            $result["phone"],
             date("Y-m-d H:i:s", strtotime($result["created_at"])),
             date("Y-m-d H:i:s", strtotime($result["updated_at"]))
         );
@@ -208,6 +215,8 @@ class Offer {
                 $row["address"],
                 $row["study_level"],
                 $row["is_active"],
+                $row["email"],
+                $row["phone"],
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
                 date("Y-m-d H:i:s", strtotime($row["updated_at"]))
             );
@@ -231,10 +240,10 @@ class Offer {
         return $result["COUNT(*)"];
     }
 
-    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, bool $is_active): ?Offer {
+    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, bool $is_active, string $education, string $startDate, string $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize): ?Offer {
         global $db;
 
-        $stmt = $db->prepare("INSERT INTO offers (company_id, title, description, job, duration, salary, address, is_active) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :is_active)");
+        $stmt = $db->prepare("INSERT INTO offers (company_id, title, description, job, duration, salary, address, is_active, email, phone) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :is_active, :email, :phone)");
         $stmt->bindParam(":company_id", $company_id);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":description", $description);
@@ -243,6 +252,8 @@ class Offer {
         $stmt->bindParam(":salary", $salary);
         $stmt->bindParam(":address", $address);
         $stmt->bindParam(":is_active", $is_active);
+        $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":phone", $phone);
         $stmt->execute();
 
         if ($db->errorCode() != 0) {
@@ -266,6 +277,8 @@ class Offer {
             $result["address"],
             $result["study_level"],
             $result["is_active"],
+            $result["email"],
+            $result["phone"],
             date("Y-m-d H:i:s", strtotime($result["created_at"])),
             date("Y-m-d H:i:s", strtotime($result["updated_at"]))
         );
@@ -299,5 +312,21 @@ class Offer {
         }
 
         return rtrim($result, ', ');
+    }
+
+    public static function getAllTags(): array {
+        global $db;
+
+        $stmt = $db->prepare("SELECT * FROM tags;");
+        $stmt->execute();
+
+        $result = $stmt->fetchAll();
+
+        $tags = [];
+        foreach ($result as $row) {
+            $tags[] = $row["tag"];
+        }
+
+        return $tags;
     }
 }
