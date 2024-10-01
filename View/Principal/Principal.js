@@ -123,3 +123,21 @@ function searchContacts() {
         buttons[index].classList.add('Current');
     }
 }
+
+
+const sidebar = document.getElementById('sidebar');
+const students = document.querySelectorAll('.student');
+students.forEach(student => {
+    student.addEventListener('click', function() {
+
+        students.forEach(s => s.classList.remove('selected'));
+
+
+        this.classList.add('selected');
+    });
+});
+
+document.getElementById('sidebar-toggle').addEventListener('click', function() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('hidden');
+});

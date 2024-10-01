@@ -25,10 +25,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Перенаправление на главную страницу в зависимости от роли
         switch ($_SESSION['user_role']) {
             case 1: // Student
-                header("Location: Presentation/etudiant.php");
+                header("Location: Presentation/Student.php");
                 break;
             case 2: // Professor
-                header("Location: Presentation/professeur.php");
+                header("Location: Presentation/Professor.php");
                 break;
             case 3: // Professional Mentor
                 header("Location: Presentation/maitreStage.php");

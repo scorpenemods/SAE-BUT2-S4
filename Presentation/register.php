@@ -62,10 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Перенаправление в зависимости от роли
         switch ($role) {
             case 'student':
-                header("Location: etudiant.php");
+                header("Location: Student.php");
                 break;
             case 'tutorprofessor':
-                header("Location: professeur.php");
+                header("Location: Professor.php");
                 break;
             case 'tutorcompany':
                 header("Location: maitre_stage.php");

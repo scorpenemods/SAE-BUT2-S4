@@ -535,6 +535,94 @@ button:hover,
     font-size: 1em;
 }
 
+/*------------------ Sidebar  -------------------*/
+
+.sidebar-wrapper {
+    position: relative;
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+
+.sidebar {
+    width: 200px;
+    height: 80vh;
+    background-color: #f0f0f0;
+    border-right: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    top: 80px;
+}
+
+.search {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+}
+
+.search input {
+    width: 100%;
+    padding: 5px;
+}
+
+
+.students {
+    flex: 1;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.student {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+    width: 100%;
+    position: relative;
+}
+
+.student .arrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    color: #000;
+    margin-left: auto;
+    visibility: hidden;
+}
+
+
+.student.selected .arrow {
+    visibility: visible;
+}
+
+.student.selected {
+    background-color: #e0e0e0;
+}
+
+.sidebar-toggle {
+    cursor: pointer;
+    font-size: 36px; /* Large size for the arrow */
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 1000;
+}
+
+.sidebar.hidden {
+    transform: translateX(-100%);
+}
+
+
+
 /****************************  DARK MODE MESSAGES  *******************************************************/
 
 body.dark-mode .messenger {

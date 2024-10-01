@@ -25,6 +25,7 @@ if (isset($_SESSION['user'])) {
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js" defer></script>
 </head>
+
 <body>
 <header class="navbar">
     <div class="navbar-left">
@@ -56,6 +57,27 @@ if (isset($_SESSION['user'])) {
         </div>
     </div>
 </header>
+
+<div class="sidebar-toggle" id="sidebar-toggle">&#x25B6;</div>
+<div class="sidebar" id="sidebar">
+    <div class="search">
+        <input type="text" placeholder="Search">
+    </div>
+    <div class="students">
+        <div class="student">
+            <span>Etudiant 1</span>
+        </div>
+        <div class="student selected">
+            <span>Etudiant 2</span>
+        </div>
+        <div class="student">
+            <span>Etudiant 3</span>
+        </div>
+        <div class="student">
+            <span>Etudiant 4</span>
+        </div>
+    </div>
+</div>
 
 <section class="Menus">
     <nav>
@@ -125,11 +147,12 @@ if (isset($_SESSION['user'])) {
         <div class="Contenu" id="content-4">Contenu Livret de suivi</div>
     </div>
 </section>
+</body>
 
 <footer class="PiedDePage">
     <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
     <a href="Redirection.php">Informations</a>
     <a href="Redirection.php">À propos</a>
 </footer>
-</body>
+
 </html>

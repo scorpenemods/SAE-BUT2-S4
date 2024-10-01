@@ -23,7 +23,7 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] == UPLOAD_ERR_OK) {
 
 // Сохранение сообщения в базе данных
 if ($database->sendMessage($senderId, $receiverId, $message, $filePath)) {
-    header("Location: ../Presentation/professeur.php");  // Перенаправление после успешной отправки
+    header("Location: ../Presentation/Professor.php");  // Перенаправление после успешной отправки
 } else {
     echo "Ошибка при отправке сообщения.";
 }
