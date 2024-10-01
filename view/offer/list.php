@@ -8,7 +8,7 @@ require dirname(__FILE__) . '/../../presenter/apply-filter.php';
 require dirname(__FILE__) . '/../../presenter/utils.php';
 
 $count = 12;
-$page = 0;
+$page = 1;
 if (isset($_GET['page'])) {
     $page = $_GET['page'];
 }
