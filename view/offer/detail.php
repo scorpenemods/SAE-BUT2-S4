@@ -4,7 +4,7 @@ session_start();
 require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 
-$returnUrl = "/view/offer/list.php";
+$returnUrl = "/view/offer/list-company.php";
 if (isset($_SERVER["HTTP_REFERER"])) {
     $returnUrl = $_SERVER["HTTP_REFERER"];
 }

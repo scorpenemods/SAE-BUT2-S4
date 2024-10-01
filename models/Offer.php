@@ -2,6 +2,7 @@
 
 require dirname(__FILE__) . '/../presenter/database.php';
 require dirname(__FILE__) . '/../models/Media.php';
+require dirname(__FILE__) . '/../models/Company.php';
 
 class Offer {
     private int $id;
@@ -329,4 +330,88 @@ class Offer {
 
         return $tags;
     }
+
+    public static function getAllOffersId($companyId) {
+        global $db;
+
+        $stmt = $db->prepare("SELECT * FROM offers WHERE company_id = :company_id;");
+        $stmt->bindParam(":company_id", $companyId);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $result = $stmt->fetchAll();
+
+        $offers = [];
+        foreach ($result as $row) {
+            $company = Company::getById($row["company_id"]);
+
+            if (!$company) {
+                continue;
+            }
+
+            $offers[] = new Offer(
+                $row["id"],
+                $row["company_id"],
+                $company,
+                $row["title"],
+                $row["description"],
+                $row["job"],
+                $row["duration"],
+                $row["begin_date"],
+                $row["salary"],
+                $row["address"],
+                $row["study_level"],
+                $row["is_active"],
+                $row["email"],
+                $row["phone"],
+                date("Y-m-d H:i:s", strtotime($row["created_at"])),
+                date("Y-m-d H:i:s", strtotime($row["updated_at"]))
+            );
+        }
+
+        return $offers;
+    }
+
+    public static function cacher($id) {
+        global $db;
+
+        // First, retrieve the current state of the offer
+        $stmt = $db->prepare("SELECT is_active FROM offers WHERE id = :id");
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+
+        $offer = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$offer) {
+            return null; // If the offer is not found
+        }
+
+        // Toggle the is_active value
+        $newStatus = $offer['is_active'] == 1 ? 0 : 1;
+
+        // Update the offer's status
+        $stmt = $db->prepare("UPDATE offers SET is_active = :newStatus WHERE id = :id");
+        $stmt->bindParam(":newStatus", $newStatus);
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        return true;
+    }
+
+    public function getEmail(): string {
+        return $this->email;
+    }
+
+    public function getPhone(): string {
+        return $this->phone;
+    }
+
+
 }

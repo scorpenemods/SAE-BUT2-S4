@@ -3,7 +3,7 @@ session_start();
 
 require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
-require dirname(__FILE__) . '/../../presenter/filter.php';
+require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';
 
@@ -24,7 +24,6 @@ if ($pageId == null) {
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <link rel="stylesheet" href="/view/css/list.css">
-	<link rel="stylesheet" href="/view/css/pagination.css">
 
     </head>
     <body>
