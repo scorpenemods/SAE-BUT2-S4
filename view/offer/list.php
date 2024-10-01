@@ -86,6 +86,8 @@ if ($pageId == null) {
                 <form method="GET">
                     <input type="number" name="page" min="1" max="<?php echo $totalPages; ?>" value="<?php echo $pageId; ?>">
                 </form>
+                <a href="/view/offer/list.php?page=<?php if ($pageId < $totalPages) { echo $pageId + 1; } else { echo $pageId; }?>" class="next-page">›</a>
+                <a href="/view/offer/list.php?page=<?php echo $totalPages; ?>" class="last-page">⟹</a>
             </div>
         </main>
 
