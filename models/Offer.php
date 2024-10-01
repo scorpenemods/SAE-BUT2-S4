@@ -1,5 +1,7 @@
 <?php
 
+require dirname(__FILE__) . '/../models/Media.php';
+
 class Offer {
     private int $id;
     private int $company_id;
