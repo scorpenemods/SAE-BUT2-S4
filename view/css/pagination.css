@@ -7,7 +7,7 @@
     padding-top: 20px;
 }
 
-.pagination button {
+.pagination a {
     background-color: var(--primary-color);
     color: white;
     border: none;
@@ -15,20 +15,34 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 18px;
+    text-decoration: none;
 }
 
-.pagination button:disabled {
+.pagination a {
     background-color: #d3d3d3;
     cursor: not-allowed;
 }
 
-.pagination button:hover:not(:disabled) {
+.pagination a:hover:not(:disabled) {
     background-color: var(--secondary-color);
 }
 
-#page-numbers {
-    display: flex;
-    gap: 10px;
+.pagination input {
+    background-color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
 }
 
 .page-number {

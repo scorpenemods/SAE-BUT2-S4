@@ -7,18 +7,9 @@ require dirname(__FILE__) . '/../../presenter/apply-filter.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';
 
-$count = 12;
-$page = 1;
-if (isset($_GET['page'])) {
-    $page = $_GET['page'];
-}
-
-if (isset($_GET['page-size'])) {
-    $_SESSION['page-size'] = $_GET['page-size'];
-}
-
-if (isset($_SESSION['page-size'])) {
-    $count = $_SESSION['page-size'];
+$pageId = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
+if ($pageId == null) {
+    $pageId = 1;
 }
 ?>
 
@@ -58,13 +49,12 @@ if (isset($_SESSION['page-size'])) {
             <div class="company-listings">
                 <?php
                 $offers = Offer::getAll();
-                $max = $count*($page);
-                $totalPages = ceil(count($offers) / $count);
+                $totalPages = ceil(count($offers) / 12);
 
-                if ($max > count($offers)) {
-                    $max = count($offers);
-                }
-                for  ($i = $count*($page-1); $i < $max; $i++) {
+                $startIndex = ($pageId - 1) * 12;
+                $endIndex = $startIndex + 12;
+
+                for ($i = $startIndex; $i < count($offers) and $i < $endIndex; $i++) {
                     echo "<div class='company-card'>";
                         echo "<div class='company-carousel'>";
                         $offer = $offers[$i];
@@ -91,38 +81,27 @@ if (isset($_SESSION['page-size'])) {
                 ?>
             </div>
             <div class="pagination">
-                <button class="first-page">⟸</button>
-                <button class="prev-page">‹</button>
-                <div id="page-numbers"></div>
-                <button class="next-page">›</button>
-                <button class="last-page">⟹</button>
-            </div>
-            <div class="page-size">
-                <form action="" id="sortForm" method="post">
-                    <label for="page-size">Nombre d'annonces par page : </label>
-                    <select name="page-size" id="page-size">
-                        <option value="6">6</option>
-                        <option value="12">12</option>
-                        <option value="24">24</option>
-                        <option value="48">48</option>
-                    </select>
+                <a href="/view/offer/list.php?page=1" class="first-page">⟸</a>
+                <a href="/view/offer/list.php?page=<?php if ($pageId > 1) { echo $pageId - 1; } else { echo $pageId; }?>" class="prev-page">‹</a>
+                <form method="GET">
+                    <input type="number" name="page" min="1" max="<?php echo $totalPages; ?>" value="<?php echo $pageId; ?>">
                 </form>
+                <a href="/view/offer/list.php?page=<?php echo $pageId + 1; ?>" class="next-page">›</a>
+                <a href="/view/offer/list.php?page=<?php echo $totalPages; ?>" class="last-page">⟹</a>
             </div>
         </main>
 
         <div class="filter-panel" id="filterPanel">
             <div class="filter-panel-content">
                 <form action="../../presenter/apply-filter.php" id="sortForm" method="post" >
-
-                <h2>Trier</h2>
-                <div>
-                    <label><input type="radio" name="sort" value="recentes">   Les plus récentes</label>
-                    <label><input type="radio" name="sort" value="anciennes">   Les plus anciennes</label>
-                    <label><input type="radio" name="sort" value="consultees">   Les plus consultées</label>
-                </div><br>
-
+                    <h2>Trier</h2>
+                    <div>
+                        <label><input type="radio" name="sort" value="recentes">   Les plus récentes</label>
+                        <label><input type="radio" name="sort" value="anciennes">   Les plus anciennes</label>
+                        <label><input type="radio" name="sort" value="consultees">   Les plus consultées</label>
+                    </div>
+                    <br>
                 </form>
-
 
                 <h2>Filtrer</h2>
                 <form id="filterForm" action="../../presenter/apply-filter.php" method="post">
@@ -150,7 +129,6 @@ if (isset($_SESSION['page-size'])) {
                         <input type="text" id="maxi" name="maxSalary" placeholder="Sans préférences">
 
                     </div>
-
 
                     <div class="filter-section">
                         <h3>Localisation</h3>
@@ -273,60 +251,6 @@ if (isset($_SESSION['page-size'])) {
             createNotificationBtn.addEventListener('click', () => {
                 alert('Fonctionnalité de création de demande de notification à implémenter');
             });
-
-            // Pagination
-            const totalPages = <?php echo $totalPages; ?>;
-            let currentPage = <?php echo $page; ?>;
-
-            const pageNumbersDiv = document.getElementById('page-numbers');
-            const firstPageButton = document.querySelector('.first-page');
-            const prevPageButton = document.querySelector('.prev-page');
-            const nextPageButton = document.querySelector('.next-page');
-            const lastPageButton = document.querySelector('.last-page');
-
-            function renderPageNumbers() {
-                pageNumbersDiv.innerHTML = '';
-
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageNumber = document.createElement('span');
-                    pageNumber.classList.add('page-number');
-                    pageNumber.textContent = i;
-                    if (i === currentPage) {
-                        pageNumber.classList.add('active');
-                    }
-                    pageNumber.addEventListener('click', () => goToPage(i));
-                    pageNumbersDiv.appendChild(pageNumber);
-                }
-
-                firstPageButton.disabled = currentPage === 1;
-                prevPageButton.disabled = currentPage === 1;
-                nextPageButton.disabled = currentPage === totalPages;
-                lastPageButton.disabled = currentPage === totalPages;
-            }
-
-            // Functions to navigate pages
-            function goToPage(page) {
-                currentPage = page;
-                window.location.href = `/view/offer/list.php?page=${currentPage}`;
-            }
-
-            firstPageButton.addEventListener('click', () => goToPage(1));
-            prevPageButton.addEventListener('click', () => goToPage(currentPage - 1));
-            nextPageButton.addEventListener('click', () => goToPage(currentPage + 1));
-            lastPageButton.addEventListener('click', () => goToPage(totalPages));
-
-            // Initial render
-            renderPageNumbers();
-
-            // Update page numbers when page size changes
-            document.getElementById('page-size').addEventListener('change', () => {
-                const pageSize = document.getElementById('page-size').value;
-                if (pageSize) {
-                    window.location.href = `/view/offer/list.php?page=1&page-size=${pageSize}`;
-                }
-            });
-
-            document.getElementById('page-size').value = <?php echo $count; ?>;
         </script>
     </body>
 </html>

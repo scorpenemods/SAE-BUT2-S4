@@ -216,6 +216,21 @@ class Offer {
         return $offers;
     }
 
+    public static function getCount(): int {
+        global $db;
+
+        $stmt = $db->prepare("SELECT COUNT(*) FROM offers");
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return 0;
+        }
+
+        $result = $stmt->fetch();
+
+        return $result["COUNT(*)"];
+    }
+
     public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, bool $is_active): ?Offer {
         global $db;
 
