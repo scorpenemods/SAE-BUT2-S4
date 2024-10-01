@@ -15,7 +15,21 @@ if ($offerId == null) {
     die();
 }
 
+// Check if user is logged in and has a company
+$company_id = 1;
+//if ($_SESSION['company_id']) {
+//    $company_id = $_SESSION['company_id'];
+//} else {
+//    header("Location: ../offer/list-company.php");
+//    die();
+//}
+
 $offer = Offer::getById($offerId);
+
+if ($offer->getCompany()->getId() != $company_id) {
+    header("Location: ../offer/list-company.php");
+    die();
+}
 ?>
 
 <!DOCTYPE html>
@@ -28,6 +42,7 @@ $offer = Offer::getById($offerId);
         <link rel="stylesheet" href="/view/css/detail.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
+        <link rel="stylesheet" href="/view/css/detail-company.css">
         <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     </head>
@@ -42,7 +57,16 @@ $offer = Offer::getById($offerId);
                             <?php echo "<h2>" . $offer->getTitle() . "</h2>"; ?>
                             <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
                         </div>
-                        <button class="apply-button">Postuler</button>
+                        <div class="apply-button-container">
+                            <form action="../edit/edit-company.php" method="get">
+                                <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
+                                <button class="apply-button-edit" onclick="">Modifier</button>
+                            </form>
+                            <form action="../../presenter/edit/cacher.php" method="post">
+                                <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
+                                <button class="apply-button-edit">Cacher <?php echo $offer->getIsActive() ? "(Actif)" : "(Inactif)"; ?></button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <div class="offer-content">

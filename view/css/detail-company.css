@@ -1,0 +1,17 @@
+.apply-button-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.apply-button-edit {
+    background-color: #fff;
+    color: #40798C;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 1rem;
+}
