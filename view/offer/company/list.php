@@ -63,30 +63,27 @@ if ($pageId == null) {
 
                 for ($i = $startIndex; $i < count($offers) and $i < $endIndex; $i++) {
                     $offer = $offers[$i];
-                    if ($offer->getIsActive()) {
-                        echo "<div class='company-card-active'>";
-                    } else {
-                        echo "<div class='company-card-inactive'>";
-                    }
-                    echo "<div class='company-carousel'>";
-                    foreach ($offer->getMedias() as $media) {
-                        echo "<img loading=\"lazy\" src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . ">";
-                    }
-                    echo "<div class='carousel-nav'>";
-                    foreach ($offer->getMedias() as $media) {
-                        echo "<button " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . "></button>";
-                    }
-                    echo "</div>";
-                    echo "</div>";
-                    echo "<div class='company-info'>";
-                    echo "<h3><a href='/view/edit/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
-                    echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
-                    echo "<div class='company-meta'>";
-                    echo "<span>" . $offer->getCompany()->getName() . "</span>";
-                    echo "<span>" . $offer->getAddress() . "</span>";
-                    echo "<span>" . $offer->getRealDuration() . "</span>";
-                    echo "</div>";
-                    echo "</div>";
+                    echo "<div class='company-card'>";
+                        echo "<div class='company-carousel'>";
+                        foreach ($offer->getMedias() as $media) {
+                            echo "<img loading=\"lazy\" src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . ">";
+                        }
+                        echo "<div class='carousel-nav'>";
+                        foreach ($offer->getMedias() as $media) {
+                            echo "<button " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . "></button>";
+                        }
+                        echo "</div>";
+                            echo "</div>";
+                                echo "<div class='company-info'>";
+                                echo "<h3><a href='/view/edit/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
+                                echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
+                                    echo "<div class='company-meta'>";
+                                        echo "<span>" . $offer->getCompany()->getName() . "</span>";
+                                        echo "<span>" . $offer->getAddress() . "</span>";
+                                        echo "<span>" . $offer->getRealDuration() . "</span>";
+                                echo "</div>";
+                            echo "</div>";
+                        echo "</div>";
                     echo "</div>";
                 }
                 ?>

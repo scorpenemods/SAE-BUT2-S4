@@ -94,22 +94,13 @@ main {
     grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
     gap: 2rem;
 }
-.company-card-active {
+.company-card {
     background-color: var(--card-color);
     border-radius: 8px;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-
-.company-card-inactive {
-    background-color: #f3f3f3;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
 .company-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);

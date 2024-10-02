@@ -367,6 +367,119 @@ class Offer {
         return $offers;
     }
 
+    public static function getFilteredOffers($filters): ?array {
+        global $db;
+
+        $sql = "SELECT DISTINCT * FROM offers WHERE true";
+        $params = [];
+
+        if (!empty($filters['title'])) {
+            $sql .= ' AND offers.title LIKE :title';
+            $params[':title'] = '%' . $filters['title'] . '%';
+        }
+
+        if (!empty($filters['startDate'])) {
+            $sql .= ' AND offers.begin_date >= :startDate';
+            $params[':startDate'] = $filters['startDate'];
+        }
+
+        if (!empty($filters['diploma'])) {
+            $sql .= ' AND offers.study_level = :diploma';
+            $params[':diploma'] = $filters['diploma'];
+        }
+
+        if (!empty($filters['minSalary'])) {
+            $sql .= ' AND offers.salary >= :minSalary';
+            $params[':minSalary'] = $filters['minSalary'];
+        }
+
+        if (!empty($filters['maxSalary'])) {
+            $sql .= ' AND offers.salary <= :maxSalary';
+            $params[':maxSalary'] = $filters['maxSalary'];
+        }
+
+        if (!empty($filters['city'])) {
+            $sql .= ' AND offers.address LIKE :city';
+            $params[':city'] = '%' . $filters['city'] . '%';
+        }
+
+        if (!empty($filters['duration'])) {
+            switch ($filters['duration']) {
+                case 1:
+                    $sql .= ' AND duration >= 1 AND duration <= 3';
+                    break;
+                case 2:
+                    $sql .= ' AND duration >= 3 AND duration <= 6';
+                    break;
+                case 3:
+                    $sql .= ' AND duration >= 6';
+                    break;
+            }
+        }
+
+        if (!empty($filters['sector'])) {
+            $sql .= ' AND offers.job = :sector';
+            $params[':sector'] = $filters['sector'];
+        }
+/*
+        if (!empty($filters['keywords'])) {
+            $sql .= ' AND tags.name LIKE :keywords';
+            $params[':keywords'] = '%' . $filters['keywords'] . '%';
+        }
+*/
+        if (!empty($filters['sort'])) {
+            if ($filters['sort'] == 'recente') {
+                $sql .= ' ORDER BY offers.created_at DESC';
+            } elseif ($filters['sort'] == 'ancienne') {
+                $sql .= ' ORDER BY offers.created_at ASC';
+            }
+        }
+
+        $stmt = $db->prepare($sql);
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $result = $stmt->fetchAll();
+
+        $offers = [];
+        foreach ($result as $row) {
+            $company = Company::getById($row["company_id"]);
+
+            if (!$company) {
+                continue;
+            }
+
+            $offers[] = new Offer(
+                $row["id"],
+                $row["company_id"],
+                $company,
+                $row["title"],
+                $row["description"],
+                $row["job"],
+                $row["duration"],
+                $row["begin_date"],
+                $row["salary"],
+                $row["address"],
+                $row["study_level"],
+                $row["is_active"],
+                $row["email"],
+                $row["phone"],
+                date("Y-m-d H:i:s", strtotime($row["created_at"])),
+                date("Y-m-d H:i:s", strtotime($row["updated_at"]))
+            );
+        }
+
+        return $offers;
+    }
+
     public static function hide($id) {
         global $db;
 
