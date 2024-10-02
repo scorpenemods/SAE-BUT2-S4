@@ -3,91 +3,25 @@
 require dirname(__FILE__) . '/../presenter/database.php';
 require dirname(__FILE__) . '/../models/Media.php';
 
-class PendingOffer {
+class PendingOffer extends Offer {
     private int $id;
     private int $company_id;
     private string $type;
 
-    private Company $company;
-    private string $title;
-    private string $description;
-    private string $job;
-    private int $duration;
-    private string $begin_date;
-    private int $salary;
-    private string $address;
-    private string $study_level;
-    private string $created_at;
-    private string $email;
-    private string $phone;
 
-    public function __construct( int $company_id, string $type, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, string $created_at, string $email, string $phone) {
-        $this->id = 0;
+    public function __construct(int $id, int $company_id, string $type, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, string $created_at, string $email, string $phone) {
+        parent::__construct($company_id, $type, $company, $title, $description, $job, $duration, $begin_date, $salary, $address, $study_level, $created_at, $email, $phone, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"));
+        $this->id = $id;
         $this->company_id = $company_id;
-        $this->company = $company;
-        $this->title = $title;
-        $this->description = $description;
-        $this->job = $job;
-        $this->duration = $duration;
-        $this->begin_date = $begin_date;
-        $this->salary = $salary;
-        $this->address = $address;
-        $this->study_level = $study_level;
-        $this->created_at = $created_at;
-        $this->email = $email;
-        $this->phone = $phone;
         $this->type = $type;
     }
 
-    public function setId(int $id): void {
-        $this->id = $id;
-    }
     public function getId(): int {
         return $this->id;
     }
 
     public function getCompanyId(): int {
         return $this->company_id;
-    }
-
-    public function getCompany(): Company {
-        return $this->company;
-    }
-
-    public function getTitle(): string {
-        return $this->title;
-    }
-
-    public function getDescription(): string {
-        return $this->description;
-    }
-
-    public function getJob(): string {
-        return $this->job;
-    }
-
-    public function getDuration(): int {
-        return $this->duration;
-    }
-
-    public function getBeginDate(): string {
-        return $this->begin_date;
-    }
-
-    public function getSalary(): int {
-        return $this->salary;
-    }
-
-    public function getAddress(): string {
-        return $this->address;
-    }
-
-    public function getStudyLevel(): string {
-        return $this->study_level;
-    }
-
-    public function getCreatedAt(): string {
-        return $this->created_at;
     }
 
     public function getType(): string {
@@ -161,6 +95,7 @@ class PendingOffer {
             return null;
         }
 
+        // TODO: Change this
         return new PendingOffer(
             $result["company_id"],
             $result["type"],
@@ -176,6 +111,7 @@ class PendingOffer {
             $result["email"],
             $result["phone"],
             date("Y-m-d H:i:s", strtotime($result["created_at"])),
+            date("Y-m-d H:i:s", strtotime($result["updated_at"]))
         );
     }
 
@@ -199,6 +135,7 @@ class PendingOffer {
                 continue;
             }
 
+            // TODO: Change this
             $offers[] = new PendingOffer(
                 $row["company_id"],
                 $row["type"],
@@ -218,22 +155,6 @@ class PendingOffer {
         }
 
         return $offers;
-    }
-    
-
-    public static function getCount(): int {
-        global $db;
-
-        $stmt = $db->prepare("SELECT COUNT(*) FROM offers");
-        $stmt->execute();
-
-        if ($db->errorCode() != 0) {
-            return 0;
-        }
-
-        $result = $stmt->fetch();
-
-        return $result["COUNT(*)"];
     }
 
     public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, bool $is_active, string $education, string $startDate, string $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize): ?PendingOffer {
@@ -324,57 +245,4 @@ class PendingOffer {
 
         return $tags;
     }
-
-    public static function getAllOffersId($companyId) {
-        global $db;
-
-        $stmt = $db->prepare("SELECT * FROM offers WHERE company_id = :company_id;");
-        $stmt->bindParam(":company_id", $companyId);
-        $stmt->execute();
-
-        if ($db->errorCode() != 0) {
-            return null;
-        }
-
-        $result = $stmt->fetchAll();
-
-        $offers = [];
-        foreach ($result as $row) {
-            $company = Company::getById($row["company_id"]);
-
-            if (!$company) {
-                continue;
-            }
-
-            $offers[] = new PendingOffer(
-                $row["company_id"],
-                $row["type"],
-                $company,
-                $row["title"],
-                $row["description"],
-                $row["job"],
-                $row["duration"],
-                $row["begin_date"],
-                $row["salary"],
-                $row["address"],
-                $row["study_level"],
-                $row["email"],
-                $row["phone"],
-                date("Y-m-d H:i:s", strtotime($row["created_at"])),
-                date("Y-m-d H:i:s", strtotime($row["updated_at"]))
-            );
-        }
-
-        return $offers;
-    }
-
-    public function getEmail(): string {
-        return $this->email;
-    }
-
-    public function getPhone(): string {
-        return $this->phone;
-    }
-
-
 }

@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-require dirname(__FILE__) . '/../../models/PendingOffer.php';
-require dirname(__FILE__) . '/../../models/Company.php';
+require dirname(__FILE__) . '/../../../models/Offer.php';
+require dirname(__FILE__) . '/../../../models/Company.php';
 
-$returnUrl = "/view/pending/list.php";
+$returnUrl = "/view/offer/list.php";
 if (isset($_SERVER["HTTP_REFERER"])) {
     $returnUrl = $_SERVER["HTTP_REFERER"];
 }
@@ -15,7 +15,22 @@ if ($offerId == null) {
     die();
 }
 
-$offer = PendingOffer::getById($offerId);
+$company_id = 1;
+// Check if user has a company
+//if ($_SESSION['company_id']) {
+//    $company_id = $_SESSION['company_id'];
+//}
+//else {
+//    header("Location: ../offer/list.php");
+//    die();
+//}
+
+$offer = Offer::getById($offerId);
+
+if ($offer->getCompany()->getId() != $company_id) {
+    header("Location: ../offer/list.php");
+    die();
+}
 ?>
 
 <!DOCTYPE html>
@@ -28,11 +43,12 @@ $offer = PendingOffer::getById($offerId);
         <link rel="stylesheet" href="/view/css/detail.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
+        <link rel="stylesheet" href="/view/css/button.css">
         <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../header.php'; ?>
+        <?php include dirname(__FILE__) . '/../../header.php'; ?>
         <main>
             <div class="offer-card">
                 <div class="offer-header">
@@ -43,13 +59,13 @@ $offer = PendingOffer::getById($offerId);
                             <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
                         </div>
                         <div class="apply-button-container">
-                            <form action="../edit/edit-company.php" method="get">
+                            <form action="edit.php" method="get">
                                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
-                                <button class="apply-button-edit" >Refuser</button>
+                                <button class="apply-button-edit">Modifier</button>
                             </form>
-                            <form action="../../presenter/offer/secretariat/validate.php" method="post">
+                            <form action="../../../../presenter/edit/cacher.php" method="post">
                                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
-                                <button class="apply-button-edit">Valider></button>
+                                <button class="apply-button-edit">Cacher <?php echo $offer->getIsActive() ? "(Actif)" : "(Inactif)"; ?></button>
                             </form>
                         </div>
                     </div>
@@ -89,7 +105,7 @@ $offer = PendingOffer::getById($offerId);
                 </div>
             </div>
         </main>
-        <?php include dirname(__FILE__) . '/../footer.php'; ?>
+        <?php include dirname(__FILE__) . '/../../footer.php'; ?>
         <script type="text/javascript">
             let offerHeader = document.querySelector('.offer-header');
             offerHeader.style.backgroundImage = `url(<?php echo $offer->getMedias()[0]->getUrl(); ?>)`;

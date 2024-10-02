@@ -21,7 +21,7 @@ class Offer {
     private string $email;
     private string $phone;
 
-    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $created_at, string $updated_at, string $email, string $phone) {
+    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone,string $created_at, string $updated_at) {
         $this->id = $id;
         $this->company_id = $company_id;
         $this->company = $company;
@@ -86,6 +86,14 @@ class Offer {
 
     public function getIsActive(): bool {
         return $this->is_active;
+    }
+
+    public function getEmail(): string {
+        return $this->email;
+    }
+
+    public function getPhone(): string {
+        return $this->phone;
     }
 
     public function getCreatedAt(): string {
@@ -225,22 +233,6 @@ class Offer {
         return $offers;
     }
 
-
-    public static function getCount(): int {
-        global $db;
-
-        $stmt = $db->prepare("SELECT COUNT(*) FROM offers");
-        $stmt->execute();
-
-        if ($db->errorCode() != 0) {
-            return 0;
-        }
-
-        $result = $stmt->fetch();
-
-        return $result["COUNT(*)"];
-    }
-
     public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, bool $is_active, string $education, string $startDate, string $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize): ?Offer {
         global $db;
 
@@ -331,7 +323,7 @@ class Offer {
         return $tags;
     }
 
-    public static function getAllOffersId($companyId) {
+    public static function getCompanyOffers($companyId): ?array {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM offers WHERE company_id = :company_id;");
@@ -375,26 +367,10 @@ class Offer {
         return $offers;
     }
 
-    public static function cacher($id) {
+    public static function hide($id) {
         global $db;
 
-        // First, retrieve the current state of the offer
-        $stmt = $db->prepare("SELECT is_active FROM offers WHERE id = :id");
-        $stmt->bindParam(":id", $id);
-        $stmt->execute();
-
-        $offer = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$offer) {
-            return null; // If the offer is not found
-        }
-
-        // Toggle the is_active value
-        $newStatus = $offer['is_active'] == 1 ? 0 : 1;
-
-        // Update the offer's status
-        $stmt = $db->prepare("UPDATE offers SET is_active = :newStatus WHERE id = :id");
-        $stmt->bindParam(":newStatus", $newStatus);
+        $stmt = $db->prepare("UPDATE offers SET is_active = !is_active WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
@@ -404,14 +380,4 @@ class Offer {
 
         return true;
     }
-
-    public function getEmail(): string {
-        return $this->email;
-    }
-
-    public function getPhone(): string {
-        return $this->phone;
-    }
-
-
 }
