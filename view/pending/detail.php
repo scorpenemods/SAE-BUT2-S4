@@ -3,6 +3,7 @@ session_start();
 
 require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
+require dirname(__FILE__) . '/../../models/Media.php';
 
 $returnUrl = "/view/pending/list.php";
 if (isset($_SERVER["HTTP_REFERER"])) {
@@ -28,6 +29,7 @@ $offer = PendingOffer::getById($offerId);
         <link rel="stylesheet" href="/view/css/detail.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
+        <link rel="stylesheet" href="/view/css/button.css">
         <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     </head>
@@ -43,13 +45,13 @@ $offer = PendingOffer::getById($offerId);
                             <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
                         </div>
                         <div class="apply-button-container">
-                            <form action="../edit/edit-company.php" method="get">
+                            <form action="../../presenter/offer/secretariat/deny.php" method="get">
                                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
                                 <button class="apply-button-edit" >Refuser</button>
                             </form>
                             <form action="../../presenter/offer/secretariat/validate.php" method="post">
                                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
-                                <button class="apply-button-edit">Valider></button>
+                                <button class="apply-button-edit">Valider</button>
                             </form>
                         </div>
                     </div>

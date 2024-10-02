@@ -3,6 +3,7 @@ session_start();
 
 require dirname(__FILE__) . '/../../../models/Offer.php';
 require dirname(__FILE__) . '/../../../models/Company.php';
+require dirname(__FILE__) . '/../../../models/Media.php';
 
 $returnUrl = "/view/offer/list.php";
 if (isset($_SERVER["HTTP_REFERER"])) {
@@ -63,7 +64,7 @@ if ($offer->getCompany()->getId() != $company_id) {
                                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
                                 <button class="apply-button-edit">Modifier</button>
                             </form>
-                            <form action="../../../../presenter/edit/cacher.php" method="post">
+                            <form action="../../../../presenter/offer/company/hide.php" method="post">
                                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
                                 <button class="apply-button-edit">Cacher <?php echo $offer->getIsActive() ? "(Actif)" : "(Inactif)"; ?></button>
                             </form>

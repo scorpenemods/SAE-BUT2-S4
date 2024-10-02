@@ -3,13 +3,17 @@ session_start();
 
 require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
-require dirname(__FILE__) . '/../../presenter/offer/filter.php';
+require dirname(__FILE__) . '/../../models/Media.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';
 
 $pageId = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
 if ($pageId == null) {
     $pageId = 1;
+}
+$type = 'new offer';
+if (isset($_GET['type'])) {
+    $type = $_GET['type'];
 }
 ?>
 
@@ -44,7 +48,10 @@ if ($pageId == null) {
                     </button>
                 </div>
             </div>
-
+            <div class="pagination">
+                <a href="/view/pending/list.php?type=new offer">Nouvelles offres</a>
+                <a href="/view/pending/list.php?type=updated offer">Offres mises à jour</a>
+            </div>
             <div class="company-listings">
                 <?php
                 $offers = PendingOffer::getAll();
@@ -54,28 +61,31 @@ if ($pageId == null) {
                 $endIndex = $startIndex + 12;
 
                 for ($i = $startIndex; $i < count($offers) and $i < $endIndex; $i++) {
-                    echo "<div class='company-card'>";
-                        echo "<div class='company-carousel'>";
-                        $offer = $offers[$i];
-                            foreach ($offer->getMedias() as $media) {
-                                echo "<img loading=\"lazy\" src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . ">";
-                            }
-                            echo "<div class='carousel-nav'>";
+                    if ($offers[$i]->getStatus() == "Pending" && $offers[$i]->getType() == $type) {
+
+                        echo "<div class='company-card'>";
+                            echo "<div class='company-carousel'>";
+                            $offer = $offers[$i];
                                 foreach ($offer->getMedias() as $media) {
-                                    echo "<button " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . "></button>";
+                                    echo "<img loading=\"lazy\" src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . ">";
                                 }
+                                echo "<div class='carousel-nav'>";
+                                    foreach ($offer->getMedias() as $media) {
+                                        echo "<button " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . "></button>";
+                                    }
+                                echo "</div>";
+                            echo "</div>";
+                            echo "<div class='company-info'>";
+                                echo "<h3><a href='./detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
+                                echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
+                                echo "<div class='company-meta'>";
+                                    echo "<span>" . $offer->getCompany()->getName() . "</span>";
+                                    echo "<span>" . $offer->getAddress() . "</span>";
+                                    echo "<span>" . $offer->getRealDuration() . "</span>";
+                                echo "</div>";
                             echo "</div>";
                         echo "</div>";
-                        echo "<div class='company-info'>";
-                            echo "<h3><a href='./detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
-                            echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
-                            echo "<div class='company-meta'>";
-                                echo "<span>" . $offer->getCompany()->getName() . "</span>";
-                                echo "<span>" . $offer->getAddress() . "</span>";
-                                echo "<span>" . $offer->getRealDuration() . "</span>";
-                            echo "</div>";
-                        echo "</div>";
-                    echo "</div>";
+                    }
                 }
                 ?>
             </div>

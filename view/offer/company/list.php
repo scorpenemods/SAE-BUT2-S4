@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-require dirname(__FILE__) . '/../../../models/Offer.php';
 require dirname(__FILE__) . '/../../../models/Company.php';
+require dirname(__FILE__) . '/../../../models/Media.php';
 require dirname(__FILE__) . '/../../../presenter/offer/filter.php';
 
 require dirname(__FILE__) . '/../../../presenter/utils.php';
@@ -35,6 +35,7 @@ if ($pageId == null) {
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <link rel="stylesheet" href="/view/css/list.css">
+
 
     </head>
     <body>
@@ -89,13 +90,13 @@ if ($pageId == null) {
                 ?>
             </div>
             <div class="pagination">
-                <a href="/view/edit/list-company.php?page=1" class="first-page">⟸</a>
-                <a href="/view/edit/list-company.php?page=<?php if ($pageId > 1) { echo $pageId - 1; } else { echo $pageId; }?>" class="prev-page">‹</a>
+                <a href="/view/offer/company/list.php?page=1" class="first-page">⟸</a>
+                <a href="/view/offer/company/list.php?page=<?php if ($pageId > 1) { echo $pageId - 1; } else { echo $pageId; }?>" class="prev-page">‹</a>
                 <form method="GET">
                     <input type="number" name="page" min="1" max="<?php echo $totalPages; ?>" value="<?php echo $pageId; ?>">
                 </form>
-                <a href="/view/edit/list-company.php?page=<?php if ($pageId < $totalPages) { echo $pageId + 1; } else { echo $pageId; }?>" class="next-page">›</a>
-                <a href="/view/edit/list-company.php?page=<?php echo $totalPages; ?>" class="last-page">⟹</a>
+                <a href="/view/offer/company/list.php?page=<?php if ($pageId < $totalPages) { echo $pageId + 1; } else { echo $pageId; }?>" class="next-page">›</a>
+                <a href="/view/offer/company/list.php?page=<?php echo $totalPages; ?>" class="last-page">⟹</a>
             </div>
         </main>
 

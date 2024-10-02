@@ -2,6 +2,7 @@
 session_start();
 
 require dirname(__FILE__) . '/../../models/Company.php';
+require dirname(__FILE__) . '/../../models/Media.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';

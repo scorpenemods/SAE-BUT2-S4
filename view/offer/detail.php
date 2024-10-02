@@ -3,6 +3,7 @@ session_start();
 
 require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
+require dirname(__FILE__) . '/../../models/Media.php';
 
 $returnUrl = "/view/offer/list.php";
 if (isset($_SERVER["HTTP_REFERER"])) {

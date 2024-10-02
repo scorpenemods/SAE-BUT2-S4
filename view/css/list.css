@@ -292,6 +292,7 @@ main {
     flex-direction: row;
     gap: 10px;
     padding-top: 20px;
+    padding-bottom: 20px;
 }
 .pagination a {
     background-color: #9ec1a3;

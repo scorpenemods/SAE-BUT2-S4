@@ -1,9 +1,12 @@
 <?php
 session_start();
+$_SESSION['user'] = 1;
+$_SESSION['company_id'] = 1;
 global $tags;
 
 require dirname(__FILE__) . '/../../../models/Offer.php';
 require dirname(__FILE__) . '/../../../models/Company.php';
+require dirname(__FILE__) . '/../../../models/Media.php';
 
 // Check if user has a company
 //if ($_SESSION['company_id']) {
@@ -17,7 +20,7 @@ require dirname(__FILE__) . '/../../../models/Company.php';
 if ($_GET['id']) {
     $offer = Offer::getById($_GET['id']);
 } else {
-    header("Location: ../offer/list.php");
+    header("Location: ../offer/company/list.php");
     die();
 }
 
@@ -27,7 +30,7 @@ if ($_GET['id']) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Le Petit Stage - Proposer une offre</title>
+        <title>Le Petit Stage - Modifier une offre</title>
         <link rel="stylesheet" href="/view/css/create.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
@@ -35,8 +38,9 @@ if ($_GET['id']) {
     <body>
         <?php include dirname(__FILE__) . '/../../header.php'; ?>
         <main class="container-principal">
-            <h1>Proposer une offre de stage</h1>
+            <h1>Modifier une offre de stage</h1>
             <form action="../../../presenter/offer/create.php" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
                 <div class="form-group">
                     <label for="title">Titre de l'offre</label>
                     <input type="text" id="title" name="title" value="<?php echo $offer->getTitle(); ?>" placeholder="Ex: Développeur Web Junior">

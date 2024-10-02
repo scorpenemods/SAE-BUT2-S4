@@ -1,9 +1,9 @@
 <?php
 
 require dirname(__FILE__) . '/../presenter/database.php';
-require dirname(__FILE__) . '/../models/Media.php';
 
-class Offer {
+class Offer
+{
     private int $id;
     private int $company_id;
     private Company $company;
@@ -21,7 +21,8 @@ class Offer {
     private string $email;
     private string $phone;
 
-    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone,string $created_at, string $updated_at) {
+    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $created_at, string $updated_at)
+    {
         $this->id = $id;
         $this->company_id = $company_id;
         $this->company = $company;
@@ -40,71 +41,115 @@ class Offer {
         $this->phone = $phone;
     }
 
-    public function getId(): int {
+    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, $getFileName, $getFileType, $getFileSize)
+    {
+        global $db;
+
+        $stmt = $db->prepare("UPDATE offers SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone WHERE id = :id");
+        $stmt->bindParam(":title", $getTitle);
+        $stmt->bindParam(":description", $getDescription);
+        $stmt->bindParam(":job", $getJob);
+        $stmt->bindParam(":duration", $getDuration);
+        $stmt->bindParam(":salary", $getSalary);
+        $stmt->bindParam(":address", $getAddress);
+        $stmt->bindParam(":study_level", $getEducation);
+        $stmt->bindParam(":email", $getEmail);
+        $stmt->bindParam(":phone", $getPhone);
+        $stmt->bindParam(":id", $getId);
+        $stmt->bindParam(":begin_date", $getBeginDate);
+
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $offer = Offer::getById($getId);
+        return $offer;
+    }
+
+    public function getId(): int
+    {
         return $this->id;
     }
 
-    public function getCompanyId(): int {
+    public function getCompanyId(): int
+    {
         return $this->company_id;
     }
 
-    public function getCompany(): Company {
+    public function getCompany(): Company
+    {
         return $this->company;
     }
 
-    public function getTitle(): string {
+    public function getTitle(): string
+    {
         return $this->title;
     }
 
-    public function getDescription(): string {
+    public function getDescription(): string
+    {
         return $this->description;
     }
 
-    public function getJob(): string {
+    public function getJob(): string
+    {
         return $this->job;
     }
 
-    public function getDuration(): int {
+    public function getDuration(): int
+    {
         return $this->duration;
     }
 
-    public function getBeginDate(): string {
+    public function getBeginDate(): string
+    {
         return $this->begin_date;
     }
 
-    public function getSalary(): int {
+    public function getSalary(): int
+    {
         return $this->salary;
     }
 
-    public function getAddress(): string {
+    public function getAddress(): string
+    {
         return $this->address;
     }
 
-    public function getStudyLevel(): string {
+    public function getStudyLevel(): string
+    {
         return $this->study_level;
     }
 
-    public function getIsActive(): bool {
+    public function getIsActive(): bool
+    {
         return $this->is_active;
     }
 
-    public function getEmail(): string {
+    public function getEmail(): string
+    {
         return $this->email;
     }
 
-    public function getPhone(): string {
+    public function getPhone(): string
+    {
         return $this->phone;
     }
 
-    public function getCreatedAt(): string {
+    public function getCreatedAt(): string
+    {
         return $this->created_at;
     }
 
-    public function getUpdatedAt(): string {
+    public function getUpdatedAt(): string
+    {
         return $this->updated_at;
     }
 
-    public function getTags(): ?array {
+    public function getTags(): ?array
+    {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM tags JOIN tags_offers ON tags.id = tags_offers.tag_id WHERE tags_offers.offer_id = :offer_id");
@@ -125,7 +170,8 @@ class Offer {
         return $tags;
     }
 
-    public function getMedias(): ?array {
+    public function getMedias(): ?array
+    {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM offers_media WHERE offer_id = :offer_id ORDER BY display_order");
@@ -152,7 +198,8 @@ class Offer {
         return $medias;
     }
 
-    public static function getById(int $id): ?Offer {
+    public static function getById(int $id): ?Offer
+    {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM offers WHERE id = :id");
@@ -190,7 +237,8 @@ class Offer {
         );
     }
 
-    public static function getAll(): ?array {
+    public static function getAll(): ?array
+    {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM offers");
@@ -233,10 +281,13 @@ class Offer {
         return $offers;
     }
 
-    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, bool $is_active, string $education, string $startDate, string $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize): ?Offer {
+    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize): ?Offer
+    {
         global $db;
 
-        $stmt = $db->prepare("INSERT INTO offers (company_id, title, description, job, duration, salary, address, is_active, email, phone) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :is_active, :email, :phone)");
+        $stmt = $db->prepare("INSERT INTO offers (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
+                    email, phone) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,
+                    :email, :phone)");
         $stmt->bindParam(":company_id", $company_id);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":description", $description);
@@ -244,7 +295,8 @@ class Offer {
         $stmt->bindParam(":duration", $duration);
         $stmt->bindParam(":salary", $salary);
         $stmt->bindParam(":address", $address);
-        $stmt->bindParam(":is_active", $is_active);
+        $stmt->bindParam(":study_level", $education);
+        $stmt->bindParam(":begin_date", $begin_date);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":phone", $phone);
         $stmt->execute();
@@ -253,31 +305,40 @@ class Offer {
             return null;
         }
 
+
         $id = $db->lastInsertId();
 
-        $result = $stmt->fetch();
+        foreach ($tags as $tag) {
+            $stmt = $db->prepare("INSERT INTO tags_offers (tag_id, offer_id) VALUES (:tag_id, :offer_id)");
+            $stmt->bindParam(":tag_id", $tag);
+            $stmt->bindParam(":offer_id", $id);
+            $stmt->execute();
+        }
 
-        return new Offer(
+        $offer = new Offer(
             $id,
-            $result["company_id"],
-            Company::getById($result["company_id"]),
-            $result["title"],
-            $result["description"],
-            $result["job"],
-            $result["duration"],
-            $result["begin_date"],
-            $result["salary"],
-            $result["address"],
-            $result["study_level"],
-            $result["is_active"],
-            $result["email"],
-            $result["phone"],
-            date("Y-m-d H:i:s", strtotime($result["created_at"])),
-            date("Y-m-d H:i:s", strtotime($result["updated_at"]))
+            $company_id,
+            Company::getById($company_id),
+            $title,
+            $description,
+            $job,
+            $duration,
+            $begin_date,
+            $salary,
+            $address,
+            $education,
+            TRUE,
+            $email,
+            $phone,
+            date("Y-m-d H:i:s"),
+            date("Y-m-d H:i:s")
         );
+
+        return $offer;
     }
 
-    public function getRealDuration(): string {
+    public function getRealDuration(): string
+    {
         $duration = $this->getDuration();
 
         $years = intdiv($duration, 365);
@@ -307,7 +368,8 @@ class Offer {
         return rtrim($result, ', ');
     }
 
-    public static function getAllTags(): array {
+    public static function getAllTags(): array
+    {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM tags;");
@@ -323,7 +385,8 @@ class Offer {
         return $tags;
     }
 
-    public static function getCompanyOffers($companyId): ?array {
+    public static function getCompanyOffers($companyId): ?array
+    {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM offers WHERE company_id = :company_id;");
@@ -480,7 +543,8 @@ class Offer {
         return $offers;
     }
 
-    public static function hide($id) {
+    public static function hide($id)
+    {
         global $db;
 
         $stmt = $db->prepare("UPDATE offers SET is_active = !is_active WHERE id = :id");
