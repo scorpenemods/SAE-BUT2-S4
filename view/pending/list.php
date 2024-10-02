@@ -67,7 +67,7 @@ if ($pageId == null) {
                             echo "</div>";
                         echo "</div>";
                         echo "<div class='company-info'>";
-                            echo "<h3><a href='/view/pending/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
+                            echo "<h3><a href='./detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
                             echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
                             echo "<div class='company-meta'>";
                                 echo "<span>" . $offer->getCompany()->getName() . "</span>";
