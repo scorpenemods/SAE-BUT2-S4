@@ -3,7 +3,7 @@
 session_start(); // Start the session
 
 
-require_once "./Model/Person.php"; // Make sure the Person class is included
+require_once "../Model/Person.php"; // Make sure the Person class is included
 
 // Check if the user is logged in
 if (isset($_SESSION['user'])) {
@@ -22,7 +22,7 @@ if (isset($_SESSION['user'])) {
     }
 } else {
     // No user session found, redirect to deconnexion
-    header("Location: ../Logout/Logout.php");
+    header("Location: ./Logout.php");
     exit();
 }
 ?>
