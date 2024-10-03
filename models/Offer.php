@@ -64,6 +64,22 @@ class Offer
             return null;
         }
 
+        $stmt = $db->prepare("DELETE FROM tags_offers WHERE offer_id = :id");
+        $stmt->bindParam(":id", $getId);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        foreach ($getTags as $tag) {
+            $tag_id = Offer::getIdTags($tag);
+            $stmt = $db->prepare("INSERT INTO tags_offers (tag_id, offer_id) VALUES (:tag_id, :offer_id)");
+            $stmt->bindParam(":tag_id", $tag_id);
+            $stmt->bindParam(":offer_id", $getId);
+            $stmt->execute();
+        }
+
         $offer = Offer::getById($getId);
         return $offer;
     }
