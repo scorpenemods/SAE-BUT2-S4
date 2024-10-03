@@ -59,10 +59,8 @@ if (isset($_GET['type'])) {
 
                 $startIndex = ($pageId - 1) * 12;
                 $endIndex = $startIndex + 12;
-
                 for ($i = $startIndex; $i < count($offers) and $i < $endIndex; $i++) {
                     if ($offers[$i]->getStatus() == "Pending" && $offers[$i]->getType() == $type) {
-
                         echo "<div class='company-card'>";
                             echo "<div class='company-carousel'>";
                             $offer = $offers[$i];

@@ -245,7 +245,7 @@ class PendingOffer extends Offer
         if ($offer_id == 0) {
             $type = "new offer";
         } else {
-            $type = "update offer";
+            $type = "updated offer";
         }
 
         $stmt = $db->prepare("INSERT INTO pending_offers (user_id, type, offer_id, company_id, title, address, job, description, duration, salary,
