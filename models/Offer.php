@@ -281,6 +281,15 @@ class Offer
         return $offers;
     }
 
+    public static function getIdTags(string $tag): int {
+        global $db;
+        $stmt = $db->prepare("SELECT id FROM tags WHERE tag = :tag");
+        $stmt->bindParam(":tag", $tag);
+        $stmt->execute();
+        $result = $stmt->fetch();
+        return $result["id"];
+    }
+
     public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize): ?Offer
     {
         global $db;
