@@ -9,7 +9,7 @@ session_start();
 
 echo($_SESSION['user']);
 
-include "../../Model/DB.php";
+include "../../Modely/DB.php";
 require "../../Class/Person.php";
 require "../../Class/Etudiant.php";
 require "../../Class/Professeur.php";
