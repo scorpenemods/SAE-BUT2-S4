@@ -335,7 +335,7 @@ class Offer
 
         //Add the tags in the tags_offers table
         foreach ($tags as $tag) {
-            $stmt = $db->prepare("INSERT INTO tags_offers (tag_id, offer_id) VALUES (:tag_id, :offer_id)");
+            $stmt = $db->prepare("INSERT INTO tags_offers (tag_id, offer_id) VALUES ((SELECT tag FROM tags WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $id);
             $stmt->execute();
