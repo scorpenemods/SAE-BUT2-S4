@@ -95,6 +95,7 @@ $totalPages = $filteredOffers["totalPages"];
 
             <div class="company-listings">
                 <?php
+                //Get all offers and display them
                 foreach ($offers as $offer) {
                     echo "<div class='company-card'>";
                         echo "<div class='company-carousel'>";

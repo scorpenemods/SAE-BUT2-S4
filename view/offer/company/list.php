@@ -56,6 +56,7 @@ if ($pageId == null) {
 
             <div class="company-listings">
                 <?php
+                // Get all offers of the company and display them
                 $offers = Offer::getCompanyOffers($company_id);
                 $totalPages = ceil(count($offers) / 12);
 

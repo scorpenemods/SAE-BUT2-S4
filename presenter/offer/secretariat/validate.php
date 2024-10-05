@@ -16,4 +16,6 @@ if (isset($_POST['id']) && isset($_SERVER["HTTP_REFERER"])) {
         }
     }
     header("Location: ../../../view/pending/list.php");
+} else {
+    header("Location: ../../../view/pending/list.php");
 }

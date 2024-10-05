@@ -1,5 +1,6 @@
 <?php
 
+//Class to manage medias
 class Media {
     private int $id;
     private string $url;

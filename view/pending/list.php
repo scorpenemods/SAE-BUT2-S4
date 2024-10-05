@@ -54,6 +54,7 @@ if (isset($_GET['type'])) {
             </div>
             <div class="company-listings">
                 <?php
+                //Get all pending offers and display them
                 $offers = PendingOffer::getAll();
                 $totalPages = ceil(count($offers) / 12);
 
