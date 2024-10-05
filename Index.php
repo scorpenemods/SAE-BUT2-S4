@@ -70,6 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage</title>
     <!-- <link rel="stylesheet" href="rebase/Model/DefaultStyles/styles.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="./View/Home/Lobby.css">
     <link rel="stylesheet" href="./View/Home/Login.css">
     <script src="./View/Home/Lobby.js" defer></script>
@@ -98,15 +99,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </nav>
 
-<script>
-    window.onload = function() {
-        var errorMessage = <?php echo json_encode($errorMessage); ?>;
-        if (errorMessage) {
-            alert(errorMessage);
-        }
-    };
-</script>
-
 <article>
     <div class="main-content">
         <h1 class="main-heading">Vous êtes un étudiant en stage à UPHF?<br> Nous avons la solution!</h1>
@@ -116,6 +108,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="login-container">
             <h2>Connexion</h2>
+            <?php if (!empty($errorMessage)): ?>
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($errorMessage); ?>
+                </div>
+            <?php endif; ?>
             <form action="" method="POST">
                 <div class="form-group">
                     <label for="username">Nom d'utilisateur :</label>
@@ -143,5 +140,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <a href="Presentation/Redirection.php">Informations</a>
     <a href="Presentation/Redirection.php">A propos</a>
 </footer>
+
+
 </body>
 </html>
