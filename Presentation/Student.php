@@ -53,7 +53,9 @@ $messages = $database->getMessages($senderId, $receiverId); // Получени�
         <span class="app-name">Le Petit Stage</span>
     </div>
     <div class="navbar-right">
-        <p><?php echo $userName; ?></p>
+        <button class="mainbtn" onclick="toggleMenu()">
+            <p><?php echo $userName; ?></p>
+        </button>
         <!-- Language Switch -->
         <label class="switch">
             <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
@@ -70,9 +72,11 @@ $messages = $database->getMessages($senderId, $receiverId); // Получени�
                 <span class="switch-sticker">☀️</span> <!-- Sticker Light Mode -->
             </span>
         </label>
+        <!--
         <button class="mainbtn" onclick="toggleMenu()">
             <img src="../Resources/Param.png" alt="Settings">
         </button>
+        -->
         <div class="hide-list" id="settingsMenu">
             <a href="Settings.php">Information</a>
             <a href="Logout.php">Deconnexion</a>

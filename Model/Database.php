@@ -23,9 +23,9 @@ class Database
     // Верификация логина пользователя
     public function verifyLogin($login, $password)
     {
-        $sql = "SELECT password.password FROM User
-                JOIN password ON User.id = password.user_id
-                WHERE User.login = :login";
+        $sql = "SELECT User.*, password.password FROM User
+            JOIN password ON User.id = password.user_id
+            WHERE User.login = :login";
 
         try {
             $stmt = $this->connection->prepare($sql);
@@ -33,11 +33,14 @@ class Database
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Сравнение пароля с хэшем
+            // Проверка пароля
             if ($result && password_verify($password, $result['password'])) {
-                return true;
+                if ($result['status'] !== 'active') {
+                    return 'pending'; // account is not valid
+                }
+                return $result; // return user's data
             }
-            return false;
+            return false; // Incorrect password or login
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             return false;
@@ -48,8 +51,9 @@ class Database
     public function addUser($login, $password, $email, $telephone, $prenom, $activite, $role, $nom)
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        $status = 'pending'; // User status by default 'pending'
 
-        $sqlUser = "INSERT INTO User (login, email, telephone, prenom, activite, role, nom) VALUES (:login, :email, :telephone, :prenom, :activite, :role, :nom)";
+        $sqlUser = "INSERT INTO User (login, email, telephone, prenom, activite, role, nom, status) VALUES (:login, :email, :telephone, :prenom, :activite, :role, :nom, :status)";
 
         try {
             $stmt = $this->connection->prepare($sqlUser);
@@ -60,7 +64,8 @@ class Database
                 ':prenom' => $prenom,
                 ':activite' => $activite,
                 ':role' => $role,
-                ':nom' => $nom
+                ':nom' => $nom,
+                ':status' => $status
             ]);
             $userId = $this->connection->lastInsertId();
 
@@ -165,6 +170,74 @@ class Database
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return false;
+        }
+    }
+
+    public function getPendingUsers()
+    {
+        $sql = "SELECT * FROM User WHERE status = 'pending'";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return [];
+        }
+    }
+
+    public function getActiveUsers()
+    {
+        $sql = "SELECT * FROM User WHERE status = 'active'";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return [];
+        }
+    }
+
+    public function approveUser($userId)
+    {
+        $sql = "UPDATE User SET status = 'active' WHERE id = :id";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            return $stmt->execute([':id' => $userId]);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function rejectUser($userId)
+    {
+        $sql = "DELETE FROM User WHERE id = :id";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            return $stmt->execute([':id' => $userId]);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function deleteUser($userId)
+    {
+        return $this->rejectUser($userId); // test and reusing same method
+    }
+
+    public function getUserById($userId)
+    {
+        $sql = "SELECT * FROM User WHERE id = :id";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([':id' => $userId]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return null;
         }
     }
 

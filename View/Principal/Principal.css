@@ -330,6 +330,25 @@ footer a {
     color: white;
     text-decoration: none;
 }
+/*  --------------     Users management ----------             */
+.user-management {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pending-requests, .active-users {
+    width: 48%;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.user-request, .active-user {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
 
 /*-------------------------------- Messenger -----------------------------------------------------------*/
 

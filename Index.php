@@ -3,6 +3,7 @@
 session_start();  // Старт сессии
 
 require_once 'Model/Database.php';
+require_once 'Model/Person.php'; // Убедитесь, что класс Person подключен
 
 $database = new Database();
 $errorMessage = '';
@@ -13,10 +14,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Верификация логина
-    $isValid = $database->verifyLogin($username, $password);
+    $user = $database->verifyLogin($username, $password);
 
-    if ($isValid) {
-        $person = $database->getPersonByUsername($username);
+    if ($user && is_array($user)) {
+        // Авторизация успешна
+        // Создаем объект Person из данных пользователя
+        $person = new Person(
+            $user['nom'],
+            $user['prenom'],
+            $user['telephone'],
+            $user['login'],
+            $user['role'],
+            $user['activite'],
+            $user['email'],
+            $user['id'] // Используем 'id' из результата запроса
+        );
+
         $_SESSION['user_id'] = $person->getUserId(); // Сохранение user_id в сессию
         $_SESSION['user'] = serialize($person);  // Сериализация объекта пользователя
         $_SESSION['user_role'] = $person->getRole(); // Сохранение роли пользователя
@@ -40,6 +53,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: Presentation/Redirection.php");
                 break;
         }
+    } elseif ($user === 'pending') {
+        $errorMessage = "Votre compte n'est pas encore activé.";
     } else {
         $errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
     }
