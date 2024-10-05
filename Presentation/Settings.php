@@ -1,19 +1,25 @@
 <?php
 
-session_start(); // Start the session
+require_once "../Model/Person.php"; // Ensure Person class is correctly included
+session_start(); // Démarre une nouvelle session ou reprend une session existante
 
-
-// Check if the user is logged in
+// Vérifie si l'utilisateur est connecté en consultant la variable 'user' dans $_SESSION
 if (!isset($_SESSION['user'])) {
-    header("Location: Logout.php");
-    session_destroy();
-    exit();
+    header("Location: Logout.php"); // Redirige vers la page de déconnexion si l'utilisateur n'est pas connecté
+    session_destroy(); // Détruit toutes les données associées à la session en cours
+    exit(); // Termine l'exécution du script
 }
+
+$person = unserialize($_SESSION['user']);
+$userName = $person->getPrenom() . ' ' . $person->getNom();
+
+
 ?>
 
 
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +34,7 @@ if (!isset($_SESSION['user'])) {
         </div>
 
         <div class="navbar-right">
-            <p>Lucien Newerkauswitchz</p>
+            <p><?php echo $userName; ?></p>
             <!-- Language Switch -->
             <label class="switch">
                 <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
