@@ -73,9 +73,8 @@ class Offer
         }
 
         foreach ($getTags as $tag) {
-            $tag_id = Offer::getIdTags($tag);
-            $stmt = $db->prepare("INSERT INTO tags_offers (tag_id, offer_id) VALUES (:tag_id, :offer_id)");
-            $stmt->bindParam(":tag_id", $tag_id);
+            $stmt = $db->prepare("INSERT INTO tags_offers (tag_id, offer_id) VALUES ((SELECT tag FROM tags WHERE id = :tag_id), :offer_id)");
+            $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $getId);
             $stmt->execute();
         }
@@ -295,15 +294,6 @@ class Offer
         }
 
         return $offers;
-    }
-
-    public static function getIdTags(string $tag): int {
-        global $db;
-        $stmt = $db->prepare("SELECT id FROM tags WHERE tag = :tag");
-        $stmt->bindParam(":tag", $tag);
-        $stmt->execute();
-        $result = $stmt->fetch();
-        return $result["id"];
     }
 
     public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize): ?Offer

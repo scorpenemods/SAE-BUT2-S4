@@ -275,9 +275,8 @@ class PendingOffer extends Offer
 
         //Add tags in pending_tags table
         foreach ($tags as $tag) {
-            $tag_id = Offer::getIdTags($tag);
-            $stmt = $db->prepare("INSERT INTO pending_tags (tag_id, pending_id) VALUES (:tag_id, :offer_id)");
-            $stmt->bindParam(":tag_id", $tag_id);
+            $stmt = $db->prepare("INSERT INTO pending_tags (tag_id, pending_id) VALUES ((SELECT tag FROM tags WHERE id = :tag_id), :offer_id)");
+            $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $id);
             $stmt->execute();
         }
