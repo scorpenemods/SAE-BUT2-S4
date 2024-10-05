@@ -1,39 +1,47 @@
 <?php
 
-global $database;
-session_start(); // Start the session at the beginning of the script
+// Démarre la session au début du script
+session_start();
 
-require_once "../Model/Database.php"; // Assuming your Person class is here, or included in Database.php
-require_once "../Model/Person.php"; // Ensure Person class is correctly included
+// Inclure les fichiers nécessaires pour les classes Database et Person
+require_once "../Model/Database.php"; // On suppose que votre classe Person se trouve ici ou est incluse dans Database.php
+require_once "../Model/Person.php"; // Assurez-vous que la classe Person est correctement incluse
 
-// Initialize username as Guest in case no user is logged in
+// Initialiser le nom d'utilisateur comme 'Guest' au cas où aucun utilisateur n'est connecté
 $userName = "Guest";
+// Définir le fuseau horaire sur Paris
 date_default_timezone_set('Europe/Paris');
 
-// Проверка, что пользователь залогинен
+// Vérifie que l'utilisateur est connecté
 if (!isset($_SESSION['user'])) {
+    // Redirige vers la page de déconnexion si aucun utilisateur n'est connecté
     header("Location: Logout.php");
     exit();
 }
 
-// Получение данных пользователя из сессии
-$person = unserialize($_SESSION['user']);
-$userName = $person->getPrenom() . ' ' . $person->getNom();
-$senderId = $person->getUserId();  // ID текущего пользователя
-$userRole = $person->getRole(); // Получение роли пользователя
+// Récupération des données de l'utilisateur depuis la session
+$person = unserialize($_SESSION['user']); // Désérialise l'objet utilisateur stocké dans la session
+$userName = $person->getPrenom() . ' ' . $person->getNom(); // Construit le nom complet de l'utilisateur
+$senderId = $person->getUserId();  // Récupère l'ID de l'utilisateur courant
+$userRole = $person->getRole(); // Récupère le rôle de l'utilisateur
 
-// Ограничение доступа по ролям (настройте в зависимости от ролей)
-$allowedRoles = [1]; // Здесь указаны роли, которым разрешен доступ к странице. Например, роль 2 — преподаватель.
+// Restreindre l'accès en fonction des rôles
+$allowedRoles = [1]; // Définir les rôles autorisés à accéder à cette page
 if (!in_array($userRole, $allowedRoles)) {
-    header("Location: access_denied.php");  // Перенаправление на страницу отказа в доступе
+    // Rediriger vers la page de refus d'accès si le rôle de l'utilisateur n'est pas autorisé
+    header("Location: access_denied.php");
     exit();
 }
 
-$receiverId = 2; // Установите динамически, на основе выбранного контакта в мессенджере
+// Mettez en place l'ID du destinataire dynamiquement, basé sur le contact sélectionné dans le messager
+$receiverId = 2; // À définir dynamiquement
 
+// Instanciation de l'objet Database
 $database = new Database();
-$messages = $database->getMessages($senderId, $receiverId); // Получение сообщений между пользователями
+// Récupération des messages entre l'utilisateur actuel et le destinataire
+$messages = $database->getMessages($senderId, $receiverId);
 ?>
+
 
 
 <!DOCTYPE html>
@@ -137,37 +145,44 @@ $messages = $database->getMessages($senderId, $receiverId); // Получени�
                     </div>
                     <div class="chat-body" id="chat-body">
                         <?php
-                        // Функция для форматирования даты
                         function formatTimestamp($timestamp) {
-                            $date = new DateTime($timestamp);
-                            $now = new DateTime();
-                            $yesterday = new DateTime('yesterday');
+                            $date = new DateTime($timestamp); // Crée un objet DateTime à partir du timestamp
+                            $now = new DateTime(); // Crée un objet DateTime pour la date actuelle
+                            $yesterday = new DateTime('yesterday'); // Crée un objet DateTime pour la date d'hier
 
-                            // Сравнение даты сообщения с сегодняшней датой
+                            // Compare la date du message avec la date d'aujourd'hui
                             if ($date->format('Y-m-d') == $now->format('Y-m-d')) {
-                                return 'Today ' . $date->format('H:i');
+                                return 'Today ' . $date->format('H:i'); // Si c'est aujourd'hui, retourne "Today" avec l'heure
                             }
-                            // Сравнение даты сообщения со вчерашней датой
+                            // Compare la date du message avec celle d'hier
                             elseif ($date->format('Y-m-d') == $yesterday->format('Y-m-d')) {
-                                return 'Yesterday ' . $date->format('H:i');
+                                return 'Yesterday ' . $date->format('H:i'); // Si c'était hier, retourne "Yesterday" avec l'heure
                             } else {
-                                return $date->format('d.m.Y H:i'); // Короткий формат даты и времени
+                                return $date->format('d.m.Y H:i'); // Sinon, retourne la date complète au format jour/mois/année heure:minutes
                             }
                         }
+
 
                         // Пример использования в вашем цикле для вывода сообщений
                         foreach ($messages as $msg) {
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Определение класса в зависимости от отправителя
+                            // Détermine la classe CSS en fonction de l'expéditeur du message
+                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Utilise 'self' si l'utilisateur actuel est l'expéditeur, sinon 'other'
+
+                            // Début de la construction du bloc de message
                             echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Защита от XSS
+                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Affiche le contenu du message, sécurisé contre les attaques XSS
+
+                            // Vérifie si un fichier est associé au message et crée un lien pour le télécharger
                             if ($msg['file_path']) {
-                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path']));
+                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path'])); // Nettoie le chemin du fichier
                                 echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
                             }
-                            // Используем функцию formatTimestamp для вывода форматированной даты и времени
+
+                            // Utilise la fonction formatTimestamp pour afficher la date et l'heure du message
                             echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
                             echo "</div>";
                         }
+
                         ?>
                     </div>
                     <div class="chat-footer">

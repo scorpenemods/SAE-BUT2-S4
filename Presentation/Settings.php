@@ -23,7 +23,7 @@ $userName = $person->getPrenom() . ' ' . $person->getNom();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Title</title>
+    <title>Settings Le Petit Stage</title>
     <link rel="stylesheet" href="../View/Settings/Settings.css">
     <script type="text/javascript" src="../View/Settings/Settings.js"></script>
 </head>
