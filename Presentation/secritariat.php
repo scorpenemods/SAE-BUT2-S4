@@ -1,32 +1,45 @@
 <?php
+// Démarre une nouvelle session ou reprend une session existante
 session_start();
+
+// Inclusion des fichiers nécessaires pour la base de données et les objets Person
 require "../Model/Database.php";
 require "../Model/Person.php";
 
+// Création d'une nouvelle instance de la classe Database
 $database = new Database();
 
+// Initialisation du nom d'utilisateur par défaut
 $userName = "Guest";
+
+// Vérifie si l'utilisateur est connecté et récupère ses données
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
+    // Vérifie si l'objet déserialisé est une instance de la classe Person
     if ($person instanceof Person) {
+        // Sécurise et affiche le prénom et le nom de la personne connectée
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
     }
 } else {
+    // Si aucune session d'utilisateur n'est trouvée, redirige vers la page de déconnexion
     header("Location: Logout.php");
     exit();
 }
 
-$userRole = $person->getRole(); // Получение роли пользователя
-$receiverId = $_POST['receiver_id'] ?? 1; // Замените на динамическое значение
-$senderId = $_SESSION['user_id'] ?? null;
+// Récupère le rôle de l'utilisateur et l'ID du destinataire des messages
+$userRole = $person->getRole();
+$receiverId = $_POST['receiver_id'] ?? 1; // ID du destinataire, valeur par défaut à 1 si non spécifié
+$senderId = $_SESSION['user_id'] ?? null; // ID de l'expéditeur récupéré de la session
 
-// Ограничение доступа по ролям (настройте в зависимости от ролей)
-$allowedRoles = [4]; // Здесь указаны роли, которым разрешен доступ к странице. Например, роль 2 — преподаватель.
+// Restriction d'accès selon les rôles
+$allowedRoles = [4]; // Seuls les utilisateurs avec le rôle 4 ont accès à cette page
 if (!in_array($userRole, $allowedRoles)) {
-    header("Location: access_denied.php");  // Перенаправление на страницу отказа в доступе
+    // Redirection vers la page d'accès refusé si l'utilisateur n'a pas le bon rôle
+    header("Location: access_denied.php");
     exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -34,16 +47,20 @@ if (!in_array($userRole, $allowedRoles)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage - Secrétariat</title>
+    <!-- Lien vers la feuille de style CSS principale -->
     <link rel="stylesheet" href="../View/Principal/Principal.css">
+    <!-- Lien vers le script JavaScript principal -->
     <script src="../View/Principal/Principal.js"></script>
 </head>
 <body>
 <header class="navbar">
     <div class="navbar-left">
+        <!-- Affichage du logo et du nom de l'application -->
         <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
         <span class="app-name">Le Petit Stage - Secrétariat</span>
     </div>
     <div class="navbar-right">
+        <!-- Affichage du nom de l'utilisateur connecté et contrôles pour changer la langue et le thème -->
         <p><?php echo $userName; ?></p>
         <label class="switch">
             <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
@@ -59,18 +76,22 @@ if (!in_array($userRole, $allowedRoles)) {
                 <span class="switch-sticker">☀️</span>
             </span>
         </label>
+        <!-- Bouton pour ouvrir le menu des paramètres -->
         <button class="mainbtn" onclick="toggleMenu()">
             <img src="../Resources/Param.png" alt="Settings">
         </button>
         <div class="hide-list" id="settingsMenu">
+            <!-- Liens vers les pages d'informations et de déconnexion -->
             <a href="Settings.php">Information</a>
             <a href="Logout.php">Deconnexion</a>
         </div>
     </div>
 </header>
 
+<!-- Section principale contenant les différents modules de l'application -->
 <section class="Menus">
     <nav>
+        <!-- Boutons de navigation entre les différents contenus de la section -->
         <span onclick="widget(0)" class="widget-button Current">Accueil</span>
         <span onclick="widget(1)" class="widget-button">Messagerie</span>
         <span onclick="widget(2)" class="widget-button">Gestion Utilisateurs</span>
@@ -161,36 +182,43 @@ if (!in_array($userRole, $allowedRoles)) {
             </div>
         </div>
 
+        <!-- Section pour gérer les utilisateurs dans le système de gestion -->
         <div class="Contenu" id="content-2">
             <div class="user-management">
+                <!-- Section pour les demandes d'utilisateur en attente d'approbation -->
                 <div class="pending-requests">
                     <h2>Demandes en attente</h2>
-                    <!-- Здесь будут отображаться заявки на регистрацию -->
                     <?php
+                    // Récupération des utilisateurs en attente depuis la base de données
                     $pendingUsers = $database->getPendingUsers();
                     foreach ($pendingUsers as $user) {
+                        // Affichage de chaque utilisateur en attente avec ses détails
                         echo "<div class='user-request'>";
                         echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
                         echo "<p><strong>Prénom:</strong> " . htmlspecialchars($user['prenom']) . "</p>";
                         echo "<p><strong>Email:</strong> " . htmlspecialchars($user['email']) . "</p>";
                         echo "<p><strong>Rôle:</strong> " . htmlspecialchars($user['role']) . "</p>";
+                        // Boutons pour approuver ou refuser la demande de l'utilisateur
                         echo "<button onclick='approveUser(" . $user['id'] . ")'>✅ Accepter</button>";
                         echo "<button onclick='rejectUser(" . $user['id'] . ")'>❌ Refuser</button>";
                         echo "</div>";
                     }
                     ?>
                 </div>
+                <!-- Section pour afficher les utilisateurs actifs dans le système -->
                 <div class="active-users">
                     <h2>Utilisateurs actifs</h2>
-                    <!-- Здесь будет список активных пользователей -->
                     <?php
+                    // Récupération des utilisateurs actifs depuis la base de données
                     $activeUsers = $database->getActiveUsers();
                     foreach ($activeUsers as $user) {
+                        // Affichage de chaque utilisateur actif avec ses détails
                         echo "<div class='active-user'>";
                         echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
                         echo "<p><strong>Prénom:</strong> " . htmlspecialchars($user['prenom']) . "</p>";
                         echo "<p><strong>Email:</strong> " . htmlspecialchars($user['email']) . "</p>";
                         echo "<p><strong>Rôle:</strong> " . htmlspecialchars($user['role']) . "</p>";
+                        // Bouton pour supprimer l'utilisateur du système
                         echo "<button onclick='deleteUser(" . $user['id'] . ")'>🗑️ Supprimer</button>";
                         echo "</div>";
                     }
@@ -199,17 +227,21 @@ if (!in_array($userRole, $allowedRoles)) {
             </div>
         </div>
 
+        <!-- Section pour gérer les documents -->
         <div class="Contenu" id="content-3">Contenu Documents</div>
+        <!-- Section pour gérer les rapports -->
         <div class="Contenu" id="content-4">Contenu Rapports</div>
     </div>
 </section>
 
 <footer class="PiedDePage">
+    <!-- Pied de page avec logo et liens -->
     <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
     <a href="Redirection.php">Informations</a>
     <a href="Redirection.php">À propos</a>
 </footer>
 
+<!-- Script JavaScript pour la gestion des utilisateurs -->
 <script src="../View/Principal/userManagement.js"></script>
 </body>
 </html>

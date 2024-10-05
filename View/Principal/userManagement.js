@@ -53,3 +53,4 @@ function deleteUser(userId) {
         xhr.send("user_id=" + encodeURIComponent(userId));
     }
 }
+
