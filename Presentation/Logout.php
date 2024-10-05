@@ -23,7 +23,7 @@ session_destroy();
     <meta charset="UTF-8">
     <title> Déconnexion </title>
     <link rel="stylesheet" href="../View/Logout/Logout.css">
-    <link rel="stylesheet" href="../rebase/Model/DefaultStyles/styles.css">
+    <link rel="stylesheet" href="../rebase/Modely/DefaultStyles/styles.css">
 </head>
 <body>
 <nav class="navbar">

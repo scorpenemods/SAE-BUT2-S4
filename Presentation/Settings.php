@@ -1,3 +1,17 @@
+<?php
+
+session_start(); // Start the session
+
+
+// Check if the user is logged in
+if (!isset($_SESSION['user'])) {
+    header("Location: Logout.php");
+    session_destroy();
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,7 +47,7 @@
             </label>
             <button class="mainbtn" onclick="turn()"><img src="../Resources/Param.png"></button>
             <div class="hide-list">
-                <a href="Information.php">Information</a>
+                <a href="Preference.php">Preference</a>
                 <a href="Logout.php">Deconnexion</a>
             </div>
         </div>
@@ -41,15 +55,15 @@
 <body>
 <div class="container">
     <div class="vertical-menu">
-        <div class="menu-item" onclick="toggleMenu('account-info', '../Information/Information.php')">
+        <div class="menu-item" onclick="toggleMenu('account-info', './Information.php')">
             <span>Information du compte</span>
             <span class="arrow">&#9660;</span>
         </div>
-        <div class="menu-item" onclick="toggleMenu('preferences', '../Preference/Preference.php')">
+        <div class="menu-item" onclick="toggleMenu('preferences', './Preference.php')">
             <span>Modifier ses préférences</span>
             <span class="arrow">&#9660;</span>
         </div>
-        <div class="menu-item" onclick="window.location.href='Deconnexion.php'">
+        <div class="menu-item" onclick="window.location.href='Logout.php'">
             <span>Déconnexion</span>
             <span class="arrow">&#9660;</span>
         </div>

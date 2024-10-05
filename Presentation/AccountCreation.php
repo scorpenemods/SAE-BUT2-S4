@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../rebase/Model/DefaultStyles/styles.css">
+    <link rel="stylesheet" href="../rebase/Modely/DefaultStyles/styles.css">
 </head>
 <body>
 <header class="navbar">

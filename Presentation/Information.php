@@ -3,7 +3,7 @@
 session_start(); // Start the session
 
 
-require_once "./Model/Person.php"; // Make sure the Person class is included
+require_once "../Model/Person.php"; // Make sure the Person class is included
 
 // Check if the user is logged in
 if (isset($_SESSION['user'])) {
@@ -17,12 +17,12 @@ if (isset($_SESSION['user'])) {
         $telephone = htmlspecialchars($person->getTelephone());
     } else {
         // Invalid session, redirect to deconnexion
-        header("Location: ../Logout/Logout.php");
+        header("Location: Presentation/Logout.php");
         exit();
     }
 } else {
     // No user session found, redirect to deconnexion
-    header("Location: ../Logout/Logout.php");
+    header("Location: Presentation/Logout.php");
     exit();
 }
 ?>
@@ -55,17 +55,17 @@ if (isset($_SESSION['user'])) {
         <tr>
             <td>Email :</td>
             <td><?php echo $email; ?></td> <!-- Display the email -->
-            <td><a href="../rebase/Model/MailChange/MailChange.php"><button>Modifier adresse e-mail</button></a></td>
+            <td><a href="../rebase/Modely/MailChange/MailChange.php"><button>Modifier adresse e-mail</button></a></td>
         </tr>
         <tr>
             <td>Numéro de téléphone :</td>
             <td><?php echo $telephone; ?></td> <!-- Display the phone number -->
-            <td><a href="../rebase/Model/ChangePhoneNumber/ChangePhoneNumber.php"><button>Modifier numéro de téléphone</button></a></td>
+            <td><a href="../rebase/Modely/ChangePhoneNumber/ChangePhoneNumber.php"><button>Modifier numéro de téléphone</button></a></td>
         </tr>
         <tr>
             <td>Mot de passe :</td>
             <td>********</td> <!-- Password is not displayed -->
-            <td><a href="../rebase/Model/ForgotPassword/ForgotPasswordMail.php"><button>Modifier mot de passe</button></a></td>
+            <td><a href="../rebase/Modely/ForgotPassword/ForgotPasswordMail.php"><button>Modifier mot de passe</button></a></td>
         </tr>
     </table>
 </section>
