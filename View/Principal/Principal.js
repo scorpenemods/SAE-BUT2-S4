@@ -203,27 +203,27 @@ function sendFile(fileInput) {
 
     xhr.send(formData);
 
-    // Очистка выбранного файла
+    // Clearing the selected file
     fileInput.value = '';
 }
 
-// Форматирование даты и времени
+// Formatting Date and Time
 function formatTimestamp(timestamp) {
     const optionsTime = { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' };
     const optionsDate = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Europe/Paris' };
 
-    // Получаем текущую дату и время в часовом поясе Europe/Paris
+    // Get the current date and time in the Europe/Paris time zone
     const nowParis = new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris' });
     const now = new Date(nowParis);
 
-    // Получаем дату и время сообщения в часовом поясе Europe/Paris
+    // Get the date and time of the message in the Europe/Paris time zone
     const messageDateParis = new Date(timestamp).toLocaleString('en-US', { timeZone: 'Europe/Paris' });
     const messageDate = new Date(messageDateParis);
 
-    // Проверяем, является ли сообщение сегодняшним
+    // Checking if the message is today's
     const isToday = now.toDateString() === messageDate.toDateString();
 
-    // Проверяем, является ли сообщение вчерашним
+    // Checking if the message is from yesterday
     const yesterday = new Date(now);
     yesterday.setDate(yesterday.getDate() - 1);
     const isYesterday = yesterday.toDateString() === messageDate.toDateString();
@@ -268,6 +268,6 @@ document.getElementById('message-input').addEventListener('keydown', function(ev
 
 window.onbeforeunload = function() {
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", "Logout.php", false);  // Используем синхронный запрос, чтобы завершить сессию
+    xhr.open("GET", "Logout.php", false);  // Use a synchronous request to end the session
     xhr.send(null);
 };

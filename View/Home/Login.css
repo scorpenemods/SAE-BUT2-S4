@@ -3,15 +3,15 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 500px;
-    background-color: var(--container-bg); /* Цвет фона меняется в зависимости от темы */
-    color: var(--text-color); /* Цвет текста меняется в зависимости от темы */
+    background-color: var(--container-bg); /* The background color changes depending on the theme */
+    color: var(--text-color); /* Text color changes depending on the theme */
 }
 
 h2 {
     font-size: 30px;
     text-align: center;
     margin-bottom: 20px;
-    color: var(--text-color); /* Цвет текста меняется в зависимости от темы */
+    color: var(--text-color); /* Text color changes depending on the theme */
 }
 
 .form-group {
@@ -21,7 +21,7 @@ h2 {
 label {
     display: block;
     margin-bottom: 5px;
-    color: var(--text-color); /* Цвет текста меняется в зависимости от темы */
+    color: var(--text-color); /* Text color changes depending on the theme */
 }
 
 input[type="text"], input[type="password"] {

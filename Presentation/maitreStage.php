@@ -135,11 +135,11 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
                                 }
                             }
 
-                            // Пример использования в вашем цикле для вывода сообщений
+                            // using loop to print messages
                             foreach ($messages as $msg) {
                                 $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Определение класса в зависимости от отправителя
                                 echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                                echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Защита от XSS
+                                echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // XSS protection
                                 if ($msg['file_path']) {
                                     $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path']));
                                     echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";

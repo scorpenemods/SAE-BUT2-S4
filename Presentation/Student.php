@@ -163,7 +163,7 @@ $messages = $database->getMessages($senderId, $receiverId);
                         }
 
 
-                        // Пример использования в вашем цикле для вывода сообщений
+                        // using loop to print messages
                         foreach ($messages as $msg) {
                             // Détermine la classe CSS en fonction de l'expéditeur du message
                             $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Utilise 'self' si l'utilisateur actuel est l'expéditeur, sinon 'other'
@@ -189,7 +189,7 @@ $messages = $database->getMessages($senderId, $receiverId);
                         <form id="messageForm" enctype="multipart/form-data" method="POST" action="sendMessage.php">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                            <input type="hidden" name="receiver_id" value="2"> <!-- Замените на нужный ID -->
+                            <input type="hidden" name="receiver_id" value="2"> <!-- need to change on dynamic ID -->
                             <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
                             <button type="button" onclick="sendMessage(event)">Envoyer</button> <!-- dynamic messages sending -->
                         </form>

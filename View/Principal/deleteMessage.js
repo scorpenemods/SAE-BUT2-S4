@@ -1,4 +1,4 @@
-// Показать контекстное меню
+// Show context menu
 document.addEventListener("contextmenu", function (e) {
     e.preventDefault();
     const contextMenu = document.getElementById("context-menu");
@@ -13,12 +13,12 @@ document.addEventListener("contextmenu", function (e) {
     }
 });
 
-// Скрыть контекстное меню при клике в любом другом месте
+// Hide context menu when clicking anywhere else
 document.addEventListener("click", function () {
     document.getElementById("context-menu").style.display = "none";
 });
 
-// Обработчик для копирования текста сообщения
+// Handler for copying message text
 document.getElementById("copy-text").addEventListener("click", function () {
     const messageId = document.getElementById("context-menu").dataset.messageId;
     const messageContent = document.querySelector(`[data-message-id="${messageId}"] p`).innerText;
@@ -27,11 +27,11 @@ document.getElementById("copy-text").addEventListener("click", function () {
         .catch(err => console.error("Erreur: ", err));
 });
 
-// Обработчик для удаления сообщения
+// Handler for deleting a message
 document.getElementById("delete-message").addEventListener("click", function () {
     const messageId = document.getElementById("context-menu").dataset.messageId;
 
-    // AJAX-запрос на удаление сообщения
+    // AJAX Request to Delete a Message
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "delete_message.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

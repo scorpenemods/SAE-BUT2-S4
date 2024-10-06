@@ -104,7 +104,7 @@ if (!in_array($userRole, $allowedRoles)) {
             <p>Gérez les utilisateurs, consultez les documents et accédez aux rapports des stages.</p><br>
         </div>
         <div class="Contenu" id="content-1">
-            <!-- Содержимое мессенджера -->
+            <!-- Messenger Contents -->
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
@@ -136,34 +136,34 @@ if (!in_array($userRole, $allowedRoles)) {
                             die("Erreur: ID de l'utilisateur n'est pas défini dans la session.");
                         }
                         $messages = $database->getMessages($senderId, $receiverId);
-                        // Функция для форматирования даты
+                        // Function for formatting date
                         function formatTimestamp($timestamp) {
                             $date = new DateTime($timestamp);
                             $now = new DateTime();
                             $yesterday = new DateTime('yesterday');
 
-                            // Сравнение даты сообщения с сегодняшней датой
+                            // Compare the date of the message with today's date
                             if ($date->format('Y-m-d') == $now->format('Y-m-d')) {
                                 return 'Today ' . $date->format('H:i');
                             }
-                            // Сравнение даты сообщения со вчерашней датой
+                            //Compare message date with yesterday's date
                             elseif ($date->format('Y-m-d') == $yesterday->format('Y-m-d')) {
                                 return 'Yesterday ' . $date->format('H:i');
                             } else {
-                                return $date->format('d.m.Y H:i'); // Короткий формат даты и времени
+                                return $date->format('d.m.Y H:i'); // Short date and time format
                             }
                         }
 
-                        // Пример использования в вашем цикле для вывода сообщений
+                        // using loop to print messages
                         foreach ($messages as $msg) {
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Определение класса в зависимости от отправителя
+                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Determining the class depending on the sender
                             echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Защита от XSS
+                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // XSS protection
                             if ($msg['file_path']) {
                                 $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path']));
                                 echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
                             }
-                            // Используем функцию formatTimestamp для вывода форматированной даты и времени
+                            // Use the formatTimestamp function to output formatted date and time
                             echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
                             echo "</div>";
                         }
@@ -173,7 +173,7 @@ if (!in_array($userRole, $allowedRoles)) {
                         <form id="messageForm" enctype="multipart/form-data" method="POST" action="sendMessage.php">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                            <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- ID получателя -->
+                            <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- Recipient ID -->
                             <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
                             <button type="button" onclick="sendMessage(event)">Envoyer</button>
                         </form>

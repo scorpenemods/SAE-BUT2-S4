@@ -20,7 +20,7 @@ class Database
         }
     }
 
-    // Верификация логина пользователя
+    // User login verification
     public function verifyLogin($login, $password)
     {
         $sql = "SELECT User.*, password.password FROM User
@@ -47,7 +47,7 @@ class Database
         }
     }
 
-    // Добавление нового пользователя
+    // Adding a new user
     public function addUser($login, $password, $email, $telephone, $prenom, $activite, $role, $nom)
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
@@ -83,7 +83,7 @@ class Database
         }
     }
 
-    // Получение информации о пользователе
+    // Getting user information
     public function getPersonByUsername($username)
     {
         $sql = "SELECT nom, prenom, telephone, login, role, activite, email, id as user_id FROM User WHERE login = :login";
@@ -244,6 +244,82 @@ class Database
     public function getLastMessageId() {
         return $this->connection->lastInsertId();
     }
+    // ------------------------- Forgot password functions --------------- //
+
+    public function getUserByEmail($email)
+    {
+        $sql = "SELECT * FROM User WHERE email = :email";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([':email' => $email]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function storeVerificationCode($email, $verification_code, $expires_at)
+    {
+        $sql = "INSERT INTO password_resets (email, verification_code, expires_at) VALUES (:email, :verification_code, :expires_at)
+            ON DUPLICATE KEY UPDATE verification_code = :verification_code, expires_at = :expires_at";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([
+                ':email' => $email,
+                ':verification_code' => $verification_code,
+                ':expires_at' => $expires_at
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getPasswordResetRequest($email, $verification_code)
+    {
+        $sql = "SELECT * FROM password_resets WHERE email = :email AND verification_code = :verification_code";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([':email' => $email, ':verification_code' => $verification_code]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function updateUserPasswordByEmail($email, $hashedPassword)
+    {
+        $sql = "UPDATE password SET password = :password WHERE user_id = (SELECT id FROM User WHERE email = :email)";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([
+                ':password' => $hashedPassword,
+                ':email' => $email
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function deleteVerificationCode($email)
+    {
+        $sql = "DELETE FROM password_resets WHERE email = :email";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([':email' => $email]);
+            return true;
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // ------------------------------------------------------------------- //
 
     public function getConnection() {
         return $this->connection;
