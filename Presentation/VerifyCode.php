@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "../../Model/Database.php";
+require "../Model/Database.php";
 
 $email = $_SESSION['email_verification'] ?? null;
 
