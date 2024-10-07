@@ -32,7 +32,7 @@
         <button type="submit" class="btn">Envoyer le code de vérification</button>
     </form>
     <div class="link">
-        <a href="../../../Index.php">Retour à la connexion</a>
+        <a href="../../Index.php">Retour à la connexion</a>
     </div>
 </div>
 <script>

@@ -1,7 +1,7 @@
 <?php
 session_start();
-require "../../../Model/Database.php";
-require '../../../vendor/autoload.php'; // includes PHPMailer
+require "../../Model/Database.php";
+require '../../vendor/autoload.php'; // includes PHPMailer
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;

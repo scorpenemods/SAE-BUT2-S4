@@ -135,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <button class="primary-button" type="submit">Se connecter</button>
                 <p>Un problème pour se connecter ?</p>
-                <a href="rebase/Modely/ForgotPassword/ForgotPasswordMail.php">Changer le mot de passe</a>
+                <a href="Presentation/ForgotPassword/ForgotPasswordMail.php">Changer le mot de passe</a>
             </form>
         </div>
         <!-- Liens pour les utilisateurs non connectés -->

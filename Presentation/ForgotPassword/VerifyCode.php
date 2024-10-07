@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "../../../Model/Database.php";
+require "../../Model/Database.php";
 
 $email = $_SESSION['email_verification'] ?? null;
 
@@ -88,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
     <?php } ?>
     <div class="link">
-        <a href="../../../Index.php">Retour à la connexion</a>
+        <a href="../../Index.php">Retour à la connexion</a>
     </div>
 </div>
 </body>
