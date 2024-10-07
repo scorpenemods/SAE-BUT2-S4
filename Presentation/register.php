@@ -60,20 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtPass->execute();
 
         // Перенаправление в зависимости от роли
-        switch ($role) {
-            case 'student':
-                header("Location: Student.php");
-                break;
-            case 'tutorprofessor':
-                header("Location: Professor.php");
-                break;
-            case 'tutorcompany':
-                header("Location: maitre_stage.php");
-                break;
-            case 'secritariat':
-                header("Location: secritariat.php");
-                break;
-        }
+        header("Location: ../index.php");
         exit();
     } else {
         echo "Error while registering!";
