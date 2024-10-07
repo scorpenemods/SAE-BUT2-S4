@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Mot de passe oublié</title>
-    <link rel="stylesheet" href="ForgotPswdStyles.css">
+    <link rel="stylesheet" href="../View/ForgotPassword/ForgotPswdStyles.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha256-DIym3sfZPMYqRkk8oWhZyEEo9xYKpIZo2Vafz3tbv94=" crossorigin="anonymous" />
 </head>
@@ -32,7 +32,7 @@
         <button type="submit" class="btn">Envoyer le code de vérification</button>
     </form>
     <div class="link">
-        <a href="../../Index.php">Retour à la connexion</a>
+        <a href="../Index.php">Retour à la connexion</a>
     </div>
 </div>
 <script>

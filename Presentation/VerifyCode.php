@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Vérification du code</title>
-    <link rel="stylesheet" href="ForgotPswdStyles.css">
+    <link rel="stylesheet" href="../View/ForgotPassword/ForgotPswdStyles.css">
 </head>
 <body>
 <div class="container">
@@ -88,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
     <?php } ?>
     <div class="link">
-        <a href="../../Index.php">Retour à la connexion</a>
+        <a href="../Index.php">Retour à la connexion</a>
     </div>
 </div>
 </body>

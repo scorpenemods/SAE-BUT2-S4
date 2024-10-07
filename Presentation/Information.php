@@ -65,7 +65,7 @@ if (isset($_SESSION['user'])) {
         <tr>
             <td>Mot de passe :</td>
             <td>********</td> <!-- Password is not displayed -->
-            <td><a href="ForgotPassword/ForgotPasswordMail.php"><button>Modifier mot de passe</button></a></td>
+            <td><a href="ForgotPasswordMail.php"><button>Modifier mot de passe</button></a></td>
         </tr>
     </table>
 </section>
