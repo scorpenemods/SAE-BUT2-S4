@@ -17,12 +17,12 @@ if (isset($_SESSION['user'])) {
         $telephone = htmlspecialchars($person->getTelephone());
     } else {
         // Invalid session, redirect to deconnexion
-        header("Location: Presentation/Logout.php");
+        header("Location: Logout.php");
         exit();
     }
 } else {
     // No user session found, redirect to deconnexion
-    header("Location: Presentation/Logout.php");
+    header("Location: Logout.php");
     exit();
 }
 ?>
@@ -34,7 +34,7 @@ if (isset($_SESSION['user'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Informations du compte</title>
     <link rel="stylesheet" href="../View/Settings/Information.css">
-    <script type="text/javascript" src="../Parametre/Paremetre.js"></script>
+    <script type="text/javascript" src="../View/Settings/Settings.js"></script>
 </head>
 <body>
 <section class="compte-info">
