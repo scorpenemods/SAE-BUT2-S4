@@ -41,16 +41,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Redirection de l'utilisateur vers une page spécifique selon son rôle
         switch ($_SESSION['user_role']) {
             case 1: // Étudiant
-                header("Location: Presentation/Student.php");
+                header("Location: Presentation/Principal/Student.php");
                 break;
             case 2: // Professeur
-                header("Location: Presentation/Professor.php");
+                header("Location: Presentation/Principal/Professor.php");
                 break;
             case 3: // Mentor professionnel
-                header("Location: Presentation/MaitreStage.php");
+                header("Location: Presentation/Principal/MaitreStage.php");
                 break;
             case 4: // Secrétariat
-                header("Location: Presentation/Secretariat.php");
+                header("Location: Presentation/Principal/Secretariat.php");
                 break;
             default: // Redirection par défaut si le rôle n'est pas géré
                 header("Location: Presentation/Redirection.php");
