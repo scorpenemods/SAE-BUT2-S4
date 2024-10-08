@@ -1,12 +1,9 @@
 <?php
 
 
-
-use Person;
-
 require_once(Person::class);
 
-class Tuteur extends Person
+class Professeur extends Person
 {
     private array $lstEtudiant;
 
@@ -15,4 +12,5 @@ class Tuteur extends Person
         parent::__construct($nom, $prenom, $telephone);
         $this->lstEtudiant = array();
     }
+
 }

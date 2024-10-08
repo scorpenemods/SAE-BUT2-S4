@@ -1,9 +1,6 @@
 <?php
 
 
-
-use Person;
-
 require_once(Person::class);
 
 class Secretariat extends Person
