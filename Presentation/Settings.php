@@ -26,6 +26,11 @@ $userName = $person->getPrenom() . ' ' . $person->getNom();
     <title>Settings Le Petit Stage</title>
     <link rel="stylesheet" href="../View/Settings/Settings.css">
     <script type="text/javascript" src="../View/Settings/Settings.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleMenu('account-info', './Information.php');
+        });
+    </script>
 </head>
     <header class="navbar">
         <div class="navbar-left">
