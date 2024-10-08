@@ -108,7 +108,7 @@ if (!in_array($userRole, $allowedRoles)) {
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
-                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                        <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
                     </div>
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
@@ -137,7 +137,11 @@ if (!in_array($userRole, $allowedRoles)) {
                         }
                         $messages = $database->getMessages($senderId, $receiverId);
                         // Function for formatting date
-                        function formatTimestamp($timestamp) {
+                        /**
+                         * @throws Exception
+                         */
+                        function formatTimestamp($timestamp): string
+                        {
                             $date = new DateTime($timestamp);
                             $now = new DateTime();
                             $yesterday = new DateTime('yesterday');
@@ -174,7 +178,7 @@ if (!in_array($userRole, $allowedRoles)) {
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                             <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- Recipient ID -->
-                            <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
+                            <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
                             <button type="button" onclick="sendMessage(event)">Envoyer</button>
                         </form>
                     </div>
@@ -197,8 +201,27 @@ if (!in_array($userRole, $allowedRoles)) {
                         echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
                         echo "<p><strong>Prénom:</strong> " . htmlspecialchars($user['prenom']) . "</p>";
                         echo "<p><strong>Email:</strong> " . htmlspecialchars($user['email']) . "</p>";
+                        echo "<p><strong>Telephone:</strong> " . htmlspecialchars($user['telephone']) . "</p>";
+                        echo "<p><strong>Activité :</strong> " . htmlspecialchars($user['activite']) . "</p>";
                         echo "<p><strong>Statut Email:</strong> " . ($user['valid_email'] ? 'Validé' : 'Non Validé') . "</p>";
-                        echo "<p><strong>Rôle:</strong> " . htmlspecialchars($user['role']) . "</p>";
+
+                        switch (htmlspecialchars($user['role'])){
+                            case 1:
+                                echo "<p><strong>Rôle:</strong> " . "Etudiant" . "</p>";
+                                break;
+                            case 2:
+                                echo "<p><strong>Rôle:</strong> " . "Professeur" . "</p>";
+                                break;
+                            case 3:
+                                echo "<p><strong>Rôle:</strong> " . "Maitre Stage" . "</p>";
+                                break;
+                            case 4:
+                                echo "<p><strong>Rôle:</strong> " . "Secrétariat" . "</p>";
+                                break;
+                            default:
+                                echo "<p><strong>Rôle:</strong> " . "Inconnue" . "</p>";
+                                break;
+                        }
                         // Boutons pour approuver ou refuser la demande de l'utilisateur
                         echo "<button onclick='approveUser(" . $user['id'] . ")'>✅ Accepter</button>";
                         echo "<button onclick='rejectUser(" . $user['id'] . ")'>❌ Refuser</button>";
@@ -218,7 +241,25 @@ if (!in_array($userRole, $allowedRoles)) {
                         echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
                         echo "<p><strong>Prénom:</strong> " . htmlspecialchars($user['prenom']) . "</p>";
                         echo "<p><strong>Email:</strong> " . htmlspecialchars($user['email']) . "</p>";
-                        echo "<p><strong>Rôle:</strong> " . htmlspecialchars($user['role']) . "</p>";
+                        echo "<p><strong>Telephone:</strong> " . htmlspecialchars($user['telephone']) . "</p>";
+                        echo "<p><strong>Activité :</strong> " . htmlspecialchars($user['activite']) . "</p>";
+                        switch (htmlspecialchars($user['role'])){
+                            case 1:
+                                echo "<p><strong>Rôle:</strong> " . "Etudiant" . "</p>";
+                                break;
+                            case 2:
+                                echo "<p><strong>Rôle:</strong> " . "Professeur" . "</p>";
+                                break;
+                            case 3:
+                                echo "<p><strong>Rôle:</strong> " . "Maitre Stage" . "</p>";
+                                break;
+                            case 4:
+                                echo "<p><strong>Rôle:</strong> " . "Secrétariat" . "</p>";
+                                break;
+                            default:
+                                echo "<p><strong>Rôle:</strong> " . "Inconnue" . "</p>";
+                                break;
+                        }
                         // Bouton pour supprimer l'utilisateur du système
                         echo "<button onclick='deleteUser(" . $user['id'] . ")'>🗑️ Supprimer</button>";
                         echo "</div>";

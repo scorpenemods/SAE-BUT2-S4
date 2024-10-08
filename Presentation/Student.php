@@ -145,6 +145,9 @@ $messages = $database->getMessages($senderId, $receiverId);
                     </div>
                     <div class="chat-body" id="chat-body">
                         <?php
+                        /**
+                         * @throws Exception
+                         */
                         function formatTimestamp($timestamp) {
                             $date = new DateTime($timestamp); // Crée un objet DateTime à partir du timestamp
                             $now = new DateTime(); // Crée un objet DateTime pour la date actuelle
