@@ -89,7 +89,7 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
                 <div class="messenger">
                     <div class="contacts">
                         <div class="search-bar">
-                            <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                            <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
                         </div>
                         <h3>Contacts</h3>
                         <ul id="contacts-list">
@@ -155,7 +155,7 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
                                 <input type="file" id="file-input" name="file" style="display:none">
                                 <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                                 <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- ID получателя -->
-                                <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
+                                <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
                                 <button type="button" onclick="sendMessage(event)">Envoyer</button>
                             </form>
                         </div>
@@ -166,7 +166,6 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
             <div class="Contenu" id="content-2">Contenu Gestion Stagiaires</div>
             <div class="Contenu" id="content-3">Contenu Documents</div>
             <div class="Contenu" id="content-4">Contenu Evaluation Stages</div>
-        </div>
     </section>
 
     <footer class="PiedDePage">

@@ -108,7 +108,7 @@ if (!in_array($userRole, $allowedRoles)) {
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
-                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                        <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
                     </div>
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
@@ -137,7 +137,11 @@ if (!in_array($userRole, $allowedRoles)) {
                         }
                         $messages = $database->getMessages($senderId, $receiverId);
                         // Function for formatting date
-                        function formatTimestamp($timestamp) {
+                        /**
+                         * @throws Exception
+                         */
+                        function formatTimestamp($timestamp): string
+                        {
                             $date = new DateTime($timestamp);
                             $now = new DateTime();
                             $yesterday = new DateTime('yesterday');
@@ -174,7 +178,7 @@ if (!in_array($userRole, $allowedRoles)) {
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                             <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- Recipient ID -->
-                            <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
+                            <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
                             <button type="button" onclick="sendMessage(event)">Envoyer</button>
                         </form>
                     </div>
