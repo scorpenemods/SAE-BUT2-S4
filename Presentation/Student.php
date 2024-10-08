@@ -21,7 +21,7 @@ if (!isset($_SESSION['user'])) {
 
 // Récupération des données de l'utilisateur depuis la session
 $person = unserialize($_SESSION['user']); // Désérialise l'objet utilisateur stocké dans la session
-$userName = $person->getPrenom() . ' Student.php' . $person->getNom(); // Construit le nom complet de l'utilisateur
+$userName = $person->getPrenom() . ' ' . $person->getNom(); // Construit le nom complet de l'utilisateur
 $senderId = $person->getUserId();  // Récupère l'ID de l'utilisateur courant
 $userRole = $person->getRole(); // Récupère le rôle de l'utilisateur
 
