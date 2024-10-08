@@ -10,7 +10,7 @@ $userName = "Guest";
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
-        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+        $userName = htmlspecialchars($person->getPrenom()) . ' MaitreStage.php' . htmlspecialchars($person->getNom());
     }
 } else {
     header("Location: Logout.php");
@@ -34,13 +34,13 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage - Maitre de Stage</title>
-    <link rel="stylesheet" href="../View/Principal/Principal.css">
-    <script src="../View/Principal/Principal.js" defer></script>
+    <link rel="stylesheet" href="../../View/Principal/Principal.css">
+    <script src="../../View/Principal/Principal.js" defer></script>
 </head>
 <body>
     <header class="navbar">
         <div class="navbar-left">
-            <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
+            <img src="../../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
             <span class="app-name">Le Petit Stage - Maitre de Stage</span>
         </div>
         <div class="navbar-right">
@@ -62,11 +62,11 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
                 </span>
             </label>
             <button class="mainbtn" onclick="toggleMenu()">
-                <img src="../Resources/Param.png" alt="Settings">
+                <img src="../../Resources/Param.png" alt="Settings">
             </button>
             <div class="hide-list" id="settingsMenu">
-                <a href="Settings.php">Information</a>
-                <a href="Logout.php">Deconnexion</a>
+                <a href="../Settings.php">Information</a>
+                <a href="../Logout.php">Deconnexion</a>
             </div>
         </div>
     </header>
@@ -151,7 +151,7 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
                             ?>
                         </div>
                         <div class="chat-footer">
-                            <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
+                            <form id="messageForm" enctype="multipart/form-data" method="POST" action="../SendMessage.php">
                                 <input type="file" id="file-input" name="file" style="display:none">
                                 <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                                 <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- ID получателя -->
@@ -169,9 +169,9 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
     </section>
 
     <footer class="PiedDePage">
-        <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
-        <a href="Redirection.php">Informations</a>
-        <a href="Redirection.php">À propos</a>
+        <img src="../../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
+        <a href="../Redirection.php">Informations</a>
+        <a href="../Redirection.php">À propos</a>
     </footer>
 </body>
 </html>
