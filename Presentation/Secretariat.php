@@ -48,15 +48,15 @@ if (!in_array($userRole, $allowedRoles)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage - Secrétariat</title>
     <!-- Lien vers la feuille de style CSS principale -->
-    <link rel="stylesheet" href="../../View/Principal/Principal.css">
+    <link rel="stylesheet" href="../View/Principal/Principal.css">
     <!-- Lien vers le script JavaScript principal -->
-    <script src="../../View/Principal/Principal.js"></script>
+    <script src="../View/Principal/Principal.js"></script>
 </head>
 <body>
 <header class="navbar">
     <div class="navbar-left">
         <!-- Affichage du logo et du nom de l'application -->
-        <img src="../../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
+        <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
         <span class="app-name">Le Petit Stage - Secrétariat</span>
     </div>
     <div class="navbar-right">
@@ -78,12 +78,12 @@ if (!in_array($userRole, $allowedRoles)) {
         </label>
         <!-- Bouton pour ouvrir le menu des paramètres -->
         <button class="mainbtn" onclick="toggleMenu()">
-            <img src="../../Resources/Param.png" alt="Settings">
+            <img src="../Resources/Param.png" alt="Settings">
         </button>
         <div class="hide-list" id="settingsMenu">
             <!-- Liens vers les pages d'informations et de déconnexion -->
-            <a href="../Settings.php">Information</a>
-            <a href="../Logout.php">Deconnexion</a>
+            <a href="Settings.php">Information</a>
+            <a href="Logout.php">Deconnexion</a>
         </div>
     </div>
 </header>
@@ -174,7 +174,7 @@ if (!in_array($userRole, $allowedRoles)) {
                         ?>
                     </div>
                     <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="../SendMessage.php">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                             <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- Recipient ID -->
@@ -278,12 +278,12 @@ if (!in_array($userRole, $allowedRoles)) {
 
 <footer class="PiedDePage">
     <!-- Pied de page avec logo et liens -->
-    <img src="../../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
-    <a href="../Redirection.php">Informations</a>
-    <a href="../Redirection.php">À propos</a>
+    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
+    <a href="Redirection.php">Informations</a>
+    <a href="Redirection.php">À propos</a>
 </footer>
 
 <!-- Script JavaScript pour la gestion des utilisateurs -->
-<script src="../../View/Principal/userManagement.js"></script>
+<script src="../View/Principal/userManagement.js"></script>
 </body>
 </html>

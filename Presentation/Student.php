@@ -57,7 +57,7 @@ $messages = $database->getMessages($senderId, $receiverId);
 <body>
 <header class="navbar">
     <div class="navbar-left">
-        <img src="../../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
+        <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
         <span class="app-name">Le Petit Stage</span>
     </div>
     <div class="navbar-right">
@@ -82,12 +82,12 @@ $messages = $database->getMessages($senderId, $receiverId);
         </label>
 
         <button class="mainbtn" onclick="toggleMenu()">
-            <img src="../../Resources/Param.png" alt="Settings">
+            <img src="../Resources/Param.png" alt="Settings">
         </button>
 
         <div class="hide-list" id="settingsMenu">
-            <a href="../Settings.php">Information</a>
-            <a href="../Logout.php">Deconnexion</a>
+            <a href="Settings.php">Information</a>
+            <a href="Logout.php">Deconnexion</a>
         </div>
     </div>
 </header>
@@ -189,7 +189,7 @@ $messages = $database->getMessages($senderId, $receiverId);
                         ?>
                     </div>
                     <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="../SendMessage.php">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                             <input type="hidden" name="receiver_id" value="2"> <!-- need to change on dynamic ID -->
@@ -213,9 +213,9 @@ $messages = $database->getMessages($senderId, $receiverId);
 </section>
 
 <footer class="PiedDePage">
-    <img src="../../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
-    <a href="../Redirection.php">Informations</a>
-    <a href="../Redirection.php">À propos</a>
+    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
+    <a href="Redirection.php">Informations</a>
+    <a href="Redirection.php">À propos</a>
 </footer>
 
 </body>
