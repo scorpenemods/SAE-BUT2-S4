@@ -35,7 +35,7 @@ $senderId = $_SESSION['user_id'] ?? null; // ID de l'expéditeur récupéré de 
 $allowedRoles = [4]; // Seuls les utilisateurs avec le rôle 4 ont accès à cette page
 if (!in_array($userRole, $allowedRoles)) {
     // Redirection vers la page d'accès refusé si l'utilisateur n'a pas le bon rôle
-    header("Location: access_denied.php");
+    header("Location: AccessDenied.php");
     exit();
 }
 ?>
@@ -170,7 +170,7 @@ if (!in_array($userRole, $allowedRoles)) {
                         ?>
                     </div>
                     <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="sendMessage.php">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                             <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- Recipient ID -->
@@ -197,6 +197,7 @@ if (!in_array($userRole, $allowedRoles)) {
                         echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
                         echo "<p><strong>Prénom:</strong> " . htmlspecialchars($user['prenom']) . "</p>";
                         echo "<p><strong>Email:</strong> " . htmlspecialchars($user['email']) . "</p>";
+                        echo "<p><strong>Statut Email:</strong> " . ($user['valid_email'] ? 'Validé' : 'Non Validé') . "</p>";
                         echo "<p><strong>Rôle:</strong> " . htmlspecialchars($user['role']) . "</p>";
                         // Boutons pour approuver ou refuser la demande de l'utilisateur
                         echo "<button onclick='approveUser(" . $user['id'] . ")'>✅ Accepter</button>";

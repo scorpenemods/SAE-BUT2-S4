@@ -22,7 +22,7 @@ $userRole = $person->getRole(); // Получение роли пользова�
 // Ограничение доступа по ролям (настройте в зависимости от ролей)
 $allowedRoles = [3]; // Здесь указаны роли, которым разрешен доступ к странице. Например, роль 2 — преподаватель.
 if (!in_array($userRole, $allowedRoles)) {
-    header("Location: access_denied.php");  // Перенаправление на страницу отказа в доступе
+    header("Location: AccessDenied.php");  // Перенаправление на страницу отказа в доступе
     exit();
 }
 $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динамическое значение
@@ -151,7 +151,7 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
                             ?>
                         </div>
                         <div class="chat-footer">
-                            <form id="messageForm" enctype="multipart/form-data" method="POST" action="sendMessage.php">
+                            <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
                                 <input type="file" id="file-input" name="file" style="display:none">
                                 <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                                 <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- ID получателя -->

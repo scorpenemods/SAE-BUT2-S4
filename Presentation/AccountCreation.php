@@ -33,19 +33,19 @@
 
 <div class="container">
     <h1>Création du compte</h1>
-    <form action="./register.php" method="post"> <!-- Убедитесь, что путь правильный -->
+    <form action="Register.php" method="post"> <!-- Убедитесь, что путь правильный -->
         <p>
             <input type="radio" name="choice" value="student" id="student" required />
             <label for="student">Étudiant</label>
 
             <input type="radio" name="choice" value="tutorprofessor" id="tutorprofessor" required />
-            <label for="tutorprofessor">Professeur referant :</label>
+            <label for="tutorprofessor">Professeur referant</label>
 
             <input type="radio" name="choice" value="tutorcompany" id="tutorcompany" required />
-            <label for="tutorcompany">Tuteur professionnel :</label>
+            <label for="tutorcompany">Tuteur professionnel</label>
 
             <input type="radio" name="choice" value="secritariat" id="secritariat" required />
-            <label for="secritariat">Secrétariat :</label>
+            <label for="secritariat">Secrétariat</label>
         </p>
         <p>
             <label for="function">Activité professionnelle/universitaire :</label>

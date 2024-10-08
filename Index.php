@@ -47,10 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: Presentation/Professor.php");
                 break;
             case 3: // Mentor professionnel
-                header("Location: Presentation/maitreStage.php");
+                header("Location: Presentation/MaitreStage.php");
                 break;
             case 4: // Secrétariat
-                header("Location: Presentation/secritariat.php");
+                header("Location: Presentation/Secretariat.php");
                 break;
             default: // Redirection par défaut si le rôle n'est pas géré
                 header("Location: Presentation/Redirection.php");

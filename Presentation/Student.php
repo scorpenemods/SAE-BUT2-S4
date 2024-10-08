@@ -29,7 +29,7 @@ $userRole = $person->getRole(); // Récupère le rôle de l'utilisateur
 $allowedRoles = [1]; // Définir les rôles autorisés à accéder à cette page
 if (!in_array($userRole, $allowedRoles)) {
     // Rediriger vers la page de refus d'accès si le rôle de l'utilisateur n'est pas autorisé
-    header("Location: access_denied.php");
+    header("Location: AccessDenied.php");
     exit();
 }
 
@@ -186,7 +186,7 @@ $messages = $database->getMessages($senderId, $receiverId);
                         ?>
                     </div>
                     <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="sendMessage.php">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                             <input type="hidden" name="receiver_id" value="2"> <!-- need to change on dynamic ID -->

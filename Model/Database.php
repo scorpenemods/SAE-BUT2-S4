@@ -321,6 +321,42 @@ class Database
 
     // ------------------------------------------------------------------- //
 
+    // -------------------- Email verification ------------------------------------------
+
+    public function getVerificationCode($userId) {
+        $sql = "SELECT * FROM verification_codes WHERE user_id = :user_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function updateEmailValidationStatus($userId, $status) {
+        $sql = "UPDATE User SET valid_email = :status WHERE id = :user_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':status', $status, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+    public function storeEmailVerificationCode($userId, $code, $expires_at) {
+        $sql = "INSERT INTO verification_codes (user_id, code, expires_at) VALUES (:user_id, :code, :expires_at)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':code', $code, PDO::PARAM_STR);
+        $stmt->bindParam(':expires_at', $expires_at, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
+    public function getUserIdByEmail($email) {
+        $query = "SELECT id FROM User WHERE email = :email";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['id'] ?? null;
+    }
+
+
     public function getConnection() {
         return $this->connection;
     }

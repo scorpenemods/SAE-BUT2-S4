@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Contents of the letter
             $mail->isHTML(true);
-            $mail->Subject = 'Code de vérification pour réinitialiser votre mot de passe';
+            $mail->Subject = 'Code de verification pour reinitialiser votre mot de passe';
             $mail->Body = "Bonjour " . htmlspecialchars($user['prenom']) . ",<br><br>Votre code de vérification est : <strong>" . $verification_code . "</strong><br>Ce code expirera dans 1 heure.<br><br>Cordialement,<br>L'équipe de Le Petit Stage.";
 
             $mail->send();
