@@ -10,7 +10,7 @@ $userName = "Guest";
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
-        $userName = htmlspecialchars($person->getPrenom()) . ' MaitreStage.php' . htmlspecialchars($person->getNom());
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
     }
 } else {
     header("Location: Logout.php");
