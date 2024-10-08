@@ -12,7 +12,19 @@ if (!isset($_SESSION['user'])) {
 
 $person = unserialize($_SESSION['user']);
 $userName = $person->getPrenom() . ' ' . $person->getNom();
+$userRole = $person->getRole();
 
+// Détermine la page d'accueil en fonction du rôle de l'utilisateur
+$homePage = '';
+if ($userRole == 1) {
+    $homePage = 'Student.php';
+} elseif ($userRole == 2) {
+    $homePage = 'Professor.php';
+} elseif ($userRole == 3) {
+    $homePage = 'MaitreStage.php';
+} elseif ($userRole == 4) {
+    $homePage = 'Secretariat.php';
+}
 
 ?>
 
@@ -34,7 +46,9 @@ $userName = $person->getPrenom() . ' ' . $person->getNom();
 </head>
     <header class="navbar">
         <div class="navbar-left">
+            <a href="<?php  echo $homePage;?>">
             <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
+            </a>
             <span class="app-name">Le Petit Stage</span>
         </div>
 

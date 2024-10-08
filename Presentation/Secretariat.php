@@ -18,7 +18,7 @@ if (isset($_SESSION['user'])) {
     // Vérifie si l'objet déserialisé est une instance de la classe Person
     if ($person instanceof Person) {
         // Sécurise et affiche le prénom et le nom de la personne connectée
-        $userName = htmlspecialchars($person->getPrenom()) . ' Secretariat.php' . htmlspecialchars($person->getNom());
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
     }
 } else {
     // Si aucune session d'utilisateur n'est trouvée, redirige vers la page de déconnexion
