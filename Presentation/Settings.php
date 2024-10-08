@@ -70,11 +70,6 @@ if ($userRole == 1) {
                         <span class="switch-sticker">☀️</span> <!-- Sticker Light Mode -->
                     </span>
             </label>
-            <button class="mainbtn" onclick="turn()"><img src="../Resources/Param.png"></button>
-            <div class="hide-list">
-                <a href="Preference.php">Preference</a>
-                <a href="Logout.php">Deconnexion</a>
-            </div>
         </div>
     </header>
 <body>

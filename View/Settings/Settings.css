@@ -156,48 +156,6 @@ header input:checked + .slider:before {
     transform: translateX(40px);
 }
 
-header .navbar-right .mainbtn {
-    width: 7%;
-    background-color: transparent;
-    align-items: center;
-}
-header .navbar-right .mainbtn img{
-    width: 100%;
-}
-header .navbar-right .mainbtn {
-    border: none;
-    cursor: pointer;
-    border-radius: 20%;
-}
-
-/* Style du menu paramètre  */
-header div.show-list {
-    margin-top: 35%;
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    background-color: lightgray;
-    color: black;
-    box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
-    z-index: 15;
-    right: 2%;
-    text-align: initial;
-    visibility: visible;
-    opacity: 1;
-}
-header .navbar-right .show-list a {
-    color: black;
-    padding: 20px;
-    text-decoration: none;
-    border-bottom: solid 1px;
-}
-/* cache le menu paramètre */
-header .navbar-right .hide-list {
-    position : absolute;
-    visibility: hidden;
-    opacity: 0;
-}
-
 .navbar {
     display: flex;
     justify-content: space-between;

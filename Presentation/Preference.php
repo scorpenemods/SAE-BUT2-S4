@@ -1,3 +1,13 @@
+<?php
+
+if(isset($_POST['notif']))
+{
+    setcookie('notification', $_POST['notif'], time() + 50, null, null, false, true); // Start the cookie
+    setcookie('a2f', $_POST['a2f'], time() + 50, null, null, false, true); // Start the cookie
+    header("Location: ./Preference.php");
+    echo "Le cookie a été créé avec la valeur : " . $_POST['notif'];
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,12 +20,12 @@
 <!-- Preferences section -->
 <main>
     <h2>Préférences</h2>
-    <div class="preferences">
+    <form class="preferences" method="post" action="./Preference.php">
         <div class="preference-item">
             <span>Notification :</span>
             <span>Off</span>
             <label class="switch">
-                <input type="checkbox" name="notif" value="<?php if(isset($_COOKIE['notification'])) echo $_COOKIE['notification']; ?>" checked>
+                <input type="checkbox" name="notif" checked>
                 <span class="slider"></span>
             </label>
             <span>On</span>
@@ -24,13 +34,13 @@
             <span>A2F :</span>
             <span>Off</span>
             <label class="switch">
-                <input type="checkbox" name="a2f" value="<?php if(isset($_COOKIE['a2f'])) echo $_COOKIE['a2f']; ?>" checked>
+                <input type="checkbox" name="a2f" checked>
                 <span class="slider"></span>
             </label>
             <span>On</span>
         </div>
         <input type="submit" value="OK">
-    </div>
+    </form>
 </main>
 </body>
 </html>
