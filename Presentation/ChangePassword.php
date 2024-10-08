@@ -8,7 +8,7 @@ $db = new Database();
 $error = '';
 $success = '';
 
-//$user_login = $_SESSION['user'] ?? ''; // Login de l'utilisateur pour vérifier mot de passe
+//$user_login = $_SESSION['login'] ?? ''; // Login de l'utilisateur pour vérifier mot de passe
 //$email = $_SESSION['email'] ?? ''; // Email de l'utilisateur pour update mot de passe
 
 // Vérification si la méthode de la requête HTTP est POST, ce qui indique que le formulaire a été soumis
@@ -17,6 +17,7 @@ if (isset($_SESSION['user']) && $_SERVER["REQUEST_METHOD"] == "POST") {
     $verification_mdp = $_POST["verification_mdp"];
     $new_password = $_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
+
 
     // Vérifie si le mot de passe est correcte
     if ($db->verifyLogin($email, $verification_mdp)) {
@@ -79,7 +80,7 @@ if (isset($_SESSION['user']) && $_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
     <?php } ?>
     <div class="link">
-        <a href="Settings.php">annuler</a>
+        <a href="Settings.php">retour</a>
     </div>
 </div>
 </body>
