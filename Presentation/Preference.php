@@ -7,12 +7,6 @@
     <link rel="stylesheet" href="../View/Settings/Preference.css">
 </head>
 <body>
-<nav class="navbar">
-    <div class="navbar-left">
-        <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
-        <span class="app-name">Le Petit Stage</span>
-    </div>
-</nav>
 <!-- Preferences section -->
 <main>
     <h2>Préférences</h2>
@@ -21,7 +15,7 @@
             <span>Notification :</span>
             <span>Off</span>
             <label class="switch">
-                <input type="checkbox" checked>
+                <input type="checkbox" name="notif" value="<?php if(isset($_COOKIE['notification'])) echo $_COOKIE['notification']; ?>" checked>
                 <span class="slider"></span>
             </label>
             <span>On</span>
@@ -30,27 +24,13 @@
             <span>A2F :</span>
             <span>Off</span>
             <label class="switch">
-                <input type="checkbox" checked>
+                <input type="checkbox" name="a2f" value="<?php if(isset($_COOKIE['a2f'])) echo $_COOKIE['a2f']; ?>" checked>
                 <span class="slider"></span>
             </label>
             <span>On</span>
         </div>
-        <div class="preference-item">
-            <span>Cookies :</span>
-            <span>Nécessaire</span>
-            <label class="switch">
-                <input type="checkbox">
-                <span class="slider"></span>
-            </label>
-            <span>Tous</span>
-        </div>
+        <input type="submit" value="OK">
     </div>
 </main>
-
-<footer>
-    <img src="../Resources/Logo_UPHF.png" alt="Logo uphf" width="10%">
-    <a href="Redirection.php">Informations</a>
-    <a href="Redirection.php">A propos</a>
-</footer>
 </body>
 </html>
