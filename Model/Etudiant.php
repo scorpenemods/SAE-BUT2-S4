@@ -1,8 +1,5 @@
 <?php
 
-namespace Class;
-
-use Person;
 
 require_once(Person::class);
 
