@@ -251,11 +251,31 @@ function searchContacts() {
         }
     });
 }
-function toggleMenu() {
-    const menu = document.getElementById('settingsMenu');
-    menu.classList.toggle('hide-list');
-    menu.classList.toggle('show-list');
+
+// ---------------------------------- Student list -------------------------------------//
+document.getElementById('sidebar-toggle').addEventListener('click', function() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('visible'); // Toggle la visibilité de la sidebar
+    this.classList.toggle('active'); // Toggle la classe active pour la flèche
+});
+
+function searchStudents() {
+    const input = document.getElementById('search-input').value.toLowerCase();
+    const students = document.querySelectorAll('.student');
+
+    students.forEach(student => {
+        const name = student.textContent.toLowerCase();
+        if (name.includes(input)) {
+            student.style.display = '';
+        } else {
+            student.style.display = 'none';
+        }
+    });
 }
+
+
+
+// -----------------------------------------------------------------------//
 // send a message only by clicking the button
 document.getElementById('message-input').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
