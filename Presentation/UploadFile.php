@@ -2,6 +2,12 @@
 session_start();
 require "../Model/Database.php";
 
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
+    // Si l'utilisateur n'a pas le rôle requis (ici 4), on bloque l'accès
+    header('location: AccessDenied.php');
+    exit();
+}
+
 if (isset($_FILES['file']) && isset($_POST['receiver_id'])) {
     $database = new Database();
     $senderId = $_SESSION['user_id'] ?? null;

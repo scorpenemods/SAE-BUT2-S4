@@ -137,26 +137,7 @@ if (!in_array($userRole, $allowedRoles)) {
                         }
                         $messages = $database->getMessages($senderId, $receiverId);
                         // Function for formatting date
-                        /**
-                         * @throws Exception
-                         */
-                        function formatTimestamp($timestamp): string
-                        {
-                            $date = new DateTime($timestamp);
-                            $now = new DateTime();
-                            $yesterday = new DateTime('yesterday');
-
-                            // Compare the date of the message with today's date
-                            if ($date->format('Y-m-d') == $now->format('Y-m-d')) {
-                                return 'Today ' . $date->format('H:i');
-                            }
-                            //Compare message date with yesterday's date
-                            elseif ($date->format('Y-m-d') == $yesterday->format('Y-m-d')) {
-                                return 'Yesterday ' . $date->format('H:i');
-                            } else {
-                                return $date->format('d.m.Y H:i'); // Short date and time format
-                            }
-                        }
+                        require_once "../Model/utils.php";
 
                         // using loop to print messages
                         foreach ($messages as $msg) {

@@ -6,6 +6,19 @@ require "../Model/Person.php";
 // Démarre la session pour accéder aux informations de l'utilisateur connecté
 session_start();
 
+if (isset($_SESSION['user'])) {
+    $person = unserialize($_SESSION['user']);
+    // Vérifie si l'objet déserialisé est une instance de la classe Person
+    if ($person instanceof Person) {
+        // Sécurise et affiche le prénom et le nom de la personne connectée
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+    }
+} else {
+    // Si aucune session d'utilisateur n'est trouvée, redirige vers la page de déconnexion
+    header("Location: Logout.php");
+    exit();
+}
+
 // Vérifie si la requête a été envoyée via la méthode POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupère l'ID du message envoyé par le formulaire

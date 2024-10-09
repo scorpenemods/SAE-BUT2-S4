@@ -12,9 +12,14 @@ $userName = "Guest";
 // Définir le fuseau horaire sur Paris
 date_default_timezone_set('Europe/Paris');
 
-// Vérifie que l'utilisateur est connecté
-if (!isset($_SESSION['user'])) {
-    // Redirige vers la page de déconnexion si aucun utilisateur n'est connecté
+// Vérifie que utilisation est connecté
+if (isset($_SESSION['user'])) {
+    $person = unserialize($_SESSION['user']);
+    if ($person instanceof Person) {
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+        $senderId = $person->getUserId(); // Получаем ID пользователя для отправки сообщений
+    }
+} else {
     header("Location: Logout.php");
     exit();
 }
@@ -145,25 +150,8 @@ $messages = $database->getMessages($senderId, $receiverId);
                     </div>
                     <div class="chat-body" id="chat-body">
                         <?php
-                        /**
-                         * @throws Exception
-                         */
-                        function formatTimestamp($timestamp) {
-                            $date = new DateTime($timestamp); // Crée un objet DateTime à partir du timestamp
-                            $now = new DateTime(); // Crée un objet DateTime pour la date actuelle
-                            $yesterday = new DateTime('yesterday'); // Crée un objet DateTime pour la date d'hier
 
-                            // Compare la date du message avec la date d'aujourd'hui
-                            if ($date->format('Y-m-d') == $now->format('Y-m-d')) {
-                                return 'Today ' . $date->format('H:i'); // Si c'est aujourd'hui, retourne "Today" avec l'heure
-                            }
-                            // Compare la date du message avec celle d'hier
-                            elseif ($date->format('Y-m-d') == $yesterday->format('Y-m-d')) {
-                                return 'Yesterday ' . $date->format('H:i'); // Si c'était hier, retourne "Yesterday" avec l'heure
-                            } else {
-                                return $date->format('d.m.Y H:i'); // Sinon, retourne la date complète au format jour/mois/année heure:minutes
-                            }
-                        }
+                        require_once "../Model/utils.php";
 
 
                         // using loop to print messages

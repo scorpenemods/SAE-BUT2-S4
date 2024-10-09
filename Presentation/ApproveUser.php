@@ -13,7 +13,7 @@ use PHPMailer\PHPMailer\Exception;
 // Vérification du rôle de l'utilisateur pour autoriser ou refuser l'accès
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
     // Si l'utilisateur n'a pas le rôle approprié, accès refusé
-    echo "Accès refusé.";
+    header('location: AccessDenied.php');
     exit();
 }
 

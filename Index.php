@@ -16,11 +16,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Appel de la méthode verifyLogin pour vérifier les identifiants de l'utilisateur
-    $user = $database->verifyLogin($username, $password);
+    $loginResult = $database->verifyLogin($username, $password);
 
     // Si la vérification est réussie et que $user est un tableau (signifiant un utilisateur valide), exécute le bloc suivant
-    if ($user && is_array($user)) {
-        // Création d'un nouvel objet Person avec les données de l'utilisateur
+    if ($loginResult['status'] === 'success') {
+        $user = $loginResult['user'];
+
         $person = new Person(
             $user['nom'],
             $user['prenom'],
@@ -29,46 +30,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $user['role'],
             $user['activite'],
             $user['email'],
-            $user['id'] // Utilisation de l'ID de l'utilisateur récupéré de la base de données
+            $user['id']
         );
 
-        // Stockage de l'ID de l'utilisateur, de l'objet Person serialisé, du rôle et du nom complet dans la session
         $_SESSION['user_id'] = $person->getUserId();
         $_SESSION['user'] = serialize($person);
         $_SESSION['user_role'] = $person->getRole();
         $_SESSION['user_name'] = $person->getPrenom() . ' ' . $person->getNom();
 
-        // Redirection de l'utilisateur vers une page spécifique selon son rôle
         switch ($_SESSION['user_role']) {
-            case 1: // Étudiant
+            case 1:
                 header("Location: Presentation/Student.php");
                 break;
-            case 2: // Professeur
+            case 2:
                 header("Location: Presentation/Professor.php");
                 break;
-            case 3: // Mentor professionnel
+            case 3:
                 header("Location: Presentation/MaitreStage.php");
                 break;
-            case 4: // Secrétariat
+            case 4:
                 header("Location: Presentation/Secretariat.php");
                 break;
-            default: // Redirection par défaut si le rôle n'est pas géré
+            default:
                 header("Location: Presentation/Redirection.php");
                 break;
         }
-    } elseif ($user === 'pending') {
-        // Si l'utilisateur existe mais son compte n'est pas encore activé
-        $errorMessage = "Votre compte n'est pas encore activé.";
+        exit();
+    } elseif ($loginResult['status'] === 'email_not_validated') {
+        $user = $loginResult['user'];
+        setcookie('email_verification_pending', '1', time() + 3600, "/");
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_email'] = $user['email'];
+        $_SESSION['user_name'] = $user['prenom'] . ' ' . $user['nom'];
+        header("Location: Index.php");
+        exit();
+    } elseif ($loginResult['status'] === 'pending') {
+        $errorMessage = "Votre compte est en attente d'activation par l'administration.";
     } else {
-        // Si les identifiants sont incorrects
         $errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
     }
 
-    // Fermeture de la connexion à la base de données
     $database->closeConnection();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -76,11 +80,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage</title>
     <!-- Liens vers les feuilles de style CSS et les icônes FontAwesome -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="./View/Home/Lobby.css">
     <link rel="stylesheet" href="./View/Home/Login.css">
-    <!-- Script JavaScript différé pour des interactions dynamiques -->
     <script src="./View/Home/Lobby.js" defer></script>
+    <style>
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f39c12;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity 0.5s, visibility 0.5s, transform 0.5s;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .notification.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .notification a {
+            color: #fff;
+            text-decoration: underline;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .notification button {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            margin-left: 20px;
+            cursor: pointer;
+        }
+
+    </style>
 </head>
 <body>
 <!-- Navigation principale avec logo et interrupteurs pour les paramètres de langue et de thème -->
@@ -146,6 +191,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </article>
 
+<!-- Уведомление -->
+<div class="notification" id="emailVerificationNotification">
+    Votre adresse email n'est pas validée. <a href="Presentation/EmailValidationNotice.php">Valider maintenant</a>
+    <button onclick="closeNotification()">&times;</button>
+</div>
+
 <footer class="PiedDePage">
     <!-- Pied de page avec logo additionnel et liens -->
     <img src="Resources/Logo_UPHF.png" alt="Logo uphf" width="10%">
@@ -153,6 +204,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <a href="Presentation/Redirection.php">A propos</a>
 </footer>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (getCookie('email_verification_pending') === '1') {
+            var notification = document.getElementById('emailVerificationNotification');
+            notification.classList.add('show');
+            document.cookie = "email_verification_pending=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
+    });
 
+    function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        if (match) return match[2];
+        return null;
+    }
+
+    function closeNotification() {
+        var notification = document.getElementById('emailVerificationNotification');
+        notification.classList.remove('show');
+    }
+</script>
 </body>
 </html>

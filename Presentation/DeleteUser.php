@@ -17,7 +17,7 @@ ini_set('display_errors', 1);
 // Vérification du rôle utilisateur pour restreindre l'accès
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
     // Si l'utilisateur n'a pas le rôle requis (ici 4), on bloque l'accès
-    echo "Accès refusé.";
+    header('location: AccessDenied.php');
     exit();
 }
 

@@ -2,62 +2,67 @@
 session_start();
 
 require_once "../Model/Database.php"; // db connect
-require '../vendor/autoload.php'; // php mailer
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 $database = new Database();
 $conn = $database->getConnection();
 
 if (!$conn) {
-    echo "Error connecting to database.";
+    echo "Erreur de connexion à la base de données.";
     exit;
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupération des données du formulaire d'inscription
+    // Récupération et санитизация des données du formulaire d'inscription
     $role = $_POST['choice'];
-    $function = $_POST['function'];
-    $email = $_POST['email'];
-    $name = $_POST['name'];
-    $firstname = $_POST['firstname'];
-    $phone = $_POST['phone'];
+    $function = htmlspecialchars(trim($_POST['function']));
+    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+    $name = htmlspecialchars(trim($_POST['name']));
+    $firstname = htmlspecialchars(trim($_POST['firstname']));
+    $phone = htmlspecialchars(trim($_POST['phone']));
     $password = $_POST['password'];
     $confirmPassword = $_POST['confirm_password'];
 
-    // Checking password matches
-    if ($password !== $confirmPassword) {
-        echo "Passwords do not match!";
+    // Валидация email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "Adresse email invalide.";
         exit();
     }
 
-    // Password Hashing
+    // Проверка совпадения паролей
+    if ($password !== $confirmPassword) {
+        echo "Les mots de passe ne correspondent pas!";
+        exit();
+    }
+
+    // Хеширование пароля
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Role Definition
+    // Определение роли
     $roleMapping = [
         'student' => 1,
         'tutorprofessor' => 2,
         'tutorcompany' => 3,
-        'secritariat' => 4,
+        'secretariat' => 4,
     ];
-    $roleID = $roleMapping[$role];
+    $roleID = isset($roleMapping[$role]) ? $roleMapping[$role] : null;
 
-    // Check for duplicate email before registration
+    if (!$roleID) {
+        echo "Rôle invalide.";
+        exit();
+    }
+
+    // Проверка на дублирование email перед регистрацией
     $queryCheckEmail = "SELECT * FROM User WHERE email = :email";
     $stmtCheck = $conn->prepare($queryCheckEmail);
     $stmtCheck->bindValue(':email', $email);
     $stmtCheck->execute();
 
-    // Если email уже существует, выводим ошибку
     if ($stmtCheck->rowCount() > 0) {
         echo "Email déjà enregistré. Veuillez utiliser un autre email.";
         exit();
     }
 
-    // Inserting a user into the database
+    // Вставка пользователя в базу данных
     $query = "INSERT INTO User (nom, prenom, login, email, telephone, role, activite, status) VALUES (:nom, :prenom, :login, :email, :telephone, :role, :activite, 'Pending')";
     $stmt = $conn->prepare($query);
     $stmt->bindValue(':nom', $name);
@@ -71,49 +76,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->execute()) {
         $userID = $conn->lastInsertId();
 
-        // Inserting a password into the password table
+        // Вставка пароля в таблицу password
         $queryPass = "INSERT INTO password (user_id, password) VALUES (:user_id, :password)";
         $stmtPass = $conn->prepare($queryPass);
         $stmtPass->bindValue(':user_id', $userID);
         $stmtPass->bindValue(':password', $hashedPassword);
         $stmtPass->execute();
 
-        // Verification code generation
-        date_default_timezone_set('Europe/Paris'); //
-        $verification_code = random_int(100000, 999999);
-        $expires_at = date("Y-m-d H:i:s", strtotime('+1 hour'));
+        // Сохраняем email в сессии для удобства
+        $_SESSION['user_email'] = $email;
 
-        // Saving verification code
-        $database->storeEmailVerificationCode($userID, $verification_code, $expires_at);
+        // Сохраняем user_id в сессии
+        $_SESSION['user_id'] = $userID;
 
-        // Sending code to email
-        $mail = new PHPMailer(true);
-        try {
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'secretariat.lps.official@gmail.com';
-            $mail->Password = 'xtdu vchi sldx qmyi';
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
+        $_SESSION['user_name'] = $name . " " . $firstname;
 
-            $mail->setFrom('no-reply@seciut.com', 'Le Petit Stage Team');
-            $mail->addAddress($email, $firstname . ' ' . $name);
-
-            $mail->isHTML(true);
-            $mail->Subject = 'Code de verification pour activer votre compte';
-            $mail->Body = "Bonjour " . htmlspecialchars($firstname) . ",<br><br>Votre code de vérification est : <strong>" . $verification_code . "</strong><br>Ce code expirera dans 1 heure.<br><br>Cordialement,<br>L'équipe de Le Petit Stage.";
-
-            $mail->send();
-            $_SESSION['user_id'] = $userID;
-            // save email in the session for convenience
-            $_SESSION['user_email'] = $email;
-            header("Location: ./EmailValidationNotice.php"); // Move to confirmation page
-            exit();
-        } catch (Exception $e) {
-            echo "Erreur lors de l'envoi de l'email.";
-        }
+        // Перенаправление на страницу подтверждения без отправки письма
+        header("Location: ./EmailValidationNotice.php");
+        exit();
     } else {
         echo "Erreur lors de la création de l'utilisateur.";
     }
 }
+?>

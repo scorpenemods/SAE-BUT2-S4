@@ -5,6 +5,17 @@ require "../Model/Person.php";
 
 date_default_timezone_set('Europe/Paris');
 
+if (isset($_SESSION['user'])) {
+    $person = unserialize($_SESSION['user']);
+    if ($person instanceof Person) {
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+        $senderId = $person->getUserId(); // Получаем ID пользователя для отправки сообщений
+    }
+} else {
+    header("Location: Logout.php");
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $database = new Database();
 

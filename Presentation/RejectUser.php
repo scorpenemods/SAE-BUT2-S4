@@ -6,9 +6,9 @@ require '../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Проверка роли пользователя
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
-    echo "Access denied.";
+    // Si l'utilisateur n'a pas le rôle requis (ici 4), on bloque l'accès
+    header('location: AccessDenied.php');
     exit();
 }
 
