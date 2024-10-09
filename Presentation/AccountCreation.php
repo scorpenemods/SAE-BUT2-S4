@@ -3,6 +3,8 @@
 <head>
     <!-- Lien vers la feuille de style par défaut -->
     <link rel="stylesheet" href="../rebase/Modely/DefaultStyles/styles.css">
+    <script src="../View/Home/Lobby.js" defer></script>
+    <title>Création du compte</title>
 </head>
 <body>
 <header class="navbar">
