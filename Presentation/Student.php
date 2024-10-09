@@ -12,9 +12,14 @@ $userName = "Guest";
 // Définir le fuseau horaire sur Paris
 date_default_timezone_set('Europe/Paris');
 
-// Vérifie que l'utilisateur est connecté
-if (!isset($_SESSION['user'])) {
-    // Redirige vers la page de déconnexion si aucun utilisateur n'est connecté
+// Vérifie que utilisation est connecté
+if (isset($_SESSION['user'])) {
+    $person = unserialize($_SESSION['user']);
+    if ($person instanceof Person) {
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+        $senderId = $person->getUserId(); // Получаем ID пользователя для отправки сообщений
+    }
+} else {
     header("Location: Logout.php");
     exit();
 }

@@ -8,9 +8,14 @@ require "../Model/Database.php";
 // Récupère l'ID de l'utilisateur actuellement connecté à partir de la session
 $senderId = $_SESSION['user_id'] ?? null;
 
-if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
-    // Si l'utilisateur n'a pas le rôle requis (ici 4), on bloque l'accès
-    header('location: AccessDenied.php');
+if (isset($_SESSION['user'])) {
+    $person = unserialize($_SESSION['user']);
+    if ($person instanceof Person) {
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+        $senderId = $person->getUserId(); // Получаем ID пользователя для отправки сообщений
+    }
+} else {
+    header("Location: Logout.php");
     exit();
 }
 

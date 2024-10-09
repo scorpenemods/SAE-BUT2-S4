@@ -5,9 +5,14 @@ require "../Model/Person.php";
 
 date_default_timezone_set('Europe/Paris');
 
-if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
-    // Si l'utilisateur n'a pas le rôle requis (ici 4), on bloque l'accès
-    header('location: AccessDenied.php');
+if (isset($_SESSION['user'])) {
+    $person = unserialize($_SESSION['user']);
+    if ($person instanceof Person) {
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+        $senderId = $person->getUserId(); // Получаем ID пользователя для отправки сообщений
+    }
+} else {
+    header("Location: Logout.php");
     exit();
 }
 
