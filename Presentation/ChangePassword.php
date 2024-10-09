@@ -11,9 +11,23 @@ $success = '';
 //$user_login = $_SESSION['login'] ?? ''; // Login de l'utilisateur pour vérifier mot de passe
 //$email = $_SESSION['email'] ?? ''; // Email de l'utilisateur pour update mot de passe
 
+if (isset($_SESSION['user'])) {
+    $person = unserialize($_SESSION['user']);
+    // Vérifie si l'objet déserialisé est une instance de la classe Person
+    if ($person instanceof Person) {
+        // Sécurise et affiche le prénom et le nom de la personne connectée
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+    }
+} else {
+    // Si aucune session d'utilisateur n'est trouvée, redirige vers la page de déconnexion
+    header("Location: Logout.php");
+    exit();
+}
+
+
 // Vérification si la méthode de la requête HTTP est POST, ce qui indique que le formulaire a été soumis
-if (isset($_SESSION['user']) && $_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST["email"];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $person->getEmail();
     $verification_mdp = $_POST["verification_mdp"];
     $new_password = $_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
@@ -60,10 +74,6 @@ if (isset($_SESSION['user']) && $_SERVER["REQUEST_METHOD"] == "POST") {
     <?php } ?>
     <?php if (empty($success)) { ?>
         <form action="ChangePassword.php" method="POST">
-            <div class="form-group">
-                <label for="email">Email :</label>
-                <input type="text" id="email" name="email" placeholder="Email" required>
-            </div>
             <div class="form-group">
                 <label for="verification_mdp">Ancien mot de passe :</label>
                 <input type="password" id="verification_mdp" name="verification_mdp" placeholder="Mot de passe" required>
