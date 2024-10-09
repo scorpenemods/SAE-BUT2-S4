@@ -14,7 +14,11 @@ if (!$conn) {
     echo "Error connecting to database.";
     exit;
 }
-
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
+    // Si l'utilisateur n'a pas le rôle requis (ici 4), on bloque l'accès
+    header('location: AccessDenied.php');
+    exit();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupération des données du formulaire d'inscription

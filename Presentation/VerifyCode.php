@@ -5,7 +5,7 @@ require "../Model/Database.php";
 $email = $_SESSION['email_verification'] ?? null;
 
 if (!$email) {
-    header("Location: ForgotPassword.php");
+    header("Location: Logout.php");
     exit();
 }
 

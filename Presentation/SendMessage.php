@@ -5,6 +5,12 @@ require "../Model/Person.php";
 
 date_default_timezone_set('Europe/Paris');
 
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
+    // Si l'utilisateur n'a pas le rôle requis (ici 4), on bloque l'accès
+    header('location: AccessDenied.php');
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $database = new Database();
 

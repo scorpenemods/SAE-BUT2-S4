@@ -1,5 +1,16 @@
 <?php
 
+if (isset($_SESSION['user'])) {
+    $person = unserialize($_SESSION['user']);
+    if ($person instanceof Person) {
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+    }
+} else {
+    header("Location: Logout.php");
+    exit();
+}
+
+
 if(isset($_POST['notif']))
 {
     setcookie('notification', $_POST['notif'], time() + 50, null, null, false, true); // Start the cookie
