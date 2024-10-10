@@ -1,52 +1,91 @@
-DROP TABLE IF EXISTS a_passwordsae, a_messagesae, a_conventionsae, a_gourpesae, a_usersae CASCADE;
-
--- Table des utilisateurs
-CREATE TABLE a_usersae (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
-    nom TEXT NOT NULL,
-    prenom TEXT NOT NULL,
-    login VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    telephone VARCHAR(10) NOT NULL,
-    role INT NOT NULL,
-    activite TEXT NOT NULL
+-- Création de la table User
+CREATE TABLE User (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    nom         TEXT,
+    prenom      TEXT,
+    login       VARCHAR(50),
+    email       VARCHAR(100),
+    telephone   VARCHAR(10),
+    role        TINYINT,
+    activite    TEXT,
+    status      VARCHAR(20),
+    valid_email BOOLEAN
 );
 
--- Table des mots de passe (liée à la table a_usersae)
-CREATE TABLE a_passwordsae (
-    user_id INT PRIMARY KEY,
-    passwordsae_hash VARCHAR(255) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES a_usersae(user_id)
-);
-
--- Table des conventions
-CREATE TABLE a_conventionsae (
-    conv_id INT AUTO_INCREMENT PRIMARY KEY,
-    conventionsae TEXT
-);
-
--- Table gourpe qui fait le lien entre a_usersae et a_conventionsae
-CREATE TABLE a_gourpesae (
+-- Création de la table Preference
+CREATE TABLE Preference (
+    id              INT PRIMARY KEY AUTO_INCREMENT,
+    notification    BOOLEAN,
+    a2f             BOOLEAN,
+    darkmode        BOOLEAN,
     user_id INT,
-    conv_id INT,
-    PRIMARY KEY (user_id, conv_id),
-    FOREIGN KEY (user_id) REFERENCES a_usersae(user_id),
-    FOREIGN KEY (conv_id) REFERENCES a_conventionsae(conv_id)
+    CONSTRAINT fk_user_preference FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
 );
 
--- Table des messages qui relie le a_gourpesae (user + conv) à chaque message
-CREATE TABLE a_messagesae (
-    msg_id INT AUTO_INCREMENT PRIMARY KEY,
+-- Création de la table Verification_Code
+CREATE TABLE Verification_Code (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    user_id     INT,
+    code        VARCHAR(6),
+    expires_at  DATETIME,
+    CONSTRAINT fk_user_verification_code FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
+);
+
+-- Création de la table Reset_Password
+CREATE TABLE Reset_Password (
+    id                  INT PRIMARY KEY AUTO_INCREMENT,
+    verification_code   VARCHAR(10),
+    expires_at          DATETIME,
+    user_id             INT,
+    CONSTRAINT fk_user_reset_password FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
+);
+
+-- Création de la table Password
+CREATE TABLE Password (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id             INT,
+    password_hash       VARCHAR(255),
+    actif               BOOLEAN,
+    CONSTRAINT fk_user_password FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
+);
+
+-- Création de la table Convention
+CREATE TABLE Convention (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    convention  VARCHAR(256)
+);
+
+-- Création de la table Groupe
+CREATE TABLE Groupe (
+    conv_id INT,
     user_id INT,
-    conv_id INT,
-    contenu TEXT NOT NULL,
-    FOREIGN KEY (user_id, conv_id) REFERENCES a_gourpesae(user_id, conv_id)
+    PRIMARY KEY (conv_id, user_id),
+    CONSTRAINT fk_user_groupe FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE,
+    CONSTRAINT fk_convention_groupe FOREIGN KEY (conv_id) REFERENCES Convention(id) ON DELETE CASCADE
 );
 
--- Insérer un utilisateur exemple
-INSERT INTO a_usersae (user_id, login, email, telephone, prenom, activite, role, nom)
-VALUES (1, 'noahlemr', 'noahlemr@gmail.com', '1255', '11dqsd', 'azeadsqd', 1, 'a');
+-- Création de la table Message
+CREATE TABLE Message (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    sender_id   INT,
+    receiver_id INT,
+    contenu     TEXT,
+    timestamp   DATETIME,
+    CONSTRAINT fk_sender_message FOREIGN KEY (sender_id) REFERENCES User(id) ON DELETE CASCADE,
+    CONSTRAINT fk_receiver_message FOREIGN KEY (receiver_id) REFERENCES User(id) ON DELETE CASCADE
+);
 
--- Insérer le mot de passe correspondant (mot de passe haché)
-INSERT INTO a_passwordsae (user_id, passwordsae_hash)
-VALUES (1, '$2y$10$6HX9s8Jz1PkM5wx8Lz751Ov5eyOKMQHxIdQLGDVpY1CKhtgTO7Zg2');
+-- Création de la table Document
+CREATE TABLE Document (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    filepath    VARCHAR(256)
+);
+
+-- Création de la table Document_Message
+CREATE TABLE Document_Message (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    document_id INT,
+    message_id  INT,
+    CONSTRAINT fk_document_document_message FOREIGN KEY (document_id) REFERENCES Document(id) ON DELETE CASCADE,
+    CONSTRAINT fk_message_document_message FOREIGN KEY (message_id) REFERENCES Message(id) ON DELETE CASCADE
+);
