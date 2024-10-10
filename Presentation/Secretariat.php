@@ -38,6 +38,15 @@ if (!in_array($userRole, $allowedRoles)) {
     header("Location: AccessDenied.php");
     exit();
 }
+
+// Gestion des sections actives via l'URL et la session
+if (isset($_GET['section'])) {
+    $_SESSION['active_section'] = $_GET['section'];
+}
+
+// Définit la section active par défaut (Accueil) si aucune n'est spécifiée
+$activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
+
 ?>
 
 
@@ -92,18 +101,21 @@ if (!in_array($userRole, $allowedRoles)) {
 <section class="Menus">
     <nav>
         <!-- Boutons de navigation entre les différents contenus de la section -->
-        <span onclick="widget(0)" class="widget-button Current">Accueil</span>
-        <span onclick="widget(1)" class="widget-button">Messagerie</span>
-        <span onclick="widget(2)" class="widget-button">Gestion Utilisateurs</span>
-        <span onclick="widget(3)" class="widget-button">Documents</span>
-        <span onclick="widget(4)" class="widget-button">Rapports</span>
+        <span onclick="window.location.href='Secretariat.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>">Accueil</span>
+        <span onclick="window.location.href='Secretariat.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>">Messagerie</span>
+        <span onclick="window.location.href='Secretariat.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>">Gestion Utilisateurs</span>
+        <span onclick="window.location.href='Secretariat.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>">Documents</span>
+        <span onclick="window.location.href='Secretariat.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>">Rapports</span>
     </nav>
     <div class="Contenus">
-        <div class="Visible" id="content-0">
+        <!-- Contenu de la section Accueil -->
+        <div class="Contenu <?php echo $activeSection == '0' ? 'Visible' : ''; ?>" id="content-0">
             <h2>Bienvenue sur la plateforme Secrétariat!</h2><br>
             <p>Gérez les utilisateurs, consultez les documents et accédez aux rapports des stages.</p><br>
         </div>
-        <div class="Contenu" id="content-1">
+
+        <!-- Contenu de la Messagerie -->
+        <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">
             <!-- Messenger Contents -->
             <div class="messenger">
                 <div class="contacts">
@@ -137,7 +149,7 @@ if (!in_array($userRole, $allowedRoles)) {
                         }
                         $messages = $database->getMessages($senderId, $receiverId);
                         // Function for formatting date
-                        require_once "../Model/utils.php";
+                        require_once '../Model/utils.php';
 
                         // using loop to print messages
                         foreach ($messages as $msg) {
@@ -167,8 +179,8 @@ if (!in_array($userRole, $allowedRoles)) {
             </div>
         </div>
 
-        <!-- Section pour gérer les utilisateurs dans le système de gestion -->
-        <div class="Contenu" id="content-2">
+        <!-- Section Gestion des utilisateurs -->
+        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
             <div class="user-management">
                 <!-- Section pour les demandes d'utilisateur en attente d'approbation -->
                 <div class="pending-requests">
@@ -247,13 +259,16 @@ if (!in_array($userRole, $allowedRoles)) {
                     }
                     ?>
                 </div>
-            </div>
+
+        <!-- Section Documents -->
+        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
+            Contenu Documents
         </div>
 
-        <!-- Section pour gérer les documents -->
-        <div class="Contenu" id="content-3">Contenu Documents</div>
-        <!-- Section pour gérer les rapports -->
-        <div class="Contenu" id="content-4">Contenu Rapports</div>
+        <!-- Section Rapports -->
+        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
+            Contenu Rapports
+        </div>
     </div>
 </section>
 
@@ -266,5 +281,6 @@ if (!in_array($userRole, $allowedRoles)) {
 
 <!-- Script JavaScript pour la gestion des utilisateurs -->
 <script src="../View/Principal/userManagement.js"></script>
+<script src="../View/Principal/deleteMessage.js"></script>
 </body>
 </html>

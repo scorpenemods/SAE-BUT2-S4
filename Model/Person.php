@@ -68,7 +68,7 @@ class Person
     }
 
     // Méthode pour obtenir l'identifiant unique de l'utilisateur
-    public function getUserId()
+    public function getUserId(): int
     {
         return $this->id;
     }

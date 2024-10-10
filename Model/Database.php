@@ -377,6 +377,39 @@ class Database
         return $result['id'] ?? null;
     }
 
+    public function getUserPreferences($userId)
+    {
+        $sql = "SELECT notification, a2f FROM Preference WHERE user_id = :user_id";
+
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error fetching preferences: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function setUserPreferences($userId, $notification, $a2f) {
+        $sql = "INSERT INTO Preference (user_id, notification, a2f) 
+            VALUES (:user_id, :notification, :a2f) 
+            ON DUPLICATE KEY UPDATE notification = :notification, a2f = :a2f";
+
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':notification', $notification, PDO::PARAM_INT);
+            $stmt->bindParam(':a2f', $a2f, PDO::PARAM_INT);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            echo "Error updating preferences: " . $e->getMessage();
+            return false;
+        }
+    }
+
 
     public function getConnection() {
         return $this->connection;
