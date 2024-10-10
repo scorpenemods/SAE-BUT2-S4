@@ -18,7 +18,7 @@ CREATE TABLE Preference (
     notification    BOOLEAN,
     a2f             BOOLEAN,
     darkmode        BOOLEAN,
-    user_id INT,
+    user_id         INT,
     CONSTRAINT fk_user_preference FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
 );
 
