@@ -14,29 +14,30 @@ CREATE TABLE User (
 
 -- Création de la table Preference
 CREATE TABLE Preference (
-    id              INT PRIMARY KEY AUTO_INCREMENT,
+
     notification    BOOLEAN,
     a2f             BOOLEAN,
     darkmode        BOOLEAN,
-    user_id         INT,
+    user_id INT,
+    primary key (user_id),
     CONSTRAINT fk_user_preference FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
 );
 
 -- Création de la table Verification_Code
 CREATE TABLE Verification_Code (
-    id          INT PRIMARY KEY AUTO_INCREMENT,
     user_id     INT,
     code        VARCHAR(6),
     expires_at  DATETIME,
+    primary key (user_id),
     CONSTRAINT fk_user_verification_code FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
 );
 
 -- Création de la table Reset_Password
 CREATE TABLE Reset_Password (
-    id                  INT PRIMARY KEY AUTO_INCREMENT,
     verification_code   VARCHAR(10),
     expires_at          DATETIME,
     user_id             INT,
+    primary key (user_id),
     CONSTRAINT fk_user_reset_password FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
 );
 
@@ -83,9 +84,9 @@ CREATE TABLE Document (
 
 -- Création de la table Document_Message
 CREATE TABLE Document_Message (
-    id          INT PRIMARY KEY AUTO_INCREMENT,
     document_id INT,
     message_id  INT,
+    PRIMARY KEY (document_id,message_id),
     CONSTRAINT fk_document_document_message FOREIGN KEY (document_id) REFERENCES Document(id) ON DELETE CASCADE,
     CONSTRAINT fk_message_document_message FOREIGN KEY (message_id) REFERENCES Message(id) ON DELETE CASCADE
 );
