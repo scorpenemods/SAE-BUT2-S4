@@ -6,40 +6,32 @@ require "../Model/Person.php";
 
 $database = new Database();
 
-// Vérification de l'objet Person
+// Убедитесь, что объект Person загружен
 $userName = "Guest";
 $senderId = $_SESSION['user_id'] ?? null;
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
-        $senderId = $person->getUserId(); // Récupération de l'ID utilisateur pour l'envoi de messages
+        $senderId = $person->getUserId(); // Получаем ID пользователя для отправки сообщений
     }
 } else {
     header("Location: Logout.php");
     exit();
 }
 
-$userRole = $person->getRole(); // Récupération du rôle utilisateur
+$userRole = $person->getRole(); // Получение роли пользователя
 date_default_timezone_set('Europe/Paris');
 
-// Restriction d'accès selon les rôles (ici pour les professeurs)
-$allowedRoles = [2]; // Rôle 2 correspond aux professeurs
+// Ограничение доступа по ролям (настройте в зависимости от ролей)
+$allowedRoles = [2]; // Здесь указаны роли, которым разрешен доступ к странице. Например, роль 2 — преподаватель.
 if (!in_array($userRole, $allowedRoles)) {
-    header("Location: AccessDenied.php");  // Redirection vers une page de refus d'accès
+    header("Location: AccessDenied.php");  // Перенаправление на страницу отказа в доступе
     exit();
 }
 
-// Gestion des sections actives via l'URL et la session
-if (isset($_GET['section'])) {
-    $_SESSION['active_section'] = $_GET['section'];
-}
-
-// Définit la section active par défaut (Accueil) si aucune n'est spécifiée
-$activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
-
-// ID du destinataire (à ajuster dynamiquement selon le contact)
-$receiverId = $_POST['receiver_id'] ?? 1;
+// Предполагаемый ID получателя (настроить динамически в зависимости от контакта)
+$receiverId = $_POST['receiver_id'] ?? 1; // Замените на динамическое значение
 ?>
 
 <!DOCTYPE html>
@@ -108,21 +100,19 @@ $receiverId = $_POST['receiver_id'] ?? 1;
 
 <section class="Menus">
     <nav>
-        <span onclick="window.location.href='Professor.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>">Accueil</span>
-        <span onclick="window.location.href='Professor.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>">Messagerie</span>
-        <span onclick="window.location.href='Professor.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>">Gestion Étudiants</span>
-        <span onclick="window.location.href='Professor.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>">Documents</span>
-        <span onclick="window.location.href='Professor.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>">Livret de suivi</span>
+        <span onclick="widget(0)" class="widget-button Current">Accueil</span>
+        <span onclick="widget(1)" class="widget-button">Messagerie</span>
+        <span onclick="widget(2)" class="widget-button">Gestion Étudiants</span>
+        <span onclick="widget(3)" class="widget-button">Documents</span>
+        <span onclick="widget(4)" class="widget-button">Livret de suivi</span>
     </nav>
     <div class="Contenus">
-        <!-- Contenu Accueil -->
-        <div class="Contenu <?php echo $activeSection == '0' ? 'Visible' : ''; ?>" id="content-0">
+        <div class="Visible" id="content-0">
             <h2>Bienvenue sur la plateforme pour Professeurs!</h2><br>
             <p>Gérez les étudiants, suivez leur progression et communiquez facilement avec eux.</p><br>
         </div>
-
-        <!-- Contenu Messagerie -->
-        <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">
+        <div class="Contenu" id="content-1">
+            <!-- Содержимое мессенджера -->
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
@@ -154,20 +144,19 @@ $receiverId = $_POST['receiver_id'] ?? 1;
                             die("Erreur: ID de l'utilisateur n'est pas défini dans la session.");
                         }
                         $messages = $database->getMessages($senderId, $receiverId);
+                        // Функция для форматирования даты
+                        require_once "../Model/utils.php";
 
-                        // Fonction pour formater les horodatages
-                        require_once '../Model/utils.php';
-
-                        // Affichage des messages
+                        // Пример использования в вашем цикле для вывода сообщений
                         foreach ($messages as $msg) {
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Détermination de la classe en fonction de l'expéditeur
+                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Определение класса в зависимости от отправителя
                             echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Protection XSS
+                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Защита от XSS
                             if ($msg['file_path']) {
                                 $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path']));
                                 echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
                             }
-                            // Affichage du timestamp formaté
+                            // Используем функцию formatTimestamp для вывода форматированной даты и времени
                             echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
                             echo "</div>";
                         }
@@ -177,7 +166,7 @@ $receiverId = $_POST['receiver_id'] ?? 1;
                         <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                            <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>">
+                            <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- ID получателя -->
                             <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
                             <button type="button" onclick="sendMessage(event)">Envoyer</button>
                         </form>
@@ -185,17 +174,12 @@ $receiverId = $_POST['receiver_id'] ?? 1;
                 </div>
             </div>
         </div>
-
-        <!-- Contenu Gestion Étudiants -->
-        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">Contenu Gestion Étudiants</div>
-
-        <!-- Contenu Documents -->
-        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">Contenu Documents</div>
-
-        <!-- Contenu Livret de suivi -->
-        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">Contenu Livret de suivi</div>
+        <div class="Contenu" id="content-2">Contenu Gestion Étudiants</div>
+        <div class="Contenu" id="content-3">Contenu Documents</div>
+        <div class="Contenu" id="content-4">Contenu Livret de suivi</div>
     </div>
 </section>
+</body>
 
 <footer class="PiedDePage">
     <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
@@ -203,5 +187,4 @@ $receiverId = $_POST['receiver_id'] ?? 1;
     <a href="Redirection.php">À propos</a>
 </footer>
 
-</body>
 </html>
