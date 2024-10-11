@@ -419,5 +419,28 @@ class Database
     {
         $this->connection = null;
     }
+
+    // ------------------------------------------------------------------- //
+
+    // -------------------- Student list in professor home ------------------------------------------
+    // Model/Database.php
+    public function getStudents() {
+        $query = "SELECT * FROM User WHERE role = 1";
+        $result = $this->connection->query($query);
+        $students = [];
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+            $students[] = new Person(
+                $row['nom'],
+                $row['prenom'],
+                $row['telephone'],
+                $row['login'],
+                $row['role'],
+                $row['activite'],
+                $row['email'],
+                $row['id']
+            );
+        }
+        return $students;
+    }
 }
 ?>

@@ -46,7 +46,7 @@ header.navbar {
     left: 0;
     height: 80px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    z-index: 1;
 }
 
 header .navbar-left {
@@ -206,6 +206,7 @@ header .hide-list {
 .messenger {
     display: flex;
     height: calc(100vh - 160px);
+    z-index: 0;
 }
 
 .contacts {
@@ -356,6 +357,8 @@ footer a {
     display: flex;
     height: calc(100vh - 160px); /* Отступ под header и footer */
     max-width: 100%; /* Используем все свободное место */
+
+
 }
 /* Fullscreen? */
 .messenger,
@@ -363,6 +366,7 @@ footer a {
     height: calc(100vh - 160px);
     max-width: 100%;
     padding: 0 20px;
+
 }
 
 /* updated styles */
@@ -564,6 +568,13 @@ button:hover,
 
 /*------------------ Sidebar  -------------------*/
 
+.hide-list {
+    display: none;
+}
+
+.show-list{
+    display: block;
+}
 .sidebar-wrapper {
     position: relative;
     display: flex;
@@ -573,16 +584,17 @@ button:hover,
 
 .sidebar {
     width: 200px;
-    height: 80vh;
+    height: 100vh;
     background-color: #f0f0f0;
     border-right: 1px solid #ccc;
     display: flex;
     flex-direction: column;
-    transition: transform 0.3s ease;
-    position: relative;
-    align-items: center;
-    justify-content: center;
+    position: fixed;
     top: 80px;
+    left: 0;
+    transition: transform 0.3s ease;
+    z-index: 3;
+    transform: translateX(-100%);
 }
 
 .search {
@@ -604,7 +616,6 @@ button:hover,
 }
 
 .student {
-    padding: 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -612,10 +623,18 @@ button:hover,
     cursor: pointer;
     width: 100%;
     position: relative;
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    z-index:0;
+
+
 }
 
+
 .student .arrow {
-    position: absolute;
+    position: relative;
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
@@ -631,23 +650,32 @@ button:hover,
 }
 
 .student.selected {
-    background-color: #e0e0e0;
+    background-color: white;
 }
 
 .sidebar-toggle {
     cursor: pointer;
-    font-size: 36px; /* Large size for the arrow */
+    font-size: 45px;
     position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    z-index: 1000;
+    top: 69px;
+    left: 5px;
+    z-index: 4;
+    transition: left 0.3s ease, transform 0.3s ease;
 }
 
 .sidebar.hidden {
     transform: translateX(-100%);
+    transition: transform 0.3s ease;
 }
 
+.sidebar.visible {
+    transform: translateX(0);
+}
+
+.sidebar-toggle.active {
+    left: 210px;
+    transform: rotate(180deg);
+}
 
 
 /****************************  DARK MODE MESSAGES  *******************************************************/
