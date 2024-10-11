@@ -153,3 +153,10 @@ VALUES
     (2, (SELECT id FROM User WHERE login = 'mmoreau'));
 
 --rollback DELETE FROM Groupe WHERE conv_id IN (1, 2); DELETE FROM User WHERE login IN ('jdupont', 'pmartin', 'sdurand', 'aleroy', 'jpetit', 'mmoreau');DELETE FROM Convention WHERE convention IN ('Group 1', 'Group 2');DELETE FROM User WHERE login IN ('jdupont', 'pmartin', 'sdurand', 'aleroy', 'jpetit', 'mmoreau');
+
+--changeset your.name:12 labels:update-valid-email context:update-valid-email
+--comment: Update valid_email to false for existing users
+UPDATE User
+SET valid_email = false
+WHERE valid_email IS NULL;
+--rollback UPDATE User SET valid_email = true WHERE valid_email = false;
