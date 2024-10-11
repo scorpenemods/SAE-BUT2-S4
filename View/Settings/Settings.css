@@ -183,7 +183,7 @@ header input:checked + .slider:before {
     border-radius: 5px;
     overflow: hidden;
     padding-top: 7%;
-    position: relative;
+    position: fixed;
     top: 0;
     background-color: #ecf0f1;
 }
