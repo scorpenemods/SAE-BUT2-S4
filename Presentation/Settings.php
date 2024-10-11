@@ -1,7 +1,7 @@
 <?php
 
+session_start(); // Assurez-vous que la session est démarrée
 require_once "../Model/Person.php"; // Ensure Person class is correctly included
-session_start(); // Démarre une nouvelle session ou reprend une session existante
 
 // Vérifie si l'utilisateur est connecté en consultant la variable 'user' dans $_SESSION
 if (!isset($_SESSION['user'])) {
@@ -26,9 +26,21 @@ if ($userRole == 1) {
     $homePage = 'Secretariat.php';
 }
 
+// Si un paramètre de section est passé dans l'URL, mettez à jour la session
+if (isset($_GET['section'])) {
+    $_SESSION['active_section'] = $_GET['section'];
+}
+
+// Définissez une section par défaut si aucune section n'est sélectionnée
+$activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : 'account-info';
+
+// Liste des sections autorisées pour éviter les erreurs
+$allowedSections = ['account-info', 'preferences'];
+if (!in_array($activeSection, $allowedSections)) {
+    $activeSection = 'account-info'; // Si la section n'est pas valide, retour à 'account-info'
+}
+
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -38,48 +50,44 @@ if ($userRole == 1) {
     <title>Settings Le Petit Stage</title>
     <link rel="stylesheet" href="../View/Settings/Settings.css">
     <script type="text/javascript" src="../View/Settings/Settings.js"></script>
-    <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function() {
-            toggleMenu('account-info', './Information.php');
-        });
-    </script>
 </head>
-    <header class="navbar">
-        <div class="navbar-left">
-            <a href="<?php  echo $homePage;?>">
-            <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
-            </a>
-            <span class="app-name">Le Petit Stage</span>
-        </div>
-
-        <div class="navbar-right">
-            <p><?php echo $userName; ?></p>
-            <!-- Language Switch -->
-            <label class="switch">
-                <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-                <span class="slider round">
-                        <span class="switch-sticker">🇫🇷</span> <!-- Sticker Français -->
-                        <span class="switch-sticker switch-sticker-right">🇬🇧</span> <!-- Sticker English -->
-                    </span>
-            </label>
-            <!-- Theme Switch -->
-            <label class="switch">
-                <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
-                <span class="slider round">
-                        <span class="switch-sticker switch-sticker-right">🌙</span> <!-- Sticker Dark Mode -->
-                        <span class="switch-sticker">☀️</span> <!-- Sticker Light Mode -->
-                    </span>
-            </label>
-        </div>
-    </header>
 <body>
+<header class="navbar">
+    <div class="navbar-left">
+        <a href="<?php echo $homePage; ?>">
+            <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
+        </a>
+        <span class="app-name">Le Petit Stage</span>
+    </div>
+
+    <div class="navbar-right">
+        <p><?php echo $userName; ?></p>
+        <!-- Language Switch -->
+        <label class="switch">
+            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
+            <span class="slider round">
+                    <span class="switch-sticker">🇫🇷</span>
+                    <span class="switch-sticker switch-sticker-right">🇬🇧</span>
+                </span>
+        </label>
+        <!-- Theme Switch -->
+        <label class="switch">
+            <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
+            <span class="slider round">
+                    <span class="switch-sticker switch-sticker-right">🌙</span>
+                    <span class="switch-sticker">☀️</span>
+                </span>
+        </label>
+    </div>
+</header>
+
 <div class="container">
     <div class="vertical-menu">
-        <div class="menu-item" onclick="toggleMenu('account-info', './Information.php')">
+        <div class="menu-item" onclick="window.location.href='Settings.php?section=account-info'">
             <span>Information du compte</span>
             <span class="arrow">&#9660;</span>
         </div>
-        <div class="menu-item" onclick="toggleMenu('preferences', './Preference.php')">
+        <div class="menu-item" onclick="window.location.href='Settings.php?section=preferences'">
             <span>Modifier ses préférences</span>
             <span class="arrow">&#9660;</span>
         </div>
@@ -89,10 +97,17 @@ if ($userRole == 1) {
         </div>
     </div>
     <div id="main-content" class="main-content">
-
+        <?php
+        if ($activeSection == 'account-info') {
+            include './Information.php';
+        } elseif ($activeSection == 'preferences') {
+            include './Preference.php';
+        }
+        ?>
     </div>
 </div>
 </body>
+
 <footer class="PiedDePage">
     <img src="../Resources/Logo_UPHF.png" alt="Logo uphf" width="10%">
     <a href="Redirection.php">Informations</a>
