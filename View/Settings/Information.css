@@ -24,15 +24,18 @@ section.compte-info{
     align-items: center;
     width: 50%;
     height: 60%;
-    margin-top: 15%;
+    margin-top: 5%;
     margin-bottom: 5%;
     margin-left: 25%;
 }
 section.compte-info table{
+    border: solid 1px;
     margin-top: 5%;
     display: flex;
-    border: solid 1px;
-    height: 100%;
+    padding-top: 5%;
+    padding-bottom: 5%;
+    height: 110%;
+    border-radius: 5%;
     width: 100%;
     justify-content: center;
     align-items: center;

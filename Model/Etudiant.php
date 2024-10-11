@@ -1,7 +1,6 @@
 <?php
 
-
-require_once(Person::class);
+require_once 'Person.php';
 
 class Etudiant extends Person
 {

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Assure que la page est responsive sur les appareils mobiles -->
 
     <!-- Lien vers la feuille de style externe -->
-    <link rel="stylesheet" href="/rebase/Model/DefaultStyles/styles.css"> <!-- Fichier CSS pour le style de la page -->
+    <link rel="stylesheet" href="/rebase/Modely/DefaultStyles/styles.css"> <!-- Fichier CSS pour le style de la page -->
 
     <!-- Titre de la page -->
     <title>L'accès est refusé</title> <!-- Titre affiché dans l'onglet du navigateur -->
