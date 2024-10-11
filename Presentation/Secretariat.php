@@ -163,8 +163,8 @@ if (!in_array($userRole, $allowedRoles)) {
                             $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Determining the class depending on the sender
                             echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
                             echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // XSS protection
-                            if ($msg['file_path']) {
-                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path']));
+                            if ($msg['filepath']) {
+                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['filepath']));
                                 echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
                             }
                             // Use the formatTimestamp function to output formatted date and time
