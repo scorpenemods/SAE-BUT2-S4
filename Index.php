@@ -125,6 +125,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             cursor: pointer;
         }
 
+
+        .password-container i {
+            color: #005c97;
+        }
     </style>
 </head>
 <body>
@@ -176,7 +180,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="form-group">
                     <label for="password">Mot de passe :</label>
-                    <input type="password" id="password" name="password" required>
+                    <div class="password-container">
+                        <input type="password" id="password" name="password" required>
+                        <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+                    </div>
                 </div>
                 <button class="primary-button" type="submit">Se connecter</button>
                 <p>Un problème pour se connecter ?</p>
@@ -211,6 +218,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             notification.classList.add('show');
             document.cookie = "email_verification_pending=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         }
+
+        // Gestion du toggle de mot de passe
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function () {
+            // Toggle le type de l'input entre 'password' et 'text'
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+
+            // Toggle l'icône entre fa-eye et fa-eye-slash
+            this.classList.toggle('fa-eye-slash');
+        });
     });
 
     function getCookie(name) {
@@ -223,6 +243,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         var notification = document.getElementById('emailVerificationNotification');
         notification.classList.remove('show');
     }
+
 </script>
 </body>
 </html>
