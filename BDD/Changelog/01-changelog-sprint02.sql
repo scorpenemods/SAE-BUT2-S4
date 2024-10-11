@@ -112,3 +112,58 @@ CREATE TABLE Document_Message (
                                   CONSTRAINT fk_message_document_message FOREIGN KEY (message_id) REFERENCES Message(id) ON DELETE CASCADE
 )
 --rollback DROP TABLE Document_Message;
+
+-- Insert Users with random roles
+-- Each group will have at least one user with role 1, 2, and 3
+
+--changeset your.name:11 labels:insert-users context:insert-users
+--comment: Insert users with random roles
+
+-- Insert Users for Group 1
+INSERT INTO User (nom, prenom, login, email, telephone, role, activite, status, valid_email)
+VALUES
+    ('Dupont', 'Jean', 'jdupont', 'jean.dupont@example.com', '0123456789', 1, 'Active', 'active', true), -- Role 1
+    ('Martin', 'Paul', 'pmartin', 'paul.martin@example.com', '0123456788', 2, 'Inactive', 'inactive', false), -- Role 2
+    ('Durand', 'Sophie', 'sdurand', 'sophie.durand@example.com', '0123456787', 3, 'Active', 'active', true); -- Role 3
+
+-- Insert Users for Group 2
+INSERT INTO User (nom, prenom, login, email, telephone, role, activite, status, valid_email)
+VALUES
+    ('Leroy', 'Alice', 'aleroy', 'alice.leroy@example.com', '0123456786', 1, 'Active', 'active', true), -- Role 1
+    ('Petit', 'Jacques', 'jpetit', 'jacques.petit@example.com', '0123456785', 2, 'Active', 'active', true), -- Role 2
+    ('Moreau', 'Marie', 'mmoreau', 'marie.moreau@example.com', '0123456784', 3, 'Inactive', 'inactive', false); -- Role 3
+
+-- Insert into Convention (assuming at least one convention exists)
+INSERT INTO Convention (convention)
+VALUES ('Group 1'), ('Group 2');
+
+-- Assign Users to Groups
+-- Group 1 (conv_id = 1)
+INSERT INTO Groupe (conv_id, user_id)
+VALUES
+    (1, (SELECT id FROM User WHERE login = 'jdupont')),
+    (1, (SELECT id FROM User WHERE login = 'pmartin')),
+    (1, (SELECT id FROM User WHERE login = 'sdurand'));
+
+-- Group 2 (conv_id = 2)
+INSERT INTO Groupe (conv_id, user_id)
+VALUES
+    (2, (SELECT id FROM User WHERE login = 'aleroy')),
+    (2, (SELECT id FROM User WHERE login = 'jpetit')),
+    (2, (SELECT id FROM User WHERE login = 'mmoreau'));
+
+--rollback DELETE FROM Groupe WHERE conv_id IN (1, 2); DELETE FROM User WHERE login IN ('jdupont', 'pmartin', 'sdurand', 'aleroy', 'jpetit', 'mmoreau');DELETE FROM Convention WHERE convention IN ('Group 1', 'Group 2');DELETE FROM User WHERE login IN ('jdupont', 'pmartin', 'sdurand', 'aleroy', 'jpetit', 'mmoreau');
+
+--changeset your.name:12 labels:update-valid-email-default context:update-valid-email-default
+--comment: Set default value of valid_email to false in User table
+ALTER TABLE User
+    ALTER COLUMN valid_email SET DEFAULT false;
+
+--rollback ALTER TABLE User ALTER COLUMN valid_email DROP DEFAULT;
+
+--changeset your.name:13 labels:update-deletelogin context:update-deletelogin
+--comment: retire la colonne login
+ALTER TABLE User
+    drop COLUMN login;
+
+--rollback ALTER TABLE User add column login;
