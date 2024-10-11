@@ -180,8 +180,8 @@ header div.show-list {
     color: black;
     box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
     z-index: 15;
-    right: 2%;
-    top: 100px;
+    right: 0;
+    top: 100%;
     text-align: initial;
     visibility: visible;
     opacity: 1;
