@@ -1,7 +1,7 @@
 <?php
 
 
-require_once(Person::class);
+require_once 'Person.php';
 
 class Tuteur extends Person
 {
@@ -12,4 +12,6 @@ class Tuteur extends Person
         parent::__construct($nom, $prenom, $telephone);
         $this->lstEtudiant = array();
     }
+
+
 }

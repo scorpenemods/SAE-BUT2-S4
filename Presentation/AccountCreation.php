@@ -53,7 +53,7 @@
             <input type="radio" name="choice" value="tutorcompany" id="tutorcompany" required />
             <label for="tutorcompany">Tuteur professionnel</label>
 
-            <input type="radio" name="choice" value="secritariat" id="secritariat" required />
+            <input type="radio" name="choice" value="secretariat" id="secretariat" required />
             <label for="secritariat">Secrétariat</label>
         </p>
 

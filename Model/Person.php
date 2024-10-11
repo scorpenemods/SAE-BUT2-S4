@@ -24,6 +24,10 @@ class Person
         $this->id = $id;
         $this->login = $login;
     }
+    //getter pour l'id
+    public function getId(): int{
+        return $this->id;
+    }
 
     // Méthode pour obtenir le nom de l'utilisateur
     public function getNom(): string
