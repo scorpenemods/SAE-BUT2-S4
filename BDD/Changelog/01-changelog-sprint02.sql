@@ -160,3 +160,10 @@ ALTER TABLE User
     ALTER COLUMN valid_email SET DEFAULT false;
 
 --rollback ALTER TABLE User ALTER COLUMN valid_email DROP DEFAULT;
+
+--changeset your.name:13 labels:update-deletelogin context:update-deletelogin
+--comment: retire la colonne login
+ALTER TABLE User
+    drop COLUMN login;
+
+--rollback ALTER TABLE User add column login;
