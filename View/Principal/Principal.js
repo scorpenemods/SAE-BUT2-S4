@@ -10,7 +10,7 @@ function hide(header){
     header.classList.toggle("show-list");
 }
 // Switcher entre les 2 en changeant la classe du body
-function turn() {
+function toggleMenu() {
     var header = document.querySelector('div.hide-list');
     try { (header.classList.contains("show-list"))
         show(header);
