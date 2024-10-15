@@ -63,7 +63,7 @@ if (isset($_GET['type'])) {
                 for ($i = $startIndex; $i < count($offers) and $i < $endIndex; $i++) {
                     if ($offers[$i]->getStatus() == "Pending" && $offers[$i]->getType() == $type) {
                         echo "<div class='company-card'>";
-                            echo "<div class='company-carousel'>";
+                            echo "<div class='company-header'>";
                             $offer = $offers[$i];
                                 foreach ($offer->getMedias() as $media) {
                                     echo "<img loading=\"lazy\" src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . ">";
@@ -194,7 +194,7 @@ if (isset($_GET['type'])) {
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
         <script>
             // Carousel functionality
-            document.querySelectorAll('.company-carousel').forEach(carousel => {
+            document.querySelectorAll('.company-header').forEach(carousel => {
                 const images = carousel.querySelectorAll('img');
                 const buttons = carousel.querySelectorAll('.carousel-nav button');
                 let currentIndex = 1;

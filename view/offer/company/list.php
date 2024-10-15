@@ -66,7 +66,7 @@ if ($pageId == null) {
                 for ($i = $startIndex; $i < count($offers) and $i < $endIndex; $i++) {
                     $offer = $offers[$i];
                     echo "<div class='company-card'>";
-                        echo "<div class='company-carousel'>";
+                        echo "<div class='company-header'>";
                         foreach ($offer->getMedias() as $media) {
                             echo "<img loading=\"lazy\" src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . ">";
                         }
@@ -196,7 +196,7 @@ if ($pageId == null) {
         <?php include dirname(__FILE__) . '/../../footer.php'; ?>
         <script>
             // Carousel functionality
-            document.querySelectorAll('.company-carousel').forEach(carousel => {
+            document.querySelectorAll('.company-header').forEach(carousel => {
                 const images = carousel.querySelectorAll('img');
                 const buttons = carousel.querySelectorAll('.carousel-nav button');
                 let currentIndex = 1;

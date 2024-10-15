@@ -3,8 +3,7 @@
 require dirname(__FILE__) . '/../presenter/database.php';
 
 //Class to manage offers
-class Offer
-{
+class Offer {
     private int $id;
     private int $company_id;
     private Company $company;
@@ -19,11 +18,11 @@ class Offer
     private bool $is_active;
     private string $email;
     private string $phone;
+    private string $website;
     private string $created_at;
     private string $updated_at;
 
-    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $created_at, string $updated_at)
-    {
+    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $website, string $created_at, string $updated_at) {
         $this->id = $id;
         $this->company_id = $company_id;
         $this->company = $company;
@@ -36,85 +35,71 @@ class Offer
         $this->address = $address;
         $this->study_level = $study_level;
         $this->is_active = $is_active;
-        $this->created_at = $created_at;
-        $this->updated_at = $updated_at;
         $this->email = $email;
         $this->phone = $phone;
+        $this->website = $website;
+        $this->created_at = $created_at;
+        $this->updated_at = $updated_at;
     }
 
 
-    public function getId(): int
-    {
+    public function getId(): int {
         return $this->id;
     }
 
-    public function getCompanyId(): int
-    {
+    public function getCompanyId(): int {
         return $this->company_id;
     }
 
-    public function getCompany(): Company
-    {
+    public function getCompany(): Company {
         return $this->company;
     }
 
-    public function getTitle(): string
-    {
+    public function getTitle(): string {
         return $this->title;
     }
 
-    public function getDescription(): string
-    {
+    public function getDescription(): string {
         return $this->description;
     }
 
-    public function getJob(): string
-    {
+    public function getJob(): string {
         return $this->job;
     }
 
-    public function getDuration(): int
-    {
+    public function getDuration(): int {
         return $this->duration;
     }
 
-    public function getBeginDate(): string
-    {
+    public function getBeginDate(): string {
         return $this->begin_date;
     }
 
-    public function getSalary(): int
-    {
+    public function getSalary(): int {
         return $this->salary;
     }
 
-    public function getAddress(): string
-    {
+    public function getAddress(): string {
         return $this->address;
     }
 
-    public function getStudyLevel(): string
-    {
+    public function getStudyLevel(): string {
         return $this->study_level;
     }
 
-    public function getIsActive(): bool
-    {
+    public function getIsActive(): bool {
         return $this->is_active;
     }
 
-    public function getEmail(): string
-    {
+    public function getEmail(): string {
         return $this->email;
     }
 
-    public function getPhone(): string
-    {
+    public function getPhone(): string {
         return $this->phone;
     }
 
-    public function getCreatedAt(): string
-    {
+    public function getCreatedAt(): string {
         return $this->created_at;
     }
 
@@ -146,8 +131,7 @@ class Offer
     }
 
     //Update an offer
-    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, $getFileName, $getFileType, $getFileSize)
-    {
+    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, $getFileName, $getFileType, $getFileSize) {
         global $db;
 
         //Update the offer
@@ -191,32 +175,33 @@ class Offer
         return $offer;
     }
 
-    public function getMedias(): ?array
-    {
-        global $db;
+    public function getDomain(): ?string {
+        $fullDomain = parse_url($this->website, PHP_URL_HOST);
 
-        $stmt = $db->prepare("SELECT * FROM offers_media WHERE offer_id = :offer_id ORDER BY display_order");
-        $stmt->bindParam(":offer_id", $this->id);
-        $stmt->execute();
+        preg_match('/([a-z0-9-]+\.[a-z]{2,6})$/i', $fullDomain, $matches);
+    
+        return $matches[1] ?? null;
+    }
 
-        if ($db->errorCode() != 0) {
-            return null;
-        }
+    public function getImage(): ?string {
+        $imagePath = 'https://cdn.brandfetch.io/' . $this->getDomain() . '/w/512/h/512';
+        return $imagePath;
+    }
 
-        $result = $stmt->fetchAll();
+    public function getBackgroundColor() {
+        $imagePath = $this->getImage();
+        $image = imagecreatefromwebp($imagePath);
 
-        $medias = [];
-        foreach ($result as $row) {
-            $medias[] = new Media(
-                $row["id"],
-                $row["url"],
-                $row["type"],
-                $row["description"],
-                $row["display_order"]
-            );
-        }
+        $width = imagesx($image);
+        $height = imagesy($image);
 
-        return $medias;
+        $rgb = imagecolorat($image, 0, 0);
+
+        $r = ($rgb >> 16) & 0xFF;
+        $g = ($rgb >> 8) & 0xFF;
+        $b = $rgb & 0xFF;
+
+        imagedestroy($image);
     }
 
     //Get an offer by its id
@@ -254,6 +239,7 @@ class Offer
             $result["is_active"],
             $result["email"],
             $result["phone"],
+            $row["website"],
             date("Y-m-d H:i:s", strtotime($result["created_at"])),
             date("Y-m-d H:i:s", strtotime($result["updated_at"]))
         );
@@ -296,6 +282,7 @@ class Offer
                 $row["is_active"],
                 $row["email"],
                 $row["phone"],
+                $row["website"],
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
                 date("Y-m-d H:i:s", strtotime($row["updated_at"]))
             );
@@ -356,6 +343,7 @@ class Offer
             TRUE,
             $email,
             $phone,
+            $website,
             date("Y-m-d H:i:s"),
             date("Y-m-d H:i:s")
         );
@@ -451,6 +439,7 @@ class Offer
                 $row["is_active"],
                 $row["email"],
                 $row["phone"],
+                $row["website"],
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
                 date("Y-m-d H:i:s", strtotime($row["updated_at"]))
             );
@@ -567,6 +556,7 @@ class Offer
                 $row["is_active"],
                 $row["email"],
                 $row["phone"],
+                $row["website"],
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
                 date("Y-m-d H:i:s", strtotime($row["updated_at"]))
             );
@@ -576,8 +566,7 @@ class Offer
     }
 
     //Hide an offer
-    public static function hide($id)
-    {
+    public static function hide($id) {
         global $db;
 
         $stmt = $db->prepare("UPDATE offers SET is_active = !is_active WHERE id = :id");

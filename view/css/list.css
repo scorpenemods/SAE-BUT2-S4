@@ -105,13 +105,13 @@ main {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
-.company-carousel {
+.company-header {
     position: relative;
     height: 100px;
     background-color: #4e94ab;
     overflow: hidden;
 }
-.company-carousel img {
+.company-header img {
     width: 70px;
     height: 70px;
     object-fit: cover;
@@ -119,11 +119,8 @@ main {
     border-radius: 50%;
     top: 15px;
     left: 10px;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-.company-carousel img.active {
     opacity: 1;
+    transition: opacity 0.5s ease;
 }
 
 .title {
