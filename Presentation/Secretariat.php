@@ -286,8 +286,10 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
 
 <?php
 // Récupère les profs
-$professors = $database -> getProfessor()
+$professors = $database -> getProfessor();
 
+// Récupère les profs
+$tutors = $database -> getTutor();
 ?>
 <div id="popup-box" class="popup">
     <div class="content">
@@ -296,18 +298,19 @@ $professors = $database -> getProfessor()
         <div class="lists">
             <select name="professeurResp">
                 <option value="">Aucun</option>
-                <option>
-                    <?php foreach ($professors as $professor): ?>
-                        <div class="student">
-                            <span><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></span>
-                        </div>
-                    <?php endforeach; ?>
-                </option>
+                <?php foreach ($professors as $professor): ?>
+                    <option><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                <?php endforeach; ?>
             </select>
             <select name="Tuteur">
                 <option value="">Aucun</option>
+                <?php foreach ($tutors as $tutor): ?>
+                    <option><?php echo htmlspecialchars($tutor->getPrenom()) . ' ' . htmlspecialchars($tutor->getNom()); ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
+        <br>
+        <a href="#" class="popupvalide"><button>Valider</button></a>
         <a href="#" class="cross">&times;</a>
     </div>
 </div>

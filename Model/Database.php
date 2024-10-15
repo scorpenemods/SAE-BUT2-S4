@@ -517,8 +517,8 @@ class Database
     }
 
     public function getProfessor() {
-        $query = "SELECT DISTINCT User.nom, User.prenom from User
-                    where role = 1";
+        $query = "SELECT DISTINCT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id from User
+                    where role = 2";
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
         $professor = [];
@@ -536,5 +536,24 @@ class Database
         return $professor;
     }
 
+    public function getTutor() {
+        $query = "SELECT DISTINCT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id from User
+                    where role = 3";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute();
+        $tutor = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $tutor[] = new Person(
+                $row['nom'],
+                $row['prenom'],
+                $row['telephone'],
+                $row['role'],
+                $row['activite'],
+                $row['email'],
+                $row['id']
+            );
+        }
+        return $tutor;
+    }
 }
 ?>
