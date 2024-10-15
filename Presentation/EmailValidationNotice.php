@@ -73,8 +73,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
         $expiresAt = new DateTime($userVerification['expires_at'], new DateTimeZone('Europe/Paris'));
 
         if ($currentTime < $expiresAt) {
+            // Mise à jour du statut d'email validé
             $database->updateEmailValidationStatus($userId, 1);
+
+            // Suppression du code de vérification après validation
+            if ($database->deleteVerificationCode($userId)) {
+                error_log("Code supprimé pour l'utilisateur avec l'ID $userId.");
+            } else {
+                error_log("Erreur lors de la suppression du code pour l'utilisateur avec l'ID $userId.");
+            }
+
+            // Supprimer le cookie de vérification
             setcookie('email_verification_pending', '', time() - 3600, "/");
+
+            // Redirection vers la page de succès
             header("Location: Success.php");
             exit();
         } else {
@@ -84,6 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
         $verifyError = "Code de vérification incorrect. Veuillez réessayer.";
     }
 }
+
 
 // Отправка письма при первой загрузке страницы
 if (!isset($_SESSION['verification_email_sent'])) {

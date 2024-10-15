@@ -1,3 +1,96 @@
+<?php
+session_start();
+
+require_once "../Model/Database.php"; // db connect
+
+$database = new Database();
+$conn = $database->getConnection();
+
+if (!$conn) {
+    echo "<script>console.error('Erreur de connexion à la base de données.');</script>";
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $role = $_POST['choice'];
+    $function = htmlspecialchars(trim($_POST['function']));
+    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+    $name = htmlspecialchars(trim($_POST['name']));
+    $firstname = htmlspecialchars(trim($_POST['firstname']));
+    $phone = htmlspecialchars(trim($_POST['phone']));
+    $password = $_POST['password'];
+    $confirmPassword = $_POST['confirm_password'];
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>alert('Adresse email invalide.');</script>";
+        exit();
+    }
+
+    if ($password !== $confirmPassword) {
+        echo "<script>alert('Les mots de passe ne correspondent pas!');</script>";
+        exit();
+    }
+
+    $queryCheckEmail = "SELECT COUNT(*) FROM User WHERE email = :email";
+    $stmtCheck = $conn->prepare($queryCheckEmail);
+    $stmtCheck->bindParam(':email', $email);
+    $stmtCheck->execute();
+    $emailExists = $stmtCheck->fetchColumn();
+
+    if ($emailExists > 0) {
+        echo "<script>alert('Cet email est déjà enregistré. Veuillez utiliser un autre email.');</script>";
+        exit();
+    }
+
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $roleMapping = [
+        'student' => 1,
+        'tutorprofessor' => 2,
+        'tutorcompany' => 3,
+        'secretariat' => 4,
+    ];
+    $roleID = isset($roleMapping[$role]) ? $roleMapping[$role] : null;
+
+    if (!$roleID) {
+        echo "<script>alert('Rôle invalide.');</script>";
+        exit();
+    }
+
+    $query = "INSERT INTO User (nom, prenom, email, telephone, role, activite, valid_email, status_user, last_connexion, account_creation) 
+              VALUES (:nom, :prenom, :email, :telephone, :role, :activite, 0, 0, NOW(), NOW())";
+    $stmt = $conn->prepare($query);
+    $stmt->bindValue(':nom', $name);
+    $stmt->bindValue(':prenom', $firstname);
+    $stmt->bindValue(':email', $email);
+    $stmt->bindValue(':telephone', $phone);
+    $stmt->bindValue(':role', $roleID);
+    $stmt->bindValue(':activite', $function);
+
+    if ($stmt->execute()) {
+        $userID = $conn->lastInsertId();
+
+        $queryPass = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, 1)";
+        $stmtPass = $conn->prepare($queryPass);
+        $stmtPass->bindValue(':user_id', $userID);
+        $stmtPass->bindValue(':password_hash', $hashedPassword);
+
+        if ($stmtPass->execute()) {
+            $_SESSION['user_email'] = $email;
+            $_SESSION['user_id'] = $userID;
+            $_SESSION['user_name'] = $name . " " . $firstname;
+
+            // Ajout de log pour vérifier que l'étape est atteinte
+            error_log("Redirection vers EmailValidationNotice.php");
+            header("Location: EmailValidationNotice.php");
+            exit();
+        } else {
+            echo "<script>alert('Erreur lors de l\'insertion du mot de passe.');</script>";
+        }
+    } else {
+        echo "<script>alert('Erreur lors de la création de l\'utilisateur.');</script>";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -112,106 +205,4 @@
 </body>
 </html>
 
-<?php
-session_start();
-
-require_once "../Model/Database.php"; // db connect
-
-$database = new Database();
-$conn = $database->getConnection();
-
-if (!$conn) {
-    echo "<script>console.error('Erreur de connexion à la base de données.');</script>";
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupération et sanitization des données du formulaire d'inscription
-    $role = $_POST['choice'];
-    $function = htmlspecialchars(trim($_POST['function']));
-    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $name = htmlspecialchars(trim($_POST['name']));
-    $firstname = htmlspecialchars(trim($_POST['firstname']));
-    $phone = htmlspecialchars(trim($_POST['phone']));
-    $password = $_POST['password'];
-    $confirmPassword = $_POST['confirm_password'];
-
-    // Validation de l'email
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo "<script>alert('Adresse email invalide.');</script>";
-        exit();
-    }
-
-    // Vérification de la correspondance des mots de passe
-    if ($password !== $confirmPassword) {
-        echo "<script>alert('Les mots de passe ne correspondent pas!');</script>";
-        exit();
-    }
-
-    // Vérification si l'email existe déjà dans la base de données
-    $queryCheckEmail = "SELECT COUNT(*) FROM User WHERE email = :email";
-    $stmtCheck = $conn->prepare($queryCheckEmail);
-    $stmtCheck->bindParam(':email', $email);
-    $stmtCheck->execute();
-    $emailExists = $stmtCheck->fetchColumn();
-
-    if ($emailExists > 0) {
-        // Si l'email existe déjà
-        echo "<script>alert('Cet email est déjà enregistré. Veuillez utiliser un autre email.');</script>";
-        exit();
-    }
-
-    // Hachage du mot de passe
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-    // Mapping des rôles
-    $roleMapping = [
-        'student' => 1,
-        'tutorprofessor' => 2,
-        'tutorcompany' => 3,
-        'secretariat' => 4,
-    ];
-    $roleID = isset($roleMapping[$role]) ? $roleMapping[$role] : null;
-
-    if (!$roleID) {
-        echo "<script>alert('Rôle invalide.');</script>";
-        exit();
-    }
-
-    // Insertion de l'utilisateur dans la base de données
-    $query = "INSERT INTO User (nom, prenom, email, telephone, role, activite, valid_email, status_user, last_connexion, account_creation) 
-              VALUES (:nom, :prenom, :email, :telephone, :role, :activite, 0, 0, NOW(), NOW())";
-    $stmt = $conn->prepare($query);
-    $stmt->bindValue(':nom', $name);
-    $stmt->bindValue(':prenom', $firstname);
-    $stmt->bindValue(':email', $email);
-    $stmt->bindValue(':telephone', $phone);
-    $stmt->bindValue(':role', $roleID);
-    $stmt->bindValue(':activite', $function);
-
-    if ($stmt->execute()) {
-        $userID = $conn->lastInsertId();
-
-        // Insertion du mot de passe dans la table Password
-        $queryPass = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, 1)";
-        $stmtPass = $conn->prepare($queryPass);
-        $stmtPass->bindValue(':user_id', $userID);
-        $stmtPass->bindValue(':password_hash', $hashedPassword);
-
-        if ($stmtPass->execute()) {
-            // Sauvegarde de l'email dans la session
-            $_SESSION['user_email'] = $email;
-            $_SESSION['user_id'] = $userID;
-            $_SESSION['user_name'] = $name . " " . $firstname;
-
-            // Redirection vers la page de validation de l'email
-            header("Location: EmailValidationNotice.php");
-            exit();
-        } else {
-            echo "<script>alert('Erreur lors de l\'insertion du mot de passe.');</script>";
-        }
-    } else {
-        echo "<script>alert('Erreur lors de la création de l\'utilisateur.');</script>";
-    }
-}
-?>
 

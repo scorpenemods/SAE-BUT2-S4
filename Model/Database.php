@@ -368,34 +368,38 @@ class Database
         }
     }
 
-    public function updateUserPasswordByEmail($email, $hashedPassword)
+    public function updateUserPasswordByEmail($email, $hashedPassword): bool
     {
-        $sql = "UPDATE password SET password = :password WHERE user_id = (SELECT id FROM User WHERE email = :email)";
+        $sql = "UPDATE Password 
+            JOIN User ON Password.user_id = User.id
+            SET Password.password_hash = :password
+            WHERE User.email = :email AND Password.actif = 1";
+
         try {
             $stmt = $this->connection->prepare($sql);
-            $stmt->execute([
-                ':password' => $hashedPassword,
-                ':email' => $email
-            ]);
-            return true;
+            $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            return $stmt->execute();
         } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
+            error_log("Erreur lors de la mise à jour du mot de passe : " . $e->getMessage());
             return false;
         }
     }
 
-    public function deleteVerificationCode($email)
+    public function deleteVerificationCode($userId): bool
     {
-        $sql = "DELETE FROM password_resets WHERE email = :email";
+        $sql = "DELETE FROM Verification_Code WHERE user_id = :user_id";
+
         try {
             $stmt = $this->connection->prepare($sql);
-            $stmt->execute([':email' => $email]);
-            return true;
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            return $stmt->execute();
         } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
+            error_log("Erreur lors de la suppression du code de vérification : " . $e->getMessage());
             return false;
         }
     }
+
 
     // ------------------------------------------------------------------- //
 
@@ -554,6 +558,63 @@ class Database
             );
         }
         return $tutor;
+    }
+
+    public function storeVerificationCode($userId, $code, $expires_at): bool
+    {
+        try {
+            // Commence une transaction
+            $this->connection->beginTransaction();
+
+            // Supprime les codes de vérification existants pour cet utilisateur (au cas où)
+            $sqlDelete = "DELETE FROM Verification_Code WHERE user_id = :user_id";
+            $stmt = $this->connection->prepare($sqlDelete);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            if (!$stmt->execute()) {
+                error_log("Erreur lors de la suppression des anciens codes pour l'utilisateur $userId");
+            }
+
+            // Insère un nouveau code de vérification
+            $sqlInsert = "INSERT INTO Verification_Code (user_id, code, expires_at) VALUES (:user_id, :code, :expires_at)";
+            $stmt = $this->connection->prepare($sqlInsert);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':code', $code, PDO::PARAM_STR);
+            $stmt->bindParam(':expires_at', $expires_at, PDO::PARAM_STR);
+
+            // Ajout de logs pour vérifier l'exécution
+            if ($stmt->execute()) {
+                error_log("Code de vérification $code inséré avec succès pour l'utilisateur $userId.");
+            } else {
+                error_log("Erreur lors de l'insertion du code de vérification pour l'utilisateur $userId.");
+            }
+
+            // Commit de la transaction
+            $this->connection->commit();
+            return true;
+        } catch (PDOException $e) {
+            // Rollback en cas d'erreur
+            $this->connection->rollBack();
+            error_log("Erreur lors du stockage du code de vérification : " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getVerificationByCode($code)
+    {
+        $sql = "SELECT Verification_Code.user_id, Verification_Code.expires_at, User.email 
+            FROM Verification_Code 
+            JOIN User ON Verification_Code.user_id = User.id
+            WHERE Verification_Code.code = :code";
+
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':code', $code, PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération du code de vérification : " . $e->getMessage());
+            return false;
+        }
     }
 }
 ?>

@@ -32,7 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $expires_at = date("Y-m-d H:i:s", strtotime('+1 hour'));
 
         // Stocke le code de vérification dans la base de données avec la date d'expiration
-        $db->storeVerificationCode($email, $verification_code, $expires_at);
+        $userId = $user['id'];  // L'ID de l'utilisateur devrait être dans $user
+        $db->storeVerificationCode($userId, $verification_code, $expires_at);
 
         // Prépare l'envoi de l'email avec PHPMailer
         $mail = new PHPMailer(true);

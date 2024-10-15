@@ -2,13 +2,6 @@
 session_start();
 require "../Model/Database.php";
 
-$email = $_SESSION['email_verification'] ?? null;
-
-if (!$email) {
-    header("Location: Logout.php");
-    exit();
-}
-
 $db = new Database();
 $error = '';
 $success = '';
@@ -18,32 +11,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_password = $_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // Checking password matches
     if ($new_password != $confirm_password) {
         $error = "Les mots de passe ne correspondent pas.";
     } else {
-        // Verification code check
-        $resetRequest = $db->getPasswordResetRequest($email, $verification_code);
+        $userVerification = $db->getVerificationByCode($verification_code);
+        if ($userVerification) {
+            error_log("Code de vérification trouvé pour l'utilisateur : " . $userVerification['email']);
 
-        if ($resetRequest) {
-            // Checking the expiration date of the code
-            if (strtotime($resetRequest['expires_at']) >= time()) {
-                // Update user password
+            if (strtotime($userVerification['expires_at']) >= time()) {
+                $email = $userVerification['email'];
+                $userId = $userVerification['user_id'];
+
                 $hashedPassword = password_hash($new_password, PASSWORD_DEFAULT);
+
                 if ($db->updateUserPasswordByEmail($email, $hashedPassword)) {
-                    // Removing the verification code
-                    $db->deleteVerificationCode($email);
+                    $db->deleteVerificationCode($userId);
                     $success = "Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter.";
-                    unset($_SESSION['email_verification']);
                 } else {
-                    $error = "Une erreur est survenue. Veuillez réessayer.";
+                    $error = "Une erreur est survenue lors de la mise à jour du mot de passe.";
+                    error_log("Erreur lors de la mise à jour du mot de passe.");
                 }
             } else {
-                $error = "Le code de vérification a expiré. Veuillez refaire une demande.";
-                $db->deleteVerificationCode($email);
+                $error = "Le code de vérification a expiré.";
+                $db->deleteVerificationCode($userVerification['user_id']);
             }
         } else {
             $error = "Code de vérification incorrect.";
+            error_log("Code de vérification incorrect : " . $verification_code);
         }
     }
 }
