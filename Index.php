@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $loginResult = $database->verifyLogin($username, $password);
 
     // Si la vérification est réussie et que $user est un tableau (signifiant un utilisateur valide), exécute le bloc suivant
-    if ($loginResult['status'] === 'success') {
+    if ($loginResult['status'] === 1) {
         $user = $loginResult['user'];
 
         $person = new Person(

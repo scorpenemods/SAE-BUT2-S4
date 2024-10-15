@@ -67,8 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Insertion de l'utilisateur dans la base de données
-    $query = "INSERT INTO User (nom, prenom, email, telephone, role, activite, status) 
-              VALUES (:nom, :prenom, :email, :telephone, :role, :activite, 'email_not_validated')";
+    $query = "INSERT INTO User (nom, prenom, email, telephone, role, activite) 
+              VALUES (:nom, :prenom, :email, :telephone, :role, :activite)";
     $stmt = $conn->prepare($query);
     $stmt->bindValue(':nom', $name);
     $stmt->bindValue(':prenom', $firstname);
