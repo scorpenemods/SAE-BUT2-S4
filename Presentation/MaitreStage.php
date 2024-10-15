@@ -26,6 +26,12 @@ if (!in_array($userRole, $allowedRoles)) {
     exit();
 }
 $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динамическое значение
+
+// Récupérer les préférences de l'utilisateur
+$preferences = $database->getUserPreferences($person->getUserId());
+
+// Vérifier si le mode sombre est activé dans les préférences
+$darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
 ?>
 
 <!DOCTYPE html>
@@ -37,7 +43,7 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js" defer></script>
 </head>
-<body>
+<body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
     <header class="navbar">
         <div class="navbar-left">
             <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
@@ -51,14 +57,6 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
                 <span class="slider round">
                     <span class="switch-sticker">🇫🇷</span>
                     <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-                </span>
-            </label>
-            <!-- Theme Switch -->
-            <label class="switch">
-                <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
-                <span class="slider round">
-                    <span class="switch-sticker switch-sticker-right">🌙</span>
-                    <span class="switch-sticker">☀️</span>
                 </span>
             </label>
             <button class="mainbtn" onclick="toggleMenu()">
