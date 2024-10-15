@@ -26,7 +26,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $user['nom'],
             $user['prenom'],
             $user['telephone'],
-            $user['login'],
             $user['role'],
             $user['activite'],
             $user['email'],

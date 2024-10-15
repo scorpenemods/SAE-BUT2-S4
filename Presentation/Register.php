@@ -3,6 +3,10 @@ session_start();
 
 require_once "../Model/Database.php"; // db connect
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $database = new Database();
 $conn = $database->getConnection();
 
@@ -12,7 +16,7 @@ if (!$conn) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupération et санитизация des données du formulaire d'inscription
+    // Récupération et sanitization des données du formulaire d'inscription
     $role = $_POST['choice'];
     $function = htmlspecialchars(trim($_POST['function']));
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
@@ -22,22 +26,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
     $confirmPassword = $_POST['confirm_password'];
 
-    // Валидация email
+    // Validation de l'email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "Adresse email invalide.";
         exit();
     }
 
-    // Проверка совпадения паролей
+    // Vérification de la correspondance des mots de passe
     if ($password !== $confirmPassword) {
         echo "Les mots de passe ne correspondent pas!";
         exit();
     }
 
-    // Хеширование пароля
+    // Hachage du mot de passe
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Определение роли
+    // Mapping des rôles
     $roleMapping = [
         'student' => 1,
         'tutorprofessor' => 2,
@@ -51,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Проверка на дублирование email перед регистрацией
+    // Vérification de la duplication d'email avant l'enregistrement
     $queryCheckEmail = "SELECT * FROM User WHERE email = :email";
     $stmtCheck = $conn->prepare($queryCheckEmail);
     $stmtCheck->bindValue(':email', $email);
@@ -62,12 +66,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Вставка пользователя в базу данных
-    $query = "INSERT INTO User (nom, prenom, login, email, telephone, role, activite, status) VALUES (:nom, :prenom, :login, :email, :telephone, :role, :activite, 'Pending')";
+    // Insertion de l'utilisateur dans la base de données
+    $query = "INSERT INTO User (nom, prenom, email, telephone, role, activite, status) 
+              VALUES (:nom, :prenom, :email, :telephone, :role, :activite, 'email_not_validated')";
     $stmt = $conn->prepare($query);
     $stmt->bindValue(':nom', $name);
     $stmt->bindValue(':prenom', $firstname);
-    $stmt->bindValue(':login', $email);
     $stmt->bindValue(':email', $email);
     $stmt->bindValue(':telephone', $phone);
     $stmt->bindValue(':role', $roleID);
@@ -76,24 +80,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->execute()) {
         $userID = $conn->lastInsertId();
 
-        // Вставка пароля в таблицу password
-        $queryPass = "INSERT INTO password (user_id, password) VALUES (:user_id, :password)";
+        if (!$userID) {
+            echo "Erreur lors de la récupération de l'ID utilisateur.";
+            exit();
+        }
+
+        // Insertion du mot de passe dans la table Password
+        $queryPass = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, :actif)";
         $stmtPass = $conn->prepare($queryPass);
         $stmtPass->bindValue(':user_id', $userID);
-        $stmtPass->bindValue(':password', $hashedPassword);
-        $stmtPass->execute();
+        $stmtPass->bindValue(':password_hash', $hashedPassword);
+        $stmtPass->bindValue(':actif', 1); // Utilisation de 0 pour indiquer inactif tant que l'email n'est pas validé
 
-        // Сохраняем email в сессии для удобства
-        $_SESSION['user_email'] = $email;
+        if ($stmtPass->execute()) {
+            // Sauvegarde de l'email dans la session pour la commodité
+            $_SESSION['user_email'] = $email;
 
-        // Сохраняем user_id в сессии
-        $_SESSION['user_id'] = $userID;
+            // Sauvegarde de l'ID utilisateur dans la session
+            $_SESSION['user_id'] = $userID;
 
-        $_SESSION['user_name'] = $name . " " . $firstname;
+            $_SESSION['user_name'] = $name . " " . $firstname;
 
-        // Перенаправление на страницу подтверждения без отправки письма
-        header("Location: ./EmailValidationNotice.php");
-        exit();
+            // Redirection vers la page de validation de l'email
+            header("Location: EmailValidationNotice.php");
+            exit();
+        } else {
+            echo "Erreur lors de l'insertion du mot de passe.";
+        }
     } else {
         echo "Erreur lors de la création de l'utilisateur.";
     }

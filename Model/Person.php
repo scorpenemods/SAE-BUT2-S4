@@ -6,14 +6,13 @@ class Person
     private string $nom;        // Nom de l'utilisateur
     private string $prenom;     // Prénom de l'utilisateur
     private int $telephone;     // Numéro de téléphone de l'utilisateur
-    private string $login;      // Identifiant de connexion de l'utilisateur
     private string $role;       // Rôle de l'utilisateur (par exemple, étudiant, tuteur)
     private string $activite;   // Activité professionnelle ou académique de l'utilisateur
     private int $id;            // Identifiant unique de l'utilisateur
     private string $email;      // Adresse e-mail de l'utilisateur
 
     // Constructeur pour initialiser un objet de type Person avec les valeurs fournies
-    public function __construct($nom, $prenom, $telephone, $login, $role, $activite, $email, $id)
+    public function __construct($nom, $prenom, $telephone, $role, $activite, $email, $id)
     {
         $this->nom = $nom;
         $this->prenom = $prenom;
@@ -22,7 +21,6 @@ class Person
         $this->activite = $activite;
         $this->email = $email;
         $this->id = $id;
-        $this->login = $login;
     }
     //getter pour l'id
     public function getId(): int{
@@ -41,11 +39,6 @@ class Person
         return $this->prenom;
     }
 
-    // Méthode pour obtenir le login de l'utilisateur
-    public function getLogin(): string
-    {
-        return $this->login;
-    }
 
     // Méthode pour obtenir le rôle de l'utilisateur
     public function getRole(): string

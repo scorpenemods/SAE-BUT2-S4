@@ -21,15 +21,15 @@ class Database
     }
 
     // User login verification
-    public function verifyLogin($login, $password)
+    public function verifyLogin($email, $password)
     {
         $sql = "SELECT User.*, Password.password_hash FROM User
             JOIN Password ON User.id = Password.user_id
-            WHERE User.login = :login AND Password.actif = 1";
+            WHERE User.email = :email AND Password.actif = 1";
 
         try {
             $stmt = $this->connection->prepare($sql);
-            $stmt->bindParam(':login', $login);
+            $stmt->bindParam(':email', $email);
             $stmt->execute();
             $result = $stmt->fetch();
 
@@ -51,18 +51,19 @@ class Database
 
 
 
+
     // Adding a new user
-    public function addUser($login, $password, $email, $telephone, $prenom, $activite, $role, $nom)
+    public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom)
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $status = 'pending'; // Default status
 
-        $sqlUser = "INSERT INTO User (login, email, telephone, prenom, activite, role, nom, status, valid_email) VALUES (:login, :email, :telephone, :prenom, :activite, :role, :nom, :status, 0)";
+        $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status, valid_email) 
+                VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status, 0)";
 
         try {
             $stmt = $this->connection->prepare($sqlUser);
             $stmt->execute([
-                ':login' => $login,
                 ':email' => $email,
                 ':telephone' => $telephone,
                 ':prenom' => $prenom,
@@ -95,14 +96,15 @@ class Database
     }
 
 
+
     // Getting user information
-    public function getPersonByUsername($username)
+    public function getPersonByUsername($email)
     {
-        $sql = "SELECT nom, prenom, telephone, login, role, activite, email, id as user_id FROM User WHERE login = :login";
+        $sql = "SELECT nom, prenom, telephone, email, role, activite, id as user_id FROM User WHERE email = :email";
 
         try {
             $stmt = $this->connection->prepare($sql);
-            $stmt->bindParam(':login', $username, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -112,7 +114,7 @@ class Database
                     $result['nom'],
                     $result['prenom'],
                     $result['telephone'],
-                    $result['login'],
+                    $result['email'],
                     $result['role'],
                     $result['activite'],
                     $result['email'],
@@ -125,6 +127,7 @@ class Database
             return null;
         }
     }
+
 
     // ----------------------- Messenger realisation ------------------------------------------ //
 
@@ -305,34 +308,37 @@ class Database
         }
     }
 
-    public function storeVerificationCode($email, $verification_code, $expires_at)
-    {
+    public function storeEmailVerificationCode($userId, $code, $expires_at) {
         try {
-            // Get user_id by email
-            $userId = $this->getUserIdByEmail($email);
-            if (!$userId) {
-                return false; // User not found
-            }
+            // Start transaction
+            $this->connection->beginTransaction();
 
-            // Delete existing reset requests
-            $sqlDelete = "DELETE FROM Reset_Password WHERE user_id = :user_id";
+            // Delete existing codes
+            $sqlDelete = "DELETE FROM Verification_Code WHERE user_id = :user_id";
             $stmt = $this->connection->prepare($sqlDelete);
-            $stmt->execute([':user_id' => $userId]);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
 
-            // Insert new reset request
-            $sql = "INSERT INTO Reset_Password (verification_code, expires_at, user_id) VALUES (:verification_code, :expires_at, :user_id)";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->execute([
-                ':verification_code' => $verification_code,
-                ':expires_at' => $expires_at,
-                ':user_id' => $userId
-            ]);
+            // Insert new code
+            $sqlInsert = "INSERT INTO Verification_Code (user_id, code, expires_at) VALUES (:user_id, :code, :expires_at)";
+            $stmt = $this->connection->prepare($sqlInsert);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':code', $code, PDO::PARAM_STR);
+            $stmt->bindParam(':expires_at', $expires_at, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // Commit transaction
+            $this->connection->commit();
             return true;
         } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
+            // Rollback if any error occurs
+            $this->connection->rollBack();
+            echo "Error storing verification code: " . $e->getMessage();
             return false;
         }
     }
+
+
 
 
     public function getPasswordResetRequest($email, $verification_code)
@@ -382,7 +388,7 @@ class Database
     // -------------------- Email verification ------------------------------------------
 
     public function getVerificationCode($userId) {
-        $sql = "SELECT * FROM verification_codes WHERE user_id = :user_id";
+        $sql = "SELECT * FROM Verification_Code WHERE user_id = :user_id AND expires_at > NOW()";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -405,22 +411,6 @@ class Database
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         return $stmt->execute();
     }
-    public function storeEmailVerificationCode($userId, $code, $expires_at) {
-        // Delete existing codes
-        $sqlDelete = "DELETE FROM Verification_Code WHERE user_id = :user_id";
-        $stmt = $this->connection->prepare($sqlDelete);
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Insert new code
-        $sqlInsert = "INSERT INTO Verification_Code (user_id, code, expires_at) VALUES (:user_id, :code, :expires_at)";
-        $stmt = $this->connection->prepare($sqlInsert);
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindParam(':code', $code, PDO::PARAM_STR);
-        $stmt->bindParam(':expires_at', $expires_at, PDO::PARAM_STR);
-        return $stmt->execute();
-    }
-
 
 
     public function getUserIdByEmail($email) {
