@@ -8,7 +8,7 @@ class Database
         $this->connect();
     }
 
-    private function connect()
+    private function connect(): void
     {
         try {
             require_once __DIR__ . '/Config.php';
@@ -21,7 +21,7 @@ class Database
     }
 
     // User login verification
-    public function verifyLogin($email, $password)
+    public function verifyLogin($email, $password): array
     {
         $sql = "SELECT User.*, Password.password_hash FROM User
             JOIN Password ON User.id = Password.user_id
@@ -33,21 +33,35 @@ class Database
             $stmt->execute();
             $result = $stmt->fetch();
 
-            if ($result && password_verify($password, $result['password_hash'])) {
-                if (!$result['valid_email']) {
-                    return ['status' => 'email_not_validated', 'user' => $result];
+            if ($result) {
+                echo "Mot de passe saisi : " . $password . "<br>";
+                echo "Mot de passe haché récupéré : " . $result['password_hash'] . "<br>";
+
+                if (password_verify($password, $result['password_hash'])) {
+                    echo "Le mot de passe est correct.<br>";
+                    return [
+                        'valid_email' => $result['valid_email'],
+                        'status_user' => $result['status_user'],
+                        'user' => $result
+                    ];
+                } else {
+                    echo "Le mot de passe est incorrect.<br>";
+                    return [];
                 }
-                if ($result['status'] !== 'active') {
-                    return ['status' => 'pending', 'user' => $result];
-                }
-                return ['status' => 'success', 'user' => $result];
+            } else {
+                echo "Aucun utilisateur trouvé avec cet email.<br>";
+                return [];
             }
-            return ['status' => 'failed'];
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
-            return ['status' => 'error', 'message' => $e->getMessage()];
+            return [];
         }
     }
+
+
+
+
+
 
 
 
@@ -56,9 +70,9 @@ class Database
     public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom)
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $status = 'pending'; // Default status
+        $status = 0; // Default status
 
-        $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status, valid_email) 
+        $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status_user, valid_email) 
                 VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status, 0)";
 
         try {
@@ -70,7 +84,7 @@ class Database
                 ':activite' => $activite,
                 ':role' => $role,
                 ':nom' => $nom,
-                ':status' => $status
+                ':status_user' => $status
             ]);
             $userId = $this->connection->lastInsertId();
 
@@ -224,7 +238,7 @@ class Database
 
     public function getPendingUsers()
     {
-        $sql = "SELECT * FROM User WHERE status = 'pending'";
+        $sql = "SELECT * FROM User WHERE status_user = 0";
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
@@ -237,7 +251,7 @@ class Database
 
     public function getActiveUsers()
     {
-        $sql = "SELECT * FROM User WHERE status = 'active'";
+        $sql = "SELECT * FROM User WHERE status_user = 1";
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
@@ -250,7 +264,7 @@ class Database
 
     public function approveUser($userId)
     {
-        $sql = "UPDATE User SET status = 'active' WHERE id = :id";
+        $sql = "UPDATE User SET status_user = 1 WHERE id = :id";
         try {
             $stmt = $this->connection->prepare($sql);
             return $stmt->execute([':id' => $userId]);
@@ -430,15 +444,15 @@ class Database
             $stmt = $this->connection->prepare($sql);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmt->execute();
-            return $stmt->fetch();
+            return $stmt->fetch(PDO::FETCH_ASSOC);  // Use FETCH_ASSOC for associative array
         } catch (PDOException $e) {
             echo "Error fetching preferences: " . $e->getMessage();
             return false;
         }
     }
 
-
-    public function setUserPreferences($userId, $notification, $a2f, $darkmode) {
+    public function setUserPreferences($userId, $notification, $a2f, $darkmode): bool
+    {
         $sql = "INSERT INTO Preference (user_id, notification, a2f, darkmode) 
             VALUES (:user_id, :notification, :a2f, :darkmode)
             ON DUPLICATE KEY UPDATE notification = :notification, a2f = :a2f, darkmode = :darkmode";
@@ -457,8 +471,6 @@ class Database
             return false;
         }
     }
-
-
 
     public function getConnection() {
         return $this->connection;

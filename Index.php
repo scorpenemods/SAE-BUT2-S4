@@ -2,69 +2,68 @@
 // Démarrage d'une nouvelle session ou reprise d'une session existante
 session_start();
 
-// Inclusion des fichiers nécessaires pour accéder à la base de données et à la définition de la classe Person
 require_once 'Model/Database.php';
 require_once 'Model/Person.php';
 
-// Création d'une nouvelle instance de la classe Database pour interagir avec la base de données
 $database = new Database();
 $errorMessage = '';
 
-// Vérification si la méthode de la requête HTTP est POST, ce qui indique que le formulaire de connexion a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
+    $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Appel de la méthode verifyLogin pour vérifier les identifiants de l'utilisateur
-    $loginResult = $database->verifyLogin($username, $password);
+    // Appel de la méthode verifyLogin
+    $loginResult = $database->verifyLogin($email, $password);
 
-    // Si la vérification est réussie et que $user est un tableau (signifiant un utilisateur valide), exécute le bloc suivant
-    if ($loginResult['status'] === 'success') {
+    if (!empty($loginResult)) {
         $user = $loginResult['user'];
 
-        $person = new Person(
-            $user['nom'],
-            $user['prenom'],
-            $user['telephone'],
-            $user['role'],
-            $user['activite'],
-            $user['email'],
-            $user['id']
-        );
-
-        $_SESSION['user_id'] = $person->getUserId();
-        $_SESSION['user'] = serialize($person);
-        $_SESSION['user_role'] = $person->getRole();
-        $_SESSION['user_name'] = $person->getPrenom() . ' ' . $person->getNom();
-
-        switch ($_SESSION['user_role']) {
-            case 1:
-                header("Location: Presentation/Student.php");
-                break;
-            case 2:
-                header("Location: Presentation/Professor.php");
-                break;
-            case 3:
-                header("Location: Presentation/MaitreStage.php");
-                break;
-            case 4:
-                header("Location: Presentation/Secretariat.php");
-                break;
-            default:
-                header("Location: Presentation/Redirection.php");
-                break;
+        if ($loginResult['valid_email'] == 0) {
+            setcookie('email_verification_pending', '1', time() + 3600, "/");
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_email'] = $user['email'];
+            $_SESSION['user_name'] = $user['prenom'] . ' ' . $user['nom'];
+            header("Location: Index.php");
+            exit();
         }
-        exit();
-    } elseif ($loginResult['status'] === 'email_not_validated') {
-        $user = $loginResult['user'];
-        setcookie('email_verification_pending', '1', time() + 3600, "/");
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_name'] = $user['prenom'] . ' ' . $user['nom'];
-        header("Location: Index.php");
-        exit();
-    } elseif ($loginResult['status'] === 'pending') {
-        $errorMessage = "Votre compte est en attente d'activation par l'administration.";
+
+        if ($loginResult['status_user'] == 0) {
+            $errorMessage = "Votre compte est en attente d'activation par l'administration.";
+        } else {
+            $person = new Person(
+                $user['nom'],
+                $user['prenom'],
+                $user['telephone'],
+                $user['role'],
+                $user['activite'],
+                $user['email'],
+                $user['id']
+            );
+
+            $_SESSION['user_id'] = $person->getUserId();
+            $_SESSION['user'] = serialize($person);
+            $_SESSION['user_role'] = $person->getRole();
+            $_SESSION['user_name'] = $person->getPrenom() . ' ' . $person->getNom();
+
+            switch ($_SESSION['user_role']) {
+                case 1:
+                    header("Location: Presentation/Student.php");
+                    break;
+                case 2:
+                    header("Location: Presentation/Professor.php");
+                    break;
+                case 3:
+                    header("Location: Presentation/MaitreStage.php");
+                    break;
+                case 4:
+                    header("Location: Presentation/Secretariat.php");
+                    break;
+                default:
+                    header("Location: Presentation/Redirection.php");
+                    break;
+            }
+            exit();
+        }
     } else {
         $errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
     }
@@ -72,6 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $database->closeConnection();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -174,8 +174,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php endif; ?>
             <form action="" method="POST">
                 <div class="form-group">
-                    <label for="username">Nom d'utilisateur :</label>
-                    <input type="text" id="username" name="username" required>
+                    <label for="email">Email :</label>
+                    <input type="text" id="email" name="email" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Mot de passe :</label>
@@ -185,8 +185,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
                 <button class="primary-button" type="submit">Se connecter</button>
-                <p>Un problème pour se connecter ?</p>
-                <a href="Presentation/ForgotPasswordMail.php">Changer le mot de passe</a>
             </form>
         </div>
         <!-- Liens pour les utilisateurs non connectés -->
