@@ -21,24 +21,27 @@ $db = new Database();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $notif_value = isset($_POST['notif']) ? 1 : 0;
     $a2f_value = isset($_POST['a2f']) ? 1 : 0;
+    $darkmode_value = isset($_POST['darkmode']) ? 1 : 0; // Nouveau pour darkmode
 
     // Mettre à jour ou insérer les préférences de l'utilisateur
-    if ($db->setUserPreferences($userId, $notif_value, $a2f_value)) {
-        // Affiche un message de succès
-        $message = "Les préférences ont été mises à jour avec succès.";
-        $alert_class = "alert-success";
+    if ($db->setUserPreferences($userId, $notif_value, $a2f_value, $darkmode_value)) {
+        // Définir le message de succès dans la session
+        $_SESSION['success_message'] = "Les préférences ont été mises à jour avec succès.";
         header("Location: Settings.php");
+        exit();
     } else {
+        $_SESSION['error_message'] = "Erreur lors de la mise à jour des préférences.";
         header("Location: Settings.php");
-        $message = "Erreur lors de la mise à jour des préférences.";
-        $alert_class = "alert-error";
+        exit();
     }
 }
+
 
 // Récupérer les préférences actuelles de l'utilisateur
 $preferences = $db->getUserPreferences($userId);
 $notif = isset($preferences['notification']) && $preferences['notification'] == 1 ? 'checked' : '';
 $a2f = isset($preferences['a2f']) && $preferences['a2f'] == 1 ? 'checked' : '';
+$darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? 'checked' : ''; // Nouveau pour darkmode
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -97,6 +100,15 @@ $a2f = isset($preferences['a2f']) && $preferences['a2f'] == 1 ? 'checked' : '';
             <span>Off</span>
             <label class="switch">
                 <input type="checkbox" name="a2f" <?php echo $a2f; ?>>
+                <span class="slider"></span>
+            </label>
+            <span>On</span>
+        </div>
+        <div class="preference-item">
+            <span>Mode Sombre :</span> <!-- Nouveau pour darkmode -->
+            <span>Off</span>
+            <label class="switch">
+                <input type="checkbox" name="darkmode" <?php echo $darkmode; ?>>
                 <span class="slider"></span>
             </label>
             <span>On</span>

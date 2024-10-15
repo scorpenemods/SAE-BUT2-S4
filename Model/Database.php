@@ -444,15 +444,15 @@ class Database
             $stmt = $this->connection->prepare($sql);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmt->execute();
-            return $stmt->fetch();
+            return $stmt->fetch(PDO::FETCH_ASSOC);  // Use FETCH_ASSOC for associative array
         } catch (PDOException $e) {
             echo "Error fetching preferences: " . $e->getMessage();
             return false;
         }
     }
 
-
-    public function setUserPreferences($userId, $notification, $a2f, $darkmode) {
+    public function setUserPreferences($userId, $notification, $a2f, $darkmode): bool
+    {
         $sql = "INSERT INTO Preference (user_id, notification, a2f, darkmode) 
             VALUES (:user_id, :notification, :a2f, :darkmode)
             ON DUPLICATE KEY UPDATE notification = :notification, a2f = :a2f, darkmode = :darkmode";
@@ -471,8 +471,6 @@ class Database
             return false;
         }
     }
-
-
 
     public function getConnection() {
         return $this->connection;
