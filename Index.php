@@ -185,6 +185,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
                 <button class="primary-button" type="submit">Se connecter</button>
+                <p>Un problème pour se connecter ?</p>
+                <a href="Presentation/ForgotPasswordMail.php">Changer le mot de passe</a>
             </form>
         </div>
         <!-- Liens pour les utilisateurs non connectés -->
