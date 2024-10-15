@@ -42,6 +42,7 @@ if (isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) &
     $phone = $_POST['phone'];
     $file = $_FILES['file-upload'];
 
+    //Get the tags
     $selectedTags = array();
     $tags = Offer::getAllTags();
     foreach ($tags as $tag) {
@@ -70,13 +71,11 @@ if (isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) &
     //    die();
     //}
 
-    if ($id) {
-        $offer = pendingOffer::createPending($company_id, $title, $description, $job, $duration, $salary, $address, $education, $startDate, $selectedTags, $email, $phone, $fileName, $fileType, $fileSize, $user_id, $id);
+    //Create the offer
+    $offer = pendingOffer::createPending($company_id, $title, $description, $job, $duration, $salary, $address, $education, $startDate, $selectedTags, $email, $phone, $fileName, $fileType, $fileSize, $user_id, $id);
 
-    } else {
-        $offer = pendingOffer::createPending($company_id, $title, $description, $job, $duration, $salary, $address, $education, $startDate, $selectedTags, $email, $phone, $fileName, $fileType, $fileSize, $user_id);
-    }
 
+    //If the offer is created, redirect to the list of pending offers
     if ($offer) {
         header("Location: ../../view/pending/list.php");
         die();

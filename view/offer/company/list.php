@@ -56,6 +56,7 @@ if ($pageId == null) {
 
             <div class="company-listings">
                 <?php
+                // Get all offers of the company and display them
                 $offers = Offer::getCompanyOffers($company_id);
                 $totalPages = ceil(count($offers) / 12);
 
@@ -76,7 +77,7 @@ if ($pageId == null) {
                         echo "</div>";
                             echo "</div>";
                                 echo "<div class='company-info'>";
-                                echo "<h3><a href='/view/edit/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
+                                echo "<h3><a href='/view/offer/company/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
                                 echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
                                     echo "<div class='company-meta'>";
                                         echo "<span>" . $offer->getCompany()->getName() . "</span>";

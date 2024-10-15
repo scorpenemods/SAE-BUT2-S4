@@ -3,6 +3,7 @@
 require dirname(__FILE__) . '/../presenter/database.php';
 require dirname(__FILE__) . '/../models/Offer.php';
 
+//Class to manage pending offers
 class PendingOffer extends Offer
 {
     private int $id;
@@ -100,52 +101,8 @@ class PendingOffer extends Offer
         return $medias;
     }
 
-    public static function getById(int $id): ?PendingOffer
-    {
-        global $db;
 
-        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE id = :id");
-        $stmt->bindParam(":id", $id);
-        $stmt->execute();
-        $result = $stmt->fetch();
-
-        if ($db->errorCode() != 0) {
-            return null;
-        }
-
-        $company = Company::getById($result["company_id"]);
-
-        if (!$company) {
-            return null;
-        }
-
-        if ($result["id"]) {
-            $id = $result["id"];
-        } else {
-            $id = 0;
-        }
-
-        return new PendingOffer(
-            $id,
-            $result["company_id"],
-            $result["type"],
-            $company,
-            $result["title"],
-            $result["description"],
-            $result["job"],
-            $result["duration"],
-            $result["begin_date"],
-            $result["salary"],
-            $result["address"],
-            $result["study_level"],
-            date("Y-m-d H:i:s", strtotime($result["created_at"])),
-            $result["email"],
-            $result["phone"],
-            $result["offer_id"],
-            $result["status"]
-        );
-    }
-
+    //Get all pending offers
     public static function getByOfferId(int $id): ?array
     {
         global $db;
@@ -192,6 +149,7 @@ class PendingOffer extends Offer
         return $offers;
     }
 
+    //Get all pending offers
     public static function getAll(): ?array
     {
         global $db;
@@ -238,16 +196,19 @@ class PendingOffer extends Offer
     }
 
 
-    public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize, int $user_id, int $offer_id = 0): ?PendingOffer
+    //Create a new pending offer
+    public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize, int $user_id, int $offer_id): ?PendingOffer
     {
         global $db;
 
+        //Get the type of the offer
         if ($offer_id == 0) {
             $type = "new offer";
         } else {
-            $type = "update offer";
+            $type = "updated offer";
         }
 
+        //Insert the offer in the pending_offers table
         $stmt = $db->prepare("INSERT INTO pending_offers (user_id, type, offer_id, company_id, title, address, job, description, duration, salary,
                             study_level, email, phone, begin_date) VALUES (:user_id, :type, :offer_id, :company_id, :title, :address, :job, :description, :duration, :salary,
                             :study_level, :email, :phone, :begin_date)");
@@ -275,7 +236,7 @@ class PendingOffer extends Offer
 
         //Add tags in pending_tags table
         foreach ($tags as $tag) {
-            $stmt = $db->prepare("INSERT INTO pending_tags (tag_id, pending_id) VALUES (:tag_id, :offer_id)");
+            $stmt = $db->prepare("INSERT INTO pending_tags (tag_id, pending_id) VALUES ((SELECT tag FROM tags WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $id);
             $stmt->execute();
@@ -305,6 +266,7 @@ class PendingOffer extends Offer
         return $offer;
     }
 
+    //Get the real duration of the offer using modulo
     public function getRealDuration(): string
     {
         $duration = $this->getDuration();
@@ -353,6 +315,7 @@ class PendingOffer extends Offer
         return $tags;
     }
 
+    //Set the status of an offer
     public static function setStatus(int $getId, string $string)
     {
         global $db;

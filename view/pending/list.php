@@ -54,15 +54,14 @@ if (isset($_GET['type'])) {
             </div>
             <div class="company-listings">
                 <?php
+                //Get all pending offers and display them
                 $offers = PendingOffer::getAll();
                 $totalPages = ceil(count($offers) / 12);
 
                 $startIndex = ($pageId - 1) * 12;
                 $endIndex = $startIndex + 12;
-
                 for ($i = $startIndex; $i < count($offers) and $i < $endIndex; $i++) {
                     if ($offers[$i]->getStatus() == "Pending" && $offers[$i]->getType() == $type) {
-
                         echo "<div class='company-card'>";
                             echo "<div class='company-carousel'>";
                             $offer = $offers[$i];

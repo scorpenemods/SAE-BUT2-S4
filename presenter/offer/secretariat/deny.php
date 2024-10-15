@@ -7,4 +7,6 @@ if (isset($_GET['id']) && isset($_SERVER["HTTP_REFERER"])) {
     $offer = PendingOffer::getById($_GET['id']);
     PendingOffer::setStatus($offer->getId(), "Rejected");
     header("Location: ../../../view/pending/list.php");
+} else {
+    header("Location: ../../../view/pending/list.php");
 }

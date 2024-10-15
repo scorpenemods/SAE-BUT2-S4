@@ -2,6 +2,7 @@
 
 require dirname(__FILE__)."/../presenter/database.php";
 
+//Class to manage companies
 class Company {
     private int $id;
     private string $name;
@@ -49,6 +50,7 @@ class Company {
         return $this->updated_at;
     }
 
+    //Get a company by its id
     public static function getById(int $id): ?Company {
         global $db;
 
@@ -77,6 +79,7 @@ class Company {
         );
     }
 
+    //Get all companies
     public static function getAll(): ?array {
         global $db;
 
@@ -105,6 +108,7 @@ class Company {
         return $companies;
     }
 
+    //Create a new company
     public static function create(string $name, int $size, string $address, string $siren): ?Company {
         global $db;
 

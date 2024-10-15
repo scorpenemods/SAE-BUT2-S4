@@ -2,6 +2,7 @@
 
 require dirname(__FILE__) . '/../presenter/database.php';
 
+//Class to manage offers
 class Offer
 {
     private int $id;
@@ -41,32 +42,6 @@ class Offer
         $this->phone = $phone;
     }
 
-    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, $getFileName, $getFileType, $getFileSize)
-    {
-        global $db;
-
-        $stmt = $db->prepare("UPDATE offers SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone WHERE id = :id");
-        $stmt->bindParam(":title", $getTitle);
-        $stmt->bindParam(":description", $getDescription);
-        $stmt->bindParam(":job", $getJob);
-        $stmt->bindParam(":duration", $getDuration);
-        $stmt->bindParam(":salary", $getSalary);
-        $stmt->bindParam(":address", $getAddress);
-        $stmt->bindParam(":study_level", $getEducation);
-        $stmt->bindParam(":email", $getEmail);
-        $stmt->bindParam(":phone", $getPhone);
-        $stmt->bindParam(":id", $getId);
-        $stmt->bindParam(":begin_date", $getBeginDate);
-
-        $stmt->execute();
-
-        if ($db->errorCode() != 0) {
-            return null;
-        }
-
-        $offer = Offer::getById($getId);
-        return $offer;
-    }
 
     public function getId(): int
     {
@@ -170,6 +145,52 @@ class Offer
         return $tags;
     }
 
+    //Update an offer
+    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, $getFileName, $getFileType, $getFileSize)
+    {
+        global $db;
+
+        //Update the offer
+        $stmt = $db->prepare("UPDATE offers SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone WHERE id = :id");
+        $stmt->bindParam(":title", $getTitle);
+        $stmt->bindParam(":description", $getDescription);
+        $stmt->bindParam(":job", $getJob);
+        $stmt->bindParam(":duration", $getDuration);
+        $stmt->bindParam(":salary", $getSalary);
+        $stmt->bindParam(":address", $getAddress);
+        $stmt->bindParam(":study_level", $getEducation);
+        $stmt->bindParam(":email", $getEmail);
+        $stmt->bindParam(":phone", $getPhone);
+        $stmt->bindParam(":id", $getId);
+        $stmt->bindParam(":begin_date", $getBeginDate);
+
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        //Delete the tags in the tags_offers table
+        $stmt = $db->prepare("DELETE FROM tags_offers WHERE offer_id = :id");
+        $stmt->bindParam(":id", $getId);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        //Add the tags in the tags_offers table
+        foreach ($getTags as $tag) {
+            $stmt = $db->prepare("INSERT INTO tags_offers (tag_id, offer_id) VALUES ((SELECT tag FROM tags WHERE id = :tag_id), :offer_id)");
+            $stmt->bindParam(":tag_id", $tag);
+            $stmt->bindParam(":offer_id", $getId);
+            $stmt->execute();
+        }
+
+        $offer = Offer::getById($getId);
+        return $offer;
+    }
+
     public function getMedias(): ?array
     {
         global $db;
@@ -198,6 +219,7 @@ class Offer
         return $medias;
     }
 
+    //Get an offer by its id
     public static function getById(int $id): ?Offer
     {
         global $db;
@@ -237,6 +259,7 @@ class Offer
         );
     }
 
+    //Get all offers
     public static function getAll(): ?array
     {
         global $db;
@@ -281,10 +304,12 @@ class Offer
         return $offers;
     }
 
+    //Create a new offer
     public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize): ?Offer
     {
         global $db;
 
+        //Insert the offer in the offers table
         $stmt = $db->prepare("INSERT INTO offers (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
                     email, phone) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,
                     :email, :phone)");
@@ -308,8 +333,9 @@ class Offer
 
         $id = $db->lastInsertId();
 
+        //Add the tags in the tags_offers table
         foreach ($tags as $tag) {
-            $stmt = $db->prepare("INSERT INTO tags_offers (tag_id, offer_id) VALUES (:tag_id, :offer_id)");
+            $stmt = $db->prepare("INSERT INTO tags_offers (tag_id, offer_id) VALUES ((SELECT tag FROM tags WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $id);
             $stmt->execute();
@@ -337,6 +363,7 @@ class Offer
         return $offer;
     }
 
+    //Get the real duration of the offer using modulo
     public function getRealDuration(): string
     {
         $duration = $this->getDuration();
@@ -368,6 +395,7 @@ class Offer
         return rtrim($result, ', ');
     }
 
+    //Get all tags
     public static function getAllTags(): array
     {
         global $db;
@@ -385,6 +413,7 @@ class Offer
         return $tags;
     }
 
+    //Get all offers of a company
     public static function getCompanyOffers($companyId): ?array
     {
         global $db;
@@ -430,6 +459,7 @@ class Offer
         return $offers;
     }
 
+    //Get all offers filtered by the filters
     public static function getFilteredOffers($filters): ?array {
         global $db;
 
@@ -545,6 +575,7 @@ class Offer
         return $offers;
     }
 
+    //Hide an offer
     public static function hide($id)
     {
         global $db;
