@@ -11,14 +11,14 @@
     <h2>Changer d'adresse e-mail</h2>
     <form action="" method="POST">
         <div class="form-group">
-            <label for="mail" id="mail" name="mail" required>E-mail :</label>
+            <label for="mail">E-mail :</label>
             <input type="email" id="mail" name="mail" placeholder="Nouvelle adresse e-mail" required><br>
         </div>
         <div class="form-group">
             <button type="submit" class="btn">Envoyer le code</button>
         </div>
         <div class="link">
-        <a href='../../../Presentation/Settings.php'>retour</a>
+        <a href='../../../Presentation/Settings.php'>Annuler</a>
         </div>
         </form>
 </div>

@@ -11,14 +11,14 @@
     <h2>Changer de numéro de téléphone</h2>
     <form action="" method="POST">
         <div class="form-group">
-            <label for="phone" id="phone" name="phone" required>Numéro de téléphone :</label>
+            <label for="phone">Numéro de téléphone :</label>
             <input type="tel" id="phone" name="phone" placeholder="Nouveau numéro de téléphone" required><br>
         </div>
         <div class="form-group">
             <button type="submit" class="btn">Confirmer</button>
         </div>
         <div class="link">
-        <a href='../../../Presentation/Settings.php'>retour</a>
+        <a href='../../../Presentation/Settings.php'>Annuler</a>
         </div>
     </form>
 </div>

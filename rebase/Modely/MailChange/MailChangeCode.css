@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -74,4 +74,18 @@ input[type="text"], input[type="password"] {
 
 .btn-password:hover {
     background-color: #0056b3;
+}
+
+.link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link a:hover {
+    text-decoration: underline;
 }
