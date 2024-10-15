@@ -70,9 +70,9 @@ class Database
     public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom)
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $status = 'pending'; // Default status
+        $status = 0; // Default status
 
-        $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status, valid_email) 
+        $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status_user, valid_email) 
                 VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status, 0)";
 
         try {
@@ -84,7 +84,7 @@ class Database
                 ':activite' => $activite,
                 ':role' => $role,
                 ':nom' => $nom,
-                ':status' => $status
+                ':status_user' => $status
             ]);
             $userId = $this->connection->lastInsertId();
 
@@ -238,7 +238,7 @@ class Database
 
     public function getPendingUsers()
     {
-        $sql = "SELECT * FROM User WHERE status = 'pending'";
+        $sql = "SELECT * FROM User WHERE status_user = 0";
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
@@ -251,7 +251,7 @@ class Database
 
     public function getActiveUsers()
     {
-        $sql = "SELECT * FROM User WHERE status = 'active'";
+        $sql = "SELECT * FROM User WHERE status_user = 1";
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
@@ -264,7 +264,7 @@ class Database
 
     public function approveUser($userId)
     {
-        $sql = "UPDATE User SET status = 'active' WHERE id = :id";
+        $sql = "UPDATE User SET status_user = 1 WHERE id = :id";
         try {
             $stmt = $this->connection->prepare($sql);
             return $stmt->execute([':id' => $userId]);
