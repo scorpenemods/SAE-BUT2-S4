@@ -83,6 +83,9 @@ $messages = $database->getMessages($senderId, $receiverId);
         <span class="app-name">Le Petit Stage</span>
     </div>
     <div class="navbar-right">
+        <button class="mainbtn" >
+            <img src="../Resources/Notif.png" alt="Settings">
+        </button>
         <button class="mainbtn">
             <p><?php echo $userName; ?></p>
         </button>
