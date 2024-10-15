@@ -12,18 +12,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    echo "<script>console.log('Tentative de connexion avec l\'email : $email');</script>";
-
     // Appel de la méthode verifyLogin
     $loginResult = $database->verifyLogin($email, $password);
 
     if (!empty($loginResult)) {
         $user = $loginResult['user'];
 
-        echo "<script>console.log('Utilisateur trouvé avec ID : {$user['id']}');</script>";
-
         if ($loginResult['valid_email'] == 0) {
-            echo "<script>console.warn('Email non validé.');</script>";
             setcookie('email_verification_pending', '1', time() + 3600, "/");
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_email'] = $user['email'];
@@ -34,9 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($loginResult['status_user'] == 0) {
             $errorMessage = "Votre compte est en attente d'activation par l'administration.";
-            echo "<script>console.warn('$errorMessage');</script>";
         } else {
-            echo "<script>console.log('Connexion réussie pour l\'utilisateur ID : {$user['id']}');</script>";
             $person = new Person(
                 $user['nom'],
                 $user['prenom'],
@@ -73,7 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } else {
         $errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
-        echo "<script>console.error('$errorMessage');</script>";
     }
 
     $database->closeConnection();
