@@ -11,8 +11,7 @@ class Personne
     private int $id;
     private string $email;
 
-    public function __construct($nom, $prenom, $telephone,$login, $role, $activite,$email,$id)
-    {
+    public function __construct($nom, $prenom, $telephone,$login, $role, $activite,$email,$id) {
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->telephone = $telephone;

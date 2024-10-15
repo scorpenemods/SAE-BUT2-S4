@@ -96,7 +96,7 @@ $offer = Offer::getById($offerId);
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
         <script type="text/javascript">
             let offerHeader = document.querySelector('.offer-header');
-            offerHeader.style.backgroundImage = `url(<?php echo $offer->getMedias()[0]->getUrl(); ?>)`;
+            offerHeader.style.backgroundImage = `url(<?php echo $offer->getImage(); ?>)`;
         </script>
     </body>
 </html>

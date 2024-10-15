@@ -60,8 +60,8 @@ if (isset($sector)) { $filters["sector"] = $sector; }
 if (isset($keywords)) { $filters["keywords"] = $keywords; }
 
 $filteredOffers = getPageOffers($pageId, $filters);
-$offers = $filteredOffers["offers"];
-$totalPages = $filteredOffers["totalPages"];
+$offers = $filteredOffers["offers"] ?? array();
+$totalPages = $filteredOffers["totalPages"] ?? 1;
 ?>
 
 <!DOCTYPE html>
@@ -100,15 +100,12 @@ $totalPages = $filteredOffers["totalPages"];
 
             <div class="company-listings">
                 <?php
-                //Get all offers and display them
                 foreach ($offers as $offer) {
                     echo "<div class='company-card'>";
-                        echo "<div class='company-carousel'>";
-                            foreach ($offer->getMedias() as $media) {
-                                echo "<img loading=\"lazy\" src='" . $media->getUrl() . "' alt='" . $media->getDescription() . "' " . ($media->getDisplayOrder() == 1 ? "class='active'" : "") . ">";
-                                echo "<h3 class='title'><a href='/view/offer/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
-                                echo "<span class='company'>" . $offer->getCompany()->getName() . "</span>";
-                            }
+                        echo "<div class='company-header'>";
+                            echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
+                            echo "<h3 class='title'><a href='/view/offer/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
+                            echo "<span class='company'>" . $offer->getCompany()->getName() . "</span>";
                         echo "</div>";
                         echo "<div class='company-info'>";
                             echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";

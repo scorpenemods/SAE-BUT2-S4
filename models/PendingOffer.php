@@ -15,8 +15,7 @@ class PendingOffer extends Offer
     private string $status;
 
 
-    public function __construct(int $id, int $company_id, string $type, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, string $created_at, string $email, string $phone, int $offfer_id, string $status)
-    {
+    public function __construct(int $id, int $company_id, string $type, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, string $created_at, string $email, string $phone, int $offfer_id, string $status) {
         parent::__construct($id, $company_id, $company, $title, $description, $job, $duration,  $begin_date, $salary, $address, $study_level,  TRUE, $email, $phone, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"));
         $this->id = $id;
         $this->company_id = $company_id;
@@ -73,33 +72,6 @@ class PendingOffer extends Offer
         return $this->status;
     }
 
-    public function getMedias(): ?array
-    {
-        global $db;
-
-        $stmt = $db->prepare("SELECT * FROM pending_media WHERE pending_offer_id = :offer_id ORDER BY display_order");
-        $stmt->bindParam(":offer_id", $this->id);
-        $stmt->execute();
-
-        if ($db->errorCode() != 0) {
-            return null;
-        }
-
-        $result = $stmt->fetchAll();
-
-        $medias = [];
-        foreach ($result as $row) {
-            $medias[] = new Media(
-                $row["id"],
-                $row["url"],
-                $row["type"],
-                $row["description"],
-                $row["display_order"]
-            );
-        }
-
-        return $medias;
-    }
 
 
     //Get all pending offers
@@ -316,8 +288,7 @@ class PendingOffer extends Offer
     }
 
     //Set the status of an offer
-    public static function setStatus(int $getId, string $string)
-    {
+    public static function setStatus(int $getId, string $string) {
         global $db;
 
         $stmt = $db->prepare("UPDATE pending_offers SET status = :status WHERE id = :id");
