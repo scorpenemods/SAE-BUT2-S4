@@ -69,7 +69,6 @@ header .navbar-left .app-name {
 header .navbar-right {
     gap: 20px;
     padding-right: 40px;
-    width: 40%;
     position: relative;
     display: flex;
     justify-content: space-evenly;
@@ -312,19 +311,20 @@ button.secondary:hover {
 
 /* Style du pied de page */
 footer {
+    background-color: #2c3e50;
+    color: #fff;
     border-top: solid 1px;
     display: flex;
     padding-right: 5%;
     margin-top: 5%;
-    padding-bottom: 1%;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    bottom: 0;
-    position: relative;
+    bottom: -20vh;
     width: 95%;
+    padding-bottom: 1%;
 }
 footer a{
     text-decoration: none;
-    color : black;
+    color: #fff;
 }

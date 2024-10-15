@@ -2,7 +2,7 @@
 <html>
 <head>
     <!-- Lien vers la feuille de style par défaut -->
-    <link rel="stylesheet" href="../rebase/Modely/DefaultStyles/styles.css">
+    <link rel="stylesheet" href="../View/AccountCreation/AccountCreation.css">
     <script src="../View/Home/Lobby.js" defer></script>
     <title>Création du compte</title>
 </head>
@@ -15,8 +15,6 @@
     </div>
 
     <div class="navbar-right">
-        <p>Guest</p> <!-- Affichage du nom de l'utilisateur ou "Guest" si non connecté -->
-
         <!-- Commutateur pour changer la langue -->
         <label class="switch">
             <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
