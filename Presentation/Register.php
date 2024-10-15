@@ -11,7 +11,7 @@ $database = new Database();
 $conn = $database->getConnection();
 
 if (!$conn) {
-    echo "Erreur de connexion à la base de données.";
+    echo "<script>console.error('Erreur de connexion à la base de données.');</script>";
     exit;
 }
 
@@ -28,18 +28,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validation de l'email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo "Adresse email invalide.";
+        echo "<script>console.error('Adresse email invalide.');</script>";
         exit();
     }
 
     // Vérification de la correspondance des mots de passe
     if ($password !== $confirmPassword) {
-        echo "Les mots de passe ne correspondent pas!";
+        echo "<script>console.error('Les mots de passe ne correspondent pas!');</script>";
         exit();
     }
 
     // Hachage du mot de passe
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    echo "<script>console.log('Mot de passe en clair : $password');</script>";
+    echo "<script>console.log('Mot de passe haché : $hashedPassword');</script>";
 
     // Mapping des rôles
     $roleMapping = [
@@ -51,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $roleID = isset($roleMapping[$role]) ? $roleMapping[$role] : null;
 
     if (!$roleID) {
-        echo "Rôle invalide.";
+        echo "<script>console.error('Rôle invalide.');</script>";
         exit();
     }
 
@@ -62,13 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmtCheck->execute();
 
     if ($stmtCheck->rowCount() > 0) {
-        echo "Email déjà enregistré. Veuillez utiliser un autre email.";
+        echo "<script>console.error('Email déjà enregistré.');</script>";
         exit();
     }
 
     // Insertion de l'utilisateur dans la base de données
-    $query = "INSERT INTO User (nom, prenom, email, telephone, role, activite) 
-              VALUES (:nom, :prenom, :email, :telephone, :role, :activite)";
+    $query = "INSERT INTO User (nom, prenom, email, telephone, role, activite, valid_email, status_user) 
+              VALUES (:nom, :prenom, :email, :telephone, :role, :activite, 0, 0)";
     $stmt = $conn->prepare($query);
     $stmt->bindValue(':nom', $name);
     $stmt->bindValue(':prenom', $firstname);
@@ -79,36 +81,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->execute()) {
         $userID = $conn->lastInsertId();
-
-        if (!$userID) {
-            echo "Erreur lors de la récupération de l'ID utilisateur.";
-            exit();
-        }
+        echo "<script>console.log('Utilisateur créé avec succès, ID : $userID');</script>";
 
         // Insertion du mot de passe dans la table Password
-        $queryPass = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, :actif)";
+        $queryPass = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, 1)";
         $stmtPass = $conn->prepare($queryPass);
         $stmtPass->bindValue(':user_id', $userID);
         $stmtPass->bindValue(':password_hash', $hashedPassword);
-        $stmtPass->bindValue(':actif', 1); // Utilisation de 0 pour indiquer inactif tant que l'email n'est pas validé
 
         if ($stmtPass->execute()) {
-            // Sauvegarde de l'email dans la session pour la commodité
+            echo "<script>console.log('Mot de passe inséré avec succès pour l\'utilisateur $userID');</script>";
+
+            // Sauvegarde de l'email dans la session
             $_SESSION['user_email'] = $email;
-
-            // Sauvegarde de l'ID utilisateur dans la session
             $_SESSION['user_id'] = $userID;
-
             $_SESSION['user_name'] = $name . " " . $firstname;
 
             // Redirection vers la page de validation de l'email
             header("Location: EmailValidationNotice.php");
             exit();
         } else {
-            echo "Erreur lors de l'insertion du mot de passe.";
+            echo "<script>console.error('Erreur lors de l\'insertion du mot de passe.');</script>";
         }
     } else {
-        echo "Erreur lors de la création de l'utilisateur.";
+        echo "<script>console.error('Erreur lors de la création de l\'utilisateur.');</script>";
     }
 }
 ?>

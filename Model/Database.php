@@ -21,7 +21,7 @@ class Database
     }
 
     // User login verification
-    public function verifyLogin($email, $password)
+    public function verifyLogin($email, $password): array
     {
         $sql = "SELECT User.*, Password.password_hash FROM User
             JOIN Password ON User.id = Password.user_id
@@ -33,19 +33,112 @@ class Database
             $stmt->execute();
             $result = $stmt->fetch();
 
-            if ($result && password_verify($password, $result['password_hash'])) {
-                if (!$result['valid_email']) {
-                    return ['status' => 1, 'user' => $result];
+            if ($result) {
+                echo "Mot de passe saisi : " . $password . "<br>";
+                echo "Mot de passe haché récupéré : " . $result['password_hash'] . "<br>";
+
+                if (password_verify($password, $result['password_hash'])) {
+                    echo "Le mot de passe est correct.<br>";
+                    return [
+                        'valid_email' => $result['valid_email'],
+                        'status_user' => $result['status_user'],
+                        'user' => $result
+                    ];
+                } else {
+                    echo "Le mot de passe est incorrect.<br>";
+                    return [];
                 }
-                if ($result['status'] !== 'active') {
-                    return ['status' => 'pending', 'user' => $result];
-                }
-                return ['status' => 'success', 'user' => $result];
+            } else {
+                echo "Aucun utilisateur trouvé avec cet email.<br>";
+                return [];
             }
-            return ['status' => 'failed'];
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
-            return ['status' => 'error', 'message' => $e->getMessage()];
+            return [];
+        }
+    }
+
+
+
+
+
+
+
+
+
+    // Adding a new user
+    public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom)
+    {
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        $status = 'pending'; // Default status
+
+        $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status, valid_email) 
+                VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status, 0)";
+
+        try {
+            $stmt = $this->connection->prepare($sqlUser);
+            $stmt->execute([
+                ':email' => $email,
+                ':telephone' => $telephone,
+                ':prenom' => $prenom,
+                ':activite' => $activite,
+                ':role' => $role,
+                ':nom' => $nom,
+                ':status' => $status
+            ]);
+            $userId = $this->connection->lastInsertId();
+
+            $sqlPassword = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, 1)";
+            $stmt = $this->connection->prepare($sqlPassword);
+            $stmt->execute([
+                ':user_id' => $userId,
+                ':password_hash' => $passwordHash
+            ]);
+
+            // Insert default preferences
+            $sqlPreference = "INSERT INTO Preference (user_id, notification, a2f, darkmode) VALUES (:user_id, 1, 0, 0)";
+            $stmt = $this->connection->prepare($sqlPreference);
+            $stmt->execute([
+                ':user_id' => $userId
+            ]);
+
+            return true;
+        } catch (PDOException $e) {
+            echo "Insert error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+
+
+    // Getting user information
+    public function getPersonByUsername($email)
+    {
+        $sql = "SELECT nom, prenom, telephone, email, role, activite, id as user_id FROM User WHERE email = :email";
+
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                require_once "Person.php";
+                return new \Person(
+                    $result['nom'],
+                    $result['prenom'],
+                    $result['telephone'],
+                    $result['email'],
+                    $result['role'],
+                    $result['activite'],
+                    $result['email'],
+                    $result['user_id']
+                );
+            }
+            return null;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return null;
         }
     }
 
@@ -229,6 +322,39 @@ class Database
         }
     }
 
+    public function storeEmailVerificationCode($userId, $code, $expires_at) {
+        try {
+            // Start transaction
+            $this->connection->beginTransaction();
+
+            // Delete existing codes
+            $sqlDelete = "DELETE FROM Verification_Code WHERE user_id = :user_id";
+            $stmt = $this->connection->prepare($sqlDelete);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Insert new code
+            $sqlInsert = "INSERT INTO Verification_Code (user_id, code, expires_at) VALUES (:user_id, :code, :expires_at)";
+            $stmt = $this->connection->prepare($sqlInsert);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':code', $code, PDO::PARAM_STR);
+            $stmt->bindParam(':expires_at', $expires_at, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // Commit transaction
+            $this->connection->commit();
+            return true;
+        } catch (PDOException $e) {
+            // Rollback if any error occurs
+            $this->connection->rollBack();
+            echo "Error storing verification code: " . $e->getMessage();
+            return false;
+        }
+    }
+
+
+
+
     public function getPasswordResetRequest($email, $verification_code)
     {
         $sql = "SELECT * FROM password_resets WHERE email = :email AND verification_code = :verification_code";
@@ -281,6 +407,15 @@ class Database
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function isEmailValidated($userId) {
+        $query = "SELECT valid_email FROM User WHERE id = :id";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindValue(':id', $userId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return ($result && $result['valid_email'] == '1') ? true : false;
     }
 
     public function updateEmailValidationStatus($userId, $status) {
@@ -346,6 +481,29 @@ class Database
     public function closeConnection()
     {
         $this->connection = null;
+    }
+
+    // ------------------------------------------------------------------- //
+
+    // -------------------- Student list in professor home ------------------------------------------
+    // Model/Database.php
+    public function getStudents() {
+        $query = "SELECT * FROM User WHERE role = 1";
+        $stmt = $this->connection->query($query);
+        $students = [];
+        while ($row = $stmt->fetch()) {
+            $students[] = new Person(
+                $row['nom'],
+                $row['prenom'],
+                $row['telephone'],
+                $row['login'],
+                $row['role'],
+                $row['activite'],
+                $row['email'],
+                $row['id']
+            );
+        }
+        return $students;
     }
 
 }
