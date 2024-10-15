@@ -70,14 +70,6 @@ if (!in_array($activeSection, $allowedSections)) {
                     <span class="switch-sticker switch-sticker-right">🇬🇧</span>
                 </span>
         </label>
-        <!-- Theme Switch -->
-        <label class="switch">
-            <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
-            <span class="slider round">
-                    <span class="switch-sticker switch-sticker-right">🌙</span>
-                    <span class="switch-sticker">☀️</span>
-                </span>
-        </label>
     </div>
 </header>
 
