@@ -516,5 +516,25 @@ class Database
         return $students;
     }
 
+    public function getProfessor() {
+        $query = "SELECT DISTINCT User.nom, User.prenom from User
+                    where role = 1";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute();
+        $professor = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $professor[] = new Person(
+                $row['nom'],
+                $row['prenom'],
+                $row['telephone'],
+                $row['role'],
+                $row['activite'],
+                $row['email'],
+                $row['id']
+            );
+        }
+        return $professor;
+    }
+
 }
 ?>

@@ -250,6 +250,8 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                         }
                         // Bouton pour supprimer l'utilisateur du système
                         echo "<button onclick='deleteUser(" . $user['id'] . ")'>🗑️ Supprimer</button>";
+                        echo "  ";
+                        echo "<a href='#popup-box'><button>🗑️ Modifier</button></a>";
                         echo "</div>";
                     }
                     ?>
@@ -278,3 +280,31 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
 <script src="../View/Principal/userManagement.js"></script>
 </body>
 </html>
+
+<?php
+// Récupère les profs
+$professors = $database -> getProfessor()
+
+?>
+<div id="popup-box" class="popup">
+    <div class="content">
+        <h1>Changer les groupes</h1>
+        <br>
+        <div class="lists">
+            <select name="professeurResp">
+                <option value="">Aucun</option>
+                <option>
+                    <?php foreach ($professors as $professor): ?>
+                        <div class="student">
+                            <span><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </option>
+            </select>
+            <select name="Tuteur">
+                <option value="">Aucun</option>
+            </select>
+        </div>
+        <a href="#" class="cross">&times;</a>
+    </div>
+</div>
