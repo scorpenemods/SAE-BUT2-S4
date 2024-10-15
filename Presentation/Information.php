@@ -12,7 +12,6 @@ if (isset($_SESSION['user'])) {
     // Vérifie si l'objet désérialisé est bien une instance valide de la classe Person
     if ($person instanceof Person) {
         // Récupère les informations de l'utilisateur et les sécurise avec htmlspecialchars pour éviter les injections XSS
-        $userName = htmlspecialchars($person->getLogin());
         $prenom = htmlspecialchars($person->getPrenom());
         $nom = htmlspecialchars($person->getNom());
         $email = htmlspecialchars($person->getEmail());
@@ -43,8 +42,9 @@ if (isset($_SESSION['user'])) {
     <h2>Informations du compte</h2> <!-- Titre de la section -->
     <table>
         <tr>
-            <td>Compte :</td>
-            <td><?php echo $userName; ?></td> <!-- Affiche le nom d'utilisateur -->
+            <td>Email :</td>
+            <td><?php echo $email; ?></td> <!-- Affiche l'adresse email de l'utilisateur -->
+            <td><a href="../rebase/Modely/MailChange/MailChange.php"><button>Modifier adresse e-mail</button></a></td> <!-- Lien pour modifier l'email -->
         </tr>
         <tr>
             <td>Prénom :</td>
@@ -53,11 +53,6 @@ if (isset($_SESSION['user'])) {
         <tr>
             <td>Nom :</td>
             <td><?php echo $nom; ?></td> <!-- Affiche le nom de famille de l'utilisateur -->
-        </tr>
-        <tr>
-            <td>Email :</td>
-            <td><?php echo $email; ?></td> <!-- Affiche l'adresse email de l'utilisateur -->
-            <td><a href="../rebase/Modely/MailChange/MailChange.php"><button>Modifier adresse e-mail</button></a></td> <!-- Lien pour modifier l'email -->
         </tr>
         <tr>
             <td>Numéro de téléphone :</td>
