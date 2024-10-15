@@ -95,7 +95,11 @@ if (!in_array($activeSection, $allowedSections)) {
         } elseif ($activeSection == 'preferences') {
             include './Preference.php';
         }
+
         ?>
+        <a href='<?php echo $homePage; ?>' style="margin-left: 45%">
+            Retour à la page d'accueil
+        </a>
     </div>
 </div>
 </body>
