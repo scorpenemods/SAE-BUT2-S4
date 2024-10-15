@@ -43,6 +43,14 @@ if (isset($_GET['section'])) {
 }
 // Définit la section active par défaut (Accueil) si aucune n'est spécifiée
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
+
+
+// Récupérer les préférences de l'utilisateur
+$preferences = $database->getUserPreferences($person->getUserId());
+
+// Vérifier si le mode sombre est activé dans les préférences
+$darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
+
 ?>
 
 
@@ -57,7 +65,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <!-- Lien vers le script JavaScript principal -->
     <script src="../View/Principal/Principal.js"></script>
 </head>
-<body>
+<body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
 <header class="navbar">
     <div class="navbar-left">
         <!-- Affichage du logo et du nom de l'application -->
@@ -72,13 +80,6 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
             <span class="slider round">
                 <span class="switch-sticker">🇫🇷</span>
                 <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-            </span>
-        </label>
-        <label class="switch">
-            <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
-            <span class="slider round">
-                <span class="switch-sticker switch-sticker-right">🌙</span>
-                <span class="switch-sticker">☀️</span>
             </span>
         </label>
         <!-- Bouton pour ouvrir le menu des paramètres -->
