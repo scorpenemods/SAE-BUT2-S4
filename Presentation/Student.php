@@ -31,6 +31,13 @@ $database = new Database();
 $preferences = $database->getUserPreferences($senderId);
 $darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? 'checked' : ''; // Gestion du mode sombre
 
+if (isset($_GET['section'])) {
+    $_SESSION['active_section'] = $_GET['section'];
+}
+// Définit la section active par défaut (Accueil) si aucune n'est spécifiée
+$activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
+
+
 // Récupération des messages entre l'utilisateur actuel et le destinataire
 $receiverId = 2; // À définir dynamiquement
 $messages = $database->getMessages($senderId, $receiverId);
@@ -73,6 +80,7 @@ $messages = $database->getMessages($senderId, $receiverId);
                 }
             });
         });
+
     </script>
 
 </head>
@@ -111,15 +119,15 @@ $messages = $database->getMessages($senderId, $receiverId);
 
 <section class="Menus">
     <nav>
-        <span onclick="widget(0)" class="widget-button Current">Accueil</span>
-        <span onclick="widget(1)" class="widget-button">Messagerie</span>
-        <span onclick="widget(2)" class="widget-button">Offres</span>
-        <span onclick="widget(3)" class="widget-button">Documents</span>
-        <span onclick="widget(4)" class="widget-button">Livret de suivi</span>
+        <span onclick="window.location.href='Student.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>">Accueil</span>
+        <span onclick="window.location.href='Student.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>">Messagerie</span>
+        <span onclick="window.location.href='Student.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>">Offres</span>
+        <span onclick="window.location.href='Student.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>">Documents</span>
+        <span onclick="window.location.href='Student.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>">Livret de suivi</span>
     </nav>
     <div class="Contenus">
         <!-- Accueil Content -->
-        <div class="Visible" id="content-0">
+        <div class="Contenu <?php echo $activeSection == '0' ? 'Visible' : ''; ?>" id="content-0">
             <h2>Bienvenue à Le Petit Stage!</h2><br>
             <p>
                 Cette application est conçue pour faciliter la gestion des stages pour les étudiants de l'UPHF, les enseignants, les tuteurs et le secrétariat.
@@ -133,7 +141,7 @@ $messages = $database->getMessages($senderId, $receiverId);
         </div>
 
         <!-- Messagerie Content -->
-        <div class="Contenu" id="content-1">
+        <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
@@ -161,43 +169,20 @@ $messages = $database->getMessages($senderId, $receiverId);
                     </div>
                     <div class="chat-body" id="chat-body">
                         <?php
-                        /**
-                         * @throws Exception
-                         */
-                        function formatTimestamp($timestamp) {
-                            $date = new DateTime($timestamp); // Crée un objet DateTime à partir du timestamp
-                            $now = new DateTime(); // Crée un objet DateTime pour la date actuelle
-                            $yesterday = new DateTime('yesterday'); // Crée un objet DateTime pour la date d'hier
-
-                            // Compare la date du message avec la date d'aujourd'hui
-                            if ($date->format('Y-m-d') == $now->format('Y-m-d')) {
-                                return 'Today ' . $date->format('H:i'); // Si c'est aujourd'hui, retourne "Today" avec l'heure
-                            }
-                            // Compare la date du message avec celle d'hier
-                            elseif ($date->format('Y-m-d') == $yesterday->format('Y-m-d')) {
-                                return 'Yesterday ' . $date->format('H:i'); // Si c'était hier, retourne "Yesterday" avec l'heure
-                            } else {
-                                return $date->format('d.m.Y H:i'); // Sinon, retourne la date complète au format jour/mois/année heure:minutes
-                            }
-                        }
-
+                        require_once '../Model/utils.php';
 
                         // using loop to print messages
                         foreach ($messages as $msg) {
-                            // Détermine la classe CSS en fonction de l'expéditeur du message
                             $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Utilise 'self' si l'utilisateur actuel est l'expéditeur, sinon 'other'
 
-                            // Début de la construction du bloc de message
                             echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
                             echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Affiche le contenu du message, sécurisé contre les attaques XSS
 
-                            // Vérifie si un fichier est associé au message et crée un lien pour le télécharger
                             if ($msg['file_path']) {
                                 $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path'])); // Nettoie le chemin du fichier
                                 echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
                             }
 
-                            // Utilise la fonction formatTimestamp pour afficher la date et l'heure du message
                             echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
                             echo "</div>";
                         }
@@ -218,13 +203,13 @@ $messages = $database->getMessages($senderId, $receiverId);
         </div>
 
         <!-- Offres Content -->
-        <div class="Contenu" id="content-2">Contenu Offres</div>
+        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">Contenu Offres</div>
 
         <!-- Documents Content -->
-        <div class="Contenu" id="content-3">Contenu Documents</div>
+        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">Contenu Documents</div>
 
         <!-- Livret de suivi Content -->
-        <div class="Contenu" id="content-4">Contenu Livret de suivi</div>
+        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">Contenu Livret de suivi</div>
     </div>
 </section>
 
