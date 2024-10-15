@@ -29,7 +29,7 @@ $offer = Offer::getById($offerId);
         <link rel="stylesheet" href="/view/css/detail.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
-        <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     </head>
     <body>
@@ -59,18 +59,30 @@ $offer = Offer::getById($offerId);
                             </span>
                         </div>
                         <div class="detail-item">
+                            <i class="fa-solid fa-phone"></i>
+                            <span>
+                                <a href="tel:<?php echo $offer->getPhone(); ?>"><?php echo $offer->getPhone(); ?></a>
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>
+                                <a href="mailto:<?php echo $offer->getEmail(); ?>"><?php echo $offer->getEmail(); ?></a>
+                            </span>
+                        </div>
+                        <div class="detail-item">
                             <i class="fas fa-map-marker-alt"></i>
                             <span>
-                                <?php echo $offer->getAddress(); ?>
+                                <a href="https://maps.google.com/?q=<?php echo $offer->getAddress(); ?>"><?php echo $offer->getAddress(); ?></a>
                             </span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-calendar"></i>
-                            <span><?php echo "Début: " . $offer->getBeginDate(); ?></span>
+                            <span><?php echo $offer->getBeginDate(); ?></span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-graduation-cap"></i>
-                            <span><?php echo "Diplôme requis: " . $offer->getStudyLevel(); ?></span>
+                            <span><?php echo $offer->getStudyLevel(); ?></span>
                         </div>
                     </div>
                     <div class="separator"></div>

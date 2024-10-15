@@ -19,10 +19,10 @@
 
 <nav class="nav-bar">
     <ul>
-        <li><a href="#accueil" class="active">Accueil</a></li>
-        <li><a href="#messagerie">Messagerie</a></li>
-        <li><a href="#offres">Offres</a></li>
-        <li><a href="#documents">Documents</a></li>
-        <li><a href="#livret">Livret de suivi</a></li>
+        <li><a href="#accueil" class="active"><i class="fas fa-home"></i> Accueil</a></li>
+        <li><a href="#messagerie"><i class="fas fa-envelope"></i> Messagerie</a></li>
+        <li><a href="#offres"><i class="fas fa-briefcase"></i> Offres</a></li>
+        <li><a href="#documents"><i class="fas fa-file-alt"></i> Documents</a></li>
+        <li><a href="#livret"><i class="fas fa-book"></i> Livret de suivi</a></li>
     </ul>
 </nav>

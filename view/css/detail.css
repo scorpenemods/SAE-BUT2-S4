@@ -37,7 +37,7 @@ main {
     padding: 0;
 }
 .offer-title {
-    backdrop-filter: blur(10px);
+    backdrop-filter: brightness(10%);
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -86,15 +86,15 @@ main {
     gap: 0.5rem;
 }
 .offer-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     margin-bottom: 1.5rem;
 }
 .detail-item {
     display: flex;
-    align-items: center;
     gap: 0.5rem;
+    margin-right: 2rem;
 }
 .detail-item i {
     color: #6b7280;

@@ -16,10 +16,10 @@ class Offer
     private string $address;
     private string $study_level;
     private bool $is_active;
-    private string $created_at;
-    private string $updated_at;
     private string $email;
     private string $phone;
+    private string $created_at;
+    private string $updated_at;
 
     public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $created_at, string $updated_at)
     {
@@ -484,12 +484,14 @@ class Offer
             $sql .= ' AND offers.job = :sector';
             $params[':sector'] = $filters['sector'];
         }
+
 /*
         if (!empty($filters['keywords'])) {
             $sql .= ' AND tags.name LIKE :keywords';
             $params[':keywords'] = '%' . $filters['keywords'] . '%';
         }
 */
+
         if (!empty($filters['sort'])) {
             if ($filters['sort'] == 'recente') {
                 $sql .= ' ORDER BY offers.created_at DESC';

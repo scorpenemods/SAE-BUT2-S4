@@ -14,14 +14,19 @@ if ($pageId == null) {
 
 $curURL = $_SERVER["REQUEST_URI"];
 
-function setPageId(string $url, int $pageId): string {
-    $baseURL = substr($url, 0, strpos($url, '?'));
-    parse_str($url, $urlParts);
+function setPageId($url, $newPageId): string {
+    $parsedUrl = parse_url($url);
 
-    $urlParts["page"] = $pageId;
-    $queryString = http_build_query($urlParts);
+    parse_str($parsedUrl['query'] ?? '', $queryParams);
 
-    return $baseURL . "?page=" . $pageId . ($queryString ? "&" . $queryString : "");
+    $queryParams['pageId'] = $newPageId;
+
+    $newQueryString = http_build_query($queryParams);
+
+    return (isset($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '')
+            . ($parsedUrl['host'] ?? '')
+            . ($parsedUrl['path'] ?? '')
+            . (!empty($newQueryString) ? '?' . $newQueryString : '');
 }
 
 /*
@@ -70,7 +75,7 @@ $totalPages = $filteredOffers["totalPages"];
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <link rel="stylesheet" href="/view/css/list.css">
-
+        <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <?php include dirname(__FILE__) . '/../header.php'; ?>
@@ -81,13 +86,13 @@ $totalPages = $filteredOffers["totalPages"];
                     <div class="search-bar">
                         <input name="title" type="text" placeholder="Rechercher une offre" aria-label="Rechercher une offre">
                         <button type="button" id="openFilter" aria-label="Ouvrir les filtres">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                            <i class="fas fa-filter fa-xl"></i>    
                         </button>
                         <button type="button" id="createNotification" aria-label="Créer une demande de notification">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                            <i class="fas fa-bell fa-xl"></i>
                         </button>
                         <button type="submit" id="search" aria-label="Rechercher">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <i class="fas fa-search fa-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -111,9 +116,9 @@ $totalPages = $filteredOffers["totalPages"];
                             echo "<h3><a href='/view/offer/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
                             echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
                             echo "<div class='company-meta'>";
-                                echo "<span>" . $offer->getCompany()->getName() . "</span>";
-                                echo "<span>" . $offer->getAddress() . "</span>";
-                                echo "<span>" . $offer->getRealDuration() . "</span>";
+                                echo "<span><i class='fas fa-building'></i> " . $offer->getCompany()->getName() . "</span>";
+                                echo "<span><i class='fas fa-map-marker-alt'></i> " . $offer->getAddress() . "</span>";
+                                echo "<span><i class='fas fa-clock'></i> " . $offer->getRealDuration() . "</span>";
                             echo "</div>";
                         echo "</div>";
                     echo "</div>";
@@ -121,36 +126,23 @@ $totalPages = $filteredOffers["totalPages"];
                 ?>
             </div>
             <div class="pagination">
-                <a href="<?php echo setPageId($curURL, 1); ?>" class="first-page">⟸</a>
-                <a href="<?php echo setPageId($curURL, $pageId > 1 ? $pageId - 1 : $pageId); ?>" class="prev-page">‹</a>
+                <a href="<?php echo setPageId($curURL, 1); ?>" class="first-page"><i class="fas fa-angle-double-left"></i></a>
+                <a href="<?php echo setPageId($curURL, $pageId > 1 ? $pageId - 1 : $pageId); ?>" class="prev-page"><i class="fas fa-angle-left"></i></a>
                 <a aria-disabled="true"><?php echo $pageId; ?> / <?php echo $totalPages; ?></a>
-                <a href="<?php echo setPageId($curURL, $pageId < $totalPages ? $pageId + 1 : $pageId); ?>" class="next-page">›</a>
-                <a href="<?php echo setPageId($curURL, $totalPages); ?>" class="last-page">⟹</a>
+                <a href="<?php echo setPageId($curURL, $pageId < $totalPages ? $pageId + 1 : $pageId); ?>" class="next-page"><i class="fas fa-angle-right"></i></a>
+                <a href="<?php echo setPageId($curURL, $totalPages); ?>" class="last-page"><i class="fas fa-angle-double-right"></i></a>
             </div>
         </main>
         <div class="filter-panel" id="filterPanel">
             <div class="filter-panel-content">
-                <form method="GET">
-                <h2>Trier</h2>
-                <div>
-                    <label><input type="radio" name="sort" value="recentes">   Les plus récentes</label>
-                    <label><input type="radio" name="sort" value="anciennes">   Les plus anciennes</label>
-                    <label><input type="radio" name="sort" value="consultees">   Les plus consultées</label>
-                </div><br>
-
-                </form>
-
-
-                <h2>Filtrer</h2>
                 <form id="filterForm" method="GET">
-
                     <div class="filter-section">
-                        <h3>Date de début</h3>
+                        <h3><i class="fas fa-calendar"></i> Date de début</h3>
                         <input type="date" id="start-date" name="calendar">
                     </div>
 
                     <div class="filter-section">
-                        <h3>Niveau d'étude</h3>
+                        <h3><i class="fas fa-graduation-cap"></i> Diplôme requis</h3>
                         <label><input type="radio" name="diploma" value="Pas de niveau prérequis"> Pas de niveau prérequis</label>
                         <label><input type="radio" name="diploma" value="Bac"> Bac, Bac Pro, CAP</label>
                         <label><input type="radio" name="diploma" value="Bac+2"> Bac+2</label>
@@ -160,7 +152,7 @@ $totalPages = $filteredOffers["totalPages"];
                     </div>
 
                     <div class="filter-section">
-                        <h3>Montant du salaire</h3>
+                        <h3><i class="fas fa-euro-sign"></i> Rémunération</h3>
                         <label for="mini">Salaire minimum</label>
                         <input type="text" id="mini" name="minSalary" placeholder="Sans préférences">
                         <label for="maxi">Salaire maximum</label>
@@ -169,7 +161,7 @@ $totalPages = $filteredOffers["totalPages"];
 
 
                     <div class="filter-section">
-                        <h3>Localisation</h3>
+                        <h3><i class="fas fa-map-marker-alt"></i> Localisation</h3>
                         <label for="city">Ville</label>
                         <input type="text" id="city" name="city" placeholder="Entrez une ville">
 
@@ -178,7 +170,7 @@ $totalPages = $filteredOffers["totalPages"];
                     </div>
 
                     <div class="filter-section">
-                        <h3>Durée du stage</h3>
+                        <h3><i class="fas fa-clock"></i> Durée</h3>
                         <div class="radio-group">
                             <label><input type="radio" name="duration" value="1"> 1 à 3 mois</label>
                             <label><input type="radio" name="duration" value="2"> 3 à 6 mois</label>
@@ -188,7 +180,7 @@ $totalPages = $filteredOffers["totalPages"];
 
 
                     <div class="filter-section">
-                        <h3>Secteur d'activité</h3>
+                        <h3><i class="fas fa-industry"></i> Secteur</h3>
                         <select id="sector" name="sector">
                             <option value="">Tous les secteurs</option>
                             <option value="Engineering">Ingénierie</option>
@@ -201,7 +193,7 @@ $totalPages = $filteredOffers["totalPages"];
 
 
                     <div class="filter-section">
-                        <h3>Mots clés</h3>
+                        <h3><i class="fas fa-tags"></i> Mots-clés</h3>
                         <input type="text" id="skills" name="keywords" placeholder="Ex: JavaScript, Marketing, Finance">
                     </div>
 
