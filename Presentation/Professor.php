@@ -62,6 +62,9 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
         <span class="app-name">Le Petit Stage - Professeur</span>
     </div>
     <div class="navbar-right">
+        <button class="mainbtn" >
+            <img src="../Resources/Notif.png" alt="Settings">
+        </button>
         <p><?php echo $userName; ?></p>
         <label class="switch">
             <input type="checkbox" id="language-switch" onchange="toggleLanguage()">

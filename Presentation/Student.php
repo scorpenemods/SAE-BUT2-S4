@@ -83,6 +83,9 @@ $messages = $database->getMessages($senderId, $receiverId);
         <span class="app-name">Le Petit Stage</span>
     </div>
     <div class="navbar-right">
+        <button class="mainbtn" >
+            <img src="../Resources/Notif.png" alt="Settings">
+        </button>
         <button class="mainbtn">
             <p><?php echo $userName; ?></p>
         </button>
@@ -131,7 +134,87 @@ $messages = $database->getMessages($senderId, $receiverId);
 
         <!-- Messagerie Content -->
         <div class="Contenu" id="content-1">
-            <!-- Votre section Messagerie ici -->
+            <div class="messenger">
+                <div class="contacts">
+                    <div class="search-bar">
+                        <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                    </div>
+                    <h3>Contacts</h3>
+                    <ul id="contacts-list">
+                        <li>Contact 1</li>
+                        <li>Contact 2</li>
+                        <li>Contact 3</li>
+                    </ul>
+                </div>
+
+                <!-- Right click for delete -->
+                <div id="context-menu" class="context-menu">
+                    <ul>
+                        <li id="copy-text">Copy</li>
+                        <li id="delete-message">Delete</li>
+                    </ul>
+                </div>
+
+                <div class="chat-window">
+                    <div class="chat-header">
+                        <h3 id="chat-header-title">Chat avec Contact 1</h3>
+                    </div>
+                    <div class="chat-body" id="chat-body">
+                        <?php
+                        /**
+                         * @throws Exception
+                         */
+                        function formatTimestamp($timestamp) {
+                            $date = new DateTime($timestamp); // Crée un objet DateTime à partir du timestamp
+                            $now = new DateTime(); // Crée un objet DateTime pour la date actuelle
+                            $yesterday = new DateTime('yesterday'); // Crée un objet DateTime pour la date d'hier
+
+                            // Compare la date du message avec la date d'aujourd'hui
+                            if ($date->format('Y-m-d') == $now->format('Y-m-d')) {
+                                return 'Today ' . $date->format('H:i'); // Si c'est aujourd'hui, retourne "Today" avec l'heure
+                            }
+                            // Compare la date du message avec celle d'hier
+                            elseif ($date->format('Y-m-d') == $yesterday->format('Y-m-d')) {
+                                return 'Yesterday ' . $date->format('H:i'); // Si c'était hier, retourne "Yesterday" avec l'heure
+                            } else {
+                                return $date->format('d.m.Y H:i'); // Sinon, retourne la date complète au format jour/mois/année heure:minutes
+                            }
+                        }
+
+
+                        // using loop to print messages
+                        foreach ($messages as $msg) {
+                            // Détermine la classe CSS en fonction de l'expéditeur du message
+                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Utilise 'self' si l'utilisateur actuel est l'expéditeur, sinon 'other'
+
+                            // Début de la construction du bloc de message
+                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
+                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Affiche le contenu du message, sécurisé contre les attaques XSS
+
+                            // Vérifie si un fichier est associé au message et crée un lien pour le télécharger
+                            if ($msg['file_path']) {
+                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path'])); // Nettoie le chemin du fichier
+                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
+                            }
+
+                            // Utilise la fonction formatTimestamp pour afficher la date et l'heure du message
+                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
+                            echo "</div>";
+                        }
+
+                        ?>
+                    </div>
+                    <div class="chat-footer">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
+                            <input type="file" id="file-input" name="file" style="display:none">
+                            <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
+                            <input type="hidden" name="receiver_id" value="2"> <!-- need to change on dynamic ID -->
+                            <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
+                            <button type="button" onclick="sendMessage(event)">Envoyer</button> <!-- dynamic messages sending -->
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Offres Content -->

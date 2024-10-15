@@ -50,6 +50,9 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
             <span class="app-name">Le Petit Stage - Maitre de Stage</span>
         </div>
         <div class="navbar-right">
+            <button class="mainbtn" >
+                <img src="../Resources/Notif.png" alt="Settings">
+            </button>
             <p><?php echo $userName; ?></p>
             <!-- Language Switch -->
             <label class="switch">

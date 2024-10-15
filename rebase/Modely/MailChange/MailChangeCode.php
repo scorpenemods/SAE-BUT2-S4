@@ -21,6 +21,9 @@
         <div class="form-group">
             <button type="submit" class="btn-password">Confirmer</button>
         </div>
+        <div class="link">
+            <a href='../../../Presentation/Settings.php'>Annuler</a>
+        </div>
     </form>
 </body>
 <script src="MailChangeCode.js"></script>

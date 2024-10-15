@@ -732,6 +732,12 @@ body.dark-mode .chat-footer button {
     color: white;
 }
 
+/****************************  DARK MODE GESTION UTILISATEURS  *******************************************************/
+
+body.dark-mode .pending-requests, .dark-mode .active-users{
+    background-color: #2a5298;
+}
+
 .modal {
     display: none; /* Masquer par défaut */
     position: fixed;
