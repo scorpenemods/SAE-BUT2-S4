@@ -67,7 +67,6 @@ header .navbar-left .app-name {
 header .navbar-right {
     gap: 20px;
     padding-right: 40px;
-    width: 40%;
     position: relative;
     display: flex;
     justify-content: space-evenly;
