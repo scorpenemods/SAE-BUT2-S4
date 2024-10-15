@@ -32,7 +32,10 @@ if (!in_array($userRole, $allowedRoles)) {
 
 // Предполагаемый ID получателя (настроить динамически в зависимости от контакта)
 $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динамическое значение
+
+$students = $database->getStudents($senderId);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -77,24 +80,17 @@ $receiverId = $_POST['receiver_id'] ?? 1; // Замените на динами�
     </div>
 </header>
 
-<div class="sidebar-toggle" id="sidebar-toggle">&#x25B6;</div>
+<div class="sidebar-toggle" id="sidebar-toggle">&#11166;</div>
 <div class="sidebar" id="sidebar">
     <div class="search">
-        <input type="text" placeholder="Search">
+        <input type="text" id="search-input" placeholder="Search" onkeyup="searchStudents()">
     </div>
     <div class="students">
-        <div class="student">
-            <span>Etudiant 1</span>
-        </div>
-        <div class="student selected">
-            <span>Etudiant 2</span>
-        </div>
-        <div class="student">
-            <span>Etudiant 3</span>
-        </div>
-        <div class="student">
-            <span>Etudiant 4</span>
-        </div>
+        <?php foreach ($students as $student): ?>
+            <div class="student">
+                <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
+            </div>
+        <?php endforeach; ?>
     </div>
 </div>
 
