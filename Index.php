@@ -30,6 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($loginResult['status_user'] == 0) {
             $errorMessage = "Votre compte est en attente d'activation par l'administration.";
         } else {
+
+            $database->updateLastConnexion($user['id']);
             $person = new Person(
                 $user['nom'],
                 $user['prenom'],

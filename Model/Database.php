@@ -480,7 +480,7 @@ class Database
         return $this->connection;
     }
 
-    public function closeConnection()
+    public function closeConnection(): void
     {
         $this->connection = null;
     }
@@ -489,7 +489,8 @@ class Database
 
     // -------------------- Student list in professor home ------------------------------------------
     // Model/Database.php
-    public function getStudents($professorId) {
+    public function getStudents($professorId): array
+    {
         $query = "SELECT User.nom, User.prenom
               FROM User
               JOIN Groupe ON User.id = Groupe.user_id
@@ -520,7 +521,8 @@ class Database
         return $students;
     }
 
-    public function getProfessor() {
+    public function getProfessor(): array
+    {
         $query = "SELECT DISTINCT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id from User
                     where role = 2";
         $stmt = $this->connection->prepare($query);
@@ -540,7 +542,8 @@ class Database
         return $professor;
     }
 
-    public function getTutor() {
+    public function getTutor(): array
+    {
         $query = "SELECT DISTINCT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id from User
                     where role = 3";
         $stmt = $this->connection->prepare($query);
@@ -613,6 +616,20 @@ class Database
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Erreur lors de la récupération du code de vérification : " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function updateLastConnexion($userId): bool
+    {
+        $sql = "UPDATE User SET last_connexion = NOW() WHERE id = :id";
+
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la mise à jour de la dernière connexion : " . $e->getMessage());
             return false;
         }
     }
