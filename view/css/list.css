@@ -116,6 +116,7 @@ main {
     height: 70px;
     object-fit: cover;
     position: absolute;
+    border-radius: 50%;
     top: 15px;
     left: 10px;
     opacity: 1;
