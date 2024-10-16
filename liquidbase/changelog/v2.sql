@@ -43,5 +43,3 @@ CREATE TABLE pending_media (
     display_order    INTEGER DEFAULT 0,                           -- Optional display order
     FOREIGN KEY (pending_offer_id) REFERENCES pending_offers (id) -- Foreign key to pending offers with cascading delete
 ); */
-
-
