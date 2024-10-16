@@ -5,10 +5,7 @@ session_start();
 // Inclusion de la classe Database et de l'autoload pour PHPMailer
 require "../Model/Database.php";
 require '../vendor/autoload.php'; // inclut PHPMailer
-
-// Importation des classes PHPMailer
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+require "../Model/Email.php"; // Inclure la classe Email
 
 // Variables pour les messages de succès et d'erreur
 $success = '';
@@ -35,39 +32,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $userId = $user['id'];  // L'ID de l'utilisateur devrait être dans $user
         $db->storeVerificationCode($userId, $verification_code, $expires_at);
 
-        // Prépare l'envoi de l'email avec PHPMailer
-        $mail = new PHPMailer(true);
+        // Prépare l'envoi de l'email en utilisant la classe Email
+        $emailSender = new Email();
+        $subject = 'Code de verification pour réinitialiser votre mot de passe';
+        $body = "Bonjour " . htmlspecialchars($user['prenom']) . ",<br><br>Votre code de vérification est : <strong>" . $verification_code . "</strong><br>Ce code expirera dans 1 heure.<br><br>Cordialement,<br>L'équipe de Le Petit Stage.";
 
-        try {
-            // Configuration du serveur SMTP
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'secretariat.lps.official@gmail.com'; // Email utilisé pour l'envoi
-            $mail->Password = 'xtdu vchi sldx qmyi'; // A remplacer par une variable pour ne pas stocker de données sensibles
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
-
-            // Destinataire de l'email
-            $mail->setFrom('no-reply@seciut.com', 'Le Petit Stage Team'); // Adresse de l'expéditeur
-            $mail->addAddress($email, $user['prenom'] . ' ' . $user['nom']); // Adresse du destinataire
-
-            // Contenu de l'email
-            $mail->isHTML(true); // Définit que l'email est en HTML
-            $mail->Subject = 'Code de verification pour réinitialiser votre mot de passe'; // Sujet de l'email
-            $mail->Body = "Bonjour " . htmlspecialchars($user['prenom']) . ",<br><br>Votre code de vérification est : <strong>" . $verification_code . "</strong><br>Ce code expirera dans 1 heure.<br><br>Cordialement,<br>L'équipe de Le Petit Stage."; // Corps de l'email
-
-            // Envoie l'email
-            $mail->send();
+        if ($emailSender->sendEmail($email, $user['prenom'] . ' ' . $user['nom'], $subject, $body, true)) {
             $success = "Un code de vérification a été envoyé à votre adresse email."; // Message de succès
 
             // Enregistre l'email dans la session et redirige vers la page de vérification du code
             $_SESSION['email_verification'] = $email;
             header("Location: VerifyCode.php");
             exit();
-        } catch (Exception $e) {
-            // En cas d'erreur lors de l'envoi de l'email, log l'erreur et affiche un message
-            error_log("Erreur lors de l'envoi de l'email : {$mail->ErrorInfo}");
+        } else {
+            // En cas d'erreur lors de l'envoi de l'email
             $error = "Une erreur est survenue lors de l'envoi de l'email. Veuillez réessayer plus tard.";
         }
     } else {
