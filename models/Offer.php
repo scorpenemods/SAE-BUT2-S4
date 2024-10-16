@@ -239,7 +239,7 @@ class Offer {
             $result["is_active"],
             $result["email"],
             $result["phone"],
-            $row["website"],
+            $result["website"],
             date("Y-m-d H:i:s", strtotime($result["created_at"])),
             date("Y-m-d H:i:s", strtotime($result["updated_at"]))
         );
