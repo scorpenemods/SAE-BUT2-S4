@@ -1,69 +1,63 @@
 <?php
 session_start();
 require_once "../Model/Database.php";
+require_once "../Model/Email.php";
 require_once "../vendor/autoload.php";
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+// Display errors for debugging (disable in production)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+// Set default timezone
 date_default_timezone_set('Europe/Paris');
 
+// Initialize Database connection
 $database = new Database();
+
+// Fetch user details from session
 $userName = $_SESSION['user_name'] ?? 'Guest';
 $userEmail = $_SESSION['user_email'] ?? null;
 $userId = $_SESSION['user_id'] ?? null;
 
+// Redirect to login if user is not authenticated
 if (!$userId || !$userEmail) {
     header("Location: ../Index.php");
     exit();
 }
 
-function sendVerificationEmail($database, $userId, $email, $firstname, $name) {
-    $verification_code = random_int(100000, 999999);
-    $expires_at = date("Y-m-d H:i:s", strtotime('+1 hour'));
-    $database->storeEmailVerificationCode($userId, $verification_code, $expires_at);
-
-    $user = $database->getUserById($userId);
-
-    $mail = new PHPMailer(true);
-    try {
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'secretariat.lps.official@gmail.com';
-        $mail->Password = 'xtdu vchi sldx qmyi';
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
-
-        $mail->setFrom('no-reply@seciut.com', 'Le Petit Stage Team');
-        $mail->addAddress($email, $firstname . ' ' . $name);
-
-        $mail->isHTML(true);
-        $mail->Subject = 'Code de verification pour activer votre compte';
-        $mail->Body = "Bonjour " . $user['prenom'] . ",<br><br>Votre code de vérification est : <strong>" . $verification_code . "</strong><br>Ce code expirera dans 1 heure.<br><br>Cordialement,<br>L'équipe de Le Petit Stage.";
-
-        $mail->send();
-        return true;
-    } catch (Exception $e) {
-        return false;
-    }
-}
-
+// Initialize error and success messages
 $sendError = '';
 $sendSuccess = '';
 $verifyError = '';
 $verifySuccess = '';
 
+// Send verification email using Email class
+function sendVerificationEmail($database, $userId, $email, $firstname) {
+    // Generate verification code and store in database
+    $verification_code = random_int(100000, 999999);
+    $expires_at = date("Y-m-d H:i:s", strtotime('+1 hour'));
+    $database->storeEmailVerificationCode($userId, $verification_code, $expires_at);
+
+    // Create email subject and body
+    $subject = 'Code de verification pour activer votre compte';
+    $body = "Bonjour " . htmlspecialchars($firstname) . ",<br><br>Votre code de vérification est : <strong>" . $verification_code . "</strong><br>Ce code expirera dans 1 heure.<br><br>Cordialement,<br>L'équipe de Le Petit Stage.";
+
+    // Use the Email class to send the email
+    $emailSender = new Email();
+    return $emailSender->sendEmail($email, $firstname, $subject, $body, true);
+}
+
+// Handle resend verification code request
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['resend_code'])) {
-    if (sendVerificationEmail($database, $userId, $userEmail, explode(' ', $userName)[0], '')) {
+    if (sendVerificationEmail($database, $userId, $userEmail, explode(' ', $userName)[0])) {
         $sendSuccess = "Le code de vérification a été renvoyé à votre adresse email.";
     } else {
         $sendError = "Erreur lors de l'envoi de l'email.";
     }
 }
 
+// Handle verification code validation request
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
     $entered_code = $_POST['verification_code'];
     $userVerification = $database->getVerificationCode($userId);
@@ -73,20 +67,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
         $expiresAt = new DateTime($userVerification['expires_at'], new DateTimeZone('Europe/Paris'));
 
         if ($currentTime < $expiresAt) {
-            // Mise à jour du statut d'email validé
+            // Update email validation status
             $database->updateEmailValidationStatus($userId, 1);
 
-            // Suppression du code de vérification après validation
+            // Delete verification code after validation
             if ($database->deleteVerificationCode($userId)) {
                 error_log("Code supprimé pour l'utilisateur avec l'ID $userId.");
             } else {
                 error_log("Erreur lors de la suppression du code pour l'utilisateur avec l'ID $userId.");
             }
 
-            // Supprimer le cookie de vérification
+            // Remove verification pending cookie
             setcookie('email_verification_pending', '', time() - 3600, "/");
 
-            // Redirection vers la page de succès
+            // Redirect to success page
             header("Location: Success.php");
             exit();
         } else {
@@ -97,16 +91,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
     }
 }
 
-
-// Отправка письма при первой загрузке страницы
+// Send verification email on page load if not already sent
 if (!isset($_SESSION['verification_email_sent'])) {
-    if (sendVerificationEmail($database, $userId, $userEmail, explode(' ', $userName)[0], '')) {
+    if (sendVerificationEmail($database, $userId, $userEmail, explode(' ', $userName)[0])) {
         $_SESSION['verification_email_sent'] = true;
     } else {
         $sendError = "Erreur lors de l'envoi de l'email.";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
