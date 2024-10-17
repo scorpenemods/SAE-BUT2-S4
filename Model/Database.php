@@ -23,6 +23,7 @@ class Database
     // User login verification
     public function verifyLogin($email, $password): array
     {
+        $message = "";
         $sql = "SELECT User.*, Password.password_hash FROM User
             JOIN Password ON User.id = Password.user_id
             WHERE User.email = :email AND Password.actif = 1";
@@ -34,22 +35,16 @@ class Database
             $result = $stmt->fetch();
 
             if ($result) {
-                echo "Mot de passe saisi : " . $password . "<br>";
-                echo "Mot de passe haché récupéré : " . $result['password_hash'] . "<br>";
-
                 if (password_verify($password, $result['password_hash'])) {
-                    echo "Le mot de passe est correct.<br>";
                     return [
                         'valid_email' => $result['valid_email'],
                         'status_user' => $result['status_user'],
                         'user' => $result
                     ];
                 } else {
-                    echo "Le mot de passe est incorrect.<br>";
                     return [];
                 }
             } else {
-                echo "Aucun utilisateur trouvé avec cet email.<br>";
                 return [];
             }
         } catch (PDOException $e) {
