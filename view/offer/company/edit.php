@@ -20,7 +20,7 @@ require dirname(__FILE__) . '/../../../models/Media.php';
 if ($_GET['id']) {
     $offer = Offer::getById($_GET['id']);
 } else {
-    header("Location: ../offer/company/list.php");
+    header("Location: ../offer/list.php");
     die();
 }
 

@@ -1,6 +1,5 @@
 <?php
 
-require dirname(__FILE__) . '/../../models/Offer.php';
 
 /*
  * getPageOffers
@@ -17,8 +16,8 @@ function getPageOffers(int $n, array $filters): ?array {
     $endIndex = $startIndex + 12;
 
     return array(
-        "offers" => array_slice($filteredOffers, $startIndex, $endIndex),
-        "totalPages" => ceil(count($filteredOffers) / 12)
+        "offers" => array_slice($filteredOffers, $startIndex, $endIndex) ?? array(),
+        "totalPages" => ceil(count($filteredOffers) / 12) ?? 1
     );
 }
 ?>

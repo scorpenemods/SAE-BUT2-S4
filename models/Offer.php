@@ -310,6 +310,7 @@ class Offer {
         $stmt->bindParam(":begin_date", $begin_date);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":phone", $phone);
+        $stmt->bindParam(":website", $website);
         $stmt->execute();
 
         if ($db->errorCode() != 0) {
@@ -518,6 +519,19 @@ class Offer {
             }
         }
 
+        if (!empty($filters['company_id'])) {
+            $sql .= ' AND offers.company_id = :company_id';
+            $params[':company_id'] = $filters['company_id'];
+        }
+
+        if (!empty($filters['type'])) {
+            if ($filters['type'] == 'new') {
+                return pendingOffer::getAllNew();
+            } else if ($filters['type'] == 'updated') {
+                return pendingOffer::getAllUpdated();
+            }
+        }
+
         $stmt = $db->prepare($sql);
 
         foreach ($params as $key => $value) {
@@ -574,6 +588,27 @@ class Offer {
 
         if ($db->errorCode() != 0) {
             return null;
+        }
+
+        return true;
+    }
+
+    public static function isCompanyOffer(int $id, int $company_id): bool {
+        global $db;
+
+        $stmt = $db->prepare("SELECT * FROM offers WHERE id = :id AND company_id = :company_id");
+        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":company_id", $company_id);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $result = $stmt->fetch();
+
+        if (!$result) {
+            return false;
         }
 
         return true;

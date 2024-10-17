@@ -16,6 +16,22 @@ if ($offerId == null) {
     die();
 }
 
+$company_id = 0;
+if (isset($_SESSION['company_id'])) {
+    $company_id = $_SESSION['company_id'];
+    if (Offer::isCompanyOffer($offerId, $company_id) == false) {
+        header("Location: ../offer/list.php");
+        die();
+    }
+}
+
+
+
+$groupe_secreatariat = false;
+if (isset($_SESSION['secretariat'])) {
+    $groupe_secreatariat = $_SESSION['secretariat'];
+}
+
 $offer = Offer::getById($offerId);
 ?>
 
@@ -27,6 +43,7 @@ $offer = Offer::getById($offerId);
         <title>Détails de l'offre - Le Petit Stage</title>
 
         <link rel="stylesheet" href="/view/css/detail.css">
+        <link rel="stylesheet" href="/view/css/button.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
@@ -43,7 +60,29 @@ $offer = Offer::getById($offerId);
                             <?php echo "<h2>" . $offer->getTitle() . "</h2>"; ?>
                             <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
                         </div>
-                        <button class="apply-button">Postuler</button>
+
+                        <div class="apply-button-container">
+                            <form action="" method="get" id="apply-form" style="display: block;">
+                                <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
+                                <button class="apply-button-edit">Postuler</button>
+                            </form>
+                            <form action="./company/edit.php" method="get" id ="edit-form" style="display: none;">
+                                <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
+                                <button class="apply-button-edit">Modifier</button>
+                            </form>
+                            <form action="../../presenter/offer/company/hide.php" method="post" id="hide-form" style="display: none;">
+                                <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
+                                <button class="apply-button-edit">Cacher <?php echo $offer->getIsActive() ? "(Actif)" : "(Inactif)"; ?></button>
+                            </form>
+                            <form action="../../presenter/offer/secretariat/deny.php" method="get" id="deny-form" style="display: none;">
+                                <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
+                                <button class="apply-button-edit" >Refuser</button>
+                            </form>
+                            <form action="../../presenter/offer/secretariat/validate.php" method="post" id="validate-form" style="display: none;">
+                                <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
+                                <button class="apply-button-edit">Valider</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <div class="offer-content">
@@ -97,6 +136,21 @@ $offer = Offer::getById($offerId);
         <script type="text/javascript">
             let offerHeader = document.querySelector('.offer-header');
             offerHeader.style.backgroundImage = `url(<?php echo $offer->getImage(); ?>)`;
+
+            const companyId = <?php echo json_encode($company_id); ?>;
+            const secretariat = <?php echo json_encode($groupe_secreatariat); ?>;
+
+            if (companyId !== 0) {
+                document.getElementById('apply-form').style.display = 'none';
+                document.getElementById('hide-form').style.display = 'block';
+                document.getElementById('edit-form').style.display = 'block';
+            } else if (secretariat) {
+                document.getElementById('apply-form').style.display = 'none';
+                document.getElementById('edit-form').style.display = 'none';
+                document.getElementById('hide-form').style.display = 'block';
+                document.getElementById('deny-form').style.display = 'block';
+                document.getElementById('validate-form').style.display = 'block';
+            }
         </script>
     </body>
 </html>

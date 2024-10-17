@@ -2,9 +2,9 @@
 
 require dirname(__FILE__) . '/../../../models/Offer.php';
 
-if (isset($_POST['id']) && isset($_SERVER["HTTP_REFERER"])) {
+if ((isset($_SESSION['company_id']) || isset($_SESSION['secretariat'])) && isset($_POST['id']) && isset($_SERVER["HTTP_REFERER"])) {
     Offer::hide($_POST['id']);
     header("Location: " . $_SERVER["HTTP_REFERER"]);
 } else {
-    header("Location: ../../../view/offer/company/list.php");
+    header("Location: ../../../view/offer/list.php");
 }
