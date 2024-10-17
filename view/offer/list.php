@@ -1,6 +1,17 @@
 <?php
 session_start();
 
+// Verification de qui est l'utilisateur
+$company_id = 0;
+if (isset($_SESSION['company_id'])) {
+    $company_id = $_SESSION['company_id'];
+}
+
+$groupeSecretariat = false;
+if (isset($_SESSION['secretariat'])) {
+    $groupeSecretariat = $_SESSION['secretariat'];
+}
+
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../models/Media.php';
@@ -34,16 +45,6 @@ function setPageId($url, $newPageId): string {
  * Filters
  * Get and Sanitize filters from the request
  */
-$company_id = 0;
-if (isset($_SESSION['company_id'])) {
-    $company_id = $_SESSION['company_id'];
-}
-
-$groupeSecretariat = false;
-if (isset($_SESSION['secretariat'])) {
-    $groupeSecretariat = $_SESSION['secretariat'];
-}
-
 error_reporting(E_ALL ^ E_DEPRECATED);
 $filters = array();
 

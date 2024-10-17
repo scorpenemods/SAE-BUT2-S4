@@ -261,7 +261,7 @@ class PendingOffer extends Offer
 
 
     //Create a new pending offer
-    public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize, int $user_id, int $offer_id): ?PendingOffer
+    public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $tags, string $email, string $phone, string $website, int $user_id, int $offer_id): ?PendingOffer
     {
         global $db;
 

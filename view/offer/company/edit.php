@@ -102,15 +102,9 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
                         <label for="phone">Téléphone de contact</label>
                         <input type="tel" id="phone" name="phone" value="<?php echo $offer->getPhone(); ?>">
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="file-upload">Pièce jointe</label>
-                    <div class="file-upload" id="file-upload-area">
-                        <label for="file-upload">Choisir un fichier</label>
-                        <input type="file" id="file-upload" name="file-upload" accept=".pdf,.doc,.docx">
-                        <p>ou glissez-déposez votre fichier ici</p>
-                        <div class="file-name" id="file-name"></div>
+                    <div class="form-group">
+                        <label for="website">Site web</label>
+                        <input type="url" id="website" name="website" value="<?php echo $offer->getWebsite(); ?>">
                     </div>
                 </div>
 
@@ -142,56 +136,6 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
                     dropdownBtn.textContent = categories.join(', ');
                 } else {
                     dropdownBtn.textContent = `${categories.length} catégories sélectionnées`;
-                }
-            }
-
-            // File upload
-            const fileUpload = document.getElementById('file-upload');
-            const fileName = document.getElementById('file-name');
-            const fileUploadArea = document.getElementById('file-upload-area');
-
-            fileUpload.addEventListener('change', function(e) {
-                handleFiles(e.target.files);
-            });
-
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                fileUploadArea.addEventListener(eventName, preventDefaults, false);
-            });
-
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                fileUploadArea.addEventListener(eventName, highlight, false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                fileUploadArea.addEventListener(eventName, unhighlight, false);
-            });
-
-            function highlight(e) {
-                fileUploadArea.classList.add('dragover');
-            }
-
-            function unhighlight(e) {
-                fileUploadArea.classList.remove('dragover');
-            }
-
-            fileUploadArea.addEventListener('drop', handleDrop, false);
-
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                handleFiles(files);
-            }
-
-            function handleFiles(files) {
-                if (files.length > 0) {
-                    fileName.textContent = files[0].name;
-                } else {
-                    fileName.textContent = '';
                 }
             }
         </script>

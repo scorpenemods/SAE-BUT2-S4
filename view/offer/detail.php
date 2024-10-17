@@ -16,6 +16,7 @@ if ($offerId == null) {
     die();
 }
 
+// Verification de qui est l'utilisateur
 $company_id = 0;
 if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
@@ -24,7 +25,6 @@ if (isset($_SESSION['company_id'])) {
         die();
     }
 }
-
 
 
 $groupeSecretariat = false;
