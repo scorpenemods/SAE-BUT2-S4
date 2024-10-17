@@ -39,9 +39,9 @@ if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
 }
 
-$groupe_secretariat = false;
-if (isset($_SESSION['secreatariat'])) {
-    $groupe_secretariat = $_SESSION['secreatariat'];
+$groupeSecretariat = false;
+if (isset($_SESSION['secretariat'])) {
+    $groupeSecretariat = $_SESSION['secretariat'];
 }
 
 error_reporting(E_ALL ^ E_DEPRECATED);
@@ -69,7 +69,7 @@ if (isset($city)) { $filters["city"] = $city; }
 if (isset($duration)) { $filters["duration"] = $duration; }
 if (isset($sector)) { $filters["sector"] = $sector; }
 if (isset($keywords)) { $filters["keywords"] = $keywords; }
-if (isset($type) && $groupe_secretariat) { $filters["type"] = $type; }
+if (isset($type) && $groupeSecretariat) { $filters["type"] = $type; }
 if ($company_id != 0) { $filters["company_id"] = $company_id; }
 
 $filteredOffers = getPageOffers($pageId, $filters);
@@ -266,8 +266,8 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             });
 
             const type_show = document.getElementById('type_show');
-            const groupe_secretariat = <?php echo json_encode($groupe_secretariat); ?>;
-            if (groupe_secretariat) {
+            const groupeSecretariat = <?php echo json_encode($groupeSecretariat); ?>;
+            if (groupeSecretariat) {
                 type_show.style.display = "block";
             } else {
                 type_show.style.display = "none";

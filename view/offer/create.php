@@ -1,7 +1,5 @@
 <?php
 session_start();
-$_SESSION['user'] = 1;
-$_SESSION['company_id'] = 1;
 global $tags
 ?>
 <!DOCTYPE html>
