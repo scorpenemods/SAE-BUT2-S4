@@ -73,8 +73,8 @@ if (isset($type) && $groupe_secretariat) { $filters["type"] = $type; }
 if ($company_id != 0) { $filters["company_id"] = $company_id; }
 
 $filteredOffers = getPageOffers($pageId, $filters);
-$offers = $filteredOffers["offers"];
-$totalPages = $filteredOffers["totalPages"];
+$offers = $filteredOffers["offers"] ?? array();
+$totalPages = $filteredOffers["totalPages"] ?? 1;
 ?>
 
 <!DOCTYPE html>
