@@ -101,11 +101,12 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
 <section class="Menus">
     <nav>
         <!-- Boutons de navigation entre les différents contenus de la section -->
-        <span onclick="window.location.href='Secretariat.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>">Accueil</span>
-        <span onclick="window.location.href='Secretariat.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>">Messagerie</span>
-        <span onclick="window.location.href='Secretariat.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>">Gestion Utilisateurs</span>
-        <span onclick="window.location.href='Secretariat.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>">Documents</span>
-        <span onclick="window.location.href='Secretariat.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>">Rapports</span>
+        <span onclick="window.location.href='Secretariat.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>" id="content-0">Accueil</span>
+        <span onclick="window.location.href='Secretariat.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1">Gestion Utilisateurs</span>
+        <span onclick="window.location.href='Secretariat.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Rapports</span>
+        <span onclick="window.location.href='Secretariat.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Documents</span>
+        <span onclick="window.location.href='Secretariat.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Messagerie</span>
+
     </nav>
     <div class="Contenus">
         <!-- Contenu de la section Accueil -->
@@ -113,72 +114,10 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
             <h2>Bienvenue sur la plateforme Secrétariat!</h2><br>
             <p>Gérez les utilisateurs, consultez les documents et accédez aux rapports des stages.</p><br>
         </div>
-        <!-- Contenu de la Messagerie -->
-        <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">
-            <!-- Messenger Contents -->
-            <div class="messenger">
-                <div class="contacts">
-                    <div class="search-bar">
-                        <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
-                    </div>
-                    <h3>Contacts</h3>
-                    <ul id="contacts-list">
-                        <li>Contact 1</li>
-                        <li>Contact 2</li>
-                        <li>Contact 3</li>
-                    </ul>
-                </div>
 
-                <!-- Right click for delete -->
-                <div id="context-menu" class="context-menu">
-                    <ul>
-                        <li id="copy-text">Copy</li>
-                        <li id="delete-message">Delete</li>
-                    </ul>
-                </div>
-
-                <div class="chat-window">
-                    <div class="chat-header">
-                        <h3 id="chat-header-title">Chat avec Contact 1</h3>
-                    </div>
-                    <div class="chat-body" id="chat-body">
-                        <?php
-                        if (!$senderId) {
-                            die("Erreur: ID de l'utilisateur n'est pas défini dans la session.");
-                        }
-                        $messages = $database->getMessages($senderId, $receiverId);
-                        // Function for formatting date
-                        require_once '../Model/utils.php';
-                        // using loop to print messages
-                        foreach ($messages as $msg) {
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Determining the class depending on the sender
-                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // XSS protection
-                            if ($msg['filepath']) {
-                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['filepath']));
-                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
-                            }
-                            // Use the formatTimestamp function to output formatted date and time
-                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
-                            echo "</div>";
-                        }
-                        ?>
-                    </div>
-                    <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
-                            <input type="file" id="file-input" name="file" style="display:none">
-                            <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                            <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- Recipient ID -->
-                            <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="button" onclick="sendMessage(event)">Envoyer</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Section Gestion des utilisateurs -->
-        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
+        <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">
             <div class="user-management">
                 <!-- Section pour les demandes d'utilisateur en attente d'approbation -->
                 <div class="pending-requests">
@@ -259,17 +198,83 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                     }
                     ?>
                 </div>
-
+            </div>
+        </div>
+        <!-- Section Rapports -->
+        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
+            Contenu Rapports
+        </div>
         <!-- Section Documents -->
         <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
             Contenu Documents
         </div>
 
-        <!-- Section Rapports -->
+
+
+        <!-- Contenu de la Messagerie -->
         <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
-            Contenu Rapports
+            <!-- Messenger Contents -->
+            <div class="messenger">
+                <div class="contacts">
+                    <div class="search-bar">
+                        <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                    </div>
+                    <h3>Contacts</h3>
+                    <ul id="contacts-list">
+                        <li>Contact 1</li>
+                        <li>Contact 2</li>
+                        <li>Contact 3</li>
+                    </ul>
+                </div>
+
+                <!-- Right click for delete -->
+                <div id="context-menu" class="context-menu">
+                    <ul>
+                        <li id="copy-text">Copy</li>
+                        <li id="delete-message">Delete</li>
+                    </ul>
+                </div>
+
+                <div class="chat-window">
+                    <div class="chat-header">
+                        <h3 id="chat-header-title">Chat avec Contact 1</h3>
+                    </div>
+                    <div class="chat-body" id="chat-body">
+                        <?php
+                        if (!$senderId) {
+                            die("Erreur: ID de l'utilisateur n'est pas défini dans la session.");
+                        }
+                        $messages = $database->getMessages($senderId, $receiverId);
+                        // Function for formatting date
+                        require_once '../Model/utils.php';
+                        // using loop to print messages
+                        foreach ($messages as $msg) {
+                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Determining the class depending on the sender
+                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
+                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // XSS protection
+                            if ($msg['filepath']) {
+                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['filepath']));
+                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
+                            }
+                            // Use the formatTimestamp function to output formatted date and time
+                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
+                            echo "</div>";
+                        }
+                        ?>
+                    </div>
+                    <div class="chat-footer">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
+                            <input type="file" id="file-input" name="file" style="display:none">
+                            <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
+                            <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- Recipient ID -->
+                            <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
+                            <button type="button" onclick="sendMessage(event)">Envoyer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
 </section>
 
 <footer class="PiedDePage">

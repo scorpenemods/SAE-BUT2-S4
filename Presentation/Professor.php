@@ -99,18 +99,24 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
 
 <section class="Menus">
     <nav>
-        <span onclick="widget(0)" class="widget-button Current">Accueil</span>
-        <span onclick="widget(1)" class="widget-button">Messagerie</span>
-        <span onclick="widget(2)" class="widget-button">Gestion Étudiants</span>
-        <span onclick="widget(3)" class="widget-button">Documents</span>
-        <span onclick="widget(4)" class="widget-button">Livret de suivi</span>
+        <span onclick="widget(0)" class="widget-button Current" id="content-0">Accueil</span>
+        <span onclick="widget(1)" class="widget-button" id="content-1">Gestion Étudiants</span>
+        <span onclick="widget(2)" class="widget-button" id="content-2">Livret de suivi</span>
+        <span onclick="widget(3)" class="widget-button" id="content-3">Documents</span>
+        <span onclick="widget(4)" class="widget-button" id="content-4">Messagerie</span>
+
+
+
     </nav>
     <div class="Contenus">
         <div class="Visible" id="content-0">
             <h2>Bienvenue sur la plateforme pour Professeurs!</h2><br>
             <p>Gérez les étudiants, suivez leur progression et communiquez facilement avec eux.</p><br>
         </div>
-        <div class="Contenu" id="content-1">
+        <div class="Contenu" id="content-1">Contenu Gestion Étudiants</div>
+        <div class="Contenu" id="content-2">Contenu Livret de suivi</div>
+        <div class="Contenu" id="content-3">Contenu Documents</div>
+        <div class="Contenu" id="content-4">
             <!-- Содержимое мессенджера -->
             <div class="messenger">
                 <div class="contacts">
@@ -173,9 +179,7 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                 </div>
             </div>
         </div>
-        <div class="Contenu" id="content-2">Contenu Gestion Étudiants</div>
-        <div class="Contenu" id="content-3">Contenu Documents</div>
-        <div class="Contenu" id="content-4">Contenu Livret de suivi</div>
+
     </div>
 </section>
 </body>

@@ -101,11 +101,14 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
 <!-- Section contenant les différents menus -->
 <section class="Menus">
     <nav>
-        <span onclick="widget(0)" class="widget-button Current">Accueil</span>
-        <span onclick="widget(1)" class="widget-button">Messagerie</span>
-        <span onclick="widget(2)" class="widget-button">Gestion Stagiaires</span>
-        <span onclick="widget(3)" class="widget-button">Documents</span>
-        <span onclick="widget(4)" class="widget-button">Evaluation Stages</span>
+        <span onclick="widget(0)" class="widget-button Current" id="content-0">Accueil</span>
+        <span onclick="widget(1)" class="widget-button" id="content-1">Gestion Stagiaires</span>
+        <span onclick="widget(2)" class="widget-button" id="content-2">Evaluation Stages</span>
+        <span onclick="widget(3)" class="widget-button" id="content-3">Documents</span>
+        <span onclick="widget(4)" class="widget-button" id="content-4">Messagerie</span>
+
+
+
     </nav>
 
     <div class="Contenus">
@@ -115,8 +118,13 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
             <p>Gérez vos stagiaires, communiquez facilement et suivez l'évolution de leurs compétences.</p><br>
         </div>
 
+        <!-- Contenu des autres sections -->
+        <div class="Contenu" id="content-1">Contenu Gestion Stagiaires</div>
+        <div class="Contenu" id="content-2">Contenu Evaluation Stages</div>
+        <div class="Contenu" id="content-3">Contenu Documents</div>
+
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu" id="content-1">
+        <div class="Contenu" id="content-4">
             <div class="messenger">
                 <!-- Barre de recherche de contacts -->
                 <div class="contacts">
@@ -201,10 +209,8 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
             </div>
         </div>
 
-        <!-- Contenu des autres sections -->
-        <div class="Contenu" id="content-2">Contenu Gestion Stagiaires</div>
-        <div class="Contenu" id="content-3">Contenu Documents</div>
-        <div class="Contenu" id="content-4">Contenu Evaluation Stages</div>
+
+
     </div>
 </section>
 
