@@ -8,7 +8,7 @@ require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';
 
-$pageId = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
+$pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT);
 if ($pageId == null) {
     $pageId = 1;
 }

@@ -449,10 +449,10 @@ class Offer {
     }
 
     //Get all offers filtered by the filters
-    public static function getFilteredOffers($filters): ?array {
+    public static function getFilteredOffers(int $n, array $filters): ?array {
         global $db;
 
-        $sql = "SELECT DISTINCT * FROM offers WHERE true";
+        $sql = "SELECT * FROM offers WHERE is_active AND begin_date >= CURDATE()";
         $params = [];
 
         if (!empty($filters['title'])) {
@@ -511,14 +511,6 @@ class Offer {
         }
 */
 
-        if (!empty($filters['sort'])) {
-            if ($filters['sort'] == 'recente') {
-                $sql .= ' ORDER BY offers.created_at DESC';
-            } elseif ($filters['sort'] == 'ancienne') {
-                $sql .= ' ORDER BY offers.created_at ASC';
-            }
-        }
-
         if (!empty($filters['company_id'])) {
             $sql .= ' AND offers.company_id = :company_id';
             $params[':company_id'] = $filters['company_id'];
@@ -531,6 +523,8 @@ class Offer {
                 return pendingOffer::getAllUpdated();
             }
         }
+
+        $sql .= " LIMIT 12 OFFSET ". ($n - 1);
 
         $stmt = $db->prepare($sql);
 
