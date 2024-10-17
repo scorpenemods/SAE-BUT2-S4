@@ -593,7 +593,7 @@ class Offer {
         return true;
     }
 
-    public static function isCompanyOffer(int $id, int $company_id): bool {
+    public static function isCompanyOffer(int $id, int $company_id): ?bool {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM offers WHERE id = :id AND company_id = :company_id");
