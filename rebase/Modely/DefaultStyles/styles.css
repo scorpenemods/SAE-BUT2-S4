@@ -128,21 +128,6 @@ button.secondary:hover {
 .navbar .logo {
     height: 50px;
 }
-
-/* footer styles */
-footer {
-    background-color: #2c3e50;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
-    margin-top: auto;
-}
-
-footer a {
-    color: #fff;
-    margin-left: 15px;
-}
-
 /* sections */
 section {
     margin-bottom: 40px;
@@ -219,4 +204,24 @@ input:checked + .slider:before {
     button {
         width: 100%;
     }
+}
+
+/* Style du pied de page */
+footer {
+    background-color: #2c3e50;
+    color: #fff;
+    border-top: solid 1px;
+    display: flex;
+    padding-right: 5%;
+    margin-top: 5%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    bottom: -20vh;
+    width: 95%;
+    padding-bottom: 1%;
+}
+footer a{
+    text-decoration: none;
+    color: #fff;
 }
