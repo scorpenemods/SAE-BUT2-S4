@@ -18,7 +18,7 @@ if (isset($_POST['id'])) {
     foreach ($offers as $offer) {
         $status = $offer->getStatus();
         if ($status == "Pending") {
-            header("Location: ../../view/offer/company/list.php");
+            header("Location: ../../view/offer/list.php");
             die();
         }
     }
@@ -77,7 +77,7 @@ if (isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) &
 
     //If the offer is created, redirect to the list of pending offers
     if ($offer) {
-        header("Location: ../../view/pending/list.php");
+        header("Location: ../../view/offer/list.php");
         die();
     }
 }

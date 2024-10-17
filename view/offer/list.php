@@ -2,6 +2,7 @@
 session_start();
 
 require dirname(__FILE__) . '/../../models/Company.php';
+require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../models/Media.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
@@ -33,6 +34,15 @@ function setPageId($url, $newPageId): string {
  * Filters
  * Get and Sanitize filters from the request
  */
+$company_id = 0;
+if (isset($_SESSION['company_id'])) {
+    $company_id = $_SESSION['company_id'];
+}
+
+$groupe_secretariat = false;
+if (isset($_SESSION['secreatariat'])) {
+    $groupe_secretariat = $_SESSION['secreatariat'];
+}
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 $filters = array();
@@ -47,6 +57,7 @@ $city = filter_input(INPUT_GET, 'city', FILTER_SANITIZE_STRING);
 $duration = filter_input(INPUT_GET, 'duration', FILTER_VALIDATE_INT);
 $sector = filter_input(INPUT_GET, 'sector', FILTER_SANITIZE_STRING);
 $keywords = filter_input(INPUT_GET, 'keywords', FILTER_SANITIZE_STRING);
+$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
 
 if (isset($title)) { $filters["title"] = $title; }
 if (isset($sort)) { $filters["sort"] = $sort; }
@@ -58,10 +69,12 @@ if (isset($city)) { $filters["city"] = $city; }
 if (isset($duration)) { $filters["duration"] = $duration; }
 if (isset($sector)) { $filters["sector"] = $sector; }
 if (isset($keywords)) { $filters["keywords"] = $keywords; }
+if (isset($type) && $groupe_secretariat) { $filters["type"] = $type; }
+if ($company_id != 0) { $filters["company_id"] = $company_id; }
 
 $filteredOffers = getPageOffers($pageId, $filters);
-$offers = $filteredOffers["offers"] ?? array();
-$totalPages = $filteredOffers["totalPages"] ?? 1;
+$offers = $filteredOffers["offers"];
+$totalPages = $filteredOffers["totalPages"];
 ?>
 
 <!DOCTYPE html>
@@ -97,7 +110,11 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                     </div>
                 </div>
             </form>
-
+            <div class="pagination" id="type_show" style="text-align: center">
+                <a href="/view/offer/list.php?type=all" class="prev-page">All Offer</i></a>
+                <a href="/view/offer/list.php?type=new" class="next-page">New Offer</i></a>
+                <a href="/view/offer/list.php?type=updated" class="last-page">Updated Offer</i></a>
+            </div>
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
@@ -247,6 +264,14 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             createNotificationBtn.addEventListener('click', () => {
                 alert('Fonctionnalité de création de demande de notification à implémenter');
             });
+
+            const type_show = document.getElementById('type_show');
+            const groupe_secretariat = <?php echo json_encode($groupe_secretariat); ?>;
+            if (groupe_secretariat) {
+                type_show.style.display = "block";
+            } else {
+                type_show.style.display = "none";
+            }
         </script>
     </body>
 </html>
