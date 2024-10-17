@@ -82,6 +82,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Le Petit Stage - Offres">
         <title>Le Petit Stage - Advanced</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/view/css/list.css">
@@ -139,7 +140,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             <div class="pagination">
                 <a href="<?php echo setPageId($curURL, 1); ?>" class="first-page"><i class="fas fa-angle-double-left"></i></a>
                 <a href="<?php echo setPageId($curURL, $pageId > 1 ? $pageId - 1 : $pageId); ?>" class="prev-page"><i class="fas fa-angle-left"></i></a>
-                <a aria-disabled="true"><?php echo $pageId; ?> / <?php echo $totalPages; ?></a>
+                <a disabled="true" href="#"><?php echo $pageId; ?> / <?php echo $totalPages; ?></a>
                 <a href="<?php echo setPageId($curURL, $pageId < $totalPages ? $pageId + 1 : $pageId); ?>" class="next-page"><i class="fas fa-angle-right"></i></a>
                 <a href="<?php echo setPageId($curURL, $totalPages); ?>" class="last-page"><i class="fas fa-angle-double-right"></i></a>
             </div>
@@ -149,7 +150,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 <form id="filterForm" method="GET">
                     <div class="filter-section">
                         <h3><i class="fas fa-calendar"></i> Date de début</h3>
-                        <input type="date" id="start-date" name="calendar">
+                        <label><input type="date" id="start-date" name="calendar"></label>
                     </div>
 
                     <div class="filter-section">
