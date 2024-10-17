@@ -1,7 +1,5 @@
 <?php
 session_start();
-$_SESSION['user'] = 1;
-$_SESSION['company_id'] = 1;
 global $tags;
 
 require dirname(__FILE__) . '/../../../models/Offer.php';
@@ -9,16 +7,13 @@ require dirname(__FILE__) . '/../../../models/Company.php';
 require dirname(__FILE__) . '/../../../models/Media.php';
 
 // Check if user has a company
-//if ($_SESSION['company_id']) {
-//    $company_id = $_SESSION['company_id'];
-//}
-//else {
-//    header("Location: ../offer/list.php");
-//    die();
-//}
-
-if ($_GET['id']) {
+if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset($_GET['id']))) {
+    $company_id = $_SESSION['company_id'];
     $offer = Offer::getById($_GET['id']);
+    if (!Offer::isCompanyOffer($_GET['id'], $company_id)) {
+        header("Location: ../offer/list.php");
+        die();
+    }
 } else {
     header("Location: ../offer/list.php");
     die();

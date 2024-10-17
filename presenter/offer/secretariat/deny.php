@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 require dirname(__FILE__) . '/../../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../../models/Company.php';

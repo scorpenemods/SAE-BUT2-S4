@@ -19,7 +19,7 @@ if ($offerId == null) {
 $company_id = 0;
 if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
-    if (Offer::isCompanyOffer($offerId, $company_id) == false) {
+    if (!Offer::isCompanyOffer($offerId, $company_id)) {
         header("Location: ../offer/list.php");
         die();
     }
@@ -27,9 +27,9 @@ if (isset($_SESSION['company_id'])) {
 
 
 
-$groupe_secreatariat = false;
+$groupeSecretariat = false;
 if (isset($_SESSION['secretariat'])) {
-    $groupe_secreatariat = $_SESSION['secretariat'];
+    $groupeSecretariat = $_SESSION['secretariat'];
 }
 
 $offer = Offer::getById($offerId);
@@ -138,7 +138,7 @@ $offer = Offer::getById($offerId);
             offerHeader.style.backgroundImage = `url(<?php echo $offer->getImage(); ?>)`;
 
             const companyId = <?php echo json_encode($company_id); ?>;
-            const secretariat = <?php echo json_encode($groupe_secreatariat); ?>;
+            const secretariat = <?php echo json_encode($groupeSecretariat); ?>;
 
             if (companyId !== 0) {
                 document.getElementById('apply-form').style.display = 'none';
