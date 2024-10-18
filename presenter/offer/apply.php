@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: /view/offer/list.php'); //devrait renvoyer à l'accueil?
         exit();
     }
+
     else{
         $stmt = $db->prepare("select * from applications where idUser = :idUser and idOffer = :idOffre");
         $stmt->bindParam(":idUser", $idUser);

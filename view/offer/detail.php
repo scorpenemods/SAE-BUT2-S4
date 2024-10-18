@@ -61,10 +61,8 @@ $offer = Offer::getById($offerId);
                             <?php echo "<h2>" . $offer->getTitle() . "</h2>"; ?>
                             <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
                         </div class="apply-button">
-
                         <!-- bouton pour postuler -->
                         <button class="apply-button" onclick="openModalWithMessage()">Postuler</button>
-
                         </div>
 
                         <div class="apply-button-container">
