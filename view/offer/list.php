@@ -1,5 +1,8 @@
 <?php
 session_start();
+$_SESSION['company_id'] = 0;
+$_SESSION['secretariat'] = true;
+$_SESSION['user'] = 1;
 
 // Verification de qui est l'utilisateur
 $company_id = 0;
@@ -113,9 +116,13 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 </div>
             </form>
             <div class="pagination" id="type_show" style="text-align: center">
-                <a href="/view/offer/list.php?type=all" class="prev-page">All Offer</i></a>
-                <a href="/view/offer/list.php?type=new" class="next-page">New Offer</i></a>
-                <a href="/view/offer/list.php?type=updated" class="last-page">Updated Offer</i></a>
+                <a href="/view/offer/list.php?type=all">All Offer</i></a>
+                <a href="/view/offer/list.php?type=new">New Offer</i></a>
+                <a href="/view/offer/list.php?type=updated">Updated Offer</i></a>
+                <a href="create.php">Create Offer</i></a>
+            </div>
+            <div class="pagination" id="create">
+                <a href="create.php">Create Offer</i></a>
             </div>
             <div class="company-listings">
                 <?php
@@ -269,10 +276,21 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
 
             const type_show = document.getElementById('type_show');
             const groupeSecretariat = <?php echo json_encode($groupeSecretariat); ?>;
+            const create = document.getElementById('create');
             if (groupeSecretariat) {
                 type_show.style.display = "block";
+                create.style.display = "block";
             } else {
-                type_show.style.display = "none";
+                type_show.style.display = "none"
+                type_show.style.display = "none"
+            }
+
+            const company_id = <?php echo json_encode($company_id); ?>;
+
+            if (company_id !== 0) {
+                create.style.display = "block";
+            } else {
+                create.style.display = "none";
             }
         </script>
     </body>

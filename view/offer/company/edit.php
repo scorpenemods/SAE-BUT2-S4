@@ -4,18 +4,19 @@ global $tags;
 
 require dirname(__FILE__) . '/../../../models/Offer.php';
 require dirname(__FILE__) . '/../../../models/Company.php';
-require dirname(__FILE__) . '/../../../models/Media.php';
 
 // Check if user has a company
 if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset($_GET['id']))) {
     $company_id = $_SESSION['company_id'];
     $offer = Offer::getById($_GET['id']);
-    if (!Offer::isCompanyOffer($_GET['id'], $company_id)) {
-        header("Location: ../offer/list.php");
+    if ($company_id!= null && !Offer::isCompanyOffer($_GET['id'], $company_id)) {
+        header("Location: ../../offer/list.php");
         die();
+    } else {
+        $company_id = $offer->getCompanyId();
     }
 } else {
-    header("Location: ../offer/list.php");
+    header("Location: ../../offer/list.php");
     die();
 }
 
@@ -36,6 +37,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
             <h1>Modifier une offre de stage</h1>
             <form action="../../../presenter/offer/create.php" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
+                <input type="hidden" name="company_id" value="<?php echo $company_id; ?>">
                 <div class="form-group">
                     <label for="title">Titre de l'offre</label>
                     <input type="text" id="title" name="title" value="<?php echo $offer->getTitle(); ?>" placeholder="Ex: Développeur Web Junior">

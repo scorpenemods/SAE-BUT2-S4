@@ -1,6 +1,17 @@
 <?php
 session_start();
-global $tags
+
+require dirname(__FILE__) . '/../../models/Company.php';
+global $tags;
+
+if (isset($_SESSION['secretariat']) || isset($_SESSION['company_id'])) {
+    $company_id = $_SESSION['company_id'];
+    $groupeSecretariat = $_SESSION['secretariat'];
+}
+
+if ($groupeSecretariat) {
+    $companies = Company::getAll();
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -17,6 +28,17 @@ global $tags
         <main class="container-principal">
             <h1>Proposer une offre de stage</h1>
             <form action="../../presenter/offer/create.php" method="post" enctype="multipart/form-data">
+                <?php if ($groupeSecretariat) {
+                    echo "<div class='form-group'>";
+                    // Si l'utilisateur est un secretariat, il avoir un menu déroulant avec les companies
+                    echo "<label for='company_id'>Choisissez une entreprise :</label>";
+                    echo "<select name='company_id' id='company_id'>";
+                    foreach ($companies as $company) {
+                        echo "<option value='" . $company->getId() . "'>" . $company->getName() . "</option>";
+                    }
+                    echo "</select>";
+                    echo "</div>";
+                }?>
                 <div class="form-group">
                     <label for="title">Titre de l'offre</label>
                     <input type="text" id="title" name="title" placeholder="Ex: Développeur Web Junior" required>
