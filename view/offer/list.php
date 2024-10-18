@@ -79,6 +79,10 @@ if ($company_id != 0) { $filters["company_id"] = $company_id; }
 $filteredOffers = getPageOffers($pageId, $filters);
 $offers = $filteredOffers["offers"] ?? array();
 $totalPages = $filteredOffers["totalPages"] ?? 1;
+
+if ($type == null) {
+    $type = 'all';
+}
 ?>
 
 <!DOCTYPE html>
@@ -127,7 +131,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
-                    echo "<a class='company-link' href='/view/offer/detail.php?id=" . $offer->getId() . '&type=' . $type == null ? $type : 'all' . "'>";
+                    echo "<a class='company-link' href='/view/offer/detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
                         echo "<div class='company-card'>";
                             echo "<div class='company-header'>";
                                 echo false ? '<i class="fa-regular fa-heart"></i>' : '<i class="fa-solid fa-heart"></i>';
