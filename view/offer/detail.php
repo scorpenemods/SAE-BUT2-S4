@@ -80,7 +80,7 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
                     </form>
                     <form action="./company/edit.php" method="get" id="edit-form" style="display: none;">
                         <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
-                        <button id="edit-button" class="apply-button-edit"><?php echo $isAlreadyPending ? "Modifier" : "Modification en attente de validation"; ?></button>
+                        <button id="edit-button" class="apply-button-edit"><?php echo $isAlreadyPending ? "Modification en attente de validation" : "Modifier"; ?></button>
                     </form>
                     <form action="../../presenter/offer/company/hide.php" method="post" id="hide-form"
                           style="display: none;">
