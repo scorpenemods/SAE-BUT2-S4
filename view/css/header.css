@@ -56,6 +56,7 @@ header {
     background-color: var(--background-color);
     padding: 0.5rem;
     border-radius: 20px;
+    margin-right: 1rem;
 }
 .user-profile img {
     width: 30px;
@@ -92,10 +93,39 @@ nav ul li a:hover, nav ul li a.active {
     background-color: rgba(255, 255, 255, 0.2);
 }
 @media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .logo {
+        margin-bottom: 1rem;
+    }
+    .header-right {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+    .language-select {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+        width: 100%;
+    }
+    .user-profile {
+        margin-bottom: 0.5rem;
+        width: 100%;
+    }
     nav ul {
-        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
     }
     nav ul li {
         margin-bottom: 0.5rem;
+        width: 100%;
+        text-align: center;
+    }
+    nav ul li a {
+        width: 100%;
+        text-align: center;
     }
 }

@@ -63,6 +63,7 @@ main {
     flex-grow: 1;
     position: relative;
     display: flex;
+    flex-wrap: nowrap;
 }
 .search-bar input {
     width: 100%;
@@ -79,19 +80,18 @@ main {
     padding: 0.75rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: auto;
+    border-radius: 0 10px 10px 0;
 }
 .search-bar button:not(:last-child) {
     border-radius: 0;
-}
-.search-bar button:last-child {
-    border-radius: 0 10px 10px 0;
 }
 .search-bar button:hover {
     background-color: #9ED871;
 }
 .company-listings {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
     gap: 2rem;
 }
 .company-card {
@@ -100,6 +100,19 @@ main {
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative; /* Ensure the icon is positioned relative to the card */
+}
+.company-card .fa-heart {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+.company-card .fa-heart:hover {
+    color: #ff6b6b;
 }
 .company-card:hover {
     transform: translateY(-5px);
@@ -122,25 +135,23 @@ main {
     opacity: 1;
     transition: opacity 0.5s ease;
 }
-
 .title {
-    top: 10px;
+    margin-top: 20px;
+    margin-bottom: 5px;
     margin-left: 100px;
 }
-
 .title a {
     text-decoration: none;
     color: white;
 }
-
 .company {
-    top: 30px;
+    margin-top: 0;
     margin-left: 100px;
     color: #f1f1f1;
 }
-
 .company-info {
     padding: 1.5rem;
+    padding-top: 0.5rem;
 }
 .company-info h3 {
     margin-top: 0;
@@ -239,7 +250,7 @@ main {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-family: 'Poppins', sans-seri3f;
+    font-family: 'Poppins', sans-serif;
     font-weight: 500;
     flex-grow: 1;
     margin-right: 1rem;
@@ -265,6 +276,37 @@ main {
 .close-filter:hover {
     background-color: #F9564F;
 }
+@media (max-width: 1024px) {
+    main {
+        max-width: 90%;
+    }
+    .search-filter {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-bar {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    .company-listings {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+    .filter-panel {
+        width: 80%;
+        right: -80%;
+    }
+    .filter-panel.open {
+        transform: translateX(-80%);
+    }
+    .pagination {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .pagination a, .pagination input, .page-number, #page-size {
+        width: 100%;
+        text-align: center;
+    }
+}
 @media (max-width: 768px) {
     main {
         max-width: 80%;
@@ -272,9 +314,20 @@ main {
     .search-filter {
         flex-direction: column;
     }
-    .search-bar {
+    .filter-panel {
         width: 100%;
-        margin-bottom: 1rem;
+        right: -100%;
+    }
+    .filter-panel.open {
+        transform: translateX(-100%);
+    }
+}
+@media (max-width: 480px) {
+    .company-listings {
+        grid-template-columns: 1fr;
+    }
+    .company-card {
+        margin: 5px 0;
     }
     .filter-panel {
         width: 100%;
@@ -282,6 +335,30 @@ main {
     }
     .filter-panel.open {
         transform: translateX(-100%);
+    }
+    .pagination {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .pagination a, .page-number, #page-size {
+        width: 100%;
+        text-align: center;
+    }
+    .search-bar {
+        flex-wrap: wrap;
+    }
+    .search-bar input {
+        border-radius: 10px 10px 0 0;
+    }
+    .search-bar button {
+        width: 100%;
+        border-radius: 0 0 10px 10px;
+    }
+    .search-bar button:not(:last-child) {
+        border-radius: 0;
+    }
+    .first-page, .last-page {
+        display: none;
     }
 }
 .pagination {
@@ -321,6 +398,7 @@ input::-webkit-inner-spin-button {
 }
 input[type=number] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 .page-number {
     background-color: white;

@@ -18,13 +18,13 @@ if (isset($_POST['id'])) {
     foreach ($offers as $offer) {
         $status = $offer->getStatus();
         if ($status == "Pending") {
-            header("Location: ../../view/offer/company/list.php");
+            header("Location: ../../view/offer/list.php");
             die();
         }
     }
 }
 
-if (isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) && isset($_POST['description']) && isset($_POST['duration']) && isset($_POST['salary']) && isset($_POST['education']) && isset($_POST['start-date']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_FILES['file-upload'])) {
+if (isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) && isset($_POST['description']) && isset($_POST['duration']) && isset($_POST['salary']) && isset($_POST['education']) && isset($_POST['start-date']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['website'])) {
     if (isset($_POST['id'])) {
         $id = $_POST['id'];
     } else {
@@ -40,7 +40,7 @@ if (isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) &
     $startDate = $_POST['start-date'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
-    $file = $_FILES['file-upload'];
+    $website = $_POST['website'];
 
     //Get the tags
     $selectedTags = array();
@@ -51,33 +51,15 @@ if (isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) &
         }
     }
 
-    //if ($file['error'] !== UPLOAD_ERR_OK) {
-    //    echo "Erreur lors du téléchargement du fichier";
-    //    die();
-    //}
 
-    $fileName = $file['name'];
-    $fileType = $file['type'];
-    $fileSize = $file['size'];
-    $fileTmpName = $file['tmp_name'];
-
-    $targetDir = "uploads/";
-    $targetFile = $targetDir . $fileName;
-
-    //if (move_uploaded_file($fileTmpName, $targetFile)) {
-    //    echo "Le fichier a été téléchargé avec succès";
-    //} else {
-    //    echo "Erreur lors du téléchargement du fichier";
-    //    die();
-    //}
 
     //Create the offer
-    $offer = pendingOffer::createPending($company_id, $title, $description, $job, $duration, $salary, $address, $education, $startDate, $selectedTags, $email, $phone, $fileName, $fileType, $fileSize, $user_id, $id);
+    $offer = pendingOffer::createPending($company_id, $title, $description, $job, $duration, $salary, $address, $education, $startDate, $selectedTags, $email, $phone, $website, $user_id, $id);
 
 
     //If the offer is created, redirect to the list of pending offers
     if ($offer) {
-        header("Location: ../../view/pending/list.php");
+        header("Location: ../../view/offer/list.php");
         die();
     }
 }

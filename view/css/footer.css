@@ -53,10 +53,31 @@ nav a:hover {
 @media (max-width: 768px) {
     .footer-row {
         flex-direction: column;
+        align-items: center;
     }
     .nav-footer, .logo-container {
         width: 100%;
         justify-content: center;
         margin-bottom: 1rem;
+    }
+    .nav-footer {
+        margin-bottom: 1rem;
+    }
+    .logo-container {
+        justify-content: center;
+    }
+}
+@media (max-width: 480px) {
+    footer {
+        padding: 1rem 0;
+    }
+    nav a {
+        margin: 0.5rem 0;
+    }
+    .logo-container img {
+        max-width: 80px;
+    }
+    .copyright {
+        font-size: 0.75rem;
     }
 }

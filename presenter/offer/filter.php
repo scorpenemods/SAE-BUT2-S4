@@ -1,24 +1,20 @@
 <?php
 
-require dirname(__FILE__) . '/../../models/Offer.php';
 
 /*
  * getPageOffers
  * Get the n-th page of offers (12 offers per page)
  */
 function getPageOffers(int $n, array $filters): ?array {
-    $filteredOffers = Offer::getFilteredOffers($filters);
+    $filteredOffers = Offer::getFilteredOffers($n, $filters);
 
     if (!$filteredOffers) {
         return null;
     }
 
-    $startIndex = ($n - 1) * 12;
-    $endIndex = $startIndex + 12;
-
     return array(
-        "offers" => array_slice($filteredOffers, $startIndex, $endIndex),
-        "totalPages" => ceil(count($filteredOffers) / 12)
+        "offers" => $filteredOffers,
+        "totalPages" => 10
     );
 }
 ?>

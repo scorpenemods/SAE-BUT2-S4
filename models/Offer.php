@@ -292,8 +292,7 @@ class Offer {
     }
 
     //Create a new offer
-    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize): ?Offer
-    {
+    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $website) {
         global $db;
 
         //Insert the offer in the offers table
@@ -311,6 +310,7 @@ class Offer {
         $stmt->bindParam(":begin_date", $begin_date);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":phone", $phone);
+        $stmt->bindParam(":website", $website);
         $stmt->execute();
 
         if ($db->errorCode() != 0) {
@@ -449,10 +449,10 @@ class Offer {
     }
 
     //Get all offers filtered by the filters
-    public static function getFilteredOffers($filters): ?array {
+    public static function getFilteredOffers(int $n, array $filters): ?array {
         global $db;
 
-        $sql = "SELECT DISTINCT * FROM offers WHERE true";
+        $sql = "SELECT * FROM offers WHERE is_active AND begin_date >= CURDATE()";
         $params = [];
 
         if (!empty($filters['title'])) {
@@ -511,13 +511,20 @@ class Offer {
         }
 */
 
-        if (!empty($filters['sort'])) {
-            if ($filters['sort'] == 'recente') {
-                $sql .= ' ORDER BY offers.created_at DESC';
-            } elseif ($filters['sort'] == 'ancienne') {
-                $sql .= ' ORDER BY offers.created_at ASC';
+        if (!empty($filters['company_id'])) {
+            $sql .= ' AND offers.company_id = :company_id';
+            $params[':company_id'] = $filters['company_id'];
+        }
+
+        if (!empty($filters['type'])) {
+            if ($filters['type'] == 'new') {
+                return pendingOffer::getAllNew();
+            } else if ($filters['type'] == 'updated') {
+                return pendingOffer::getAllUpdated();
             }
         }
+
+        $sql .= " LIMIT 12 OFFSET ". ($n - 1);
 
         $stmt = $db->prepare($sql);
 
@@ -575,6 +582,27 @@ class Offer {
 
         if ($db->errorCode() != 0) {
             return null;
+        }
+
+        return true;
+    }
+
+    public static function isCompanyOffer(int $id, int $company_id): ?bool {
+        global $db;
+
+        $stmt = $db->prepare("SELECT * FROM offers WHERE id = :id AND company_id = :company_id");
+        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":company_id", $company_id);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $result = $stmt->fetch();
+
+        if (!$result) {
+            return false;
         }
 
         return true;

@@ -15,8 +15,8 @@ class PendingOffer extends Offer
     private string $status;
 
 
-    public function __construct(int $id, int $company_id, string $type, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, string $created_at, string $email, string $phone, int $offfer_id, string $status) {
-        parent::__construct($id, $company_id, $company, $title, $description, $job, $duration,  $begin_date, $salary, $address, $study_level,  TRUE, $email, $phone, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"));
+    public function __construct(int $id, int $company_id, string $type, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, string $created_at, string $email, string $phone, string $website, int $offfer_id, string $status) {
+        parent::__construct($id, $company_id, $company, $title, $description, $job, $duration,  $begin_date, $salary, $address, $study_level,  TRUE, $email, $phone, $website, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"));
         $this->id = $id;
         $this->company_id = $company_id;
         $this->type = $type;
@@ -113,6 +113,7 @@ class PendingOffer extends Offer
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
                 $row["email"],
                 $row["phone"],
+                $row["website"],
                 $row["offer_id"],
                 $row["status"]
             );
@@ -159,6 +160,97 @@ class PendingOffer extends Offer
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
                 $row["email"],
                 $row["phone"],
+                $row["website"],
+                $row["offer_id"],
+                $row["status"]
+            );
+        }
+
+        return $offers;
+    }
+
+    public static function getAllNew(): ?array {
+        global $db;
+
+        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE type = 'new offer' AND status = 'Pending'");
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $result = $stmt->fetchAll();
+
+        $offers = [];
+        foreach ($result as $row) {
+            $company = Company::getById($row["company_id"]);
+
+            if (!$company) {
+                continue;
+            }
+
+            $offers[] = new PendingOffer(
+                $row["id"],
+                $row["company_id"],
+                $row["type"],
+                $company,
+                $row["title"],
+                $row["description"],
+                $row["job"],
+                $row["duration"],
+                $row["begin_date"],
+                $row["salary"],
+                $row["address"],
+                $row["study_level"],
+                date("Y-m-d H:i:s", strtotime($row["created_at"])),
+                $row["email"],
+                $row["phone"],
+                $row["website"],
+                $row["offer_id"],
+                $row["status"]
+            );
+        }
+
+        return $offers;
+    }
+
+    public static function getAllUpdated(): ?array {
+        global $db;
+
+        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE type = 'updated offer' AND status = 'Pending'");
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $result = $stmt->fetchAll();
+
+        $offers = [];
+        foreach ($result as $row) {
+            $company = Company::getById($row["company_id"]);
+
+            if (!$company) {
+                continue;
+            }
+
+            $offers[] = new PendingOffer(
+                $row["id"],
+                $row["company_id"],
+                $row["type"],
+                $company,
+                $row["title"],
+                $row["description"],
+                $row["job"],
+                $row["duration"],
+                $row["begin_date"],
+                $row["salary"],
+                $row["address"],
+                $row["study_level"],
+                date("Y-m-d H:i:s", strtotime($row["created_at"])),
+                $row["email"],
+                $row["phone"],
+                $row["website"],
                 $row["offer_id"],
                 $row["status"]
             );
@@ -169,7 +261,7 @@ class PendingOffer extends Offer
 
 
     //Create a new pending offer
-    public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $tags, string $email, string $phone, string $fileName, string $fileType, int $fileSize, int $user_id, int $offer_id): ?PendingOffer
+    public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $tags, string $email, string $phone, string $website, int $user_id, int $offer_id): ?PendingOffer
     {
         global $db;
 
@@ -182,8 +274,8 @@ class PendingOffer extends Offer
 
         //Insert the offer in the pending_offers table
         $stmt = $db->prepare("INSERT INTO pending_offers (user_id, type, offer_id, company_id, title, address, job, description, duration, salary,
-                            study_level, email, phone, begin_date) VALUES (:user_id, :type, :offer_id, :company_id, :title, :address, :job, :description, :duration, :salary,
-                            :study_level, :email, :phone, :begin_date)");
+                            study_level, email, phone, website, begin_date) VALUES (:user_id, :type, :offer_id, :company_id, :title, :address, :job, :description, :duration, :salary,
+                            :study_level, :email, :phone, :website, :begin_date)");
         $stmt->bindParam(":user_id", $user_id);
         $stmt->bindParam(":type", $type);
         $stmt->bindParam(":offer_id", $offer_id);
@@ -197,6 +289,7 @@ class PendingOffer extends Offer
         $stmt->bindParam(":study_level", $education);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":phone", $phone);
+        $stmt->bindParam(":website", $website);
         $stmt->bindParam(":begin_date", $startDate);
         $stmt->execute();
 
@@ -231,6 +324,7 @@ class PendingOffer extends Offer
             date("Y-m-d H:i:s", strtotime($startDate)),
             $email,
             $phone,
+            $website,
             $offer_id,
             "Pending"
         );

@@ -1,13 +1,25 @@
 <?php
 session_start();
 
+// Verification de qui est l'utilisateur
+$company_id = 0;
+if (isset($_SESSION['company_id'])) {
+    $company_id = $_SESSION['company_id'];
+}
+
+$groupeSecretariat = false;
+if (isset($_SESSION['secretariat'])) {
+    $groupeSecretariat = $_SESSION['secretariat'];
+}
+
 require dirname(__FILE__) . '/../../models/Company.php';
+require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../models/Media.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';
 
-$pageId = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
+$pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT);
 if ($pageId == null) {
     $pageId = 1;
 }
@@ -33,7 +45,6 @@ function setPageId($url, $newPageId): string {
  * Filters
  * Get and Sanitize filters from the request
  */
-
 error_reporting(E_ALL ^ E_DEPRECATED);
 $filters = array();
 
@@ -47,6 +58,7 @@ $city = filter_input(INPUT_GET, 'city', FILTER_SANITIZE_STRING);
 $duration = filter_input(INPUT_GET, 'duration', FILTER_VALIDATE_INT);
 $sector = filter_input(INPUT_GET, 'sector', FILTER_SANITIZE_STRING);
 $keywords = filter_input(INPUT_GET, 'keywords', FILTER_SANITIZE_STRING);
+$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
 
 if (isset($title)) { $filters["title"] = $title; }
 if (isset($sort)) { $filters["sort"] = $sort; }
@@ -58,6 +70,8 @@ if (isset($city)) { $filters["city"] = $city; }
 if (isset($duration)) { $filters["duration"] = $duration; }
 if (isset($sector)) { $filters["sector"] = $sector; }
 if (isset($keywords)) { $filters["keywords"] = $keywords; }
+if (isset($type) && $groupeSecretariat) { $filters["type"] = $type; }
+if ($company_id != 0) { $filters["company_id"] = $company_id; }
 
 $filteredOffers = getPageOffers($pageId, $filters);
 $offers = $filteredOffers["offers"] ?? array();
@@ -69,6 +83,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Le Petit Stage - Offres">
         <title>Le Petit Stage - Advanced</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/view/css/list.css">
@@ -97,22 +112,26 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                     </div>
                 </div>
             </form>
-
+            <div class="pagination" id="type_show" style="text-align: center">
+                <a href="/view/offer/list.php?type=all" class="prev-page">All Offer</i></a>
+                <a href="/view/offer/list.php?type=new" class="next-page">New Offer</i></a>
+                <a href="/view/offer/list.php?type=updated" class="last-page">Updated Offer</i></a>
+            </div>
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
                     echo "<div class='company-card'>";
                         echo "<div class='company-header'>";
+                            echo false ? '<i class="fa-regular fa-heart"></i>' : '<i class="fa-solid fa-heart"></i>';
                             echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
                             echo "<h3 class='title'><a href='/view/offer/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
-                            echo "<span class='company'>" . $offer->getCompany()->getName() . "</span>";
+                            echo "<span class='company'><i class='fas fa-building'></i> " . $offer->getCompany()->getName() . "</span>";
                         echo "</div>";
                         echo "<div class='company-info'>";
                             echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
                             echo "<div class='company-meta'>";
-                                echo "<span><i class='fas fa-building'></i> " . $offer->getCompany()->getName() . "</span>";
-                                echo "<span><i class='fas fa-map-marker-alt'></i> " . $offer->getAddress() . "</span>";
                                 echo "<span><i class='fas fa-clock'></i> " . $offer->getRealDuration() . "</span>";
+                                echo "<span><i class='fas fa-graduation-cap'></i> " . $offer->getStudyLevel() . "</span>";
                             echo "</div>";
                         echo "</div>";
                     echo "</div>";
@@ -122,7 +141,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             <div class="pagination">
                 <a href="<?php echo setPageId($curURL, 1); ?>" class="first-page"><i class="fas fa-angle-double-left"></i></a>
                 <a href="<?php echo setPageId($curURL, $pageId > 1 ? $pageId - 1 : $pageId); ?>" class="prev-page"><i class="fas fa-angle-left"></i></a>
-                <a aria-disabled="true"><?php echo $pageId; ?> / <?php echo $totalPages; ?></a>
+                <a disabled="true" href="#"><?php echo $pageId; ?> / <?php echo $totalPages; ?></a>
                 <a href="<?php echo setPageId($curURL, $pageId < $totalPages ? $pageId + 1 : $pageId); ?>" class="next-page"><i class="fas fa-angle-right"></i></a>
                 <a href="<?php echo setPageId($curURL, $totalPages); ?>" class="last-page"><i class="fas fa-angle-double-right"></i></a>
             </div>
@@ -132,7 +151,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 <form id="filterForm" method="GET">
                     <div class="filter-section">
                         <h3><i class="fas fa-calendar"></i> Date de début</h3>
-                        <input type="date" id="start-date" name="calendar">
+                        <label><input type="date" id="start-date" name="calendar"></label>
                     </div>
 
                     <div class="filter-section">
@@ -247,6 +266,14 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             createNotificationBtn.addEventListener('click', () => {
                 alert('Fonctionnalité de création de demande de notification à implémenter');
             });
+
+            const type_show = document.getElementById('type_show');
+            const groupeSecretariat = <?php echo json_encode($groupeSecretariat); ?>;
+            if (groupeSecretariat) {
+                type_show.style.display = "block";
+            } else {
+                type_show.style.display = "none";
+            }
         </script>
     </body>
 </html>
