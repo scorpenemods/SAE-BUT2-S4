@@ -3,16 +3,19 @@ session_start();
 
 $_SESSION['user'] = 1;
 
-require dirname(__FILE__) . '/../../models/Offer.php';
+require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../models/Media.php';
+require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 $returnUrl = "/view/offer/list.php";
 if (isset($_SERVER["HTTP_REFERER"])) {
     $returnUrl = $_SERVER["HTTP_REFERER"];
 }
 
+error_reporting(E_ALL ^ E_DEPRECATED);
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
 if ($offerId == null) {
     header("Location: " . $returnUrl);
     die();
@@ -29,9 +32,17 @@ if (isset($_SESSION['secretariat'])) {
         header("Location: ../offer/list.php");
         die();
     }
+} else {
+    header("Location: ../offer/list.php");
+    die();
 }
 
-$offer = Offer::getById($offerId);
+
+if ($type == null || $type == 'all') {
+    $offer = Offer::getById($offerId);
+} else {
+    $offer = PendingOffer::getByOfferId($offerId);
+}
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +67,7 @@ $offer = Offer::getById($offerId);
             <div class="offer-title">
                 <div>
                     <span class="offer-badge">Stage</span>
-                    <?php echo "<h2>" . $offer->getTitle() . "</h2>"; ?>
+                    <?php echo "<h2>" . $offer->getTitle() . $type . "</h2>"; ?>
                     <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
                 </div class="apply-button">
                 <!-- bouton pour postuler -->
@@ -163,8 +174,17 @@ $offer = Offer::getById($offerId);
 
     const companyId = <?php echo json_encode($company_id); ?>;
     const secretariat = <?php echo json_encode($groupeSecretariat); ?>;
+    const type = <?php echo json_encode($type); ?>;
 
-    if (secretariat) {
+    console.log(type);
+    console.log(secretariat);
+     if ((type === 'new' || type === 'updated') && secretariat) {
+        document.getElementById('apply-form').style.display = 'none';
+        document.getElementById('edit-form').style.display = 'none';
+        document.getElementById('hide-form').style.display = 'none';
+        document.getElementById('deny-form').style.display = 'block';
+        document.getElementById('validate-form').style.display = 'block';
+    } else if (secretariat && type === 'all' || type == null) {
         document.getElementById('apply-form').style.display = 'none';
         document.getElementById('edit-form').style.display = 'block';
         document.getElementById('hide-form').style.display = 'block';
@@ -175,9 +195,7 @@ $offer = Offer::getById($offerId);
         document.getElementById('hide-form').style.display = 'block';
         document.getElementById('edit-form').style.display = 'block';
     }
-</script>
 
-<script type="text/javascript">
     // Fonction pour ouvrir la fenêtre modale avec un message personnalisé
     function openModalWithMessage(message) {
         document.getElementById("applyModal").style.display = "block";

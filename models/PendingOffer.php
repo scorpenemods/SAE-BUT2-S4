@@ -24,6 +24,7 @@ class PendingOffer extends Offer
         $this->status = $status;
     }
 
+
     public function getId(): int
     {
         return $this->id;
@@ -75,51 +76,46 @@ class PendingOffer extends Offer
 
 
     //Get all pending offers
-    public static function getByOfferId(int $id): ?array
+    public static function getByOfferId(int $id): ?PendingOffer
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE offer_id = :offer_id");
-        $stmt->bindParam(":offer_id", $id);
+        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE id = :id");
+        $stmt->bindParam(":id", $id);
         $stmt->execute();
 
         if ($db->errorCode() != 0) {
             return null;
         }
 
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetch();
 
-        $offers = [];
-        foreach ($result as $row) {
-            $company = Company::getById($row["company_id"]);
+        $company = Company::getById($result["company_id"]);
 
-            if (!$company) {
-                continue;
-            }
-
-            $offers[] = new PendingOffer(
-                $row["id"],
-                $row["company_id"],
-                $row["type"],
-                $company,
-                $row["title"],
-                $row["description"],
-                $row["job"],
-                $row["duration"],
-                $row["begin_date"],
-                $row["salary"],
-                $row["address"],
-                $row["study_level"],
-                date("Y-m-d H:i:s", strtotime($row["created_at"])),
-                $row["email"],
-                $row["phone"],
-                $row["website"],
-                $row["offer_id"],
-                $row["status"]
-            );
+        if (!$company) {
+            return null;
         }
 
-        return $offers;
+        return new PendingOffer(
+            $result["id"],
+            $result["company_id"],
+            $result["type"],
+            $company,
+            $result["title"],
+            $result["description"],
+            $result["job"],
+            $result["duration"],
+            $result["begin_date"],
+            $result["salary"],
+            $result["address"],
+            $result["study_level"],
+            date("Y-m-d H:i:s", strtotime($result["created_at"])),
+            $result["email"],
+            $result["phone"],
+            $result["website"],
+            $result["offer_id"],
+            $result["status"]
+        );
     }
 
     //Get all pending offers
