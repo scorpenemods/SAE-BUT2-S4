@@ -94,6 +94,10 @@ main {
     grid-template-columns: repeat(2, minmax(300px, 1fr));
     gap: 2rem;
 }
+.company-link {
+    text-decoration: None;
+    color: inherit;
+}
 .company-card {
     background-color: var(--card-color);
     border-radius: 8px;
@@ -139,9 +143,6 @@ main {
     margin-top: 20px;
     margin-bottom: 5px;
     margin-left: 100px;
-}
-.title a {
-    text-decoration: none;
     color: white;
 }
 .company {
@@ -150,8 +151,7 @@ main {
     color: #f1f1f1;
 }
 .company-info {
-    padding: 1.5rem;
-    padding-top: 0.5rem;
+    padding: 0.5rem 1.5rem 1.5rem;
 }
 .company-info h3 {
     margin-top: 0;

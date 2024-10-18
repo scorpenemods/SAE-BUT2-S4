@@ -127,21 +127,23 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
-                    echo "<div class='company-card'>";
-                        echo "<div class='company-header'>";
-                            echo false ? '<i class="fa-regular fa-heart"></i>' : '<i class="fa-solid fa-heart"></i>';
-                            echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
-                            echo "<h3 class='title'><a href='/view/offer/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></h3>";
-                            echo "<span class='company'><i class='fas fa-building'></i> " . $offer->getCompany()->getName() . "</span>";
-                        echo "</div>";
-                        echo "<div class='company-info'>";
-                            echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
-                            echo "<div class='company-meta'>";
-                                echo "<span><i class='fas fa-clock'></i> " . $offer->getRealDuration() . "</span>";
-                                echo "<span><i class='fas fa-graduation-cap'></i> " . $offer->getStudyLevel() . "</span>";
+                    echo "<a class='company-link' href='/view/offer/detail.php?id=" . $offer->getId() . "'>";
+                        echo "<div class='company-card'>";
+                            echo "<div class='company-header'>";
+                                echo false ? '<i class="fa-regular fa-heart"></i>' : '<i class="fa-solid fa-heart"></i>';
+                                echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
+                                echo "<h3 class='title'>". $offer->getTitle() ."</h3>";
+                                echo "<span class='company'><i class='fas fa-building'></i> " . $offer->getCompany()->getName() . "</span>";
+                            echo "</div>";
+                            echo "<div class='company-info'>";
+                                echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
+                                echo "<div class='company-meta'>";
+                                    echo "<span><i class='fas fa-clock'></i> " . $offer->getRealDuration() . "</span>";
+                                    echo "<span><i class='fas fa-graduation-cap'></i> " . $offer->getStudyLevel() . "</span>";
+                                echo "</div>";
                             echo "</div>";
                         echo "</div>";
-                    echo "</div>";
+                    echo "</a>";
                 }
                 ?>
             </div>
