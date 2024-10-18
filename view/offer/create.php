@@ -9,7 +9,7 @@ if (isset($_SESSION['secretariat']) || isset($_SESSION['company_id'])) {
     $groupeSecretariat = $_SESSION['secretariat'];
 }
 
-if ($groupeSecretariat) {
+if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
     $companies = Company::getAll();
 }
 ?>
@@ -30,7 +30,7 @@ if ($groupeSecretariat) {
         <main class="container-principal">
             <h1>Proposer une offre de stage</h1>
             <form action="../../presenter/offer/create.php" method="post" enctype="multipart/form-data">
-                <?php if ($groupeSecretariat) {
+                <?php if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                     echo "<div class='form-group'>";
                     // Si l'utilisateur est un secretariat, il avoir un menu déroulant avec les companies
                     echo "<label for='company_id'>Choisissez une entreprise :</label>";
