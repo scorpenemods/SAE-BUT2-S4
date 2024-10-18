@@ -524,7 +524,7 @@ class Offer {
             }
         }
 
-        $sql .= " LIMIT 12 OFFSET ". ($n - 1);
+        $sql .= " LIMIT 12 OFFSET ". ($n - 1) * 12;
 
         $stmt = $db->prepare($sql);
 
