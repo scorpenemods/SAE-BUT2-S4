@@ -179,8 +179,11 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
     const type = <?php echo json_encode($type); ?>;
     const isAlreadyPending = <?php echo json_encode($isAlreadyPending); ?>;
 
-    console.log(type);
-    console.log(secretariat);
+    if (isAlreadyPending) {
+        //Make edit form disabled
+        document.getElementById('edit-button').disabled = true;
+    }
+
      if ((type === 'new' || type === 'updated') && secretariat) {
         document.getElementById('apply-form').style.display = 'none';
         document.getElementById('edit-form').style.display = 'none';
@@ -198,11 +201,6 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
         document.getElementById('hide-form').style.display = 'block';
         document.getElementById('edit-form').style.display = 'block';
     }
-
-     if (isAlreadyPending) {
-         //Make edit form disabled
-         document.getElementById('edit-button').disabled = true;
-     }
 
     // Fonction pour ouvrir la fenêtre modale avec un message personnalisé
     function openModalWithMessage(message) {
