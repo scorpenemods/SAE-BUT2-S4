@@ -40,15 +40,13 @@ $offer = Offer::getById($offerId);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails de l'offre - Le Petit Stage</title>
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/view/css/detail.css">
     <link rel="stylesheet" href="/view/css/button.css">
     <link rel="stylesheet" href="/view/css/header.css">
     <link rel="stylesheet" href="/view/css/footer.css">
     <link rel="stylesheet" href="/view/css/apply.css">
-
     <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 <?php include dirname(__FILE__) . '/../header.php'; ?>
@@ -137,7 +135,6 @@ $offer = Offer::getById($offerId);
         </div>
     </div>
 
-    <!-- fenêtre modal pour valider candidature -->
     <div id="applyModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -149,14 +146,10 @@ $offer = Offer::getById($offerId);
                 <label for="motivation">Déposez votre lettre de motivation :</label>
                 <input type="file" id="motivation" name="motivation" accept=".pdf" required>
 
-                <p id="modal-message"></p> <!-- Zone pour afficher le message personnalisé -->
+                <p id="modal-message"></p>
 
                 <input type="hidden" name="offre" value="<?php echo $offer->getId(); ?>">
-
-
                 <button type="submit">Valider la candidature</button>
-
-
             </form>
         </div>
     </div>
