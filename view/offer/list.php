@@ -127,7 +127,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
-                    echo "<a class='company-link' href='/view/offer/detail.php?id=" . $offer->getId() . '&type=' . $type . ">";
+                    echo "<a class='company-link' href='/view/offer/detail.php?id=" . $offer->getId() . '&type=' . $type . '">";
                         echo "<div class='company-card'>";
                             echo "<div class='company-header'>";
                                 echo false ? '<i class="fa-regular fa-heart"></i>' : '<i class="fa-solid fa-heart"></i>';
