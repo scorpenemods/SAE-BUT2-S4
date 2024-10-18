@@ -4,9 +4,8 @@ session_start();
 require dirname(__FILE__) . "/../../models/PendingOffer.php";
 require dirname(__FILE__) . "/../../models/Company.php";
 
-if (isset($_SESSION['user']) && isset($_SESSION['company_id'])) {
+if (isset($_SESSION['user'])) {
     $user_id = $_SESSION['user'];
-    $company_id = $_SESSION['company_id'];
 } else {
     header("Location: ../offer/view/create.php");
     die();
