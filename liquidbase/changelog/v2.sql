@@ -50,6 +50,8 @@ CREATE TABLE pending_media (
 CREATE TABLE applications (
     idUser INTEGER NOT NULL,
     idOffer INTEGER NOT NULL,
+    cv VARCHAR(255) NOT NULL,
+    motivation_letter VARCHAR(255) NOT NULL,
     FOREIGN KEY (idUser) REFERENCES users (id),
     FOREIGN KEY (idOffer) REFERENCES offers (id),
     PRIMARY KEY (idUser, idOffer)

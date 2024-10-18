@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+$_SESSION['user'] = 1;
+
 require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../models/Media.php';
@@ -18,18 +20,15 @@ if ($offerId == null) {
 
 // Verification de qui est l'utilisateur
 $company_id = 0;
-if (isset($_SESSION['company_id'])) {
+$groupeSecretariat = false;
+if (isset($_SESSION['secretariat'])) {
+    $groupeSecretariat = $_SESSION['secretariat'];
+} else if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
     if (!Offer::isCompanyOffer($offerId, $company_id)) {
         header("Location: ../offer/list.php");
         die();
     }
-}
-
-
-$groupeSecretariat = false;
-if (isset($_SESSION['secretariat'])) {
-    $groupeSecretariat = $_SESSION['secretariat'];
 }
 
 $offer = Offer::getById($offerId);
@@ -43,6 +42,7 @@ $offer = Offer::getById($offerId);
         <title>Détails de l'offre - Le Petit Stage</title>
 
         <link rel="stylesheet" href="/view/css/detail.css">
+        <link rel="stylesheet" href="/view/css/button.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <link rel="stylesheet" href="/view/css/apply.css">
@@ -62,13 +62,10 @@ $offer = Offer::getById($offerId);
                             <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
                         </div class="apply-button">
                         <!-- bouton pour postuler -->
-                        <button class="apply-button" onclick="openModalWithMessage()">Postuler</button>
-                        </div>
-
                         <div class="apply-button-container">
                             <form action="" method="get" id="apply-form" style="display: block;">
                                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
-                                <button class="apply-button-edit">Postuler</button>
+                                <button class="apply-button-edit" onclick="openModalWithMessage()">Postuler</button>
                             </form>
                             <form action="./company/edit.php" method="get" id ="edit-form" style="display: none;">
                                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
@@ -86,6 +83,7 @@ $offer = Offer::getById($offerId);
                                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
                                 <button class="apply-button-edit">Valider</button>
                             </form>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -172,16 +170,16 @@ $offer = Offer::getById($offerId);
             const companyId = <?php echo json_encode($company_id); ?>;
             const secretariat = <?php echo json_encode($groupeSecretariat); ?>;
 
-            if (companyId !== 0) {
+            if (secretariat) {
                 document.getElementById('apply-form').style.display = 'none';
-                document.getElementById('hide-form').style.display = 'block';
                 document.getElementById('edit-form').style.display = 'block';
-            } else if (secretariat) {
-                document.getElementById('apply-form').style.display = 'none';
-                document.getElementById('edit-form').style.display = 'none';
                 document.getElementById('hide-form').style.display = 'block';
                 document.getElementById('deny-form').style.display = 'block';
                 document.getElementById('validate-form').style.display = 'block';
+            } else if (companyId !== 0) {
+                document.getElementById('apply-form').style.display = 'none';
+                document.getElementById('hide-form').style.display = 'block';
+                document.getElementById('edit-form').style.display = 'block';
             }
         </script>
 

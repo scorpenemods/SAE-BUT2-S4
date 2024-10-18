@@ -401,6 +401,10 @@ class Offer {
         return $tags;
     }
 
+    public function getWebsite() {
+        return $this->website;
+    }
+
     //Get all offers of a company
     public static function getCompanyOffers($companyId): ?array
     {
