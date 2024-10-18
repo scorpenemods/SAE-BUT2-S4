@@ -838,3 +838,125 @@ body.dark-mode .pending-requests, .dark-mode .active-users{
     display: flex;
     justify-content: space-around;
 }
+
+/*---------------------- Modal window styles ------------------*/
+/* Styles généraux pour la modale */
+.modal {
+    display: none; /* Masqué par défaut */
+    position: fixed;
+    z-index: 1000; /* S'assurer que la modale est au-dessus des autres éléments */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permettre le défilement si le contenu dépasse la hauteur de l'écran */
+    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent pour l'effet d'overlay */
+}
+
+/* Contenu de la modale */
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto; /* Centrer verticalement */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%; /* Vous pouvez ajuster la largeur selon vos besoins */
+    border-radius: 5px; /* Coins arrondis pour une meilleure apparence */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Ombre pour donner de la profondeur */
+    position: relative; /* Pour positionner le bouton de fermeture correctement */
+}
+
+/* Bouton de fermeture */
+.close-modal {
+    color: #aaa;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    width: auto;
+    padding-top: 5px;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: black;
+    text-decoration: none;
+}
+
+/* Styles pour le titre de la modale */
+.modal-content h2 {
+    margin-top: 0;
+    font-size: 24px;
+    text-align: center;
+}
+
+/* Styles pour le formulaire à l'intérieur de la modale */
+#createGroupForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espacement entre les éléments du formulaire */
+    margin-top: 20px;
+}
+
+/* Labels du formulaire */
+#createGroupForm label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Champs de sélection */
+#createGroupForm select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Bouton de soumission */
+.submit-group-button {
+    padding: 12px;
+    font-size: 18px;
+    background-color: #4CAF50; /* Couleur verte pour le bouton */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: center; /* Centrer le bouton */
+    width: 50%; /* Ajuster la largeur du bouton */
+}
+
+.submit-group-button:hover {
+    background-color: #45a049;
+}
+
+/* Message de résultat */
+#resultMessage {
+    margin-top: 20px;
+    font-size: 16px;
+    color: red; /* Vous pouvez ajuster la couleur selon le type de message */
+    text-align: center;
+}
+
+/* ----------------------------------------------------------------- */
+
+/* Buttons styles */
+button {
+    background-color: #0084FF;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #3498db;
+}
+

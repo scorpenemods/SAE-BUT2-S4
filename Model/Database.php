@@ -231,6 +231,41 @@ class Database
         }
     }
 
+    // ====== Messagerie Contacts ======= //
+
+    public function getGroupContacts($userId) {
+        $query = "
+        SELECT DISTINCT User.id, User.nom, User.prenom
+        FROM User
+        INNER JOIN Groupe ON User.id = Groupe.user_id
+        INNER JOIN (
+            SELECT conv_id
+            FROM Groupe
+            WHERE user_id = :user_id
+        ) AS UserGroups ON Groupe.conv_id = UserGroups.conv_id
+        WHERE User.id != :user_id;
+    ";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getMessagesBetweenUsers($userId, $contactId) {
+        $query = "
+        SELECT *
+        FROM Messages
+        WHERE (sender_id = :user_id AND receiver_id = :contact_id)
+           OR (sender_id = :contact_id AND receiver_id = :user_id)
+        ORDER BY timestamp ASC;
+    ";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':contact_id', $contactId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getPendingUsers()
     {
         $sql = "SELECT * FROM User WHERE status_user = 0";
@@ -482,8 +517,30 @@ class Database
 
     // ------------------------------------------------------------------- //
 
-    // -------------------- Student list in professor home ------------------------------------------
-    // Model/Database.php
+
+    //========================     Gropes methods        ================================== //
+    public function getAllStudents(): array
+    {
+        $query = "SELECT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id FROM User
+              WHERE User.role = 1";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute();
+        $students = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $students[] = new Person(
+                $row['nom'],
+                $row['prenom'],
+                $row['telephone'],
+                $row['role'],
+                $row['activite'],
+                $row['email'],
+                $row['id']
+            );
+        }
+        return $students;
+    }
+
+    // -------------------- Student list in professor home ------------------------------------------ //
     public function getStudents($professorId): array
     {
         $query = "SELECT User.nom, User.prenom

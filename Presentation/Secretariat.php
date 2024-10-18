@@ -51,6 +51,10 @@ $preferences = $database->getUserPreferences($person->getUserId());
 // Vérifier si le mode sombre est activé dans les préférences
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
 
+// Creation des groupes recup les utilisateurs
+$students = $database->getAllStudents() ?? [];
+$professors = $database->getProfessor() ?? [];
+$maitres = $database->getTutor() ?? [];
 ?>
 
 
@@ -106,6 +110,7 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
         <span onclick="window.location.href='Secretariat.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Rapports</span>
         <span onclick="window.location.href='Secretariat.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Documents</span>
         <span onclick="window.location.href='Secretariat.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Messagerie</span>
+        <span onclick="window.location.href='Secretariat.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5">Groupes</span>
 
     </nav>
     <div class="Contenus">
@@ -275,6 +280,59 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
             </div>
         </div>
 
+        <!-- Section Groupes -->
+        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
+            <!-- Code pour le widget de création de groupes -->
+
+            <!-- Bouton pour ouvrir la fenêtre modale de création de groupe -->
+            <button class="open-create-group-modal">Créer un nouveau groupe</button>
+
+            <!-- Fenêtre modale pour créer un nouveau groupe -->
+            <div id="createGroupModal" class="modal">
+                <div class="modal-content">
+                    <h2>Créer un nouveau groupe</h2>
+
+                    <!-- Formulaire pour la création du groupe -->
+                    <form id="createGroupForm" method="POST" action="#">
+                        <!-- Sélection de l'étudiant -->
+                        <label for="student-select">Étudiant :</label>
+                        <select id="student-select" name="student_id" required>
+                            <option value="">Sélectionnez un étudiant</option>
+                            <?php foreach ($students as $student): ?>
+                                <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <!-- Sélection du professeur -->
+                        <label for="professor-select">Professeur :</label>
+                        <select id="professor-select" name="professor_id" required>
+                            <option value="">Sélectionnez un professeur</option>
+                            <?php foreach ($professors as $professor): ?>
+                                <option value="<?php echo $professor->getUserId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <!-- Sélection du maître de stage -->
+                        <label for="maitre-select">Maître de stage :</label>
+                        <select id="maitre-select" name="maitre_id" required>
+                            <option value="">Sélectionnez un maître de stage</option>
+                            <?php foreach ($maitres as $maitre): ?>
+                                <option value="<?php echo $maitre->getUserId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <!-- Bouton pour soumettre le formulaire et créer le groupe -->
+                        <button type="submit" class="submit-group-button">Créer le groupe</button>
+                    </form>
+
+                    <!-- Zone pour afficher le message de résultat -->
+                    <div id="resultMessage"></div>
+                    <!-- Bouton pour fermer la fenêtre modale -->
+                    <span class="close-modal">&times;</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <footer class="PiedDePage">
@@ -286,6 +344,7 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
 
 <!-- Script JavaScript pour la gestion des utilisateurs -->
 <script src="../View/Principal/userManagement.js"></script>
+<script src="../View/Principal/GroupCreation.js"></script>
 </body>
 </html>
 

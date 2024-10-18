@@ -126,7 +126,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             cursor: pointer;
         }
 
-
         .password-container i {
             color: #005c97;
         }

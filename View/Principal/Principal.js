@@ -252,6 +252,22 @@ function searchContacts() {
     });
 }
 
+function openChat(contactId, contactName) {
+    // Mettre à jour l'en-tête du chat avec le nom du contact
+    document.getElementById('chat-header-title').innerText = 'Chat avec ' + contactName;
+
+    // Mettre à jour le champ caché receiver_id
+    document.getElementById('receiver_id').value = contactId;
+
+    // Récupérer les messages via une requête AJAX
+    fetch('GetMessages.php?contact_id=' + contactId)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('chat-body').innerHTML = html;
+        })
+        .catch(error => console.error('Erreur:', error));
+}
+
 // ---------------------------------- Student list -------------------------------------//
 document.getElementById('sidebar-toggle').addEventListener('click', function() {
     const sidebar = document.getElementById('sidebar');
@@ -273,7 +289,7 @@ function searchStudents() {
     });
 }
 
-
+//
 
 // -----------------------------------------------------------------------//
 // send a message only by clicking the button

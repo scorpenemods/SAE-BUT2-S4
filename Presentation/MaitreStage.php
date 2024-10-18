@@ -133,9 +133,17 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                     </div>
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
-                        <li>Contact 1</li>
-                        <li>Contact 2</li>
-                        <li>Contact 3</li>
+                        <?php
+                        // Récupérer les contacts associés à l'utilisateur connecté
+                        $userId = $person->getUserId();
+                        $contacts = $database->getGroupContacts($userId);
+
+                        foreach ($contacts as $contact) {
+                            echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
+                            echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
+                            echo '</li>';
+                        }
+                        ?>
                     </ul>
                 </div>
 
@@ -150,7 +158,7 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                 <!-- Fenêtre de chat -->
                 <div class="chat-window">
                     <div class="chat-header">
-                        <h3 id="chat-header-title">Chat avec Contact 1</h3>
+                        <h3 id="chat-header-title">Chat avec Contact </h3>
                     </div>
 
                     <div class="chat-body" id="chat-body">
@@ -191,17 +199,11 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                     <!-- Zone de saisie pour envoyer un nouveau message -->
                     <div class="chat-footer">
                         <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
-                            <!-- Bouton pour joindre un fichier -->
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-
-                            <!-- ID du destinataire pour l'envoi du message -->
-                            <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>">
-
-                            <!-- Zone de texte pour saisir le message -->
+                            <!-- Champ caché pour le destinataire -->
+                            <input type="hidden" name="receiver_id" id="receiver_id" value=""> <!-- Ce champ sera mis à jour dynamiquement -->
                             <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-
-                            <!-- Bouton pour envoyer le message -->
                             <button type="button" onclick="sendMessage(event)">Envoyer</button>
                         </form>
                     </div>
