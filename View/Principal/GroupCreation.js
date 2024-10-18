@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             let formData = new FormData(this);
 
-            fetch('/CreateGroup.php', {
+            fetch('../View/Principal/CreateGroup.php', {
                 method: 'POST',
                 body: formData
             })
