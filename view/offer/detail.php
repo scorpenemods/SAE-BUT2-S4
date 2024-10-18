@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+$_SESSION['user'] = 1;
+
 require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../models/Media.php';
