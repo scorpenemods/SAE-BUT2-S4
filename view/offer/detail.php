@@ -43,6 +43,8 @@ if ($type == null || $type == 'all') {
 } else {
     $offer = PendingOffer::getByOfferId($offerId);
 }
+
+$isAlreadyPending = Offer::isAlreadyPending($offerId);
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +80,7 @@ if ($type == null || $type == 'all') {
                     </form>
                     <form action="./company/edit.php" method="get" id="edit-form" style="display: none;">
                         <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
-                        <button class="apply-button-edit">Modifier</button>
+                        <button id="edit-button" class="apply-button-edit">Modifier</button>
                     </form>
                     <form action="../../presenter/offer/company/hide.php" method="post" id="hide-form"
                           style="display: none;">
@@ -175,6 +177,7 @@ if ($type == null || $type == 'all') {
     const companyId = <?php echo json_encode($company_id); ?>;
     const secretariat = <?php echo json_encode($groupeSecretariat); ?>;
     const type = <?php echo json_encode($type); ?>;
+    const isAlreadyPending = <?php echo json_encode($isAlreadyPending); ?>;
 
     console.log(type);
     console.log(secretariat);
@@ -195,6 +198,11 @@ if ($type == null || $type == 'all') {
         document.getElementById('hide-form').style.display = 'block';
         document.getElementById('edit-form').style.display = 'block';
     }
+
+     if (isAlreadyPending) {
+        //Make edit form disabled
+         document.getElementById('edit-button').disabled = true;
+     }
 
     // Fonction pour ouvrir la fenêtre modale avec un message personnalisé
     function openModalWithMessage(message) {
