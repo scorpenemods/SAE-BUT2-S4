@@ -456,7 +456,7 @@ class Offer {
     public static function getFilteredOffers(int $n, array $filters): ?array {
         global $db;
 
-        $sql = "SELECT * FROM offers JOIN tags_offers ON offers.id = tags_offers.offer_id JOIN tags ON tags.id = tags_offers.tag_id WHERE is_active AND begin_date >= CURDATE()";
+        $sql = "SELECT offers.*, tag FROM offers LEFT JOIN tags_offers ON offers.id = tags_offers.offer_id LEFT JOIN tags ON tags.id = tags_offers.tag_id WHERE is_active AND begin_date >= CURDATE()";
         $params = [];
 
         if (!empty($filters['title'])) {
@@ -511,7 +511,10 @@ class Offer {
         if (!empty($filters['keywords'])) {
             $keywords = array_filter(array_map('trim', explode(',', $filters['keywords'])));
 
-            $sql .= ' AND (' . implode(' OR ', array_fill(0, count($keywords), 'tags.tag LIKE ?')) . ')';            
+            foreach ($keywords as $key => $keyword) {
+                $sql .= ' AND (tag LIKE :keyword' . $key . ')';
+                $params[':keyword' . $key] = '%' . $keyword . '%';
+            }
         }
 
         if (!empty($filters['company_id'])) {
