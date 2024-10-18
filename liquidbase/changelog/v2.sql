@@ -43,3 +43,15 @@ CREATE TABLE pending_media (
     display_order    INTEGER DEFAULT 0,                           -- Optional display order
     FOREIGN KEY (pending_offer_id) REFERENCES pending_offers (id) -- Foreign key to pending offers with cascading delete
 ); */
+
+
+--changeset Margot:18 labels:create-table
+--comment: create table applications
+CREATE TABLE applications (
+    idUser INTEGER NOT NULL,
+    idOffer INTEGER NOT NULL,
+    FOREIGN KEY (idUser) REFERENCES users (id),
+    FOREIGN KEY (idOffer) REFERENCES offers (id),
+    PRIMARY KEY (idUser, idOffer)
+);
+--rollback DROP TABLE applications;

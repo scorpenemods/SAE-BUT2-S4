@@ -16,6 +16,7 @@ if ($offerId == null) {
     die();
 }
 
+// Verification de qui est l'utilisateur
 $company_id = 0;
 if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
@@ -24,7 +25,6 @@ if (isset($_SESSION['company_id'])) {
         die();
     }
 }
-
 
 
 $groupeSecretariat = false;
@@ -43,9 +43,10 @@ $offer = Offer::getById($offerId);
         <title>Détails de l'offre - Le Petit Stage</title>
 
         <link rel="stylesheet" href="/view/css/detail.css">
-        <link rel="stylesheet" href="/view/css/button.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
+        <link rel="stylesheet" href="/view/css/apply.css">
+
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     </head>
@@ -59,6 +60,9 @@ $offer = Offer::getById($offerId);
                             <span class="offer-badge">Stage</span>
                             <?php echo "<h2>" . $offer->getTitle() . "</h2>"; ?>
                             <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
+                        </div class="apply-button">
+                        <!-- bouton pour postuler -->
+                        <button class="apply-button" onclick="openModalWithMessage()">Postuler</button>
                         </div>
 
                         <div class="apply-button-container">
@@ -131,6 +135,34 @@ $offer = Offer::getById($offerId);
                     </div>
                 </div>
             </div>
+
+            <!-- fenêtre modal pour valider candidature -->
+            <div id="applyModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2>Déposez votre candidature pour cette offre :</h2><br>
+                    <form action="/presenter/offer/apply.php" method="POST" enctype="multipart/form-data">
+                        <label for="cv">Déposez votre CV :</label>
+                        <input type="file" id="cv" name="cv" accept=".pdf" required><br>
+
+                        <label for="motivation">Déposez votre lettre de motivation :</label>
+                        <input type="file" id="motivation" name="motivation" accept=".pdf" required>
+
+                        <p id="modal-message"></p> <!-- Zone pour afficher le message personnalisé -->
+
+                        <input type="hidden" name="offre" value="<?php echo $offer->getId(); ?>">
+
+
+
+                        <button type="submit">Valider la candidature</button>
+
+
+
+                    </form>
+                </div>
+            </div>
+
+
         </main>
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
         <script type="text/javascript">
@@ -152,5 +184,38 @@ $offer = Offer::getById($offerId);
                 document.getElementById('validate-form').style.display = 'block';
             }
         </script>
+
+        <script type="text/javascript">
+            // Fonction pour ouvrir la fenêtre modale avec un message personnalisé
+            function openModalWithMessage(message) {
+                document.getElementById("applyModal").style.display = "block";
+                document.getElementById("modal-message").textContent = message;
+            }
+
+            // Vérifiez si un paramètre 'status' est passé dans l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+
+            if (status === 'success') {
+                openModalWithMessage("Votre candidature a bien été enregistrée !" );
+            } else if (status === 'already_applied') {
+                openModalWithMessage("Vous avez déjà postulé pour cette offre." );
+            }
+
+            // Fonction pour fermer la fenêtre modale
+            function closeModal() {
+                document.getElementById("applyModal").style.display = "none";
+            }
+
+            // Fermer la fenêtre si l'utilisateur clique en dehors de la modale
+            window.onclick = function(event) {
+                var modal = document.getElementById("applyModal");
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
+
+
     </body>
 </html>

@@ -10,6 +10,13 @@
     <option name="highlightLevel" value="WARNING" />
     <option name="transferred" value="true" />
   </component>
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$" />
+      <path value="$PROJECT_DIR$/vendor/phpmailer/phpmailer" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+    </include_path>
+  </component>
   <component name="PhpInterpreters">
     <interpreters>
       <interpreter id="a6772125-ad4c-423d-8a38-ae1b2797dfbb" name="Debian" home="\\wsl$\Debian/usr/bin/php" auto="false" debugger_id="php.debugger.XDebug">
