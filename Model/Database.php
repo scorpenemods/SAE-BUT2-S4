@@ -544,30 +544,30 @@ class Database
     public function getStudents($professorId): array
     {
         $query = "SELECT User.nom, User.prenom
-              FROM User
-              JOIN Groupe ON User.id = Groupe.user_id
-              JOIN Convention ON Groupe.conv_id = Convention.id
-              WHERE Groupe.conv_id IN (
-                  SELECT Groupe.conv_id
-                  FROM Groupe
-                  JOIN User AS Professor ON Groupe.user_id = Professor.id
-                  WHERE Professor.id = :professor_id
-                  AND Professor.role = 2
-              )
-              AND User.role = 1;";
+                    FROM User
+                    JOIN Groupe ON User.id = Groupe.user_id
+                    JOIN Convention ON Groupe.conv_id = Convention.id
+                    WHERE Groupe.conv_id IN (
+                        SELECT Groupe.conv_id
+                        FROM Groupe
+                        JOIN User AS Professor ON Groupe.user_id = Professor.id
+                        WHERE Professor.id = :professor_id
+                        AND Professor.role = 2
+                    )
+                    AND User.role = 1";
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':professor_id', $professorId, PDO::PARAM_INT);
         $stmt->execute();
         $students = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $students[] = new Person(
-                $row['nom'],
-                $row['prenom'],
-                $row['telephone'],
-                $row['role'],
-                $row['activite'],
-                $row['email'],
-                $row['id']
+                $row['nom'] ?? '',
+                $row['prenom'] ?? '',
+                $row['telephone'] ?? 0,
+                $row['role'] ?? '',
+                $row['activite'] ?? '',
+                $row['email'] ?? '',
+                $row['id'] ?? 0
             );
         }
         return $students;
