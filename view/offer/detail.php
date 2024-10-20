@@ -192,10 +192,10 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
         document.getElementById('validate-form').style.display = 'block';
     } else if (secretariat && type === 'all' || type == null) {
         document.getElementById('apply-form').style.display = 'none';
+        document.getElementById('deny-form').style.display = 'none';
+        document.getElementById('validate-form').style.display = 'none';
         document.getElementById('edit-form').style.display = 'block';
         document.getElementById('hide-form').style.display = 'block';
-        document.getElementById('deny-form').style.display = 'block';
-        document.getElementById('validate-form').style.display = 'block';
     } else if (companyId !== 0) {
         document.getElementById('apply-form').style.display = 'none';
         document.getElementById('hide-form').style.display = 'block';
