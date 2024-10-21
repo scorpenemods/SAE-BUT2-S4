@@ -120,10 +120,12 @@ $messages = $database->getMessages($senderId, $receiverId);
 <section class="Menus">
     <nav>
         <span onclick="window.location.href='Student.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : '0'; ?>">Accueil</span>
-        <span onclick="window.location.href='Student.php?section=4'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '1'; ?>">Livret de suivi</span>
-        <span onclick="window.location.href='Student.php?section=2'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '2'; ?>">Offres</span>
-        <span onclick="window.location.href='Student.php?section=3'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '3'; ?>">Documents</span>
-        <span onclick="window.location.href='Student.php?section=1'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '4'; ?>">Messagerie</span>
+        <span onclick="window.location.href='Student.php?section=6'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '1'; ?>">Missions de stage</span>
+        <span onclick="window.location.href='Student.php?section=4'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '2'; ?>">Livret de suivi</span>
+        <span onclick="window.location.href='Student.php?section=2'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '3'; ?>">Offres</span>
+        <span onclick="window.location.href='Student.php?section=3'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '4'; ?>">Documents</span>
+        <span onclick="window.location.href='Student.php?section=1'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '5'; ?>">Messagerie</span>
+        <span onclick="window.location.href='Student.php?section=5'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '6'; ?>">Notes</span>
     </nav>
     <div class="Contenus">
         <!-- Accueil Content -->
@@ -139,6 +141,10 @@ $messages = $database->getMessages($senderId, $receiverId);
                 <li><strong>Messagerie:</strong> Communiquez facilement avec votre tuteur, enseignant, ou autres contacts.</li><br>
             </ul><br>
         </div>
+
+
+        <!-- Missions Content -->
+        <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">Contenu Missions</div>
 
         <!-- Messagerie Content -->
         <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">
@@ -219,6 +225,8 @@ $messages = $database->getMessages($senderId, $receiverId);
 
         <!-- Livret de suivi Content -->
         <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">Contenu Livret de suivi</div>
+        <!-- Notes Content -->
+        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">Contenu Notes</div>
     </div>
 </section>
 

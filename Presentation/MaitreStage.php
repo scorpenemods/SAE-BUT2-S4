@@ -102,10 +102,12 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
 <section class="Menus">
     <nav>
         <span onclick="widget(0)" class="widget-button Current" id="content-0">Accueil</span>
-        <span onclick="widget(1)" class="widget-button" id="content-1">Gestion Stagiaires</span>
-        <span onclick="widget(2)" class="widget-button" id="content-2">Evaluation Stages</span>
-        <span onclick="widget(3)" class="widget-button" id="content-3">Documents</span>
-        <span onclick="widget(4)" class="widget-button" id="content-4">Messagerie</span>
+        <span onclick="widget(1)" class="widget-button" id="content-1">Missions de stage</span>
+        <span onclick="widget(2)" class="widget-button" id="content-2">Gestion Stagiaires</span>
+        <span onclick="widget(3)" class="widget-button" id="content-3">Evaluation Stages</span>
+        <span onclick="widget(4)" class="widget-button" id="content-4">Documents</span>
+        <span onclick="widget(5)" class="widget-button" id="content-5">Messagerie</span>
+        <span onclick="widget(6)" class="widget-button" id="content-6">Notes</span>
 
 
 
@@ -119,12 +121,13 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
         </div>
 
         <!-- Contenu des autres sections -->
-        <div class="Contenu" id="content-1">Contenu Gestion Stagiaires</div>
-        <div class="Contenu" id="content-2">Contenu Evaluation Stages</div>
-        <div class="Contenu" id="content-3">Contenu Documents</div>
+        <div class="Contenu" id="content-1">Missions de stage</div>
+        <div class="Contenu" id="content-2">Contenu Gestion Stagiaires</div>
+        <div class="Contenu" id="content-3">Contenu Evaluation Stages</div>
+        <div class="Contenu" id="content-4">Contenu Documents</div>
 
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu" id="content-4">
+        <div class="Contenu" id="content-5">
             <div class="messenger">
                 <!-- Barre de recherche de contacts -->
                 <div class="contacts">
@@ -210,6 +213,8 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                 </div>
             </div>
         </div>
+
+        <div class="Contenu" id="content-6">Contenu des notes</div>
 
 
 

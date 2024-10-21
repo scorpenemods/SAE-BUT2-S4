@@ -100,10 +100,12 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
 <section class="Menus">
     <nav>
         <span onclick="widget(0)" class="widget-button Current" id="content-0">Accueil</span>
-        <span onclick="widget(1)" class="widget-button" id="content-1">Gestion Étudiants</span>
-        <span onclick="widget(2)" class="widget-button" id="content-2">Livret de suivi</span>
-        <span onclick="widget(3)" class="widget-button" id="content-3">Documents</span>
-        <span onclick="widget(4)" class="widget-button" id="content-4">Messagerie</span>
+        <span onclick="widget(1)" class="widget-button" id="content-1">Missions de stage</span>
+        <span onclick="widget(2)" class="widget-button" id="content-2">Gestion Étudiants</span>
+        <span onclick="widget(3)" class="widget-button" id="content-3">Livret de suivi</span>
+        <span onclick="widget(4)" class="widget-button" id="content-4">Documents</span>
+        <span onclick="widget(5)" class="widget-button" id="content-5">Messagerie</span>
+        <span onclick="widget(6)" class="widget-button" id="content-6">Notes</span>
 
 
 
@@ -113,10 +115,11 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
             <h2>Bienvenue sur la plateforme pour Professeurs!</h2><br>
             <p>Gérez les étudiants, suivez leur progression et communiquez facilement avec eux.</p><br>
         </div>
-        <div class="Contenu" id="content-1">Contenu Gestion Étudiants</div>
-        <div class="Contenu" id="content-2">Contenu Livret de suivi</div>
-        <div class="Contenu" id="content-3">Contenu Documents</div>
-        <div class="Contenu" id="content-4">
+        <div class="Contenu" id="content-1">Contenu des missions de stage</div>
+        <div class="Contenu" id="content-2">Contenu Gestion Étudiants</div>
+        <div class="Contenu" id="content-3">Contenu Livret de suivi</div>
+        <div class="Contenu" id="content-4">Contenu Documents</div>
+        <div class="Contenu" id="content-5">
             <!-- Содержимое мессенджера -->
             <div class="messenger">
                 <div class="contacts">
@@ -188,6 +191,7 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                 </div>
             </div>
         </div>
+        <div class="Contenu" id="content-6">Contenu des notes</div>
 
     </div>
 </section>
