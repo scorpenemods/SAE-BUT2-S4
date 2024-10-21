@@ -65,7 +65,8 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <!-- Inclusion du fichier CSS pour la mise en page -->
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <!-- Inclusion du fichier JS pour les interactions -->
-    <script src="../View/Principal/Principal.js" defer></script>
+    <script src="../View/Principal/Principal.js"></script>
+
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>"> <!-- Ajout de la classe 'dark-mode' si activée -->
 

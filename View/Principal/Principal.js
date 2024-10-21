@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (selectedContactId && selectedContactName) {
         // Ouvrir le chat avec le contact précédemment sélectionné
-        openChat(selectedContactId, selectedContactName);
+        showDefaultChatMessage(); //openChat(selectedContactId, selectedContactName);
     } else {
         // Aucun contact sélectionné, afficher le message par défaut
         showDefaultChatMessage();

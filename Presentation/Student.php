@@ -37,11 +37,9 @@ if (isset($_GET['section'])) {
 // Définit la section active par défaut (Accueil) si aucune n'est spécifiée
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
 
-
 // Récupération des messages entre l'utilisateur actuel et le destinataire
 $receiverId = 2; // À définir dynamiquement
 $messages = $database->getMessages($senderId, $receiverId);
-
 ?>
 
 <!DOCTYPE html>
@@ -51,8 +49,8 @@ $messages = $database->getMessages($senderId, $receiverId);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="/View/Principal/Principal.css">
-    <script src="/View/Principal/Principal.js" defer></script>
-    <script src="/View/Principal/deleteMessage.js" defer></script>
+    <script src="/View/Principal/Principal.js"></script>
+    <script src="/View/Principal/deleteMessage.js"></script>
 
     <style>
         /* Mode sombre dynamiquement */

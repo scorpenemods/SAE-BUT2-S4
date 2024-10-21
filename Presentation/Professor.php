@@ -59,8 +59,8 @@ $contacts = $database->getGroupContacts($userId);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage - Professeur</title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
-    <script src="../View/Principal/Principal.js" defer></script>
-    <script src="../View/Principal/deleteMessage.js" defer></script>
+    <script src="../View/Principal/Principal.js"></script>
+    <script src="../View/Principal/deleteMessage.js"></script>
 </head>
 
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
@@ -125,7 +125,7 @@ $contacts = $database->getGroupContacts($userId);
         <div class="Contenu" id="content-3">Contenu Livret de suivi</div>
         <div class="Contenu" id="content-4">Contenu Documents</div>
         <div class="Contenu" id="content-5">
-            <!-- Содержимое мессенджера -->
+            <!-- Messagerie Content -->
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">

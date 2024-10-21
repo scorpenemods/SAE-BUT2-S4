@@ -405,7 +405,7 @@ ul li.contact-active {
 }
 
 .chat-window {
-    width: 70%;
+    width: 80%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
