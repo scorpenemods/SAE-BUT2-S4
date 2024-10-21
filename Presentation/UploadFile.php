@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
 }
 
 if (isset($_FILES['file']) && isset($_POST['receiver_id'])) {
-    $database = new Database();
+    $database = (Database::getInstance());
     $senderId = $_SESSION['user_id'] ?? null;
     $receiverId = $_POST['receiver_id'];
 

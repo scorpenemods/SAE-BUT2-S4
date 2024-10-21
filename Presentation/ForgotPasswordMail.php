@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
 
     // Création d'une instance de la base de données
-    $db = new Database();
+    $db = (Database::getInstance());
     // Récupère les informations utilisateur en fonction de l'email
     $user = $db->getUserByEmail($email);
 

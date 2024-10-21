@@ -12,7 +12,7 @@ if (isset($_POST['student_id'], $_POST['professor_id'], $_POST['maitre_id'])) {
     $maitreId = $_POST['maitre_id'];
     $conventionId = $_POST['convention_id'] ?? null;
 
-    $database = new Database();
+    $database = (Database::getInstance());
 
     // Appel de la fonction pour créer le groupe
     $result = createGroup($studentId, $professorId, $maitreId, $conventionId, $database);

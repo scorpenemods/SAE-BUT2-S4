@@ -7,7 +7,7 @@ require "../Model/Database.php";
 require "../Model/Person.php";
 
 // Initialisation de la connexion à la base de données
-$database = new Database();
+$database = (Database::getInstance());
 
 // Récupération de l'ID de l'utilisateur à partir de la session
 $senderId = $_SESSION['user_id'] ?? null;

@@ -25,7 +25,7 @@ if (isset($_SESSION['user'])) {
 }
 
 // Instanciation de l'objet Database
-$database = new Database();
+$database = (Database::getInstance());
 
 // Récupération des préférences de l'utilisateur
 $preferences = $database->getUserPreferences($senderId);

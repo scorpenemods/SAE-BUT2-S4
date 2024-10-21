@@ -1,11 +1,17 @@
 <?php
 class Database
 {
-    private $connection;
+    private static ?Database $instance = null;
+    private ?PDO $connection;
+    private function __construct(){}
 
-    public function __construct()
+    public static function getInstance(): Database
     {
-        $this->connect();
+        if (self::$instance === null) {
+            self::$instance = new Database();
+            self::$instance->connect();
+        }
+        return self::$instance;
     }
 
     private function connect(): void

@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userId = $_POST['user_id'];
 
         // Crée une instance de la base de données
-        $db = new Database();
+        $db = (Database::getInstance());
         // Récupère les informations de l'utilisateur à partir de l'ID
         $user = $db->getUserById($userId);
 

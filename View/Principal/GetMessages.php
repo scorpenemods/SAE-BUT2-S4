@@ -7,7 +7,7 @@ if (isset($_GET['contact_id']) && isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     $userId = $person->getUserId();
 
-    $database = new Database();
+    $database = (Database::getInstance());
 
     // Récupérer les messages entre les deux utilisateurs
     $messages = $database->getMessagesBetweenUsers($userId, $contactId);

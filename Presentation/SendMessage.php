@@ -17,7 +17,7 @@ if (isset($_SESSION['user'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $database = new Database();
+    $database = (Database::getInstance());
 
     // Retrieve sender information
     if (!isset($_SESSION['user'])) {

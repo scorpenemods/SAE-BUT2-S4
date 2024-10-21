@@ -7,7 +7,7 @@ require "../Model/Database.php";
 require "../Model/Person.php";
 
 // Création d'une nouvelle instance de la classe Database
-$database = new Database();
+$database = (Database::getInstance());
 
 // Initialisation du nom d'utilisateur par défaut
 $userName = "Guest";
