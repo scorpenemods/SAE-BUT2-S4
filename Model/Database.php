@@ -15,6 +15,7 @@ class Database
             require_once __DIR__ . '/Config.php';
             $this->connection = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->connection->exec("SET time_zone = '+02:00'");
         } catch (PDOException $e) {
             echo "Connection error: " . $e->getMessage();
             exit;
@@ -53,13 +54,6 @@ class Database
             return [];
         }
     }
-
-
-
-
-
-
-
 
 
     // Adding a new user
@@ -141,47 +135,48 @@ class Database
 
     // ----------------------- Messenger realisation ------------------------------------------ //
 
-    public function sendMessage($senderId, $receiverId, $message, $documentPath = null) {
+    public function sendMessage($senderId, $receiverId, $message, $filePath = null) {
         try {
-            // Begin transaction
             $this->connection->beginTransaction();
 
-            // Insert the message
-            $sql = "INSERT INTO Message (sender_id, receiver_id, contenu, timestamp) VALUES (:sender_id, :receiver_id, :contenu, :timestamp)";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->execute([
-                ':sender_id' => $senderId,
-                ':receiver_id' => $receiverId,
-                ':contenu' => $message,
-                ':timestamp' => date("Y-m-d H:i:s")
-            ]);
+            // Insertion du message
+            $stmt = $this->connection->prepare("
+                INSERT INTO Message (sender_id, receiver_id, contenu, timestamp)
+                VALUES (:sender_id, :receiver_id, :contenu, NOW())
+            ");
+            $stmt->bindParam(':sender_id', $senderId);
+            $stmt->bindParam(':receiver_id', $receiverId);
+            $stmt->bindParam(':contenu', $message);
+            $stmt->execute();
             $messageId = $this->connection->lastInsertId();
 
-            // Handle document if provided
-            if ($documentPath) {
-                // Insert into Document table
-                $sqlDoc = "INSERT INTO Document (filepath) VALUES (:filepath)";
-                $stmt = $this->connection->prepare($sqlDoc);
-                $stmt->execute([
-                    ':filepath' => $documentPath
-                ]);
+            // Si un fichier est associé, insérer dans Document et Document_Message
+            if ($filePath) {
+                // Insertion dans Document
+                $stmt = $this->connection->prepare("
+                    INSERT INTO Document (filepath)
+                    VALUES (:filepath)
+                ");
+                $stmt->bindParam(':filepath', $filePath);
+                $stmt->execute();
                 $documentId = $this->connection->lastInsertId();
 
-                // Link document to message
-                $sqlLink = "INSERT INTO Document_Message (document_id, message_id) VALUES (:document_id, :message_id)";
-                $stmt = $this->connection->prepare($sqlLink);
-                $stmt->execute([
-                    ':document_id' => $documentId,
-                    ':message_id' => $messageId
-                ]);
+                // Insertion dans Document_Message
+                $stmt = $this->connection->prepare("
+                    INSERT INTO Document_Message (document_id, message_id)
+                    VALUES (:document_id, :message_id)
+                ");
+                $stmt->bindParam(':document_id', $documentId);
+                $stmt->bindParam(':message_id', $messageId);
+                $stmt->execute();
             }
 
-            // Commit transaction
             $this->connection->commit();
-            return true;
+
+            return $messageId; // Retourne l'ID du message
         } catch (PDOException $e) {
             $this->connection->rollBack();
-            echo "Error: " . $e->getMessage();
+            error_log("Erreur lors de l'envoi du message : " . $e->getMessage());
             return false;
         }
     }
@@ -234,36 +229,36 @@ class Database
 
     // ====== Messagerie Contacts ======= //
 
+    // Récupérer les contacts du même groupe que l'utilisateur
     public function getGroupContacts($userId) {
         $query = "
-        SELECT DISTINCT User.id, User.nom, User.prenom
-        FROM User
-        INNER JOIN Groupe ON User.id = Groupe.user_id
-        INNER JOIN (
-            SELECT conv_id
-            FROM Groupe
-            WHERE user_id = :user_id
-        ) AS UserGroups ON Groupe.conv_id = UserGroups.conv_id
-        WHERE User.id != :user_id;
-    ";
+            SELECT DISTINCT User.id, User.nom, User.prenom
+            FROM User
+            INNER JOIN Groupe ON User.id = Groupe.user_id
+            INNER JOIN (
+                SELECT conv_id
+                FROM Groupe
+                WHERE user_id = :user_id
+            ) AS UserGroups ON Groupe.conv_id = UserGroups.conv_id
+            WHERE User.id != :user_id;
+        ";
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getMessagesBetweenUsers($userId, $contactId) {
-        $query = "
-        SELECT *
-        FROM Messages
-        WHERE (sender_id = :user_id AND receiver_id = :contact_id)
-           OR (sender_id = :contact_id AND receiver_id = :user_id)
-        ORDER BY timestamp ASC;
-    ";
-        $stmt = $this->connection->prepare($query);
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindParam(':contact_id', $contactId, PDO::PARAM_INT);
-        $stmt->execute();
+    public function getMessagesBetweenUsers($userId1, $userId2) {
+        $stmt = $this->connection->prepare("
+        SELECT m.*, d.filepath, CONVERT_TZ(m.timestamp, '+00:00', '+02:00') as timestamp_local
+        FROM Message m
+        LEFT JOIN Document_Message dm ON m.id = dm.message_id
+        LEFT JOIN Document d ON dm.document_id = d.id
+        WHERE (m.sender_id = :userId1 AND m.receiver_id = :userId2)
+           OR (m.sender_id = :userId2 AND m.receiver_id = :userId1)
+        ORDER BY m.timestamp ASC
+    ");
+        $stmt->execute([':userId1' => $userId1, ':userId2' => $userId2]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

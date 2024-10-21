@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Europe/Paris');
 function formatTimestamp($timestamp) {
     $date = new DateTime($timestamp); // Crée un objet DateTime à partir du timestamp
     $now = new DateTime(); // Crée un objet DateTime pour la date actuelle

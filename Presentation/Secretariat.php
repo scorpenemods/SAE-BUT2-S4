@@ -44,7 +44,6 @@ if (isset($_GET['section'])) {
 // Définit la section active par défaut (Accueil) si aucune n'est spécifiée
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
 
-
 // Récupérer les préférences de l'utilisateur
 $preferences = $database->getUserPreferences($person->getUserId());
 
@@ -245,27 +244,7 @@ $maitres = $database->getTutor() ?? [];
                         <h3 id="chat-header-title">Chat avec Contact 1</h3>
                     </div>
                     <div class="chat-body" id="chat-body">
-                        <?php
-                        if (!$senderId) {
-                            die("Erreur: ID de l'utilisateur n'est pas défini dans la session.");
-                        }
-                        $messages = $database->getMessages($senderId, $receiverId);
-                        // Function for formatting date
-                        require_once '../Model/utils.php';
-                        // using loop to print messages
-                        foreach ($messages as $msg) {
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Determining the class depending on the sender
-                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // XSS protection
-                            if ($msg['filepath']) {
-                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['filepath']));
-                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
-                            }
-                            // Use the formatTimestamp function to output formatted date and time
-                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
-                            echo "</div>";
-                        }
-                        ?>
+                        <!-- JS messages dynamic -->
                     </div>
                     <div class="chat-footer">
                         <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">

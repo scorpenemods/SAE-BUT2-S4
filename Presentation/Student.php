@@ -182,27 +182,9 @@ $messages = $database->getMessages($senderId, $receiverId);
                         <h3 id="chat-header-title">Chat avec Contact </h3>
                     </div>
                     <div class="chat-body" id="chat-body">
-                        <?php
-                        require_once '../Model/utils.php';
-
-                        // using loop to print messages
-                        foreach ($messages as $msg) {
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Utilise 'self' si l'utilisateur actuel est l'expéditeur, sinon 'other'
-
-                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Affiche le contenu du message, sécurisé contre les attaques XSS
-
-                            if ($msg['file_path']) {
-                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path'])); // Nettoie le chemin du fichier
-                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
-                            }
-
-                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
-                            echo "</div>";
-                        }
-
-                        ?>
+                        <!-- Les messages seront chargés dynamiquement via JavaScript -->
                     </div>
+
                     <div class="chat-footer">
                         <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
                             <input type="file" id="file-input" name="file" style="display:none">

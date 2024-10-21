@@ -3,49 +3,48 @@ session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";
 
+// Activer l'affichage des erreurs (il nous supprimer plus tard en production)
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
+
+// Définir le fuseau horaire
 date_default_timezone_set('Europe/Paris');
 
+// Définir le type de contenu de la réponse
+header('Content-Type: application/json; charset=utf-8');
+
+// Vérification de la session utilisateur
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
-        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
-        $senderId = $person->getUserId(); // Получаем ID пользователя для отправки сообщений
-    }
-} else {
-    header("Location: Logout.php");
-    exit();
-}
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $database = new Database();
-
-    // Retrieve sender information
-    if (!isset($_SESSION['user'])) {
-        echo json_encode(['status' => 'error', 'message' => 'Utilisateur non connecté.']);
-        exit();
-    }
-    $person = unserialize($_SESSION['user']);
-    if (!$person instanceof Person) {
+        $senderId = $person->getUserId(); // ID de l'utilisateur connecté
+    } else {
         echo json_encode(['status' => 'error', 'message' => 'Session invalide. Veuillez vous reconnecter.']);
         exit();
     }
-    $senderId = $person->getUserId();
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Utilisateur non connecté.']);
+    exit();
+}
 
+// Vérification de la méthode de requête
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $database = new Database();
+
+    // Récupération des données du formulaire
     $receiverId = $_POST['receiver_id'] ?? null;
     $message = $_POST['message'] ?? '';
     $filePath = '';
     $fileName = '';
 
-    // Validate receiver ID
+    // Validation de l'ID du destinataire
     if (!$receiverId) {
         echo json_encode(['status' => 'error', 'message' => 'ID du destinataire non spécifié.']);
         exit();
     }
 
-    // Initialize an array to collect error messages
-    $errors = [];
-
-    // Handle file upload if a file is provided
+    // Traitement du fichier si un fichier est envoyé
     if (isset($_FILES['file']) && $_FILES['file']['error'] !== UPLOAD_ERR_NO_FILE) {
         if ($_FILES['file']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = "../uploads/";
@@ -56,67 +55,81 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $fileName = basename($_FILES['file']['name']);
             $fileTmpPath = $_FILES['file']['tmp_name'];
 
-            // Validate file type
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'gif', 'mp4', 'avi'];
+            // Validation du type de fichier
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'gif', 'mp4', 'avi', 'zip', 'rar', 'csv'];
             $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
             if (!in_array($fileExtension, $allowedExtensions)) {
-                $errors[] = 'Type de fichier non autorisé.';
+                echo json_encode(['status' => 'error', 'message' => 'Type de fichier non autorisé.']);
+                exit();
             }
 
-            // Validate file size (e.g., max 10 MB)
+            // Validation de la taille du fichier (max 10 MB)
             $maxFileSize = 10 * 1024 * 1024; // 10 MB
             if ($_FILES['file']['size'] > $maxFileSize) {
-                $errors[] = 'Le fichier est trop volumineux.';
+                echo json_encode(['status' => 'error', 'message' => 'Le fichier est trop volumineux.']);
+                exit();
             }
 
-            if (empty($errors)) {
-                // Generate a unique file name to prevent overwriting
-                $newFileName = uniqid('file_', true) . '.' . $fileExtension;
-                $filePath = $uploadDir . $newFileName;
+            // Génération d'un nom de fichier unique
+            $newFileName = uniqid('file_', true) . '.' . $fileExtension;
+            $filePath = $uploadDir . $newFileName;
 
-                if (move_uploaded_file($fileTmpPath, $filePath)) {
-                    // File uploaded successfully
-                    // If no message is provided, set a default message
-                    if (empty($message)) {
-                        $message = "Fichier envoyé: " . $fileName;
-                    }
-                } else {
-                    $errors[] = 'Erreur lors du téléchargement du fichier.';
+            if (move_uploaded_file($fileTmpPath, $filePath)) {
+                // Fichier téléchargé avec succès
+                if (empty($message)) {
+                    $message = "Fichier envoyé: " . $fileName;
                 }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Erreur lors du téléchargement du fichier.']);
+                exit();
             }
         } else {
-            $errors[] = 'Erreur lors du téléchargement du fichier.';
+            echo json_encode(['status' => 'error', 'message' => 'Erreur lors du téléchargement du fichier.']);
+            exit();
         }
     }
 
-    // If there are errors, return them
-    if (!empty($errors)) {
-        echo json_encode(['status' => 'error', 'message' => implode(' ', $errors)]);
-        exit();
-    }
-
-    // Validate message content or file
+    // Validation du contenu du message ou du fichier
     if (empty($message) && empty($filePath)) {
         echo json_encode(['status' => 'error', 'message' => 'Le message est vide.']);
         exit();
     }
 
-    // Send the message to the database
-    if ($database->sendMessage($senderId, $receiverId, $message, $filePath)) {
-        // Prepare the response data
-        $response = [
-            'status'     => 'success',
-            'message'    => htmlspecialchars($message),
-            'file_path'  => $filePath ? htmlspecialchars(str_replace("../", "/", $filePath)) : null,
-            'file_name'  => htmlspecialchars($fileName),
-            'timestamp'  => date("Y-m-d H:i"),
-            'sender_id'  => $senderId,
-            'message_id' => $database->getLastMessageId(),
-        ]; // str_replace() adjusts the file path to be accessible from the web root.
-        echo json_encode($response);
+    // Envoi du message à la base de données et récupération de l'ID du message
+    $messageId = $database->sendMessage($senderId, $receiverId, $message, $filePath, $fileName);
+    if ($messageId) {
+        // Récupérer le message inséré pour obtenir le timestamp exact
+        $stmt = $database->getConnection()->prepare("
+            SELECT m.*, d.filepath AS file_path
+            FROM Message m
+            LEFT JOIN Document_Message dm ON m.id = dm.message_id
+            LEFT JOIN Document d ON dm.document_id = d.id
+            WHERE m.id = :message_id
+        ");
+
+
+        $stmt->bindParam(':message_id', $messageId);
+        $stmt->execute();
+        $messageData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($messageData) {
+            $response = [
+                'status'     => 'success',
+                'message'    => htmlspecialchars($messageData['contenu']),
+                'file_path'  => $messageData['file_path'] ? htmlspecialchars(str_replace("../", "/", $messageData['file_path'])) : null,
+                'timestamp'  => date('c'), // format ISO 8601
+                'sender_id'  => $messageData['sender_id'],
+                'message_id' => $messageData['id'],
+            ];
+            echo json_encode($response);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la récupération du message.']);
+        }
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'envoi du message.']);
     }
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Méthode de requête invalide.']);
 }
 ?>

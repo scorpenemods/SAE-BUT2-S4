@@ -63,6 +63,8 @@ function widget(x) {
     let span =  document.querySelectorAll("section span");
     span[x].classList.add("Current")
 }
+
+// Fonction pour envoyer un message
 function sendMessage(event) {
     event.preventDefault();
 
@@ -83,7 +85,7 @@ function sendMessage(event) {
         formData.append("file", fileInput.files[0]);
     }
 
-    fetch("sendMessage.php", {
+    fetch("SendMessage.php", {
         method: "POST",
         body: formData
     })
@@ -92,9 +94,10 @@ function sendMessage(event) {
             let data;
             try {
                 data = JSON.parse(text);
+                //console.log("Réponse du serveur : ", data);
             } catch (error) {
-                console.error("Erreur lors de l'analyse du JSON: ", error);
-                console.error("Réponse du serveur: ", text);
+                //console.error("Erreur lors de l'analyse du JSON: ", error);
+                //console.error("Réponse du serveur: ", text);
                 alert("Erreur lors de l'envoi du message. Veuillez réessayer plus tard.");
                 return;
             }
@@ -102,7 +105,6 @@ function sendMessage(event) {
                 displayMessage(
                     data.message,
                     data.file_path,
-                    data.file_name,
                     'self',
                     data.timestamp,
                     data.message_id
@@ -116,28 +118,30 @@ function sendMessage(event) {
         .catch(error => console.error("Erreur lors de l'envoi du message: ", error));
 }
 
-function displayMessage(messageContent, filePath = null, fileName = '', messageType, timestamp, messageId) {
+function displayMessage(messageContent, filePath = null, messageType, timestamp, messageId) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', messageType);
-    messageElement.dataset.messageId = messageId; // Assign the message ID
+    messageElement.dataset.messageId = messageId;
 
-    // Add message text if any
+    // Ajouter le texte du message s'il existe
     if (messageContent) {
         const messageText = document.createElement('p');
         messageText.innerHTML = messageContent;
         messageElement.appendChild(messageText);
     }
 
-    // Add file link if file exists
+    // Ajouter un lien vers le fichier s'il existe
     if (filePath) {
         const fileLink = document.createElement('a');
         fileLink.href = filePath;
         fileLink.download = true;
+        // Extraire le nom du fichier à partir du chemin
+        const fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
         fileLink.textContent = fileName || 'Télécharger le fichier';
         messageElement.appendChild(fileLink);
     }
 
-    // Add timestamp
+    // Ajouter le timestamp
     const timestampContainer = document.createElement('div');
     timestampContainer.classList.add('timestamp-container');
     timestampContainer.innerHTML = `<span class="timestamp">${formatTimestamp(timestamp)}</span>`;
@@ -146,8 +150,9 @@ function displayMessage(messageContent, filePath = null, fileName = '', messageT
 
     const chatBody = document.getElementById('chat-body');
     chatBody.appendChild(messageElement);
-    chatBody.scrollTop = chatBody.scrollHeight; // Scroll to the bottom
+    chatBody.scrollTop = chatBody.scrollHeight; // Faire défiler vers le bas
 }
+
 
 function fetchMessages() {
     const receiverId = document.querySelector('input[name="receiver_id"]').value;
@@ -169,17 +174,31 @@ function fetchMessages() {
         .catch(error => console.error("Erreur lors de la récupération des messages: ", error));
 }
 
-function updateChat(messages) {
-    const chatBody = document.getElementById('chat-body');
-    chatBody.innerHTML = ''; // Clear existing messages
+// Fonction pour mettre à jour le chat dynamiquement
+function updateChat() {
+    if (!currentChatContactId) return; // Si aucun contact n'est sélectionné, ne rien faire
 
-    messages.forEach(msg => {
-        const messageType = msg.sender_id == currentUserId ? 'self' : 'other';
-        displayMessage(msg.content, msg.file_path, messageType, msg.timestamp);
-    });
+    fetch('../View/Principal/GetMessages.php?contact_id=' + currentChatContactId)
+        .then(response => response.text())
+        .then(html => {
+            const chatBody = document.getElementById('chat-body');
+            // Sauvegarder la position de défilement actuelle
+            const previousScrollHeight = chatBody.scrollHeight;
+            const isAtBottom = chatBody.scrollTop + chatBody.clientHeight >= previousScrollHeight - 10;
+
+            // Mettre à jour le contenu du chat
+            chatBody.innerHTML = html;
+
+            // Si l'utilisateur était en bas du chat, faire défiler jusqu'en bas
+            if (isAtBottom) {
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
 }
 
-// setInterval(fetchMessages, 5000); // Fetch messages every 5 seconds
+// Actualiser le chat toutes les 5 secondes
+//DON'T touch  setInterval(updateChat, 5000);
 
 function sendFile(fileInput) {
     const file = fileInput.files[0];
@@ -188,7 +207,7 @@ function sendFile(fileInput) {
     formData.append("receiver_id", document.querySelector('input[name="receiver_id"]').value);
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "uploadFile.php", true);
+    xhr.open("POST", "UploadFile.php", true);
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -209,32 +228,45 @@ function sendFile(fileInput) {
 
 // Formatting Date and Time
 function formatTimestamp(timestamp) {
-    const optionsTime = { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' };
-    const optionsDate = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Europe/Paris' };
+    try {
+        console.log('Timestamp reçu pour formatage :', timestamp);
+        const messageDate = new Date(timestamp);
 
-    // Get the current date and time in the Europe/Paris time zone
-    const nowParis = new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris' });
-    const now = new Date(nowParis);
+        if (isNaN(messageDate.getTime())) {
+            console.error('Invalid date format:', timestamp);
+            return 'Date invalide';
+        }
 
-    // Get the date and time of the message in the Europe/Paris time zone
-    const messageDateParis = new Date(timestamp).toLocaleString('en-US', { timeZone: 'Europe/Paris' });
-    const messageDate = new Date(messageDateParis);
+        const now = new Date();
 
-    // Checking if the message is today's
-    const isToday = now.toDateString() === messageDate.toDateString();
+        const isToday = now.toDateString() === messageDate.toDateString();
 
-    // Checking if the message is from yesterday
-    const yesterday = new Date(now);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const isYesterday = yesterday.toDateString() === messageDate.toDateString();
+        const yesterday = new Date(now);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const isYesterday = yesterday.toDateString() === messageDate.toDateString();
 
-    if (isToday) {
-        return 'Today ' + messageDate.toLocaleTimeString('fr-FR', optionsTime);
+        // Formater l'heure manuellement
+        let hours = messageDate.getHours().toString().padStart(2, '0');
+        let minutes = messageDate.getMinutes().toString().padStart(2, '0');
+        let formattedTime = hours + ':' + minutes;
+
+        // Formater la date manuellement
+        let day = messageDate.getDate().toString().padStart(2, '0');
+        let month = (messageDate.getMonth() + 1).toString().padStart(2, '0'); // Les mois commencent à 0
+        let year = messageDate.getFullYear();
+        let formattedDate = day + '.' + month + '.' + year;
+
+        if (isToday) {
+            return 'Aujourd\'hui ' + formattedTime;
+        } else if (isYesterday) {
+            return 'Hier ' + formattedTime;
+        } else {
+            return formattedDate + ' ' + formattedTime;
+        }
+    } catch (e) {
+        console.error('Erreur lors du formatage du timestamp:', e);
+        return 'Date invalide';
     }
-    if (isYesterday) {
-        return 'Yesterday ' + messageDate.toLocaleTimeString('fr-FR', optionsTime);
-    }
-    return messageDate.toLocaleDateString('fr-FR', optionsDate) + ' ' + messageDate.toLocaleTimeString('fr-FR', optionsTime);
 }
 
 function searchContacts() {
@@ -256,17 +288,60 @@ function openChat(contactId, contactName) {
     // Mettre à jour l'en-tête du chat avec le nom du contact
     document.getElementById('chat-header-title').innerText = 'Chat avec ' + contactName;
 
-    // Mettre à jour le champ caché receiver_id
+    // Enregistrer l'ID du contact dans le Local Storage
+    localStorage.setItem('selectedContactId', contactId);
+
+    // Enregistrer le nom du contact dans le Local Storage
+    localStorage.setItem('selectedContactName', contactName);
+
+    // Sauvegarder l'ID du contact actuel pour envoyer un message
+    window.currentChatContactId = contactId;
+
+    // Définir la valeur de receiver_id
     document.getElementById('receiver_id').value = contactId;
 
+    // Supprimer la classe 'contact-active' de tous les contacts
+    const contacts = document.querySelectorAll('#contacts-list li');
+    contacts.forEach(contact => {
+        contact.classList.remove('contact-active');
+    });
+
+    // Ajouter la classe 'contact-active' au contact sélectionné
+    const activeContact = document.querySelector(`#contacts-list li[data-contact-id="${contactId}"]`);
+    if (activeContact) {
+        activeContact.classList.add('contact-active');
+    }
+
     // Récupérer les messages via une requête AJAX
-    fetch('GetMessages.php?contact_id=' + contactId)
+    fetch('../View/Principal/GetMessages.php?contact_id=' + contactId)
         .then(response => response.text())
         .then(html => {
             document.getElementById('chat-body').innerHTML = html;
+            // Faire défiler le chat vers le bas
+            document.getElementById('chat-body').scrollTop = document.getElementById('chat-body').scrollHeight;
         })
         .catch(error => console.error('Erreur:', error));
 }
+
+function showDefaultChatMessage() {
+    const chatBody = document.getElementById('chat-body');
+    chatBody.innerHTML = '<div class="default-message">Sélectionnez un chat pour commencer la conversation.</div>';
+    document.getElementById('chat-header-title').innerText = 'Messagerie';
+}
+// Initialisation au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    const selectedContactId = localStorage.getItem('selectedContactId');
+    const selectedContactName = localStorage.getItem('selectedContactName');
+
+    if (selectedContactId && selectedContactName) {
+        // Ouvrir le chat avec le contact précédemment sélectionné
+        openChat(selectedContactId, selectedContactName);
+    } else {
+        // Aucun contact sélectionné, afficher le message par défaut
+        showDefaultChatMessage();
+    }
+});
+
 
 // ---------------------------------- Student list -------------------------------------//
 document.getElementById('sidebar-toggle').addEventListener('click', function() {

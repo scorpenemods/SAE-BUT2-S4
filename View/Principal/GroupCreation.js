@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // **Vérification de l'existence du formulaire avant d'ajouter l'écouteur d'événement**
+    // Vérification de l'existence du formulaire avant d'ajouter l'écouteur d'événement
     const createGroupForm = document.getElementById('createGroupForm');
     if (createGroupForm) {
         // Gestion de la soumission du formulaire

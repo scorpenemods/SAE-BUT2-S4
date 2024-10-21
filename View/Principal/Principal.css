@@ -355,7 +355,7 @@ footer a {
 
 .messenger {
     display: flex;
-    height: calc(100vh - 160px); /* Отступ под header и footer */
+    height: calc(100vh - 60px); /* Отступ под header и footer */
     max-width: 100%; /* Используем все свободное место */
 
 
@@ -371,11 +371,16 @@ footer a {
 
 /* updated styles */
 .contacts {
-    width: 30%;
+    width: 25%;
     background-color: #f5f5f5;
     padding: 20px;
     border-right: 1px solid #ddd;
     position: relative;
+}
+
+ul li.contact-active {
+    background-color: #3498db;
+    color: #fff;
 }
 
 .contacts h3 {
@@ -386,7 +391,6 @@ footer a {
 .contacts ul li {
     padding: 15px;
     margin: 10px 0;
-    background-color: #ecf0f1;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -485,7 +489,9 @@ footer a {
 }
 
 .chat-footer {
-    padding-top: 10px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    flex-direction:column;
 }
 
 /* Кнопка отправки */
@@ -968,4 +974,15 @@ button {
 button:hover {
     background-color: #3498db;
 }
+
+.default-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #777;
+    font-size: 1.2em;
+    text-align: center;
+}
+
 

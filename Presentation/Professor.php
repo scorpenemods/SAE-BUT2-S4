@@ -6,14 +6,18 @@ require "../Model/Person.php";
 
 $database = new Database();
 
-// Убедитесь, что объект Person загружен
 $userName = "Guest";
 $senderId = $_SESSION['user_id'] ?? null;
+// Vérification de la session utilisateur
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
-        $senderId = $person->getUserId(); // Получаем ID пользователя для отправки сообщений
+        $userId = $person->getUserId(); // ID de l'utilisateur connecté
+        $userRole = $person->getRole(); // Rôle de l'utilisateur
+    } else {
+        header("Location: Logout.php");
+        exit();
     }
 } else {
     header("Location: Logout.php");
@@ -23,24 +27,28 @@ if (isset($_SESSION['user'])) {
 $userRole = $person->getRole(); // Получение роли пользователя
 date_default_timezone_set('Europe/Paris');
 
-// Ограничение доступа по ролям (настройте в зависимости от ролей)
-$allowedRoles = [2]; // Здесь указаны роли, которым разрешен доступ к странице. Например, роль 2 — преподаватель.
-if (!in_array($userRole, $allowedRoles)) {
-    header("Location: AccessDenied.php");  // Перенаправление на страницу отказа в доступе
+// Vérification du rôle de l'utilisateur (ici, rôle 2 pour Professeur)
+if ($userRole != 2) {
+    header("Location: AccessDenied.php");
     exit();
 }
 
-// Предполагаемый ID получателя (настроить динамически в зависимости от контакта)
-$receiverId = $_POST['receiver_id'] ?? 1; // Замените на динамическое значение
-
 $students = $database->getStudents($senderId);
-
 
 // Récupérer les préférences de l'utilisateur
 $preferences = $database->getUserPreferences($person->getUserId());
 
 // Vérifier si le mode sombre est activé dans les préférences
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
+
+if (isset($_GET['section'])) {
+    $_SESSION['active_section'] = $_GET['section'];
+}
+// Définit la section active par défaut (Accueil) si aucune n'est spécifiée
+$activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
+
+// Récupération des contacts (utilisateurs du même groupe)
+$contacts = $database->getGroupContacts($userId);
 ?>
 
 
@@ -106,9 +114,6 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
         <span onclick="widget(4)" class="widget-button" id="content-4">Documents</span>
         <span onclick="widget(5)" class="widget-button" id="content-5">Messagerie</span>
         <span onclick="widget(6)" class="widget-button" id="content-6">Notes</span>
-
-
-
     </nav>
     <div class="Contenus">
         <div class="Visible" id="content-0">
@@ -155,31 +160,11 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                         <h3 id="chat-header-title">Chat avec Contact </h3>
                     </div>
                     <div class="chat-body" id="chat-body">
-                        <?php
-                        if (!$senderId) {
-                            die("Erreur: ID de l'utilisateur n'est pas défini dans la session.");
-                        }
-                        $messages = $database->getMessages($senderId, $receiverId);
-                        // Функция для форматирования даты
-                        require_once "../Model/utils.php";
-
-                        // Пример использования в вашем цикле для вывода сообщений
-                        foreach ($messages as $msg) {
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Определение класса в зависимости от отправителя
-                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Защита от XSS
-                            if ($msg['file_path']) {
-                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path']));
-                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
-                            }
-                            // Используем функцию formatTimestamp для вывода форматированной даты и времени
-                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
-                            echo "</div>";
-                        }
-                        ?>
+                        <!-- Les messages seront chargés dynamiquement via JavaScript -->
                     </div>
+
                     <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                             <!-- Champ caché pour le destinataire -->
@@ -192,7 +177,6 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
             </div>
         </div>
         <div class="Contenu" id="content-6">Contenu des notes</div>
-
     </div>
 </section>
 </body>

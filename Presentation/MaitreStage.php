@@ -9,9 +9,6 @@ require "../Model/Person.php";
 // Initialisation de la connexion à la base de données
 $database = new Database();
 
-// Récupération de l'ID de l'utilisateur à partir de la session
-$senderId = $_SESSION['user_id'] ?? null;
-
 // Initialisation du nom de l'utilisateur par défaut (Guest) si non connecté
 $userName = "Guest";
 
@@ -23,6 +20,7 @@ if (isset($_SESSION['user'])) {
     if ($person instanceof Person) {
         // Récupère le prénom et le nom de l'utilisateur en protégeant contre les attaques XSS (Cross-Site Scripting)
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+        $senderId = $person->getUserId(); // Récupération de l'ID de l'utilisateur connecté
     }
 } else {
     // Redirection vers la page de déconnexion si l'utilisateur n'est pas trouvé dans la session
@@ -49,6 +47,13 @@ $preferences = $database->getUserPreferences($person->getUserId());
 
 // Vérification si le mode sombre est activé dans les préférences de l'utilisateur
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
+
+if (isset($_GET['section'])) {
+    $_SESSION['active_section'] = $_GET['section'];
+}
+// Définit la section active par défaut (Accueil) si aucune n'est spécifiée
+$activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
+
 ?>
 
 <!DOCTYPE html>
@@ -108,9 +113,6 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
         <span onclick="widget(4)" class="widget-button" id="content-4">Documents</span>
         <span onclick="widget(5)" class="widget-button" id="content-5">Messagerie</span>
         <span onclick="widget(6)" class="widget-button" id="content-6">Notes</span>
-
-
-
     </nav>
 
     <div class="Contenus">
@@ -165,38 +167,7 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                     </div>
 
                     <div class="chat-body" id="chat-body">
-                        <?php
-                        // Si l'ID de l'utilisateur n'est pas défini, afficher une erreur et arrêter le script
-                        if (!$senderId) {
-                            die("Erreur: ID de l'utilisateur n'est pas défini dans la session.");
-                        }
-
-                        // Récupère les messages entre l'utilisateur et le destinataire
-                        $messages = $database->getMessages($senderId, $receiverId);
-
-                        // Fonction pour formater la date d'un message
-                        require_once '../Model/utils.php';
-
-                        // Boucle pour afficher les messages
-                        foreach ($messages as $msg) {
-                            // Détermine si le message a été envoyé par l'utilisateur ou reçu (classe CSS différente)
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other';
-
-                            // Affiche le message avec la protection contre les attaques XSS
-                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>";
-
-                            // Si le message contient un fichier joint, affiche un lien de téléchargement
-                            if ($msg['file_path']) {
-                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path']));
-                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
-                            }
-
-                            // Affiche la date et l'heure formatées du message
-                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
-                            echo "</div>";
-                        }
-                        ?>
+                        <!-- Les messages seront chargés dynamiquement via JavaScript -->
                     </div>
 
                     <!-- Zone de saisie pour envoyer un nouveau message -->
@@ -215,9 +186,6 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
         </div>
 
         <div class="Contenu" id="content-6">Contenu des notes</div>
-
-
-
     </div>
 </section>
 
