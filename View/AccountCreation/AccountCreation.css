@@ -75,7 +75,6 @@ header .navbar-right {
     align-items: center;
 }
 header .navbar-right p {
-    color: black;
     margin: 3%;
     padding: 2%;
     background-color: lightgray;
@@ -114,7 +113,6 @@ header .slider {
 }
 
 header .switch-sticker {
-    color: black;
     position: absolute;
     width: 30px;
     text-align: center;
@@ -178,7 +176,6 @@ header div.show-list {
     flex-direction: column;
     position: absolute;
     background-color: lightgray;
-    color: black;
     box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
     z-index: 15;
     right: 2%;
@@ -187,7 +184,6 @@ header div.show-list {
     opacity: 1;
 }
 header .navbar-right .show-list a {
-    color: black;
     padding: 20px;
     text-decoration: none;
     border-bottom: solid 1px;
@@ -198,22 +194,9 @@ header .navbar-right .hide-list {
     visibility: hidden;
     opacity: 0;
 }
-/* Basic styles for body */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    line-height: 1.6;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
 
 /* Headers  */
 h1, h2, h3, h4, h5, h6 {
-    color: #2c3e50;
     margin-bottom: 20px;
     font-weight: 600;
 }
@@ -232,6 +215,7 @@ h3 {
 
 /* Links */
 a {
+    text-align: center;
     text-decoration: none;
     color: #3498db;
     transition: color 0.3s ease;
@@ -280,7 +264,6 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 
 label {
     font-weight: 500;
-    color: #555;
 }
 
 /* Styles for buttons */

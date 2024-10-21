@@ -597,6 +597,11 @@ button:hover,
     transform: translateX(-100%);
 }
 
+body.dark-mode .sidebar {
+    background-color: #3c424e;
+    border-right: 1px solid #5f6173;
+}
+
 .search {
     padding: 10px;
     border-bottom: 1px solid #ccc;
