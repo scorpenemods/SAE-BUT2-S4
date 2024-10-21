@@ -289,6 +289,43 @@ function searchStudents() {
     });
 }
 
+function selectStudent(element) {
+    // Log the selected student element
+    console.log("Étudiant sélectionné:", element);
+
+    // Remove the 'selected' class from all students
+    const students = document.querySelectorAll('.student');
+    students.forEach(student => {
+        student.classList.remove('selected');
+    });
+
+    // Add the 'selected' class to the clicked student
+    element.classList.add('selected');
+
+    // Get the student ID and name
+    const studentId = element.getAttribute('data-student-id');
+    const studentName = element.textContent.trim();
+
+    // Open chat with the selected student
+    openChat(studentId, studentName);
+}
+
+function openChat(contactId, contactName) {
+    // Update the chat header with the contact name
+    document.getElementById('chat-header-title').innerText = 'Chat avec ' + contactName;
+
+    // Update the hidden receiver_id field
+    document.getElementById('receiver_id').value = contactId;
+
+    // Fetch messages via an AJAX request
+    fetch('GetMessages.php?contact_id=' + contactId)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('chat-body').innerHTML = html;
+        })
+        .catch(error => console.error('Erreur:', error));
+}
+
 //
 
 // -----------------------------------------------------------------------//

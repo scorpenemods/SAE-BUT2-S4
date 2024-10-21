@@ -90,7 +90,7 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
     </div>
     <div class="students">
         <?php foreach ($students as $student): ?>
-            <div class="student">
+            <div class="student" onclick="selectStudent(this)">
                 <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
             </div>
         <?php endforeach; ?>
