@@ -326,6 +326,16 @@ function openChat(contactId, contactName) {
         .catch(error => console.error('Erreur:', error));
 }
 
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleButton = document.getElementById('sidebar-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
+        sidebar.classList.remove('visible');
+        toggleButton.classList.remove('active');
+    }
+});
+
 //
 
 // -----------------------------------------------------------------------//
