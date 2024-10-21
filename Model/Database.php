@@ -1,4 +1,5 @@
 <?php
+
 class Database
 {
     private $connection;
@@ -674,10 +675,14 @@ class Database
 
     public function updateLastConnexion($userId): bool
     {
-        $sql = "UPDATE User SET last_connexion = NOW() WHERE id = :id";
+        date_default_timezone_set('Europe/Paris');
+        $currentTime = date('Y-m-d H:i:s');
+
+        $sql = "UPDATE User SET last_connexion = :currentTime WHERE id = :id";
 
         try {
             $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':currentTime', $currentTime);
             $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -685,5 +690,7 @@ class Database
             return false;
         }
     }
+
+
 }
 ?>

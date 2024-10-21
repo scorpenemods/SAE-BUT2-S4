@@ -192,6 +192,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Bouton de validation -->
         <button type="submit">Valider</button>
+
+        <a href="../Index.php">Annuler</a>
     </form>
 </div>
 
