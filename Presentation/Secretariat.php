@@ -198,7 +198,7 @@ $maitres = $database->getTutor() ?? [];
                         // Bouton pour supprimer l'utilisateur du système
                         echo "<button onclick='deleteUser(" . $user['id'] . ")'>🗑️ Supprimer</button>";
                         echo "  ";
-                        echo "<a href='#popup-box'><button>🗑️ Modifier</button></a>";
+                        echo "<a href='#popup-box'><button>Modifier</button></a>";
                         echo "</div>";
                     }
                     ?>
