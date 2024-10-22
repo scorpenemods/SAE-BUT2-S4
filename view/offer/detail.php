@@ -26,16 +26,15 @@ $company_id = 0;
 $groupeSecretariat = false;
 if (isset($_SESSION['secretariat'])) {
     $groupeSecretariat = $_SESSION['secretariat'];
-} else if (isset($_SESSION['company_id'])) {
+}
+if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
-    if (!Offer::isCompanyOffer($offerId, $company_id)) {
+    if ($company_id != 0 && !Offer::isCompanyOffer($offerId, $company_id)) {
         header("Location: ../offer/list.php");
         die();
     }
-} else {
-    header("Location: ../offer/list.php");
-    die();
 }
+
 
 
 if ($type == null || $type == 'all') {
