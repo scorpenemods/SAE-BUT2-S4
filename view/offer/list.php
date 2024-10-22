@@ -1,7 +1,7 @@
 <?php
 session_start();
 $_SESSION['company_id'] = 0;
-$_SESSION['secretariat'] = false;
+$_SESSION['secretariat'] = true;
 $_SESSION['user'] = 1;
 
 // Verification de qui est l'utilisateur
@@ -79,6 +79,10 @@ if ($company_id != 0) { $filters["company_id"] = $company_id; }
 $filteredOffers = getPageOffers($pageId, $filters);
 $offers = $filteredOffers["offers"] ?? array();
 $totalPages = $filteredOffers["totalPages"] ?? 1;
+
+if ($type == null) {
+    $type = 'all';
+}
 ?>
 
 <!DOCTYPE html>
@@ -115,14 +119,19 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                     </div>
                 </div>
             </form>
-            <div class="pagination" id="type_show" style="text-align: center">
-                <a href="/view/offer/list.php?type=all">All Offer</i></a>
-                <a href="/view/offer/list.php?type=new">New Offer</i></a>
-                <a href="/view/offer/list.php?type=updated">Updated Offer</i></a>
-                <a href="create.php">Create Offer</i></a>
-            </div>
-            <div class="pagination" id="create">
-                <a href="create.php">Create Offer</i></a>
+            <div class="pagination" style="text-align: center">
+                <div id="all">
+                    <a href="/view/offer/list.php?type=all">All Offer</i></a>
+                </div>
+                <div id="new">
+                    <a href="/view/offer/list.php?type=new">New Offer</i></a>
+                </div>
+                <div id="updated">
+                    <a href="/view/offer/list.php?type=updated">Updated Offer</i></a>
+                </div>
+                <div id="create" style="text-align: center">
+                    <a href="create.php">Create Offer</i></a>
+                </div>
             </div>
             <div class="company-listings">
                 <?php
@@ -276,24 +285,19 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 alert('Fonctionnalité de création de demande de notification à implémenter');
             });
 
-            const type_show = document.getElementById('type_show');
             const groupeSecretariat = <?php echo json_encode($groupeSecretariat); ?>;
-            const create = document.getElementById('create');
             if (groupeSecretariat) {
-                type_show.style.display = "block";
-                create.style.display = "block";
+                document.getElementById('all').style.display = "block";
+                document.getElementById('new').style.display = "block";
+                document.getElementById('updated').style.display = "block";
+                document.getElementById('create').style.display = "block";
             } else {
-                type_show.style.display = "none"
-                type_show.style.display = "none"
+                document.getElementById('all').style.display = "none";
+                document.getElementById('new').style.display = "none";
+                document.getElementById('updated').style.display = "none";
+                document.getElementById('create').style.display = "block";
             }
 
-            const company_id = <?php echo json_encode($company_id); ?>;
-
-            if (company_id !== 0) {
-                create.style.display = "block";
-            } else {
-                create.style.display = "none";
-            }
         </script>
     </body>
 </html>

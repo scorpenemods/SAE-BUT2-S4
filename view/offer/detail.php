@@ -68,11 +68,11 @@ if ($type == null || $type == 'all') {
                 <div>
                     <?php echo "<h2>" . $offer->getTitle() . $type . "</h2>"; ?>
                     <?php
-                        $tags = $offer->getTags();
+                    $tags = $offer->getTags();
 
-                        foreach ($tags as $tag) {
-                            echo "<span class='offer-badge'>" . $tag . "</span>";
-                        }
+                    foreach ($tags as $tag) {
+                        echo "<span class='offer-badge'>" . $tag . "</span>";
+                    }
                     ?>
                     <br>
                     <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
@@ -182,9 +182,13 @@ if ($type == null || $type == 'all') {
     const companyId = <?php echo json_encode($company_id); ?>;
     const secretariat = <?php echo json_encode($groupeSecretariat); ?>;
     const type = <?php echo json_encode($type); ?>;
+    const isAlreadyPending = <?php echo json_encode($isAlreadyPending); ?>;
 
-    console.log(type);
-    console.log(secretariat);
+    if (isAlreadyPending) {
+        //Make edit form disabled
+        document.getElementById('edit-button').disabled = true;
+    }
+
      if ((type === 'new' || type === 'updated') && secretariat) {
         document.getElementById('apply-form').style.display = 'none';
         document.getElementById('edit-form').style.display = 'none';
@@ -193,6 +197,8 @@ if ($type == null || $type == 'all') {
         document.getElementById('validate-form').style.display = 'block';
     } else if (secretariat && type === 'all' || type == null) {
         document.getElementById('apply-form').style.display = 'none';
+        document.getElementById('deny-form').style.display = 'none';
+        document.getElementById('validate-form').style.display = 'none';
         document.getElementById('edit-form').style.display = 'block';
         document.getElementById('hide-form').style.display = 'block';
         document.getElementById('deny-form').style.display = 'block';
