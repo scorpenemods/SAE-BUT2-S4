@@ -144,7 +144,7 @@ if ($type == null) {
                     echo "<a class='company-link' href='/view/offer/detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
                         echo "<div class='company-card'>";
                             echo "<div class='company-header'>";
-                                echo !Offer::isFavorite($offer->getId(), $user_id) ? '<i class="fa-regular fa-heart" ></i>' : '<i class="fa-solid fa-heart"></i>';
+                                echo !Offer::isFavorite($offer->getId(), $user_id) ? '<i class="fa-regular fa-heart"></i>' : '<i class="fa-solid fa-heart"></i>';
                                 echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
                                 echo "<h3 class='title'>". $offer->getTitle() ."</h3>";
                                 echo "<span class='company'><i class='fas fa-building'></i> " . $offer->getCompany()->getName() . "</span>";
