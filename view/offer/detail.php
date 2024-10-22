@@ -77,10 +77,8 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
                 </div class="apply-button">
                 <!-- bouton pour postuler -->
                 <div class="apply-button-container">
-                    <form action="" method="get" id="apply-form" style="display: block;">
-                        <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
-                        <button class="apply-button-edit" onclick="openModalWithMessage()">Postuler</button>
-                    </form>
+                    <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
+                    <button class="apply-button-edit" onclick="openModalWithMessage()">Postuler</button>
                     <form action="./company/edit.php" method="get" id="edit-form" style="display: none;">
                         <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
                         <button class="apply-button-edit">Modifier</button>
@@ -157,10 +155,10 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
             <h2>Déposez votre candidature pour cette offre :</h2><br>
             <form action="/presenter/offer/apply.php" method="POST" enctype="multipart/form-data">
                 <label for="cv">Déposez votre CV :</label>
-                <input type="file" id="cv" name="cv" accept=".pdf" required><br>
+                <input type="file" class="file-upload" id="cv" name="cv" accept=".pdf" required><br>
 
                 <label for="motivation">Déposez votre lettre de motivation :</label>
-                <input type="file" id="motivation" name="motivation" accept=".pdf" required>
+                <input type="file" class="file-upload" id="motivation" name="motivation" accept=".pdf" required>
 
                 <p id="modal-message"></p>
 
