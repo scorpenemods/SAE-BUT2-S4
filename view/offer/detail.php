@@ -66,8 +66,15 @@ if ($type == null || $type == 'all') {
         <div class="offer-header">
             <div class="offer-title">
                 <div>
-                    <span class="offer-badge">Stage</span>
                     <?php echo "<h2>" . $offer->getTitle() . $type . "</h2>"; ?>
+                    <?php
+                        $tags = $offer->getTags();
+
+                        foreach ($tags as $tag) {
+                            echo "<span class='offer-badge'>" . $tag . "</span>";
+                        }
+                    ?>
+                    <br>
                     <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
                 </div class="apply-button">
                 <!-- bouton pour postuler -->

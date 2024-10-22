@@ -37,7 +37,7 @@ main {
     padding: 0;
 }
 .offer-title {
-    backdrop-filter: brightness(10%);
+    backdrop-filter: brightness(20%);
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -52,13 +52,15 @@ main {
     font-size: 0.75rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
 }
 .offer-title h2 {
     color: #FFFFFF;
     font-size: 1.875rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0;
 }
 .offer-date {
+    margin-top: 0.5rem;
     font-size: 0.875rem;
     color: #e5e7eb;
 }
