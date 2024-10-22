@@ -44,6 +44,36 @@ main {
     padding: 2rem;
     color: #FFFFFF;
 }
+.file-upload {
+    border: 2px dashed #6b7280;
+    border-radius: 6px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    background-color: #e5e7eb;
+}
+.file-upload input[type="file"] {
+    display: none;
+}
+.file-upload label {
+    display: inline-block;
+    background-color: #FFFFFF;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+    margin-bottom: 1rem;
+}
+.file-upload label:hover {
+    background-color: #2980b9;
+}
+.file-upload p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
 .offer-badge {
     background-color: #80A9A1;
     color: #E3E3E3;
