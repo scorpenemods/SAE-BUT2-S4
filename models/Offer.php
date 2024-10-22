@@ -633,4 +633,55 @@ class Offer {
 
         return true;
     }
+
+    public static function makeFavorite(int $id, int $user_id): ?bool {
+        global $db;
+
+        $stmt = $db->prepare("INSERT INTO favorite_offers (offer_id, user_id) VALUES (:offer_id, :user_id)");
+        $stmt->bindParam(":offer_id", $id);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        return true;
+    }
+
+    public static function removeFavorite(int $id, int $user_id): ?bool {
+        global $db;
+
+        $stmt = $db->prepare("DELETE FROM favorite_offers WHERE offer_id = :offer_id AND user_id = :user_id");
+        $stmt->bindParam(":offer_id", $id);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        return true;
+    }
+
+    public static function isFavorite(int $id, int $user_id): ?bool {
+        global $db;
+
+        $stmt = $db->prepare("SELECT * FROM favorite_offers WHERE offer_id = :offer_id AND user_id = :user_id");
+        $stmt->bindParam(":offer_id", $id);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $result = $stmt->fetch();
+
+        if (!$result) {
+            return false;
+        }
+
+        return true;
+    }
 }
