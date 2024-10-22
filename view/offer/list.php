@@ -144,8 +144,7 @@ if ($type == null) {
                     echo "<a class='company-link' href='/view/offer/detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
                         echo "<div class='company-card'>";
                             echo "<div class='company-header'>";
-                                echo !Offer::isFavorite($offer->getId(), $user_id) ? '<i class="fa-regular fa-heart"></i>' : '<i class="fa-solid fa-heart"></i>';
-                                echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
+                                echo '<i class="' . (Offer::isFavorite($offer->getId(), $user_id) ? 'fa-solid' : 'fa-regular') . ' fa-heart" onclick="heartUpdate(this, ' . $offer->getId() . ')"></i>';                                echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
                                 echo "<h3 class='title'>". $offer->getTitle() ."</h3>";
                                 echo "<span class='company'><i class='fas fa-building'></i> " . $offer->getCompany()->getName() . "</span>";
                             echo "</div>";
@@ -301,6 +300,28 @@ if ($type == null) {
                 document.getElementById('new').style.display = "none";
                 document.getElementById('updated').style.display = "none";
                 document.getElementById('create').style.display = "block";
+            }
+
+            function heartUpdate(id, user_id) {
+                $.ajax({
+                    url: '/presenter/offer/favorite.php',
+                    type: 'POST',
+                    data: {id: id, user_id: user_id},
+                    success: function(data) {
+                        if (data.status === "success") {
+                            const heartIcon = document.getElementById('heart-icon-' + id);
+                            if (heartIcon.classList.contains('fa-regular')) {
+                                heartIcon.classList.remove('fa-regular');
+                                heartIcon.classList.add('fa-solid');
+                            } else {
+                                heartIcon.classList.remove('fa-solid');
+                                heartIcon.classList.add('fa-regular');
+                            }
+                        } else {
+                            alert('Erreur lors de la mise à jour de l\'étoile');
+                        }
+                    }
+                });
             }
 
         </script>
