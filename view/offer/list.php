@@ -1,7 +1,7 @@
 <?php
 session_start();
-$_SESSION['company_id'] = 1;
-$_SESSION['secretariat'] = false;
+$_SESSION['company_id'] = 0;
+$_SESSION['secretariat'] = true;
 $_SESSION['user'] = 1;
 
 // Verification de qui est l'utilisateur
@@ -312,7 +312,6 @@ if ($type == null) {
                 document.getElementById('inactive').style.display = "block";
             }
 
-            function heartUpdate(id, user_id) {
             function heartUpdate(id) {
                 $.ajax({
                     url: '/presenter/offer/favorite.php',
