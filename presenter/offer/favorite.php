@@ -9,14 +9,11 @@ if (isset($_SESSION['user']) && isset($_POST['id'])) {
     $user_id = $_SESSION['user'];
     if (Offer::isFavorite($_POST['id'], $user_id)) {
         Offer::removeFavorite($_POST['id'], $user_id);
-        header($http_referer);
-        die();
+        die(json_encode(array("status" => "success")));
     } else {
         Offer::makeFavorite($_POST['id'], $user_id);
-        header($http_referer);
-        die();
+        die(json_encode(array("status" => "success")));
     }
 } else {
-    header($http_referer);
-    die();
+    die(json_encode(array("status" => "error")));
 }
