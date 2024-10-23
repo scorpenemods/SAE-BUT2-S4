@@ -166,7 +166,7 @@ header .navbar-right .mainbtn {
     position: relative;
 }
 
-header .navbar-right .mainbtn img {
+header .navbar-right  img {
     width: 35px;
     height: 35px;
 }
@@ -984,5 +984,35 @@ button:hover {
     font-size: 1.2em;
     text-align: center;
 }
+
+.notification-icon {
+    position: relative;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+}
+
+.notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    display: none; /* Caché par défaut */
+}
+
+.new-message-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #e47d34; /* Couleur de l'indicateur */
+    border-radius: 50%;
+    border: 0;
+    margin-left: 5px;
+}
+
 
 

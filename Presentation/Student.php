@@ -50,8 +50,6 @@ $messages = $database->getMessages($senderId, $receiverId);
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="/View/Principal/Principal.css">
     <script src="/View/Principal/Principal.js"></script>
-    <script src="/View/Principal/deleteMessage.js"></script>
-
     <style>
         /* Mode sombre dynamiquement */
         body.dark-mode {
@@ -89,9 +87,10 @@ $messages = $database->getMessages($senderId, $receiverId);
         <span class="app-name">Le Petit Stage</span>
     </div>
     <div class="navbar-right">
-        <button class="mainbtn" >
-            <img src="../Resources/Notif.png" alt="Settings">
-        </button>
+        <div id="notification-icon" class="notification-icon">
+            <img src="../Resources/Notif.png" alt="Notifications">
+            <span id="notification-count" class="notification-count"></span>
+        </div>
         <button class="mainbtn">
             <p><?php echo $userName; ?></p>
         </button>
@@ -161,6 +160,7 @@ $messages = $database->getMessages($senderId, $receiverId);
                         foreach ($contacts as $contact) {
                             echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
                             echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
+                            echo '<span class="new-message-indicator" style="display: none;"></span>';
                             echo '</li>';
                         }
                         ?>
@@ -215,6 +215,6 @@ $messages = $database->getMessages($senderId, $receiverId);
     <a href="Redirection.php">Informations</a>
     <a href="Redirection.php">À propos</a>
 </footer>
-
+<script src="/View/Principal/deleteMessage.js"></script>
 </body>
 </html>

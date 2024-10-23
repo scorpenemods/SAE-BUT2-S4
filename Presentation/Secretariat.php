@@ -225,9 +225,18 @@ $maitres = $database->getTutor() ?? [];
                     </div>
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
-                        <li>Contact 1</li>
-                        <li>Contact 2</li>
-                        <li>Contact 3</li>
+                        <?php
+                        // Récupérer les contacts associés à l'utilisateur connecté
+                        $userId = $person->getUserId();
+                        $contacts = $database->getGroupContacts($userId);
+
+                        foreach ($contacts as $contact) {
+                            echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
+                            echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
+                            echo '<span class="new-message-indicator" style="display: none;"></span>';
+                            echo '</li>';
+                        }
+                        ?>
                     </ul>
                 </div>
 

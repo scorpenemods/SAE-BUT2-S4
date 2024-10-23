@@ -300,6 +300,9 @@ function openChat(contactId, contactName) {
     // Définir la valeur de receiver_id
     document.getElementById('receiver_id').value = contactId;
 
+    // Cacher l'indicateur de nouveau message pour ce contact
+    hideNewMessageIndicator(contactId);
+
     // Supprimer la classe 'contact-active' de tous les contacts
     const contacts = document.querySelectorAll('#contacts-list li');
     contacts.forEach(contact => {
@@ -341,6 +344,123 @@ document.addEventListener('DOMContentLoaded', function() {
         showDefaultChatMessage();
     }
 });
+
+//------ Notifications realisation -------------------------------//
+
+function updateNotifications(newMessages) {
+    const notificationCountElement = document.getElementById('notification-count');
+
+    if (newMessages.length > 0) {
+        // Afficher le nombre total de nouveaux messages
+        let totalNewMessages = newMessages.reduce((sum, msg) => sum + parseInt(msg.message_count), 0);
+        notificationCountElement.textContent = totalNewMessages;
+        notificationCountElement.style.display = 'block';
+
+        // Mettre à jour les indicateurs sur les contacts
+        newMessages.forEach(msg => {
+            const contactId = msg.sender_id;
+            showNewMessageIndicator(contactId);
+        });
+    } else {
+        // Pas de nouveaux messages
+        notificationCountElement.style.display = 'none';
+
+        // Cacher les indicateurs sur les contacts
+        const indicators = document.querySelectorAll('.new-message-indicator');
+        indicators.forEach(indicator => {
+            indicator.style.display = 'none';
+        });
+    }
+}
+
+
+
+// Vérifier les nouveaux messages toutes les 10 secondes
+setInterval(checkForNewMessages, 10000);
+
+function checkForNewMessages() {
+    fetch('CheckNewMessages.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                updateNotifications(data.new_messages);
+            } else {
+                console.error('Erreur lors de la vérification des nouveaux messages:', data.message);
+            }
+        })
+        .catch(error => console.error('Erreur réseau lors de la vérification des nouveaux messages:', error));
+}
+
+document.getElementById('notification-icon').addEventListener('click', function() {
+    // Récupérer les nouveaux messages
+    fetch('GetNewMessages.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                data.new_messages.forEach(msg => {
+                    const contactId = msg.sender_id;
+                    const contactElement = document.querySelector(`#contacts-list li[data-contact-id="${contactId}"]`);
+                    if (contactElement) {
+                        const contactName = contactElement.textContent.trim();
+                        openChat(contactId, contactName);
+                    }
+                });
+
+                // Réinitialiser les notifications
+                resetNotifications();
+            } else {
+                console.error('Erreur lors de la récupération des nouveaux messages:', data.message);
+            }
+        })
+        .catch(error => console.error('Erreur réseau lors de la récupération des nouveaux messages:', error));
+});
+
+//Reset notifications if user have seen it
+
+function resetNotifications() {
+    // Cacher la pastille sur la cloche
+    const notificationCountElement = document.getElementById('notification-count');
+    notificationCountElement.style.display = 'none';
+
+    // Cacher les indicateurs sur les contacts
+    const indicators = document.querySelectorAll('.new-message-indicator');
+    indicators.forEach(indicator => {
+        indicator.style.display = 'none';
+    });
+
+    // Mettre à jour le temps de la dernière vérification côté serveur
+    fetch('ResetNotifications.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status !== 'success') {
+                console.error('Erreur lors de la réinitialisation des notifications:', data.message);
+            }
+        })
+        .catch(error => console.error('Erreur réseau lors de la réinitialisation des notifications:', error));
+}
+
+function showNewMessageIndicator(contactId) {
+    const contactElement = document.querySelector(`#contacts-list li[data-contact-id="${contactId}"]`);
+    if (contactElement) {
+        const indicator = contactElement.querySelector('.new-message-indicator');
+        if (indicator) {
+            indicator.style.display = 'inline-block';
+        }
+    }
+}
+
+function hideNewMessageIndicator(contactId) {
+    const contactElement = document.querySelector(`#contacts-list li[data-contact-id="${contactId}"]`);
+    if (contactElement) {
+        const indicator = contactElement.querySelector('.new-message-indicator');
+        if (indicator) {
+            indicator.style.display = 'none';
+        }
+    }
+}
+
+
+// -------------------------------------------------------------------------------------//
 
 
 // ---------------------------------- Student list -------------------------------------//

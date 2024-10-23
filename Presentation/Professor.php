@@ -60,7 +60,6 @@ $contacts = $database->getGroupContacts($userId);
     <title>Le Petit Stage - Professeur</title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js"></script>
-    <script src="../View/Principal/deleteMessage.js"></script>
 </head>
 
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
@@ -70,9 +69,11 @@ $contacts = $database->getGroupContacts($userId);
         <span class="app-name">Le Petit Stage - Professeur</span>
     </div>
     <div class="navbar-right">
-        <button class="mainbtn" >
-            <img src="../Resources/Notif.png" alt="Settings">
-        </button>
+        <div id="notification-icon" class="notification-icon">
+            <img src="../Resources/Notif.png" alt="Notifications">
+            <span id="notification-count" class="notification-count"></span>
+        </div>
+
         <p><?php echo $userName; ?></p>
         <label class="switch">
             <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
@@ -141,6 +142,7 @@ $contacts = $database->getGroupContacts($userId);
                         foreach ($contacts as $contact) {
                             echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
                             echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
+                            echo '<span class="new-message-indicator" style="display: none;"></span>';
                             echo '</li>';
                         }
                         ?>
@@ -179,6 +181,7 @@ $contacts = $database->getGroupContacts($userId);
         <div class="Contenu" id="content-6">Contenu des notes</div>
     </div>
 </section>
+<script src="../View/Principal/deleteMessage.js"></script>
 </body>
 
 <footer class="PiedDePage">

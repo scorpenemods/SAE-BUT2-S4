@@ -77,9 +77,10 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
         <span class="app-name">Le Petit Stage - Maitre de Stage</span>
     </div>
     <div class="navbar-right">
-        <button class="mainbtn">
-            <img src="../Resources/Notif.png" alt="Settings">
-        </button>
+        <div id="notification-icon" class="notification-icon">
+            <img src="../Resources/Notif.png" alt="Notifications">
+            <span id="notification-count" class="notification-count"></span>
+        </div>
         <p><?php echo $userName; ?></p> <!-- Affichage du nom de l'utilisateur -->
 
         <!-- Commutateur de langue -->
@@ -147,6 +148,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
                         foreach ($contacts as $contact) {
                             echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
                             echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
+                            echo '<span class="new-message-indicator" style="display: none;"></span>';
                             echo '</li>';
                         }
                         ?>
@@ -196,5 +198,6 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <a href="Redirection.php">Informations</a>
     <a href="Redirection.php">À propos</a>
 </footer>
+<script src="../View/Principal/deleteMessage.js"></script>
 </body>
 </html>
