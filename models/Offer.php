@@ -527,6 +527,12 @@ class Offer {
                 return pendingOffer::getAllNew();
             } else if ($filters['type'] == 'updated') {
                 return pendingOffer::getAllUpdated();
+            } else if ($filters['type'] == 'inactive') {
+                if (!empty($filters['company_id'])) {
+                    return offer::getAllInactive($filters['company_id']);
+                } else {
+                    return offer::getAllInactive();
+                }
             }
         }
 
@@ -683,5 +689,53 @@ class Offer {
         }
 
         return true;
+    }
+
+    public static function getAllInactive(int $company_id = 0): ?array {
+        global $db;
+        if ($company_id != 0) {
+            $stmt = $db->prepare("SELECT * FROM offers WHERE is_active = 0 AND company_id = :company_id ORDER BY begin_date DESC");
+            $stmt->bindParam(":company_id", $company_id);
+        } else {
+            $stmt = $db->prepare("SELECT * FROM offers WHERE is_active = 0 ORDER BY begin_date DESC");
+        }
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $result = $stmt->fetchAll();
+
+        $offers = [];
+        foreach ($result as $row) {
+            $company = Company::getById($row["company_id"]);
+
+            if (!$company) {
+                continue;
+            }
+
+            $offers[] = new Offer(
+                $row["id"],
+                $row["company_id"],
+                $company,
+                $row["title"],
+                $row["description"],
+                $row["job"],
+                $row["duration"],
+                $row["begin_date"],
+                $row["salary"],
+                $row["address"],
+                $row["study_level"],
+                $row["is_active"],
+                $row["email"],
+                $row["phone"],
+                $row["website"],
+                date("Y-m-d H:i:s", strtotime($row["created_at"])),
+                date("Y-m-d H:i:s", strtotime($row["updated_at"]))
+            );
+            }
+
+        return $offers;
     }
 }

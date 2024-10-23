@@ -35,7 +35,7 @@ if (isset($_SESSION['company_id'])) {
 
 
 
-if ($type == null || $type == 'all') {
+if ($type == null || $type == 'all' || $type == 'inactive') {
     $offer = Offer::getById($offerId);
 } else {
     $offer = PendingOffer::getByOfferId($offerId);
@@ -74,14 +74,14 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
                     ?>
                     <br>
                     <p class="offer-date"><?php echo "Publiée le " . $offer->getCreatedAt(); ?></p>
-                </div class="apply-button">
+                </div>
                 <!-- bouton pour postuler -->
                 <div class="apply-button-container">
                     <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
-                    <button class="apply-button-edit" onclick="openModalWithMessage()">Postuler</button>
+                    <button class="apply-button-edit" id="apply-button" onclick="openModalWithMessage()">Postuler</button>
                     <form action="./company/edit.php" method="get" id="edit-form" style="display: none;">
                         <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
-                        <button class="apply-button-edit">Modifier</button>
+                        <button class="apply-button-edit" id="edit-button">Modifier</button>
                     </form>
                     <form action="../../presenter/offer/company/hide.php" method="post" id="hide-form"
                           style="display: none;">
@@ -184,6 +184,10 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
     const companyId = <?php echo json_encode($company_id); ?>;
     const secretariat = <?php echo json_encode($groupeSecretariat); ?>;
     const type = <?php echo json_encode($type); ?>;
+
+    console.log(type);
+    console.log(secretariat);
+    console.log(companyId);
     const isAlreadyPending = <?php echo json_encode($isAlreadyPending); ?>;
 
     if (isAlreadyPending) {
@@ -191,24 +195,42 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
         document.getElementById('edit-button').disabled = true;
     }
 
-     if ((type === 'new' || type === 'updated') && secretariat) {
-        document.getElementById('apply-form').style.display = 'none';
-        document.getElementById('edit-form').style.display = 'none';
-        document.getElementById('hide-form').style.display = 'none';
-        document.getElementById('deny-form').style.display = 'block';
-        document.getElementById('validate-form').style.display = 'block';
+    const applyButton = document.getElementById('apply-button');
+    const editButton = document.getElementById('edit-form');
+    const hideButton = document.getElementById('hide-form');
+    const denyButton = document.getElementById('deny-form');
+    const validateButton = document.getElementById('validate-form');
+
+
+    if (type === 'inactive' && secretariat) {
+        applyButton.style.display = 'none';
+        editButton.style.display = 'none';
+        hideButton.style.display = 'block';
+        denyButton.style.display = 'none';
+        validateButton.style.display = 'none';
+    } else if (type === 'inactive' && companyId !== 0) {
+        console.log('Company + inactive');
+        applyButton.style.display = 'none';
+        editButton.style.display = 'none';
+        hideButton.style.display = 'block';
+        denyButton.style.display = 'none';
+        validateButton.style.display = 'none';
+    } else if ((type === 'new' || type === 'updated') && secretariat) {
+        applyButton.style.display = 'none';
+        editButton.style.display = 'none';
+        hideButton.style.display = 'none';
+        denyButton.style.display = 'block';
+        validateButton.style.display = 'block';
     } else if (secretariat && type === 'all' || type == null) {
-        document.getElementById('apply-form').style.display = 'none';
-        document.getElementById('deny-form').style.display = 'none';
-        document.getElementById('validate-form').style.display = 'none';
-        document.getElementById('edit-form').style.display = 'block';
-        document.getElementById('hide-form').style.display = 'block';
-        document.getElementById('deny-form').style.display = 'block';
-        document.getElementById('validate-form').style.display = 'block';
+        applyButton.style.display = 'none';
+        denyButton.style.display = 'none';
+        editButton.style.display = 'block';
+        hideButton.style.display = 'block';
+        validateButton.style.display = 'none';
     } else if (companyId !== 0) {
-        document.getElementById('apply-form').style.display = 'none';
-        document.getElementById('hide-form').style.display = 'block';
-        document.getElementById('edit-form').style.display = 'block';
+        applyButton.style.display = 'none';
+        editButton.style.display = 'block';
+        hideButton.style.display = 'block';
     }
 
     // Fonction pour ouvrir la fenêtre modale avec un message personnalisé

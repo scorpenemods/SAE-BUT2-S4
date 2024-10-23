@@ -1,6 +1,6 @@
 <?php
 session_start();
-$_SESSION['company_id'] = 0;
+$_SESSION['company_id'] = 1;
 $_SESSION['secretariat'] = false;
 $_SESSION['user'] = 1;
 
@@ -78,7 +78,7 @@ if (isset($address)) { $filters["address"] = $address; }
 if (isset($duration)) { $filters["duration"] = $duration; }
 if (isset($sector)) { $filters["sector"] = $sector; }
 if (isset($keywords)) { $filters["keywords"] = $keywords; }
-if (isset($type) && $groupeSecretariat) { $filters["type"] = $type; }
+if (isset($type) && ($groupeSecretariat || $company_id != 0)) { $filters["type"] = $type; }
 if ($company_id != 0) { $filters["company_id"] = $company_id; }
 
 $filteredOffers = getPageOffers($pageId, $filters);
@@ -127,13 +127,16 @@ if ($type == null) {
             </form>
             <div class="pagination" style="text-align: center">
                 <div id="all">
-                    <a href="/view/offer/list.php?type=all">All Offer</i></a>
+                    <a href="/view/offer/list.php?type=all">Tous les offres</i></a>
                 </div>
                 <div id="new">
-                    <a href="/view/offer/list.php?type=new">New Offer</i></a>
+                    <a href="/view/offer/list.php?type=new">Nouvelles offres</i></a>
                 </div>
                 <div id="updated">
-                    <a href="/view/offer/list.php?type=updated">Updated Offer</i></a>
+                    <a href="/view/offer/list.php?type=updated">Offres mises à jour</i></a>
+                </div>
+                <div id="inactive">
+                    <a href="/view/offer/list.php?type=inactive">Offres inactifs</i></a>
                 </div>
                 <div id="create" style="text-align: center">
                     <a href="create.php">Create Offer</i></a>
@@ -289,18 +292,27 @@ if ($type == null) {
             });
 
             const groupeSecretariat = <?php echo json_encode($groupeSecretariat); ?>;
+            const companyId = <?php echo json_encode($company_id); ?>;
             if (groupeSecretariat) {
                 document.getElementById('all').style.display = "block";
                 document.getElementById('new').style.display = "block";
                 document.getElementById('updated').style.display = "block";
                 document.getElementById('create').style.display = "block";
+                document.getElementById('inactive').style.display = "block";
             } else {
                 document.getElementById('all').style.display = "none";
                 document.getElementById('new').style.display = "none";
                 document.getElementById('updated').style.display = "none";
+                document.getElementById('inactive').style.display = "none";
                 document.getElementById('create').style.display = "block";
             }
 
+            if (companyId !== 0) {
+                document.getElementById('all').style.display = "block";
+                document.getElementById('inactive').style.display = "block";
+            }
+
+            function heartUpdate(id, user_id) {
             function heartUpdate(id) {
                 $.ajax({
                     url: '/presenter/offer/favorite.php',
