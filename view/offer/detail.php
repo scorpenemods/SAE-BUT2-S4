@@ -111,26 +111,32 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
                 <div class="detail-item">
                     <i class="fas fa-clock"></i>
                     <span>
-                                <?php echo $offer->getRealDuration(); ?>
-                            </span>
+                        <?php echo $offer->getRealDuration(); ?>
+                    </span>
                 </div>
                 <div class="detail-item">
                     <i class="fa-solid fa-phone"></i>
                     <span>
-                                <a href="tel:<?php echo $offer->getPhone(); ?>"><?php echo $offer->getPhone(); ?></a>
-                            </span>
+                        <a href="tel:<?php echo $offer->getPhone(); ?>"><?php echo $offer->getPhone(); ?></a>
+                    </span>
                 </div>
                 <div class="detail-item">
                     <i class="fa-solid fa-envelope"></i>
                     <span>
-                                <a href="mailto:<?php echo $offer->getEmail(); ?>"><?php echo $offer->getEmail(); ?></a>
-                            </span>
+                        <a href="mailto:<?php echo $offer->getEmail(); ?>"><?php echo $offer->getEmail(); ?></a>
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <i class="fa-solid fa-link"></i>
+                    <span>
+                        <a href="https://<?php echo $offer->getDomain(); ?>"><?php echo $offer->getDomain(); ?></a>
+                    </span>
                 </div>
                 <div class="detail-item">
                     <i class="fas fa-map-marker-alt"></i>
                     <span>
-                                <a href="https://maps.google.com/?q=<?php echo $offer->getAddress(); ?>"><?php echo $offer->getAddress(); ?></a>
-                            </span>
+                        <a href="https://maps.google.com/?q=<?php echo $offer->getAddress(); ?>"><?php echo $offer->getAddress(); ?></a>
+                    </span>
                 </div>
                 <div class="detail-item">
                     <i class="fas fa-calendar"></i>

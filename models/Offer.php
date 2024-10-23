@@ -484,9 +484,9 @@ class Offer {
             $params[':maxSalary'] = $filters['maxSalary'];
         }
 
-        if (!empty($filters['city'])) {
-            $sql .= ' AND offers.address LIKE :city';
-            $params[':city'] = '%' . $filters['city'] . '%';
+        if (!empty($filters['address'])) {
+            $sql .= ' AND offers.address LIKE :address';
+            $params[':address'] = '%' . $filters['address'] . '%';
         }
 
         if (!empty($filters['duration'])) {

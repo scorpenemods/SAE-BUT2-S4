@@ -106,14 +106,18 @@ main {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     position: relative; /* Ensure the icon is positioned relative to the card */
 }
-.company-card .fa-heart {
+.company-card .heart {
     position: absolute;
     top: 10px;
     right: 10px;
-    color: var(--accent-color);
     font-size: 1.5rem;
     cursor: pointer;
     transition: color 0.3s ease;
+    background-color: transparent;
+    border: none;
+}
+.company-card .fa-heart {
+    color: #F9564F;
 }
 .company-card .fa-heart:hover {
     color: #ff6b6b;

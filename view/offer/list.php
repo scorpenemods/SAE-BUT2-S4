@@ -62,7 +62,7 @@ $startDate = filter_input(INPUT_GET, 'startDate', FILTER_SANITIZE_STRING);
 $diploma = filter_input(INPUT_GET, 'diploma', FILTER_SANITIZE_STRING);
 $minSalary = filter_input(INPUT_GET, 'minSalary', FILTER_SANITIZE_STRING);
 $maxSalary = filter_input(INPUT_GET, 'maxSalary', FILTER_SANITIZE_STRING);
-$city = filter_input(INPUT_GET, 'city', FILTER_SANITIZE_STRING);
+$address = filter_input(INPUT_GET, 'address', FILTER_SANITIZE_STRING);
 $duration = filter_input(INPUT_GET, 'duration', FILTER_VALIDATE_INT);
 $sector = filter_input(INPUT_GET, 'sector', FILTER_SANITIZE_STRING);
 $keywords = filter_input(INPUT_GET, 'keywords', FILTER_SANITIZE_STRING);
@@ -74,7 +74,7 @@ if (isset($startDate)) { $filters["startDate"] = $startDate; }
 if (isset($diploma)) { $filters["diploma"] = $diploma; }
 if (isset($minSalary)) { $filters["minSalary"] = $minSalary; }
 if (isset($maxSalary)) { $filters["maxSalary"] = $maxSalary; }
-if (isset($city)) { $filters["city"] = $city; }
+if (isset($address)) { $filters["address"] = $address; }
 if (isset($duration)) { $filters["duration"] = $duration; }
 if (isset($sector)) { $filters["sector"] = $sector; }
 if (isset($keywords)) { $filters["keywords"] = $keywords; }
@@ -103,6 +103,7 @@ if ($type == null) {
         <link rel="stylesheet" href="/view/css/footer.css">
         <link rel="stylesheet" href="/view/css/list.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body>
         <?php include dirname(__FILE__) . '/../header.php'; ?>
@@ -144,7 +145,8 @@ if ($type == null) {
                     echo "<a class='company-link' href='/view/offer/detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
                         echo "<div class='company-card'>";
                             echo "<div class='company-header'>";
-                                echo '<i class="' . (Offer::isFavorite($offer->getId(), $user_id) ? 'fa-solid' : 'fa-regular') . ' fa-heart" onclick="heartUpdate(this, ' . $offer->getId() . ')"></i>';                                echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
+                                echo '<button title="Like" class="heart" onclick="heartUpdate(' . $offer->getId() . ')"><i id="heart-icon-' . $offer->getId() . '" class="'. (Offer::isFavorite($offer->getId(), $user_id) ? 'fa-solid' : 'fa-regular') . ' fa-heart"></i></button>';
+                                echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
                                 echo "<h3 class='title'>". $offer->getTitle() ."</h3>";
                                 echo "<span class='company'><i class='fas fa-building'></i> " . $offer->getCompany()->getName() . "</span>";
                             echo "</div>";
@@ -197,11 +199,8 @@ if ($type == null) {
 
                     <div class="filter-section">
                         <h3><i class="fas fa-map-marker-alt"></i> Localisation</h3>
-                        <label for="city">Ville</label>
-                        <input type="text" id="city" name="city" placeholder="Entrez une ville">
-
-                        <label for="distance">Distance (km)</label>
-                        <input type="number" id="distance" name="distance" min="0" max="500" step="10" value="50">
+                        <label for="address">Adresse</label>
+                        <input type="text" id="address" name="address" placeholder="Entrez une adresse">
                     </div>
 
                     <div class="filter-section">
@@ -302,13 +301,13 @@ if ($type == null) {
                 document.getElementById('create').style.display = "block";
             }
 
-            function heartUpdate(id, user_id) {
+            function heartUpdate(id) {
                 $.ajax({
                     url: '/presenter/offer/favorite.php',
                     type: 'POST',
-                    data: {id: id, user_id: user_id},
-                    success: function(data) {
-                        if (data.status === "success") {
+                    data: {id: id},
+                    success: function(msg, status, jqXHR) {
+                        if (status === "success") {
                             const heartIcon = document.getElementById('heart-icon-' + id);
                             if (heartIcon.classList.contains('fa-regular')) {
                                 heartIcon.classList.remove('fa-regular');
@@ -317,13 +316,16 @@ if ($type == null) {
                                 heartIcon.classList.remove('fa-solid');
                                 heartIcon.classList.add('fa-regular');
                             }
-                        } else {
-                            alert('Erreur lors de la mise à jour de l\'étoile');
                         }
                     }
                 });
             }
 
+            document.querySelectorAll('.heart').forEach((button) => {
+                button.addEventListener('click', (event) => {
+                    event.preventDefault();
+                });
+            });
         </script>
     </body>
 </html>
