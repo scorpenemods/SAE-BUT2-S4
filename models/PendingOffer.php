@@ -63,13 +63,11 @@ class PendingOffer extends Offer
         return $tags;
     }
 
-    public function getOfferId(): int
-    {
+    public function getOfferId(): int {
         return $this->offfer_id;
     }
 
-    public function getStatus(): string
-    {
+    public function getStatus(): string {
         return $this->status;
     }
 

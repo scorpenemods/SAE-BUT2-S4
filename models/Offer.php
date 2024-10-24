@@ -131,11 +131,11 @@ class Offer {
     }
 
     //Update an offer
-    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, $getFileName, $getFileType, $getFileSize) {
+    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, string $getWebsite) {
         global $db;
 
         //Update the offer
-        $stmt = $db->prepare("UPDATE offers SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone WHERE id = :id");
+        $stmt = $db->prepare("UPDATE offers SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone, website = :website WHERE id = :id");
         $stmt->bindParam(":title", $getTitle);
         $stmt->bindParam(":description", $getDescription);
         $stmt->bindParam(":job", $getJob);
@@ -147,6 +147,7 @@ class Offer {
         $stmt->bindParam(":phone", $getPhone);
         $stmt->bindParam(":id", $getId);
         $stmt->bindParam(":begin_date", $getBeginDate);
+        $stmt->bindParam(":website", $getWebsite);
 
         $stmt->execute();
 
@@ -297,8 +298,8 @@ class Offer {
 
         //Insert the offer in the offers table
         $stmt = $db->prepare("INSERT INTO offers (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
-                    email, phone) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,
-                    :email, :phone)");
+                    email, phone, website) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,
+                    :email, :phone, :website)");
         $stmt->bindParam(":company_id", $company_id);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":description", $description);

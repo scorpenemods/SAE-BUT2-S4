@@ -222,7 +222,7 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
         echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
         echo "<button class='apply-button-edit'>Cacher " . $offer->getIsActive() ? "(Actif)" : "(Inactif)" . "</button>";
         echo "</form>";
-        echo "<form action='../../presenter/offer/secretariat/deny.php' method='get' id='deny-form' style='display: none;'>";
+        echo "<form action='../../presenter/offer/secretariat/deny.php' method='post' id='deny-form' style='display: none;'>";
         echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
         echo "<button class='apply-button-edit'>Refuser</button>";
         echo "</form>";
