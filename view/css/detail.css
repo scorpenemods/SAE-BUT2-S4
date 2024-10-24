@@ -24,11 +24,13 @@ main {
     width: 99%;
     margin: 0 auto;
 }
+
 .offer-card {
     background-color: #FFFFFF;
     border-radius: 0.5rem;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 1;
 }
 .offer-header {
     background-size: cover;
@@ -167,4 +169,19 @@ main {
     .offer-details {
         grid-template-columns: 1fr;
     }
+}
+
+.diff-old {
+    background-color: #f8d7da;
+    text-decoration: line-through;
+    color: #721c24;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.diff-new {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 2px 4px;
+    border-radius: 3px;
 }
