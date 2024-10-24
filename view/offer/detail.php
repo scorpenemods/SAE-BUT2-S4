@@ -79,16 +79,6 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
         echo "</div>";
         //Bouton ne pas toucher
         echo "<div class='apply-button-container'>";
-        echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-        echo "<button class='apply-button-edit' id='apply-button' onclick='openModalWithMessage()'>Postuler</button>";
-        echo "<form action='./company/edit.php' method='get' id='edit-form' style='display: none;'>";
-        echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-        echo "<button class='apply-button-edit' id='edit-button'>Modifier</button>";
-        echo "</form>";
-        echo "<form action='../../presenter/offer/company/hide.php' method='post' id='hide-form' style='display: none;'>";
-        echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-        echo "<button class='apply-button-edit'>Cacher " . $offer->getIsActive() ? "(Actif)" : "(Inactif)" . "</button>";
-        echo "</form>";
         echo "<form action='../../presenter/offer/secretariat/deny.php' method='get' id='deny-form' style='display: none;'>";
         echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
         echo "<button class='apply-button-edit'>Refuser</button>";
@@ -216,11 +206,19 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
         echo "<button class='apply-button-edit' id='apply-button' onclick='openModalWithMessage()'>Postuler</button>";
         echo "<form action='./company/edit.php' method='get' id='edit-form' style='display: none;'>";
         echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-        echo "<button class='apply-button-edit' id='edit-button'>Modifier</button>";
+        if ($isAlreadyPending) {
+            echo "<button class='apply-button-edit'>Modification en attente de validation</button>";
+        } else {
+            echo "<button class='apply-button-edit'>Modifier</button>";
+        }
         echo "</form>";
         echo "<form action='../../presenter/offer/company/hide.php' method='post' id='hide-form' style='display: none;'>";
         echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-        echo "<button class='apply-button-edit'>Cacher " . $offer->getIsActive() ? "(Actif)" : "(Inactif)" . "</button>";
+        if ($offer->getIsActive()) {
+            echo "<button class='apply-button-edit'>Cacher (Actif)</button>";
+        } else {
+            echo "<button class='apply-button-edit'>Cacher (Inactif)</button>";
+        }
         echo "</form>";
         echo "<form action='../../presenter/offer/secretariat/deny.php' method='post' id='deny-form' style='display: none;'>";
         echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
