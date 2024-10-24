@@ -319,44 +319,42 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
         document.getElementById('edit-button').disabled = true;
     }
 
-    console.log(type);
-    console.log(secretariat);
-    console.log(companyId);
-
     const applyButton = document.getElementById('apply-button');
     const editButton = document.getElementById('edit-form');
     const hideButton = document.getElementById('hide-form');
     const denyButton = document.getElementById('deny-form');
     const validateButton = document.getElementById('validate-form');
 
-    console.log(applyButton);
-    console.log(editButton);
-    console.log(hideButton);
-    console.log(denyButton);
-    console.log(validateButton);
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
 
-    if (type === 'updated' && secretariat) {
-        console.log('updated secretariat');
-        denyButton.style.display = 'block';
-        validateButton.style.display = 'block';
-    } else if (type === 'inactive' && secretariat) {
-        hideButton.style.display = 'block';
-    } else if (type === 'inactive' && companyId !== 0) {
-        hideButton.style.display = 'block';
-    } else if (type === 'new' && secretariat) {
-        denyButton.style.display = 'block';
-        validateButton.style.display = 'block';
-    } else if (secretariat && type === 'all' || type == null) {
-        editButton.style.display = 'block';
-        hideButton.style.display = 'block';
-    } else if (companyId !== 0) {
-        console.log('Company');
-        editButton.style.display = 'block';
-        hideButton.style.display = 'block';
-    } else  {
+    if (!status === 'success') {
+        if (type === 'updated' && secretariat) {
+            console.log('updated secretariat');
+            denyButton.style.display = 'block';
+            validateButton.style.display = 'block';
+        } else if (type === 'inactive' && secretariat) {
+            hideButton.style.display = 'block';
+        } else if (type === 'inactive' && companyId !== 0) {
+            hideButton.style.display = 'block';
+        } else if (type === 'new' && secretariat) {
+            denyButton.style.display = 'block';
+            validateButton.style.display = 'block';
+        } else if (secretariat && type === 'all' || type == null) {
+            editButton.style.display = 'block';
+            hideButton.style.display = 'block';
+        } else if (companyId !== 0) {
+            console.log('Company');
+            editButton.style.display = 'block';
+            hideButton.style.display = 'block';
+        } else  {
+            applyButton.style.display = 'block';
+        }
+    } else {
         applyButton.style.display = 'block';
     }
+
 
     // Fonction pour ouvrir la fenêtre modale avec un message personnalisé
     function openModalWithMessage(message) {
@@ -365,9 +363,6 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
     }
 
     // Vérifiez si un paramètre 'status' est passé dans l'URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
-
     if (status === 'success') {
         openModalWithMessage("Votre candidature a bien été enregistrée !");
     } else if (status === 'already_applied') {
