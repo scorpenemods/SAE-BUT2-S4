@@ -81,7 +81,7 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
                     <button class="apply-button-edit" id="apply-button" onclick="openModalWithMessage()">Postuler</button>
                     <form action="./company/edit.php" method="get" id="edit-form" style="display: none;">
                         <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
-                        <button class="apply-button-edit" id="edit-button">Modifier</button>
+                        <button class="apply-button-edit" id="edit-button"><?php echo $isAlreadyPending ?  "Modification en attente de validation": "Modifier" ?></button>
                     </form>
                     <form action="../../presenter/offer/company/hide.php" method="post" id="hide-form"
                           style="display: none;">
