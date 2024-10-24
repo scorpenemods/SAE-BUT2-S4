@@ -68,10 +68,10 @@ class Database
 
 
     // Adding a new user
-    public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom)
+    public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom,$status)
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $status = 0; // Default status
+
 
         $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status_user, valid_email) 
                 VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status, 0)";
@@ -109,7 +109,6 @@ class Database
             return false;
         }
     }
-
 
 
     // Getting user information
