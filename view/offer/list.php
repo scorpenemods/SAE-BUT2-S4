@@ -1,6 +1,6 @@
 <?php
 session_start();
-$_SESSION['company_id'] = 1;
+$_SESSION['company_id'] = 0;
 $_SESSION['secretariat'] = false;
 $_SESSION['user'] = 1;
 
@@ -125,7 +125,7 @@ if ($type == null) {
                     </div>
                 </div>
             </form>
-            <div class="pagination" style="text-align: center">
+            <div class="pagination button-group" style="text-align: center">
                 <div id="all">
                     <a href="/view/offer/list.php?type=all">Tous les offres</i></a>
                 </div>

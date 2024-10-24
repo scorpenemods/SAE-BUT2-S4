@@ -66,62 +66,62 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
 <main>
     <?php if ($type == 'updated') {
         echo "<div class='offer-card' style='margin-bottom: 10px'>";
-        echo "<div class='offer-header'>";
-        echo "<div class='offer-title'>";
-        echo "<div>";
-        if ($offer->getTitle() != $offer_old->getTitle()) {
-            echo "<h2 class='diff-old'>" . $offer_old->getTitle() . "</h2>";
-            echo "<h2 class='diff-new'>" . $offer->getTitle() . "</h2>";
-        } else {
-            echo "<h2>" . $offer->getTitle() . "</h2>";
-        }
-        echo "<p class='offer-date'>" . "Publiée le " . $offer->getCreatedAt() . "</p>";
-        echo "</div>";
+            echo "<div class='offer-header'>";
+                echo "<div class='offer-title'>";
+                    echo "<div>";
+                        if ($offer->getTitle() != $offer_old->getTitle()) {
+                            echo "<h2 class='diff-old'>" . $offer_old->getTitle() . "</h2>";
+                            echo "<h2 class='diff-new'>" . $offer->getTitle() . "</h2>";
+                        } else {
+                            echo "<h2>" . $offer->getTitle() . "</h2>";
+                        }
+                        echo "<p class='offer-date'>" . "Publiée le " . $offer->getCreatedAt() . "</p>";
+                    echo "</div>";
         //Bouton ne pas toucher
-        echo "<div class='apply-button-container'>";
-        echo "<form action='../../presenter/offer/secretariat/deny.php' method='get' id='deny-form' style='display: none;'>";
-        echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-        echo "<button class='apply-button-edit'>Refuser</button>";
-        echo "</form>";
-        echo "<form action='../../presenter/offer/secretariat/validate.php' method='post' id='validate-form' style='display: none;'>";
-        echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-        echo "<button class='apply-button-edit'>Valider</button>";
-        echo "</form>";
-        echo "</div>";
+                echo "<div class='apply-button-container'>";
+                    echo "<form action='../../presenter/offer/secretariat/deny.php' method='get' id='deny-form' style='display: none;'>";
+                        echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
+                        echo "<button class='apply-button-edit'>Refuser</button>";
+                    echo "</form>";
+                    echo "<form action='../../presenter/offer/secretariat/validate.php' method='post' id='validate-form' style='display: none;'>";
+                        echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
+                        echo "<button class='apply-button-edit'>Valider</button>";
+                    echo "</form>";
+                echo "</div>";
         //Fin bouton
-        echo "</div>";
+            echo "</div>";
         echo "</div>";
         echo "<div class='offer-content'>";
-        echo "<h3 class='company-name'>";
-        echo "<i class='fas fa-building'></i>";
-        echo $offer_old->getCompany()->getName();
-        echo "</h3>";
-        echo "<div class='offer-details'>";
-        echo "<div class='detail-item'>";
-        echo "<i class='fas fa-clock'></i>";
-        echo "<span>";
-        if ($offer->getRealDuration() != $offer_old->getRealDuration()){
-            echo "<p class='diff-old'>" . $offer_old->getRealDuration() . "</p>";
-            echo "<p class='diff-new'>" . $offer->getRealDuration() . "</p>";
-        }
-        else{
-            echo $offer->getRealDuration();
-        }
-        echo "</span>";
-        echo "</div>";
-        echo "<div class='detail-item'>";
-        echo "<i class='fa-solid fa-phone'></i>";
-        echo "<span>";
-        if ($offer->getPhone() != $offer_old->getPhone()){
-            echo "<a class='diff-old' href='tel:" . $offer_old->getPhone() ."'>" . $offer_old->getPhone() . "</a>";
-            echo "<a class='diff-new' href='tel:" . $offer->getPhone() ."'>" . $offer->getPhone() . "</a>";
-        }
-        else{
-            echo "<a href='tel:" . $offer->getPhone() . "'>" . $offer->getPhone() . "</a>";
-        }
-        echo "</span>";
-        echo "</div>";
-        echo "<div class='detail-item'>";
+            echo "<h3 class='company-name'>";
+            echo "<i class='fas fa-building'></i>";
+            echo $offer_old->getCompany()->getName();
+            echo "</h3>";
+            echo "<div class='offer-details'>";
+                echo "<div class='detail-item'>";
+                    echo "<i class='fas fa-clock'></i>";
+                    echo "<span>";
+                    if ($offer->getRealDuration() != $offer_old->getRealDuration()){
+                        echo "<p class='diff-old'>" . $offer_old->getRealDuration() . "</p>";
+                        echo "<p class='diff-new'>" . $offer->getRealDuration() . "</p>";
+                    }
+                    else{
+                        echo $offer->getRealDuration();
+                    }
+                    echo "</span>";
+                echo "</div>";
+                    echo "<div class='detail-item'>";
+                        echo "<i class='fa-solid fa-phone'></i>";
+                        echo "<span>";
+                        if ($offer->getPhone() != $offer_old->getPhone()){
+                            echo "<a class='diff-old' href='tel:" . $offer_old->getPhone() ."'>" . $offer_old->getPhone() . "</a>";
+                            echo "<a class='diff-new' href='tel:" . $offer->getPhone() ."'>" . $offer->getPhone() . "</a>";
+                        }
+                        else{
+                            echo "<a href='tel:" . $offer->getPhone() . "'>" . $offer->getPhone() . "</a>";
+                        }
+                        echo "</span>";
+                    echo "</div>";
+                echo "<div class='detail-item'>";
         echo "<i class='fa-solid fa-envelope'></i>";
         echo "<span>";
         if ($offer->getEmail() != $offer_old->getEmail()){
@@ -354,6 +354,8 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
         console.log('Company');
         editButton.style.display = 'block';
         hideButton.style.display = 'block';
+    } else  {
+        applyButton.style.display = 'block';
     }
 
     // Fonction pour ouvrir la fenêtre modale avec un message personnalisé
