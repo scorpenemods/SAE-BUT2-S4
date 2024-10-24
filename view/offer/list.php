@@ -1,7 +1,7 @@
 <?php
 session_start();
 $_SESSION['company_id'] = 0;
-$_SESSION['secretariat'] = true;
+$_SESSION['secretariat'] = false;
 $_SESSION['user'] = 1;
 
 // Verification de qui est l'utilisateur
@@ -110,7 +110,7 @@ if ($type == null) {
         <div class="blur-overlay" id="blurOverlay"></div>
         <main>
             <form method="GET">
-                <div class="search-filter">
+                <div class="search-filter" id="search-filter">
                     <div class="search-bar">
                         <input name="title" type="text" placeholder="Rechercher une offre" aria-label="Rechercher une offre">
                         <button type="button" id="openFilter" aria-label="Ouvrir les filtres">
@@ -125,7 +125,7 @@ if ($type == null) {
                     </div>
                 </div>
             </form>
-            <div class="pagination button-group" style="text-align: center">
+            <div class="pagination" style="text-align: center">
                 <div id="all">
                     <a href="/view/offer/list.php?type=all">Tous les offres</i></a>
                 </div>
@@ -174,7 +174,7 @@ if ($type == null) {
             </div>
         </main>
         <div class="filter-panel" id="filterPanel">
-            <div class="filter-panel-content">
+            <div id="filter-panel-content" class="filter-panel-content">
                 <form id="filterForm" method="GET">
                     <div class="filter-section">
                         <h3><i class="fas fa-calendar"></i> Date de début</h3>

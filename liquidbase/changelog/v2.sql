@@ -57,3 +57,12 @@ CREATE TABLE applications (
     PRIMARY KEY (idUser, idOffer)
 );
 --rollback DROP TABLE applications;
+
+--changeset Thibaut:19 labels:alter-table
+--comment: delete useless columns
+ALTER TABLE applications DROP COLUMN IF EXISTS cv;
+ALTER TABLE applications DROP COLUMN IF EXISTS motivation_letter;
+/* liquibase rollback
+ALTER TABLE applications ADD COLUMN cv VARCHAR(255) NOT NULL
+ALTER TABLE applications ADD COLUMN motivation_letter VARCHAR(255) NOT NULL;
+*/
