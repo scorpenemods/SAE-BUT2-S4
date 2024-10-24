@@ -541,14 +541,18 @@ class Offer {
 
         if (!empty($filters['type'])) {
             if ($filters['type'] == 'new') {
-                return pendingOffer::getAllNew();
+                $offers = pendingOffer::getAllNew();
+                return [$offers, ceil(count($offers) / 12)];
             } else if ($filters['type'] == 'updated') {
-                return pendingOffer::getAllUpdated();
+                $offers = pendingOffer::getAllUpdated();
+                return [$offers, ceil(count($offers) / 12)];
             } else if ($filters['type'] == 'inactive') {
                 if (!empty($filters['company_id'])) {
-                    return offer::getAllInactive($filters['company_id']);
+                    $offers = offer::getAllInactive($filters['company_id']);
+                    return [$offers, ceil(count($offers) / 12)];
                 } else {
-                    return offer::getAllInactive();
+                    $offers = offer::getAllInactive();
+                    return [$offers, ceil(count($offers) / 12)];
                 }
             }
         }
