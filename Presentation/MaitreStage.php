@@ -108,30 +108,30 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
 <!-- Section contenant les différents menus -->
 <section class="Menus">
     <nav>
-        <span onclick="widget(0)" class="widget-button Current" id="content-0">Accueil</span>
-        <span onclick="widget(1)" class="widget-button" id="content-1">Missions de stage</span>
-        <span onclick="widget(2)" class="widget-button" id="content-2">Gestion Stagiaires</span>
-        <span onclick="widget(3)" class="widget-button" id="content-3">Evaluation Stages</span>
-        <span onclick="widget(4)" class="widget-button" id="content-4">Documents</span>
-        <span onclick="widget(5)" class="widget-button" id="content-5">Messagerie</span>
-        <span onclick="widget(6)" class="widget-button" id="content-6">Notes</span>
+        <span onclick="window.location.href='MaitreStage.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>" id="content-0">Accueil</span>
+        <span onclick="window.location.href='MaitreStage.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1">Missions de stage</span>
+        <span onclick="window.location.href='MaitreStage.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Gestion Stagiaires</span>
+        <span onclick="window.location.href='MaitreStage.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Evaluation Stages</span>
+        <span onclick="window.location.href='MaitreStage.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Documents</span>
+        <span onclick="window.location.href='MaitreStage.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5">Messagerie</span>
+        <span onclick="window.location.href='MaitreStage.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>" id="content-6">Notes</span>
     </nav>
 
     <div class="Contenus">
         <!-- Contenu de l'Accueil -->
-        <div class="Visible" id="content-0">
+        <div class="<?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">
             <h2>Bienvenue sur la plateforme pour les Maitres de Stage!</h2><br>
             <p>Gérez vos stagiaires, communiquez facilement et suivez l'évolution de leurs compétences.</p><br>
         </div>
 
         <!-- Contenu des autres sections -->
-        <div class="Contenu" id="content-1">Missions de stage</div>
-        <div class="Contenu" id="content-2">Contenu Gestion Stagiaires</div>
-        <div class="Contenu" id="content-3">Contenu Evaluation Stages</div>
-        <div class="Contenu" id="content-4">Contenu Documents</div>
+        <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">Missions de stage</div>
+        <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">Contenu Gestion Stagiaires</div>
+        <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : 'Contenu'; ?>" id="content-3">Contenu Evaluation Stages</div>
+        <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">Contenu Documents</div>
 
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu" id="content-5">
+        <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : 'Contenu'; ?>" id="content-5">
             <div class="messenger">
                 <!-- Barre de recherche de contacts -->
                 <div class="contacts">
@@ -188,7 +188,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
             </div>
         </div>
 
-        <div class="Contenu" id="content-6">Contenu des notes</div>
+        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">Contenu des notes</div>
     </div>
 </section>
 

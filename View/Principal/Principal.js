@@ -375,8 +375,8 @@ function updateNotifications(newMessages) {
 
 
 
-// Vérifier les nouveaux messages toutes les 10 secondes
-setInterval(checkForNewMessages, 10000);
+// Vérifier les nouveaux messages toutes les 1 secondes
+setInterval(checkForNewMessages, 1000);
 
 function checkForNewMessages() {
     fetch('CheckNewMessages.php')
