@@ -313,9 +313,6 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
     const secretariat = <?php echo json_encode($groupeSecretariat); ?>;
     const type = <?php echo json_encode($type); ?>;
 
-    console.log(type);
-    console.log(secretariat);
-    console.log(companyId);
     const isAlreadyPending = <?php echo json_encode($isAlreadyPending); ?>;
 
     if (isAlreadyPending) {
@@ -330,20 +327,22 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
     const validateButton = document.getElementById('validate-form');
 
 
-    if (type === 'inactive' && secretariat) {
+    if (type === 'updated' && secretariat) {
+        denyButton.style.display = 'block';
+        validateButton.style.display = 'block';
+    } else if (type === 'inactive' && secretariat) {
         applyButton.style.display = 'none';
         editButton.style.display = 'none';
         hideButton.style.display = 'block';
         denyButton.style.display = 'none';
         validateButton.style.display = 'none';
     } else if (type === 'inactive' && companyId !== 0) {
-        console.log('Company + inactive');
         applyButton.style.display = 'none';
         editButton.style.display = 'none';
         hideButton.style.display = 'block';
         denyButton.style.display = 'none';
         validateButton.style.display = 'none';
-    } else if ((type === 'new' || type === 'updated') && secretariat) {
+    } else if (type === 'new' && secretariat) {
         applyButton.style.display = 'none';
         editButton.style.display = 'none';
         hideButton.style.display = 'none';
