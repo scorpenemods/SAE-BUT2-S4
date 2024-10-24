@@ -13,8 +13,8 @@ function getPageOffers(int $n, array $filters): ?array {
     }
 
     return array(
-        "offers" => $filteredOffers,
-        "totalPages" => 10
+        "offers" => $filteredOffers[0],
+        "totalPages" => $filteredOffers[1]
     );
 }
 ?>

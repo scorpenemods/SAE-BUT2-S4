@@ -34,6 +34,7 @@ if (isset($_SESSION['company_id'])) {
 }
 
 
+
 if ($type == null || $type == 'all' || $type == 'inactive') {
     $offer = Offer::getById($offerId);
 } else {
@@ -314,6 +315,9 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
     const secretariat = <?php echo json_encode($groupeSecretariat); ?>;
     const type = <?php echo json_encode($type); ?>;
 
+    console.log(type);
+    console.log(secretariat);
+    console.log(companyId);
     const isAlreadyPending = <?php echo json_encode($isAlreadyPending); ?>;
 
     if (isAlreadyPending) {
@@ -387,8 +391,6 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
             modal.style.display = "none";
         }
     }
-
-
 </script>
 
 

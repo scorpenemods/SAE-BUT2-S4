@@ -56,7 +56,7 @@ function setPageId($url, $newPageId): string {
 error_reporting(E_ALL ^ E_DEPRECATED);
 $filters = array();
 
-$title = filter_input(INPUT_GET, 'title', FILTER_SANITIZE_STRING);
+$title = filter_input(INPUT_GET, 'title');
 $sort = filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING);
 $startDate = filter_input(INPUT_GET, 'startDate', FILTER_SANITIZE_STRING);
 $diploma = filter_input(INPUT_GET, 'diploma', FILTER_SANITIZE_STRING);
