@@ -52,12 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 move_uploaded_file($tempName, $uploadDir . $newName . "." .$fileExt);
             }
 
-            if (isset($cvPath) && isset($letterPath)) {
-                $stmt = $db->prepare("INSERT INTO applications (idUser, idOffer) VALUES (:idUser, :idOffer)");
-                $stmt->bindParam(':idUser', $idUser);
-                $stmt->bindParam(':idOffer', $offer);
-                $stmt->execute();
-            }
+            $stmt = $db->prepare("INSERT INTO applications (idUser, idOffer) VALUES (:idUser, :idOffer)");
+            $stmt->bindParam(':idUser', $idUser);
+            $stmt->bindParam(':idOffer', $offer);
+            $stmt->execute();
 
             header("Location: /view/offer/detail.php?id=$offer&status=success");
         } else {
