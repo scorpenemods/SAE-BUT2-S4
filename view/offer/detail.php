@@ -129,13 +129,13 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
                 <div class="detail-item">
                     <i class="fa-solid fa-link"></i>
                     <span>
-                        <a href="https://<?php echo $offer->getDomain(); ?>"><?php echo $offer->getDomain(); ?></a>
+                        <a target="_blank" rel="noopener noreferrer" href="https://<?php echo $offer->getDomain(); ?>"><?php echo $offer->getDomain(); ?></a>
                     </span>
                 </div>
                 <div class="detail-item">
                     <i class="fas fa-map-marker-alt"></i>
                     <span>
-                        <a href="https://maps.google.com/?q=<?php echo $offer->getAddress(); ?>"><?php echo $offer->getAddress(); ?></a>
+                        <a target="_blank" rel="noopener noreferrer" href="https://maps.google.com/?q=<?php echo $offer->getAddress(); ?>"><?php echo $offer->getAddress(); ?></a>
                     </span>
                 </div>
                 <div class="detail-item">

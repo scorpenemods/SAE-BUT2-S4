@@ -456,10 +456,27 @@ class Offer {
     public static function getFilteredOffers(int $n, array $filters): ?array {
         global $db;
 
-        $sql = "SELECT offers.*, tag FROM offers LEFT JOIN tags_offers ON offers.id = tags_offers.offer_id LEFT JOIN tags ON tags.id = tags_offers.tag_id WHERE is_active AND begin_date >= CURDATE()";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS offers.*, tag FROM offers LEFT JOIN tags_offers ON offers.id = tags_offers.offer_id LEFT JOIN tags ON tags.id = tags_offers.tag_id WHERE is_active AND begin_date >= CURDATE()";
         $params = [];
 
         if (!empty($filters['title'])) {
+            preg_match('/title\s*:\s*"(.*?)"/', $filters['title'], $titleMatches);
+            if (isset($titleMatches[1])) {
+                $sql .= ' AND offers.title LIKE :titleMatch';
+                $params[':titleMatch'] = '%' . $titleMatches[1] . '%';
+            }
+
+            $filters['title'] = preg_replace('/title\s*:\s*"(.*?)"/', '', $filters['title']);
+
+            preg_match('/description\s*:\s*"(.*?)"/', $filters['title'], $descriptionMatches);
+            if (isset($descriptionMatches[1])) {
+                $sql .= ' AND offers.description LIKE :descriptionMatch';
+                $params[':descriptionMatch'] = '%' . $descriptionMatches[1] . '%';
+            }
+
+            $filters['title'] = preg_replace('/description\s*:\s*"(.*?)"/', '', $filters['title']);
+            
+
             $sql .= ' AND offers.title LIKE :title';
             $params[':title'] = '%' . $filters['title'] . '%';
         }
@@ -539,21 +556,16 @@ class Offer {
         $sql .= " LIMIT 12 OFFSET ". ($n - 1) * 12;
 
         $stmt = $db->prepare($sql);
-
         foreach ($params as $key => $value) {
             $stmt->bindValue($key, $value);
         }
-
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
-            return null;
-        }
-
-        $result = $stmt->fetchAll();
+        $stmt2 = $db->query("SELECT FOUND_ROWS() as total");
+        $count = $stmt2->fetch()['total'];
 
         $offers = [];
-        foreach ($result as $row) {
+        foreach ($stmt->fetchAll() as $row) {
             $company = Company::getById($row["company_id"]);
 
             if (!$company) {
@@ -581,7 +593,7 @@ class Offer {
             );
         }
 
-        return $offers;
+        return [$offers, ceil($count / 12)];
     }
 
     //Hide an offer
