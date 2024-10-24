@@ -40,7 +40,10 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                     }
                     echo "</select>";
                     echo "</div>";
-                }?>
+                } else {
+                    echo "<input type='hidden' id='company_id' name='company_id' value='" . $_SESSION['company_id'] . "'>";
+                }
+                ?>
                 <div class="form-group">
                     <label for="title">Titre de l'offre</label>
                     <input type="text" id="title" name="title" placeholder="Ex: Développeur Web Junior" required>
