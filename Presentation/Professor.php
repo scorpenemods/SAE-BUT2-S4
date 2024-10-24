@@ -92,7 +92,7 @@ $contacts = $database->getGroupContacts($userId);
     </div>
 </header>
 
-<div class="sidebar-toggle" id="sidebar-toggle">&#11166;</div>
+<div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#11166;</div>
 <div class="sidebar" id="sidebar">
     <div class="search">
         <input type="text" id="search-input" placeholder="Search" onkeyup="searchStudents()">
