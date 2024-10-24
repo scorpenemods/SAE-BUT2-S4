@@ -53,17 +53,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (isset($cvPath) && isset($letterPath)) {
-                $stmt = $db->prepare("INSERT INTO applications (idUser, idOffer, cv, motivation_letter) VALUES (:idUser, :idOffer,:cv, :letter)");
+                $stmt = $db->prepare("INSERT INTO applications (idUser, idOffer) VALUES (:idUser, :idOffer)");
                 $stmt->bindParam(':idUser', $idUser);
                 $stmt->bindParam(':idOffer', $offer);
-                $stmt->bindParam(':cv', $cvPath);
-                $stmt->bindParam(':letter', $letterPath);
                 $stmt->execute();
             }
 
             header("Location: /view/offer/detail.php?id=$offer&status=success");
         } else {
-            //header("Location: /view/offer/detail.php?id=$offre&status=already_applied");
+            header("Location: /view/offer/detail.php?id=$offer&status=already_applied");
         }
 
         die();
