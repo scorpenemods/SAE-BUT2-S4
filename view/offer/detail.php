@@ -247,10 +247,6 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
     toggleVisibility('deny-form', false);
     toggleVisibility('validate-form', false);
 
-    console.log(status);
-    console.log(type);
-    console.log(secretariat);
-    console.log(companyId);
     if (status !== 'success') {
         if (type === 'updated' && secretariat) {
             toggleVisibility('deny-form', true);
