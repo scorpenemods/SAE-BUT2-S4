@@ -13,7 +13,7 @@ if (!is_dir($uploadDir)) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $offre = $_POST['offre'];
+    $offer = $_POST['offre'];
 
     if (!isset($_SESSION["user"])) {
         header('Location: ' . $_SERVER["HTTP_REFERER"] ?? "/");
@@ -21,39 +21,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $stmt = $db->prepare("select * from applications where idUser = :idUser and idOffer = :idOffre");
         $stmt->bindParam(":idUser", $idUser);
-        $stmt->bindParam(":idOffre", $offre);
+        $stmt->bindParam(":idOffre", $offer);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$result){
             if (isset($_FILES['cv']) && $_FILES['cv']['error'] === 0) {
-                $cvName = basename($_FILES['cv']['name']);
-                $cvTmpName = $_FILES['cv']['tmp_name'];
-                $cvPath = $uploadDir . uniqid() . '-' . $cvName;
+                $fileExt = pathinfo($_FILES['cv']['name'], PATHINFO_EXTENSION);
+                if ($fileExt !== "pdf") {
+                    header("Location: /view/offer/detail.php?id=$offer&status=file_error");
+                    die();
+                }
 
-                move_uploaded_file($cvTmpName, $cvPath);
+                $tempName = $_FILES['cv']['tmp_name'];
+                $newName = md5($idUser . ":" . $offer . ":cv");
+
+                move_uploaded_file($tempName, $uploadDir . $newName . "." . $fileExt);
             }
 
             if (isset($_FILES['motivation']) && $_FILES['motivation']['error'] === 0) {
-                $letterName = basename($_FILES['motivation']['name']);
-                $letterTmpName = $_FILES['motivation']['tmp_name'];
-                $letterPath = $uploadDir . uniqid() . '-' . $letterName;
+                $fileExt = pathinfo($_FILES['motivation']['name'], PATHINFO_EXTENSION);
+                if ($fileExt !== "pdf") {
+                    header("Location: /view/offer/detail.php?id=$offer&status=file_error");
+                    die();
+                }
 
-                move_uploaded_file($letterTmpName, $letterPath);
+                $tempName = $_FILES['motivation']['tmp_name'];
+                $newName = md5($idUser . ":" . $offer . ":motivation");
+
+                move_uploaded_file($tempName, $uploadDir . $newName . "." .$fileExt);
             }
 
             if (isset($cvPath) && isset($letterPath)) {
                 $stmt = $db->prepare("INSERT INTO applications (idUser, idOffer, cv, motivation_letter) VALUES (:idUser, :idOffer,:cv, :letter)");
                 $stmt->bindParam(':idUser', $idUser);
-                $stmt->bindParam(':idOffer', $offre);
+                $stmt->bindParam(':idOffer', $offer);
                 $stmt->bindParam(':cv', $cvPath);
                 $stmt->bindParam(':letter', $letterPath);
                 $stmt->execute();
             }
 
-            header("Location: /view/offer/detail.php?id=$offre&status=success");
+            header("Location: /view/offer/detail.php?id=$offer&status=success");
         } else {
-            header("Location: /view/offer/detail.php?id=$offre&status=already_applied");
+            //header("Location: /view/offer/detail.php?id=$offre&status=already_applied");
         }
 
         die();
