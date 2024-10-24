@@ -444,6 +444,11 @@ input[type=number] {
     padding-top: 20px;
 }
 
-@media max-wi {
-
+@media (max-width: 960px) {
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+        padding-bottom: 20px;
+        padding-top: 20px;
+    }
 }
