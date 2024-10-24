@@ -2,14 +2,18 @@
 session_start();
 global $tags;
 
-require dirname(__FILE__) . '/../../../models/Offer.php';
+require dirname(__FILE__) . '/../../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../../models/Company.php';
 
 // Check if user has a company
 if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset($_GET['id']))) {
+    if (PendingOffer::isAlreadyPending($_GET['id'])) {
+        header("Location: ../../offer/list.php");
+        die();
+    }
     $company_id = $_SESSION['company_id'];
     $offer = Offer::getById($_GET['id']);
-    if ($company_id!= null && !Offer::isCompanyOffer($_GET['id'], $company_id)) {
+    if ($company_id != null && !Offer::isCompanyOffer($_GET['id'], $company_id)) {
         header("Location: ../../offer/list.php");
         die();
     } else {
@@ -142,6 +146,8 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
                     dropdownBtn.textContent = `${categories.length} catégories sélectionnées`;
                 }
             }
+
+            console.log(<?php echo json_encode(PendingOffer::isAlreadyPending($_GET['id'])); ?>);
         </script>
     </body>
 </html>

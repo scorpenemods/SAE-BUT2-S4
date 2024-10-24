@@ -11,24 +11,17 @@ if (isset($_SESSION['user'])) {
     die();
 }
 
-if (isset($_POST['id'])) {
-    $offers = PendingOffer::getByOfferId($_POST['id']);
-
-    foreach ($offers as $offer) {
-        $status = $offer->getStatus();
-        if ($status == "Pending") {
-            header("Location: ../../view/offer/list.php");
-            die();
-        }
-    }
-}
-
 if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) && isset($_POST['description']) && isset($_POST['duration']) && isset($_POST['salary']) && isset($_POST['education']) && isset($_POST['start-date']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['website'])) {
     if (isset($_POST['id'])) {
         $id = $_POST['id'];
+        if (PendingOffer::isAlreadyPending($id)) {
+            header("Location: ../offer/view/list.php");
+            die();
+        }
     } else {
         $id = 0;
     }
+
     $company_id = $_POST['company_id'];
     $title = $_POST['title'];
     $address = $_POST['address'];
@@ -50,8 +43,6 @@ if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['addre
             $selectedTags[] = $tag;
         }
     }
-
-
 
     //Create the offer
     $offer = pendingOffer::createPending($company_id, $title, $description, $job, $duration, $salary, $address, $education, $startDate, $selectedTags, $email, $phone, $website, $user_id, $id);

@@ -289,6 +289,7 @@ class PendingOffer extends Offer
         $stmt->bindParam(":begin_date", $startDate);
         $stmt->execute();
 
+
         if ($db->errorCode() != 0) {
             return null;
         }
@@ -302,6 +303,7 @@ class PendingOffer extends Offer
             $stmt->bindParam(":offer_id", $id);
             $stmt->execute();
         }
+
         $company_id = intval($company_id);
         $company = Company::getById($company_id);
         $offer = new PendingOffer(
@@ -385,5 +387,25 @@ class PendingOffer extends Offer
         $stmt->bindParam(":status", $string);
         $stmt->bindParam(":id", $getId);
         $stmt->execute();
+    }
+
+    public static function isAlreadyPending(int $id): ?bool {
+        global $db;
+
+        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE offer_id = :offer_id AND status = 'Pending'");
+        $stmt->bindParam(":offer_id", $id);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $result = $stmt->fetch();
+
+        if (!$result) {
+            return false;
+        }
+
+        return true;
     }
 }
