@@ -12,8 +12,7 @@ if (isset($_SESSION['user'])) {
 }
 
 if (isset($_POST['id'])) {
-    $offers = PendingOffer::getByOfferId($_POST['id']);
-
+    $offers = PendingOffer::getByOffer($_POST['id']);
     foreach ($offers as $offer) {
         $status = $offer->getStatus();
         if ($status == "Pending") {

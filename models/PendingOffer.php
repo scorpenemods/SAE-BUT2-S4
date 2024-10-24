@@ -116,6 +116,53 @@ class PendingOffer extends Offer
         );
     }
 
+    public static function getByOffer(int $id): ?array {
+        global $db;
+        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE offer_id = :id");
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $result = $stmt->fetchAll();
+
+        if (!$result) {
+            return null;
+        }
+
+        foreach ($result as $row) {
+            $company = Company::getById($row["company_id"]);
+
+            if (!$company) {
+                continue;
+            }
+
+            $offers[] = new PendingOffer(
+                $row["id"],
+                $row["company_id"],
+                $row["type"],
+                $company,
+                $row["title"],
+                $row["description"],
+                $row["job"],
+                $row["duration"],
+                $row["begin_date"],
+                $row["salary"],
+                $row["address"],
+                $row["study_level"],
+                date("Y-m-d H:i:s", strtotime($row["created_at"])),
+                $row["email"],
+                $row["phone"],
+                $row["website"],
+                $row["offer_id"],
+                $row["status"]
+            );
+        }
+        return $offers;
+    }
+
     //Get all pending offers
     public static function getAll(): ?array
     {
