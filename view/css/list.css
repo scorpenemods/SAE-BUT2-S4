@@ -434,3 +434,16 @@ input[type=number] {
     cursor: pointer;
     font-size: 18px;
 }
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+@media max-wi {
+
+}

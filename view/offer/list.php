@@ -125,7 +125,7 @@ if ($type == null) {
                     </div>
                 </div>
             </form>
-            <div id="pagination" class="pagination" style="text-align: center">
+            <div class="pagination" style="text-align: center">
                 <div id="all">
                     <a href="/view/offer/list.php?type=all">Tous les offres</i></a>
                 </div>
