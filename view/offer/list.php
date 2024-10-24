@@ -1,7 +1,7 @@
 <?php
 session_start();
 $_SESSION['company_id'] = 0;
-$_SESSION['secretariat'] = false;
+$_SESSION['secretariat'] = true;
 $_SESSION['user'] = 1;
 
 // Verification de qui est l'utilisateur
@@ -148,7 +148,9 @@ if ($type == null) {
                     echo "<a class='company-link' href='/view/offer/detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
                         echo "<div class='company-card'>";
                             echo "<div class='company-header'>";
-                                echo '<button title="Like" class="heart" onclick="heartUpdate(' . $offer->getId() . ')"><i id="heart-icon-' . $offer->getId() . '" class="'. (Offer::isFavorite($offer->getId(), $user_id) ? 'fa-solid' : 'fa-regular') . ' fa-heart"></i></button>';
+                                if ($type == 'all') {
+                                    echo '<button title="Like" class="heart" onclick="heartUpdate(' . $offer->getId() . ')"><i id="heart-icon-' . $offer->getId() . '" class="'. (Offer::isFavorite($offer->getId(), $user_id) ? 'fa-solid' : 'fa-regular') . ' fa-heart"></i></button>';
+                                }
                                 echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
                                 echo "<h3 class='title'>". $offer->getTitle() ."</h3>";
                                 echo "<span class='company'><i class='fas fa-building'></i> " . $offer->getCompany()->getName() . "</span>";
