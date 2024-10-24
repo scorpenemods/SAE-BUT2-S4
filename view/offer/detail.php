@@ -392,7 +392,5 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
         }
     }
 </script>
-
-
 </body>
 </html>
