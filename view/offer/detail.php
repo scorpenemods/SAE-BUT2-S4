@@ -197,19 +197,18 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
         echo "<div class='offer-header'>";
         echo "<div class='offer-title'>";
         echo "<div>";
-
         echo "<h2>" . $offer->getTitle() . "</h2>";
         echo "<p class='offer-date'>" . "Publiée le " . $offer->getCreatedAt() . "</p>";
         echo "</div>";
         echo "<div class='apply-button-container'>";
         echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-        echo "<button class='apply-button-edit' id='apply-button' onclick='openModalWithMessage()'>Postuler</button>";
+        echo "<button class='apply-button-edit' id='apply-button' onclick='openModalWithMessage()' style='display: none;'>Postuler</button>";
         echo "<form action='./company/edit.php' method='get' id='edit-form' style='display: none;'>";
         echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
         if ($isAlreadyPending) {
-            echo "<button class='apply-button-edit'>Modification en attente de validation</button>";
+            echo "<button class='apply-button-edit' id='edit-button'>Modification en attente de validation</button>";
         } else {
-            echo "<button class='apply-button-edit'>Modifier</button>";
+            echo "<button class='apply-button-edit' id='edit-button'>Modifier</button>";
         }
         echo "</form>";
         echo "<form action='../../presenter/offer/company/hide.php' method='post' id='hide-form' style='display: none;'>";
@@ -320,42 +319,39 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
         document.getElementById('edit-button').disabled = true;
     }
 
+    console.log(type);
+    console.log(secretariat);
+    console.log(companyId);
+
     const applyButton = document.getElementById('apply-button');
     const editButton = document.getElementById('edit-form');
     const hideButton = document.getElementById('hide-form');
     const denyButton = document.getElementById('deny-form');
     const validateButton = document.getElementById('validate-form');
 
+    console.log(applyButton);
+    console.log(editButton);
+    console.log(hideButton);
+    console.log(denyButton);
+    console.log(validateButton);
+
 
     if (type === 'updated' && secretariat) {
+        console.log('updated secretariat');
         denyButton.style.display = 'block';
         validateButton.style.display = 'block';
     } else if (type === 'inactive' && secretariat) {
-        applyButton.style.display = 'none';
-        editButton.style.display = 'none';
         hideButton.style.display = 'block';
-        denyButton.style.display = 'none';
-        validateButton.style.display = 'none';
     } else if (type === 'inactive' && companyId !== 0) {
-        applyButton.style.display = 'none';
-        editButton.style.display = 'none';
         hideButton.style.display = 'block';
-        denyButton.style.display = 'none';
-        validateButton.style.display = 'none';
     } else if (type === 'new' && secretariat) {
-        applyButton.style.display = 'none';
-        editButton.style.display = 'none';
-        hideButton.style.display = 'none';
         denyButton.style.display = 'block';
         validateButton.style.display = 'block';
     } else if (secretariat && type === 'all' || type == null) {
-        applyButton.style.display = 'none';
-        denyButton.style.display = 'none';
         editButton.style.display = 'block';
         hideButton.style.display = 'block';
-        validateButton.style.display = 'none';
     } else if (companyId !== 0) {
-        applyButton.style.display = 'none';
+        console.log('Company');
         editButton.style.display = 'block';
         hideButton.style.display = 'block';
     }
