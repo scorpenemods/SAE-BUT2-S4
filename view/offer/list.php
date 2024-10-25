@@ -136,10 +136,10 @@ if ($type == null) {
                     <a href="/view/offer/list.php?type=updated">Offres mises à jour</i></a>
                 </div>
                 <div id="inactive">
-                    <a href="/view/offer/list.php?type=inactive">Offres inactifs</i></a>
+                    <a href="/view/offer/list.php?type=inactive">Offres inactives</i></a>
                 </div>
                 <div id="create" style="text-align: center">
-                    <a href="create.php">Create Offer</i></a>
+                    <a href="create.php">Créer une offre</i></a>
                 </div>
             </div>
             <div class="company-listings">
