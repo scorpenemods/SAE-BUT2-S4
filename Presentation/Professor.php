@@ -130,7 +130,8 @@ $contacts = $database->getGroupContacts($userId);
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
-                        <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                        <label for="search-input"></label>
+                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
                     </div>
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
@@ -145,15 +146,30 @@ $contacts = $database->getGroupContacts($userId);
                         $userId = $person->getUserId();
                         $contacts = $database->getGroupContacts($userId);
 
+                        // Sort contacts by role
+                        usort($contacts, fn($a, $b) => $a['role'] <=> $b['role']);
+
+                        // Group contacts by role
+                        $groupedContacts = [];
                         foreach ($contacts as $contact) {
-                            echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom'] . ' (' . $roleMapping[$contact['role']] . ')' ) . '\')">';
-                            echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom'] . ' (' . $roleMapping[$contact['role']] . ')');
-                            echo '<span class="new-message-indicator" style="display: none;"></span>';
-                            echo '</li>';
+                            $roleName = $roleMapping[$contact['role']] ?? "Unknown Role";
+                            $groupedContacts[$roleName][] = $contact;
+                        }
+
+                        // Display contacts grouped by role
+                        foreach ($groupedContacts as $roleName => $contactsGroup) {
+                            echo "<label><strong>$roleName :</strong></label>";
+                            foreach ($contactsGroup as $contact) {
+                                echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
+                                echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
+                                echo '</li>';
+                            }
                         }
                         ?>
                     </ul>
                 </div>
+
+
 
                 <!-- Right click for delete -->
                 <div id="context-menu" class="context-menu">
