@@ -48,6 +48,11 @@ switch ($type) {
 $isAlreadyPending = Offer::isAlreadyPending($offerId);
 
 function renderDetail($label, $iconClass, $oldValue, $newValue, $isLink = false, $linkPrefix = ''): void {
+    /*
+    * Renders a detail item with a label, an icon, and two values.
+    * If the values are different, it renders a link to the old value and a link to the new value.
+    * If the values are the same, it renders the new value as a link if $isLink is true, or as a plain text otherwise.
+    */
     echo "<div class='detail-item'>";
     echo "<span>";
     echo "<i class='$iconClass'> </i>";
@@ -71,6 +76,11 @@ function renderDetail($label, $iconClass, $oldValue, $newValue, $isLink = false,
 }
 
 function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): void {
+    /*
+     * Renders a form with a hidden field for the offer ID and a button with the given text.
+     * The form's action is set to $action and its method is set to 'post'.
+     * The hidden field is added to the form with the given name and value.
+     */
     echo "<form action='$action' method='post'>";
     foreach ($hiddenFields as $name => $value) {
         echo "<input type='hidden' name='$name' value='$value'>";
@@ -222,8 +232,8 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
     const companyId = <?php echo json_encode($company_id); ?>;
     const secretariat = <?php echo json_encode($groupeSecretariat); ?>;
     const type = <?php echo json_encode($type); ?>;
-
     const isAlreadyPending = <?php echo json_encode($isAlreadyPending); ?>;
+
 
     if (isAlreadyPending) {
         //Make edit form disabled
@@ -233,6 +243,8 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get('status');
 
+
+    //Toggle visibility of elements with the given ID
     function toggleVisibility(elementId, show) {
         const element = document.getElementById(elementId);
         if (element) {
@@ -247,6 +259,8 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
     toggleVisibility('deny-form', false);
     toggleVisibility('validate-form', false);
 
+
+    //Show or hide elements based on the status of the offer, the type of the offer, and the user's role
     if (status !== 'success') {
         if (type === 'updated' && secretariat) {
             toggleVisibility('deny-form', true);
@@ -271,6 +285,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
     } else {
         toggleVisibility('apply-button', true);
     }
+
     // Fonction pour ouvrir la fenêtre modale avec un message personnalisé
     function openModalWithMessage(message) {
         document.getElementById("applyModal").style.display = "block";

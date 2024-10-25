@@ -637,6 +637,7 @@ class Offer {
         return true;
     }
 
+    // Verify if an offer is already pending
     public static function isAlreadyPending(int $id): ?bool {
         global $db;
 
@@ -657,6 +658,7 @@ class Offer {
         return true;
     }
 
+    // Add a favorite offer for a user
     public static function makeFavorite(int $id, int $user_id): ?bool {
         global $db;
 
@@ -672,6 +674,7 @@ class Offer {
         return true;
     }
 
+    // Remove a favorite offer for a user
     public static function removeFavorite(int $id, int $user_id): ?bool {
         global $db;
 
@@ -687,6 +690,7 @@ class Offer {
         return true;
     }
 
+    // Verify if a user has a favorite offer
     public static function isFavorite(int $id, int $user_id): ?bool {
         global $db;
 
@@ -708,6 +712,7 @@ class Offer {
         return true;
     }
 
+    // Get all inactive offers
     public static function getAllInactive(int $company_id = 0): ?array {
         global $db;
         if ($company_id != 0) {

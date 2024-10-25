@@ -123,6 +123,9 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
         </main>
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
         <script>
+            /*
+               Manage the visibility of the tags dropdown.
+             */
             const dropdownBtn = document.getElementById('tagsDropdownBtn');
             const dropdown = document.getElementById("tagsDropdown");
             const checkboxes = document.querySelectorAll('input[name="tags"]');
@@ -131,6 +134,9 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 dropdown.classList.toggle("show");
             }
 
+            /*
+                Close the dropdown when the user clicks outside of it.
+             */
             window.onclick = function(event) {
                 if (!event.target.matches('.tags-dropdown-btn') && !event.target.closest('.tags-dropdown-content')) {
                     if (dropdown.classList.contains('show')) {
