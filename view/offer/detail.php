@@ -97,7 +97,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
 </head>
 <body>
 <?php include dirname(__FILE__) . '/../header.php'; ?>
-<div>
+<main>
     <div class='offer-card' style='margin-bottom: 10px'>
         <div class='offer-header'>
             <div class='offer-title'>
@@ -209,8 +209,8 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                     echo "</form>";
                 echo "</div>";
             echo "</div>";
+            echo "</div>";
     } ?>
-</div>
 </main>
 <?php include dirname(__FILE__) . '/../footer.php'; ?>
 <script type="text/javascript">

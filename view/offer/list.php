@@ -1,7 +1,7 @@
 <?php
 session_start();
 $_SESSION['company_id'] = 0;
-$_SESSION['secretariat'] = true;
+$_SESSION['secretariat'] = false;
 $_SESSION['user'] = 1;
 
 // Verification de qui est l'utilisateur
