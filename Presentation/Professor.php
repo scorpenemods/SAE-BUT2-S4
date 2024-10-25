@@ -146,7 +146,7 @@ $contacts = $database->getGroupContacts($userId);
                         $contacts = $database->getGroupContacts($userId);
 
                         foreach ($contacts as $contact) {
-                            echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom'] . ' (' . $contact['role'] . ')' ) . '\')">';
+                            echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom'] . ' (' . $roleMapping[$contact['role']] . ')' ) . '\')">';
                             echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom'] . ' (' . $roleMapping[$contact['role']] . ')');
                             echo '<span class="new-message-indicator" style="display: none;"></span>';
                             echo '</li>';
