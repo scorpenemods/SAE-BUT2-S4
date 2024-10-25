@@ -472,7 +472,7 @@ function sidebar(){
 }
 
 function searchStudents() {
-    const input = document.getElementById('search-input').value.toLowerCase();
+    const input = document.getElementById('search-input-sidebar').value.toLowerCase();
     const students = document.querySelectorAll('.student');
 
     students.forEach(student => {

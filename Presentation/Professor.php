@@ -95,7 +95,7 @@ $contacts = $database->getGroupContacts($userId);
 <div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#11166;</div>
 <div class="sidebar" id="sidebar">
     <div class="search">
-        <input type="text" id="search-input" placeholder="Search" onkeyup="searchStudents()">
+        <input type="text" id="search-input-sidebar" placeholder="Search" onkeyup="searchStudents()">
     </div>
     <div class="students">
         <?php foreach ($students as $student): ?>
