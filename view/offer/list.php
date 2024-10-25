@@ -1,6 +1,6 @@
 <?php
 session_start();
-$_SESSION['company_id'] = 0;
+$_SESSION['company_id'] = 1;
 $_SESSION['secretariat'] = false;
 $_SESSION['user'] = 1;
 

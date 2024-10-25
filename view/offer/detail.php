@@ -255,6 +255,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
             toggleVisibility('hide-form', true);
         } else if (type === 'inactive' && companyId !== 0) {
             toggleVisibility('edit-form', true);
+            toggleVisibility('hide-form', true);
         } else if (type === 'new' && secretariat) {
             toggleVisibility('deny-form', true);
             toggleVisibility('validate-form', true);
