@@ -167,7 +167,7 @@ if ($type == null) {
                 }
                 ?>
             </div>
-            <div class="pagination">
+            <div id="pagination" class="pagination">
                 <a href="<?php echo setPageId($curURL, 1); ?>" class="first-page"><i class="fas fa-angle-double-left"></i></a>
                 <a href="<?php echo setPageId($curURL, $pageId > 1 ? $pageId - 1 : $pageId); ?>" class="prev-page"><i class="fas fa-angle-left"></i></a>
                 <a disabled="true" href="#"><?php echo $pageId; ?> / <?php echo $totalPages; ?></a>
