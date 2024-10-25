@@ -97,7 +97,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
 </head>
 <body>
 <?php include dirname(__FILE__) . '/../header.php'; ?>
-<main>
+<div>
     <div class='offer-card' style='margin-bottom: 10px'>
         <div class='offer-header'>
             <div class='offer-title'>
@@ -195,22 +195,22 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
         <?php if ($type != 'updated') {
             // add modal
             echo "<div id='applyModal' class='modal'>";
-            echo "<div class='modal-content'>";
-            echo "<span class='close' onclick='closeModal()'>&times;</span>";
-            echo "<h2>Déposez votre candidature pour cette offre :</h2><br>";
-            echo "<form action='/presenter/offer/apply.php' method='POST' enctype='multipart/form-data'>";
-            echo "<label for='cv'>Déposez votre CV :</label>";
-            echo "<input type='file' class='file-upload' id='cv' name='cv' accept='.pdf' required><br>";
-            echo "<label for='motivation'>Déposez votre lettre de motivation :</label>";
-            echo "<input type='file' class='file-upload' id='motivation' name='motivation' accept='.pdf' required>";
-            echo "<p id='modal-message'></p>";
-            echo "<input type='hidden' name='offre' value='" . $offer->getId() . "'>";
-            echo "<button type='submit'>Valider la candidature</button>";
-            echo "</form>";
-            echo "</div>";
-            echo "</div>";
+                echo "<div class='modal-content'>";
+                    echo "<span class='close' onclick='closeModal()'>&times;</span>";
+                    echo "<h2>Déposez votre candidature pour cette offre :</h2><br>";
+                    echo "<form action='/presenter/offer/apply.php' method='POST' enctype='multipart/form-data'>";
+                        echo "<label for='cv'>Déposez votre CV :</label>";
+                        echo "<input type='file' class='file-upload' id='cv' name='cv' accept='.pdf' required><br>";
+                        echo "<label for='motivation'>Déposez votre lettre de motivation :</label>";
+                        echo "<input type='file' class='file-upload' id='motivation' name='motivation' accept='.pdf' required>";
+                        echo "<p id='modal-message'></p>";
+                        echo "<input type='hidden' name='offre' value='" . $offer->getId() . "'>";
+                        echo "<button type='submit'>Valider la candidature</button>";
+                    echo "</form>";
+                echo "</div>";
             echo "</div>";
     } ?>
+</div>
 </main>
 <?php include dirname(__FILE__) . '/../footer.php'; ?>
 <script type="text/javascript">
