@@ -135,13 +135,19 @@ $contacts = $database->getGroupContacts($userId);
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
                         <?php
+                        $roleMapping = [
+                            1 => "Etudiant",
+                            2 => "Professeur",
+                            3 => "Maitre de stage"
+                        ];
+
                         // Récupérer les contacts associés à l'utilisateur connecté
                         $userId = $person->getUserId();
                         $contacts = $database->getGroupContacts($userId);
 
                         foreach ($contacts as $contact) {
-                            echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
-                            echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
+                            echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom'] . ' (' . $contact['role'] . ')' ) . '\')">';
+                            echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom'] . ' (' . $roleMapping[$contact['role']] . ')');
                             echo '<span class="new-message-indicator" style="display: none;"></span>';
                             echo '</li>';
                         }

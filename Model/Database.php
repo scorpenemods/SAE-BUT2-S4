@@ -232,7 +232,7 @@ class Database
     // Récupérer les contacts du même groupe que l'utilisateur
     public function getGroupContacts($userId) {
         $query = "
-            SELECT DISTINCT User.id, User.nom, User.prenom
+            SELECT DISTINCT User.id, User.nom, User.prenom, User.role
             FROM User
             INNER JOIN Groupe ON User.id = Groupe.user_id
             INNER JOIN (
