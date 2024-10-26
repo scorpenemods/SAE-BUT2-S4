@@ -222,7 +222,7 @@ a {
 }
 
 a:hover {
-    color: #1abc9c;
+    color: #ea0c0c;
 }
 
 /* Containers with content */
@@ -230,7 +230,7 @@ a:hover {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-    padding-top: 30%;
+    padding-top: 10%;
 }
 
 .main-content {
@@ -288,6 +288,57 @@ button.secondary {
 
 button.secondary:hover {
     background-color: #636e72;
+}
+
+.required {
+    color: red;
+}
+
+/* Style général pour les champs du formulaire */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 8px;
+    margin: 4px 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Style spécifique pour les listes déroulantes */
+select {
+    appearance: none;
+    background-color: #fff;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg%20xmlns="http://www.w3.org/2000/svg"%20viewBox="0%200%204%205"><polygon%20points="2,0%200,5%204,5"%20fill="%23ccc"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 8px 10px;
+    cursor: pointer;
+}
+
+/* Pour supporter les anciens navigateurs */
+select::-ms-expand {
+    display: none;
+}
+
+/* Style pour le bouton */
+button[type="submit"] {
+    background-color: #3498db; /* Couleur du bouton */
+    color: white;
+    padding: 10px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Changer la couleur au survol */
+button[type="submit"]:hover {
+    transition: background-color 0.3s ease-in-out;
+    background-color: #4CAF50;
 }
 
 

@@ -11,8 +11,35 @@ if (!$conn) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Récupérer le rôle sélectionné
     $role = $_POST['choice'];
-    $function = htmlspecialchars(trim($_POST['function']));
+
+    // Initialiser la variable $function
+    $function = '';
+
+    // Vérifier quel champ d'activité est rempli en fonction du rôle
+    if ($role === 'student') {
+        if (isset($_POST['function_student']) && !empty($_POST['function_student'])) {
+            $function = htmlspecialchars(trim($_POST['function_student']));
+        } else {
+            echo "<script>alert('Veuillez sélectionner votre formation.');</script>";
+            exit();
+        }
+    } elseif ($role === 'tutorprofessor') {
+        if (isset($_POST['function_professor']) && !empty($_POST['function_professor'])) {
+            $function = htmlspecialchars(trim($_POST['function_professor']));
+        } else {
+            echo "<script>alert('Veuillez sélectionner votre spécialité.');</script>";
+            exit();
+        }
+    } else {
+        // Pour les rôles 'tutorcompany' et 'secretariat'
+        if (isset($_POST['function'])) {
+            $function = htmlspecialchars(trim($_POST['function']));
+        }
+        // !!! need to modify if needed -> Car le champ n'est pas obligatoire pour ces rôles
+    }
+
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $name = htmlspecialchars(trim($_POST['name']));
     $firstname = htmlspecialchars(trim($_POST['firstname']));
@@ -55,6 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
+    // Ajout de logs pour le débogage
+    error_log("Role: $role");
+    error_log("Role ID: $roleID");
+    error_log("Function: $function");
+
     $query = "INSERT INTO User (nom, prenom, email, telephone, role, activite, valid_email, status_user, last_connexion, account_creation) 
               VALUES (:nom, :prenom, :email, :telephone, :role, :activite, 0, 0, NOW(), NOW())";
     $stmt = $conn->prepare($query);
@@ -90,6 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -136,57 +169,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>
             <!-- Options pour le type de compte à créer -->
             <input type="radio" name="choice" value="student" id="student" required />
-            <label for="student">Étudiant</label>
+            <label for="student">Étudiant <span class="required">*</span></label>
 
             <input type="radio" name="choice" value="tutorprofessor" id="tutorprofessor" required />
-            <label for="tutorprofessor">Professeur référant</label>
+            <label for="tutorprofessor">Professeur référant <span class="required">*</span></label>
 
             <input type="radio" name="choice" value="tutorcompany" id="tutorcompany" required />
-            <label for="tutorcompany">Tuteur professionnel</label>
+            <label for="tutorcompany">Tuteur professionnel <span class="required">*</span></label>
 
             <input type="radio" name="choice" value="secretariat" id="secretariat" required />
-            <label for="secritariat">Secrétariat</label>
+            <label for="secretariat">Secrétariat <span class="required">*</span></label>
         </p>
 
         <!-- Champ pour la fonction professionnelle/universitaire -->
-        <p>
-            <label for="function">Activité professionnelle/universitaire :</label>
-            <input name="function" id="function" type="text" required/>
+        <p id="activity-field">
+            <label for="function">Activité professionnelle/universitaire <span class="required">*</span></label>
+            <!-- Champ de saisie pour Tuteur professionnel et Secrétariat -->
+            <input name="function" id="function-input" type="text" style="display: none;" />
+            <!-- Liste déroulante pour Étudiant -->
+            <select name="function_student" id="function-student" style="display: none;">
+                <option value="">Sélectionnez votre formation</option>
+                <option value="Informatique">Informatique</option>
+                <option value="Mesures Physiques">Mesures Physiques</option>
+                <!-- Ajoutez d'autres options si nécessaire -->
+            </select>
+            <!-- Liste déroulante pour Professeur référant -->
+            <select name="function_professor" id="function-professor" style="display: none;">
+                <option value="">Sélectionnez votre spécialité</option>
+                <option value="Programmation Web">Programmation Web</option>
+                <option value="Programmation Java">Programmation Java</option>
+                <option value="Programmation Python">Programmation Python</option>
+                <option value="Professeur d'Anglais">Professeur d'Anglais</option>
+                <option value="SQL">SQL</option>
+                <option value="Mathématiques">Mathématiques</option>
+                <!-- Ajoutez d'autres options si nécessaire -->
+            </select>
         </p>
 
         <!-- Champ pour l'adresse e-mail -->
         <p>
-            <label for="email">E-mail :</label>
+            <label for="email">E-mail : <span class="required">*</span></label>
             <input name="email" id="email" type="email" required/>
         </p>
 
         <!-- Champ pour le nom de famille -->
         <p>
-            <label for="name">Nom :</label>
+            <label for="name">Nom : <span class="required">*</span></label>
             <input name="name" id="name" type="text" required/>
         </p>
 
         <!-- Champ pour le prénom -->
         <p>
-            <label for="firstname">Prénom :</label>
+            <label for="firstname">Prénom : <span class="required">*</span></label>
             <input name="firstname" id="firstname" type="text" required/>
         </p>
 
         <!-- Champ pour le numéro de téléphone -->
         <p>
             <label for="phone">Téléphone :</label>
-            <input name="phone" id="phone" type="text" required/>
+            <input name="phone" id="phone" type="text"/>
         </p>
 
         <!-- Champ pour le mot de passe -->
         <p>
-            <label for="password">Mot de passe :</label>
+            <label for="password">Mot de passe : <span class="required">*</span></label>
             <input name="password" id="password" type="password" required/>
         </p>
 
         <!-- Champ pour confirmer le mot de passe -->
         <p>
-            <label for="confirm_password">Confirmer le mot de passe :</label>
+            <label for="confirm_password">Confirmer le mot de passe : <span class="required">*</span></label>
             <input name="confirm_password" id="confirm_password" type="password" required/>
         </p>
 
@@ -199,11 +251,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!-- Pied de page avec logo et liens vers des pages d'informations -->
 <footer class="PiedDePage">
-    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%"> <!-- Logo UPHF -->
+    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="9%"> <!-- Logo UPHF -->
     <a href="Redirection.php">Informations</a> <!-- Lien vers une page d'informations -->
     <a href="Redirection.php">À propos</a> <!-- Lien vers une page "À propos" -->
 </footer>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Obtenir les éléments des boutons radio
+        const roleRadios = document.querySelectorAll('input[name="choice"]');
+        // Obtenir les champs d'activité
+        const functionInput = document.getElementById('function-input');
+        const functionStudent = document.getElementById('function-student');
+        const functionProfessor = document.getElementById('function-professor');
+        // Obtenir le label
+        const activityLabel = document.querySelector('#activity-field label');
+
+        roleRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                // Réinitialiser l'affichage des champs
+                functionInput.style.display = 'none';
+                functionStudent.style.display = 'none';
+                functionProfessor.style.display = 'none';
+                functionInput.required = false;
+                functionStudent.required = false;
+                functionProfessor.required = false;
+                functionInput.placeholder = ''; // Réinitialiser le placeholder
+
+                if (this.value === 'student') {
+                    functionStudent.style.display = 'block';
+                    functionStudent.required = true;
+                    activityLabel.innerHTML = 'Formation <span class="required">*</span> :';
+                } else if (this.value === 'tutorprofessor') {
+                    functionProfessor.style.display = 'block';
+                    functionProfessor.required = true;
+                    activityLabel.innerHTML = 'Spécialité <span class="required">*</span> :';
+                } else {
+                    functionInput.style.display = 'block';
+                    functionInput.required = false; // Champ non obligatoire
+                    activityLabel.innerHTML = 'Activité professionnelle/universitaire :';
+                    if (this.value === 'tutorcompany') {
+                        functionInput.placeholder = 'Écrire le nom de votre entreprise';
+                    }
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
 
