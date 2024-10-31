@@ -39,6 +39,9 @@ switch ($type) {
         $offer = PendingOffer::getByOfferId($offerId);
         $offer_old = Offer::getById($offer->getOfferId());
         break;
+    case 'new':
+        $offer = PendingOffer::getByOfferId($offerId);
+        break;
     default:
         $offer = Offer::getById($offerId);
         break;
