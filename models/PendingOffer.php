@@ -40,7 +40,7 @@ class PendingOffer extends Offer
         return $this->type;
     }
 
-
+    // Get all tags for a pending offer
     public function getTags(): ?array
     {
         global $db;
@@ -73,7 +73,7 @@ class PendingOffer extends Offer
 
 
 
-    //Get all pending offers
+    //Get pending offer by is id
     public static function getByOfferId(int $id): ?PendingOffer
     {
         global $db;
@@ -116,6 +116,7 @@ class PendingOffer extends Offer
         );
     }
 
+    // Get pending offers by offer id
     public static function getByOffer(int $id): ?array {
         global $db;
         $stmt = $db->prepare("SELECT * FROM pending_offers WHERE offer_id = :id");
@@ -210,6 +211,7 @@ class PendingOffer extends Offer
         return $offers;
     }
 
+    // Get all new offers
     public static function getAllNew(): ?array {
         global $db;
 
@@ -255,6 +257,7 @@ class PendingOffer extends Offer
         return $offers;
     }
 
+    // Get all updated offers
     public static function getAllUpdated(): ?array {
         global $db;
 
@@ -405,6 +408,7 @@ class PendingOffer extends Offer
         return rtrim($result, ', ');
     }
 
+    // Get all tags
     public static function getAllTags(): array
     {
         global $db;
