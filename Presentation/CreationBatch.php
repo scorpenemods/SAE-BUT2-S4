@@ -32,7 +32,7 @@ function importCsv($filePath): void
                 continue;
             }
             list($nom,$prenom,$email,$role,$activite,$telephone) = $data;
-            $db.addUser($email, PasswordGenerator(), $telephone, $prenom, $activite, $role, $nom,1);
+            $db->addUser($email, PasswordGenerator(), $telephone, $prenom, $activite, $role, $nom,1);
         }
         fclose($handle);
         echo "CSV import completed successfully." . PHP_EOL;
@@ -40,4 +40,5 @@ function importCsv($filePath): void
         echo "Unable to open the CSV file." . PHP_EOL;
     }
 }
+echo"ALED";
 importCsv("testCSV2.csv");
