@@ -62,10 +62,12 @@ class Database
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $status = 0; // Default status
 
-        $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status_user, valid_email) 
-                VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status, 0)";
-
         try {
+            $this->connection->beginTransaction();
+
+            $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status_user, valid_email) 
+                    VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status_user, 0)";
+
             $stmt = $this->connection->prepare($sqlUser);
             $stmt->execute([
                 ':email' => $email,
@@ -76,6 +78,7 @@ class Database
                 ':nom' => $nom,
                 ':status_user' => $status
             ]);
+
             $userId = $this->connection->lastInsertId();
 
             $sqlPassword = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, 1)";
@@ -92,9 +95,13 @@ class Database
                 ':user_id' => $userId
             ]);
 
+            $this->connection->commit();
+            echo "User $email added successfully.<br>";
             return true;
+
         } catch (PDOException $e) {
-            echo "Insert error: " . $e->getMessage();
+            $this->connection->rollBack();
+            echo "Insert error for $email: " . $e->getMessage() . "<br>";
             return false;
         }
     }

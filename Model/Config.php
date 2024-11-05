@@ -1,10 +1,10 @@
 <?php
 
 // Database configuration settings
-define('DB_HOST', '82.66.53.143');
-define('DB_PORT', '64893');
-define('DB_NAME', 'sae');
-define('DB_USER', 'sae');
-define('DB_PASSWORD', 'sae2024');
+const DB_HOST = 'db.liruz.fr';
+const DB_PORT = '3306';
+const DB_NAME = 'sae';
+const DB_USER = 'sae';
+const DB_PASSWORD = 'sae2024';
 
 ?>
