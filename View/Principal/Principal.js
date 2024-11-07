@@ -506,18 +506,14 @@ function selectStudent(element) {
     students.forEach(student => {
         student.classList.remove('selected');
     });
-
     element.classList.add('selected');
-
     const studentId = element.getAttribute('data-student-id');
     const studentName = element.textContent.trim();
-
-    // Openchat with the selected student
     openChat(studentId, studentName);
+
+    const studentNameElement = document.getElementById('student-name');
+    studentNameElement.textContent = studentName;
 }
-
-
-
 document.addEventListener('click', function(event) {
     const sidebar = document.getElementById('sidebar');
     const toggleButton = document.getElementById('sidebar-toggle');
@@ -546,3 +542,84 @@ window.onbeforeunload = function() {
     xhr.open("GET", "Logout.php", false);  // Use a synchronous request to end the session
     xhr.send(null);
 };
+
+// -----------------------------------Notes--------------------------------------------------//
+function enableNotes() {
+    const inputs = document.querySelectorAll('.notes-table input ');
+    const textareas = document.querySelectorAll('.notes-table textarea');
+    inputs.forEach(input => input.removeAttribute('disabled'));
+    textareas.forEach(textarea => textarea.removeAttribute('disabled'));
+
+    document.getElementById('validateBtn').removeAttribute('disabled');
+}
+
+function autoExpand(element) {
+    element.style.height = 'inherit';
+    element.style.height = `${element.scrollHeight}px`;
+}
+
+function cancelNotes() {
+    const inputs = document.querySelectorAll('.notes-table input');
+    const textareas = document.querySelectorAll('.notes-table textarea');
+
+    inputs.forEach(input => {
+        input.setAttribute('disabled', '');
+        input.value = ''; // Reset value
+        input.style.borderColor = ''; // Reset border
+    });
+
+    textareas.forEach(textarea => {
+        textarea.setAttribute('disabled', '');
+        textarea.value = ''; // Reset value
+        textarea.style.borderColor = ''; // Reset border
+    });
+
+    document.getElementById('validateBtn').setAttribute('disabled', '');
+    document.getElementById('validationMessage').textContent = '';
+}
+
+function validateNotes() {
+    const inputs = document.querySelectorAll('.notes-table input');
+    const textareas = document.querySelectorAll('.notes-table textarea');
+    let valid = true;
+
+    inputs.forEach(input => {
+        const value = parseFloat(input.value.trim());
+        if (isNaN(value) || value < 0 || value > 20) {
+            valid = false;
+            input.style.borderColor = 'red';
+        } else {
+            input.style.borderColor = '';
+        }
+    });
+
+    textareas.forEach(textarea => {
+        if (textarea.value.trim() === '') {
+            valid = false;
+            textarea.style.borderColor = 'red';
+        } else {
+            textarea.style.borderColor = '';
+        }
+    });
+
+    const validationMessage = document.getElementById('validationMessage');
+    if (valid) {
+        validationMessage.textContent = 'Notes validées avec succès !';
+        validationMessage.style.color = 'green';
+    } else {
+        validationMessage.textContent = 'Veuillez remplir tous les champs avec des notes entre 0 et 20.';
+        validationMessage.style.color = 'red';
+    }
+}
+document.addEventListener('DOMContentLoaded', function() {
+    // Vérifier si un étudiant est déjà sélectionné
+    const studentNameElement = document.getElementById('student-name');
+
+    if (!studentNameElement.textContent.trim()) {
+        // Si aucun étudiant n'est sélectionné, sélectionner le premier étudiant
+        const firstStudentElement = document.querySelector('.student');
+        if (firstStudentElement) {
+            selectStudent(firstStudentElement);
+        }
+    }
+});

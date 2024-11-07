@@ -542,7 +542,7 @@ class Database
     }
 
     // -------------------- Student list in professor home ------------------------------------------ //
-    public function getStudents($professorId): array
+    public function getStudentsProf($professorId): array
     {
         $query = "SELECT User.nom, User.prenom
                     FROM User
@@ -558,6 +558,38 @@ class Database
                     AND User.role = 1";
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':professor_id', $professorId, PDO::PARAM_INT);
+        $stmt->execute();
+        $students = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $students[] = new Person(
+                $row['nom'] ?? '',
+                $row['prenom'] ?? '',
+                $row['telephone'] ?? 0,
+                $row['role'] ?? '',
+                $row['activite'] ?? '',
+                $row['email'] ?? '',
+                $row['id'] ?? 0
+            );
+        }
+        return $students;
+    }
+
+    public function getStudentsMaitreDeStage($maitreStageId): array
+    {
+        $query = "SELECT User.nom, User.prenom
+                    FROM User
+                        JOIN Groupe ON User.id = Groupe.user_id
+                        JOIN Convention ON Groupe.conv_id = Convention.id
+                    WHERE Groupe.conv_id IN (
+                            SELECT Groupe.conv_id
+                            FROM Groupe
+                            JOIN User AS MaitreStage ON Groupe.user_id = MaitreStage.id
+                            WHERE MaitreStage.id = :maitre_stage_id
+                            AND MaitreStage.role = 3
+                            )
+                    AND User.role = 1;";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':maitre_stage_id', $maitreStageId, PDO::PARAM_INT);
         $stmt->execute();
         $students = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

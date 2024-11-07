@@ -42,6 +42,10 @@ if (!in_array($userRole, $allowedRoles)) {
 // Récupération de l'ID du destinataire (statiquement défini ici à 1 pour l'exemple)
 $receiverId = $_POST['receiver_id'] ?? 1;
 
+
+// Récupération de la liste des étudiants associés au maître de stage
+$students = $database->getStudentsMaitreDeStage($senderId);
+
 // Récupération des préférences de l'utilisateur à partir de la base de données
 $preferences = $database->getUserPreferences($person->getUserId());
 
@@ -104,6 +108,20 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
         </div>
     </div>
 </header>
+
+<div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
+<div class="sidebar" id="sidebar">
+    <div class="search">
+        <input type="text" id="search-input-sidebar" placeholder="Search" onkeyup="searchStudents()">
+    </div>
+    <div class="students">
+        <?php foreach ($students as $student): ?>
+            <div class="student" onclick="selectStudent(this)">
+                <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
 
 <!-- Section contenant les différents menus -->
 <section class="Menus">
@@ -208,7 +226,48 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
             </div>
         </div>
 
-        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">Contenu des notes</div>
+        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>"</div>
+        <h2 id="student-name"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></h2>
+        <div class="notes-container">
+            <table class="notes-table">
+                <thead>
+                <tr>
+                    <th>Sujet</th>
+                    <th>Appréciations</th>
+                    <th>Note /20</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
+                    <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
+                    <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                </tr>
+                <tr>
+                    <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
+                    <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
+                    <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                </tr>
+                <tr>
+                    <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
+                    <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
+                    <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                </tr>
+                <tr>
+                    <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
+                    <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
+                    <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="validationMessage" class="validation-message"></div>
+        </div>
+        <div class="notes-buttons">
+            <button class="mainbtn" onclick="enableNotes()">Ajouter les notes</button>
+            <button class="mainbtn" onclick="validateNotes()" disabled id="validateBtn">Valider les notes</button>
+            <button id="cancelBtn" onclick="cancelNotes()">Annuler</button>
+        </div>
+    </div>
     </div>
 </section>
 
