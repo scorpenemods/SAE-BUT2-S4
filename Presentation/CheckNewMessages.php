@@ -22,7 +22,7 @@ if (isset($_SESSION['user'])) {
 $lastCheckTime = $_SESSION['last_check_time'] ?? null;
 $_SESSION['last_check_time'] = date('Y-m-d H:i:s'); // Mettre à jour le temps de la dernière vérification
 
-$database = new Database();
+$database = Database::getInstance();
 
 try {
     // Si c'est la première vérification, on récupère tous les messages non lus
