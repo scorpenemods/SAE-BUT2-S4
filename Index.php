@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 case 3:
                     header("Location: Presentation/MaitreStage.php");
                     break;
-                case 4:
+                case 4 and 5:
                     header("Location: Presentation/Secretariat.php");
                     break;
                 default:

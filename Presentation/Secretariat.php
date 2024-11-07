@@ -32,7 +32,7 @@ $receiverId = $_POST['receiver_id'] ?? 1; // ID du destinataire, valeur par déf
 $senderId = $_SESSION['user_id'] ?? null; // ID de l'expéditeur récupéré de la session
 
 // Restriction d'accès selon les rôles
-$allowedRoles = [4]; // Seuls les utilisateurs avec le rôle 4 ont accès à cette page
+$allowedRoles = [4, 5]; // Seuls les utilisateurs avec le rôle 4 et 5 ont accès à cette page
 if (!in_array($userRole, $allowedRoles)) {
     // Redirection vers la page d'accès refusé si l'utilisateur n'a pas le bon rôle
     header("Location: AccessDenied.php");
@@ -183,7 +183,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <nav>
         <!-- Boutons de navigation entre les différents contenus de la section -->
         <span onclick="window.location.href='Secretariat.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>" id="content-0">Accueil</span>
+        <?php if ($userRole == 5) { ?>
         <span onclick="window.location.href='Secretariat.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1">Gestion Secrétariat</span>
+        <?php } ?>
         <span onclick="window.location.href='Secretariat.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Gestion Utilisateurs</span>
         <span onclick="window.location.href='Secretariat.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Rapports</span>
         <span onclick="window.location.href='Secretariat.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Documents</span>
