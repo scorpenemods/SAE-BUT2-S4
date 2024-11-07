@@ -33,7 +33,7 @@ if ($userRole != 2) {
     exit();
 }
 
-$students = $database->getStudents($senderId);
+$students = $database->getStudentsProf($senderId);
 
 // Récupérer les préférences de l'utilisateur
 $preferences = $database->getUserPreferences($person->getUserId());
@@ -200,7 +200,50 @@ $contacts = $database->getGroupContacts($userId);
                 </div>
             </div>
         </div>
-        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>"" id="content-6">Contenu des notes</div>
+        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">
+            <h2 id="student-name"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></h2>
+            <div class="notes-container">
+                <table class="notes-table">
+                    <thead>
+                    <tr>
+                        <th>Sujet</th>
+                        <th>Appréciations</th>
+                        <th>Note /20</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
+                        <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
+                        <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                    </tr>
+                    <tr>
+                        <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
+                        <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
+                        <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                    </tr>
+                    <tr>
+                        <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
+                        <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
+                        <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                    </tr>
+                    <tr>
+                        <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
+                        <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
+                        <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div id="validationMessage" class="validation-message"></div>
+            </div>
+            <div class="notes-buttons">
+                <button class="mainbtn" onclick="enableNotes()">Ajouter les notes</button>
+                <button class="mainbtn" onclick="validateNotes()" disabled id="validateBtn">Valider les notes</button>
+                <button class="mainbtn" onclick="cancelNotes()" disabled id="cancelBtn">Annuler</button>
+            </div>
+        </div>
+    </div>
+
     </div>
 </section>
 <script src="../View/Principal/deleteMessage.js"></script>

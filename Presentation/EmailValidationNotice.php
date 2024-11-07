@@ -66,51 +66,60 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['resend_code'])) {
 }
 
 // Gestion de la vérification du code de vérification saisi par l'utilisateur
+// Gestion de la vérification du code de vérification saisi par l'utilisateur
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
-    $entered_code = $_POST['verification_code']; // Code saisi par l'utilisateur
-    $userVerification = $database->getVerificationCode($userId); // Récupère le code de la base de données
+    $entered_code = trim($_POST['verification_code']); // Code saisi par l'utilisateur
 
-    // Si le code de vérification correspond à celui en base de données
-    if ($userVerification && $entered_code == $userVerification['code']) {
-        $currentTime = new DateTime('now', new DateTimeZone('Europe/Paris')); // Heure actuelle
-        $expiresAt = new DateTime($userVerification['expires_at'], new DateTimeZone('Europe/Paris')); // Heure d'expiration du code
+    // Vérifier que le code est composé uniquement de chiffres et a la bonne longueur
+    if (!ctype_digit($entered_code) || strlen($entered_code) !== 6) {
+        $verifyError = "Le code de vérification doit être un nombre de 6 chiffres.";
+    } else {
+        $userVerification = $database->getVerificationCode($userId); // Récupère le code de la base de données
 
-        // Vérifie si le code est encore valide (non expiré)
-        if ($currentTime < $expiresAt) {
-            // Met à jour le statut de validation de l'email dans la base de données
-            $database->updateEmailValidationStatus($userId, 1);
+        // Vérifier que le code de vérification a été récupéré
+        if ($userVerification !== false) {
+            // Debugging: Afficher les codes pour comparaison
+            error_log("Code saisi par l'utilisateur : " . $entered_code);
+            error_log("Code en base de données : " . $userVerification['code']);
 
-            // Supprime le code de vérification après validation
-            if ($database->deleteVerificationCode($userId)) {
-                error_log("Code supprimé pour l'utilisateur avec l'ID $userId.");
+            // Comparer les codes en tant que chaînes de caractères
+            if (strval($entered_code) === strval($userVerification['code'])) {
+                $currentTime = new DateTime('now', new DateTimeZone('Europe/Paris')); // Heure actuelle
+                $expiresAt = new DateTime($userVerification['expires_at'], new DateTimeZone('Europe/Paris')); // Heure d'expiration du code
+
+                // Vérifie si le code est encore valide (non expiré)
+                if ($currentTime < $expiresAt) {
+                    // Met à jour le statut de validation de l'email dans la base de données
+                    $database->updateEmailValidationStatus($userId, 1);
+
+                    // Supprime le code de vérification après validation
+                    if ($database->deleteVerificationCode($userId)) {
+                        error_log("Code supprimé pour l'utilisateur avec l'ID $userId.");
+                    } else {
+                        error_log("Erreur lors de la suppression du code pour l'utilisateur avec l'ID $userId.");
+                    }
+
+                    // Supprime le cookie indiquant que la vérification de l'email est en attente
+                    setcookie('email_verification_pending', '', time() - 3600, "/");
+
+                    // Redirection vers la page de succès après validation
+                    header("Location: Success.php");
+                    exit();
+                } else {
+                    // Le code a expiré
+                    $verifyError = "Le code a expiré. Veuillez demander un nouveau code.";
+                }
             } else {
-                error_log("Erreur lors de la suppression du code pour l'utilisateur avec l'ID $userId.");
+                // Le code saisi est incorrect
+                $verifyError = "Code de vérification incorrect. Veuillez réessayer.";
             }
-
-            // Supprime le cookie indiquant que la vérification de l'email est en attente
-            setcookie('email_verification_pending', '', time() - 3600, "/");
-
-            // Redirection vers la page de succès après validation
-            header("Location: Success.php");
-            exit();
         } else {
-            // Le code a expiré
-            $verifyError = "Le code a expiré. Veuillez demander un nouveau code.";
+            // Aucun code de vérification valide n'a été trouvé
+            $verifyError = "Aucun code de vérification valide n'a été trouvé. Veuillez demander un nouveau code.";
         }
-    } else {
-        // Le code saisi est incorrect
-        $verifyError = "Code de vérification incorrect. Veuillez réessayer.";
     }
 }
 
-// Envoi du code de vérification à la première visite si cela n'a pas déjà été fait
-if (!isset($_SESSION['verification_email_sent'])) {
-    if (sendVerificationEmail($database, $userId, $userEmail, explode(' ', $userName)[0])) {
-        $_SESSION['verification_email_sent'] = true; // Marque l'email comme envoyé
-    } else {
-        $sendError = "Erreur lors de l'envoi de l'email.";
-    }
-}
 ?>
 
 
