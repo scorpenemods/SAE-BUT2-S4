@@ -437,12 +437,24 @@ class Database
     // -------------------- Email verification ------------------------------------------
 
     public function getVerificationCode($userId) {
-        $sql = "SELECT * FROM Verification_Code WHERE user_id = :user_id AND expires_at > NOW()";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $sql = "SELECT * FROM Verification_Code WHERE user_id = :user_id AND expires_at > :current_time";
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $currentTime = date("Y-m-d H:i:s"); // Heure actuelle en PHP
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':current_time', $currentTime);
+            $stmt->execute();
+
+            $rowCount = $stmt->rowCount();
+            error_log("Nombre de codes de vérification trouvés pour l'utilisateur ID $userId : " . $rowCount);
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération du code de vérification : " . $e->getMessage());
+            return false;
+        }
     }
+
 
     public function isEmailValidated($userId) {
         $query = "SELECT valid_email FROM User WHERE id = :id";
