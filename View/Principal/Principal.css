@@ -1014,5 +1014,44 @@ button:hover {
     margin-left: 5px;
 }
 
+/*---------------------- Notes ------------------*/
+
+.notes-container {
+    margin-top: 20px;
+}
+
+.notes-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.notes-table th, .notes-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.notes-table th {
+    background-color: #f4f4f4;
+}
+
+.notes-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: right;
+}
+
+.mainbtn {
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.mainbtn:hover {
+    background-color: #0056b3;
+}
 
 
