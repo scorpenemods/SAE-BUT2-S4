@@ -1,11 +1,11 @@
 <?php
 
 
-const DB_HOST = 'localhost';
+const DB_HOST = 'db.liruz.fr';
 const DB_PORT = '3306';
-const DB_NAME = 'saelocalhost';
-const DB_USER = 'root';
-const DB_PASSWORD = 'Anmamafabe11037!';
+const DB_NAME = 'sae';
+const DB_USER = 'sae';
+const DB_PASSWORD = 'sae2024';
 
 
 ?>
