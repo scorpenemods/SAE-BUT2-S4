@@ -41,7 +41,6 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
 $receiverId = 2; // À définir dynamiquement
 $messages = $database->getMessages($senderId, $receiverId);
 
-$students = $database->getStudents(7);
 ?>
 
 <!DOCTYPE html>
