@@ -316,7 +316,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $activeUsers = $database->getActiveUsers();
                     foreach ($activeUsers as $user) {
                         // Affichage de chaque utilisateur actif avec ses détails
-                        if ($user['role'] != 4) {
+                        if ($user['role'] != 4 && $user['role'] != 5) {
                             echo "<div class='active-user'>";
                             echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
                             echo "<p><strong>Prénom:</strong> " . htmlspecialchars($user['prenom']) . "</p>";
