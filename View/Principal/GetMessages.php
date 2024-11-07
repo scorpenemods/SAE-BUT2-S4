@@ -1,28 +1,78 @@
 <?php
 session_start();
 require "../../Model/Database.php";
+require "../../Model/Person.php";
 
-if (isset($_GET['contact_id']) && isset($_SESSION['user'])) {
-    $contactId = $_GET['contact_id'];
+if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
-    $userId = $person->getUserId();
+    if ($person instanceof Person) {
+        $userId = $person->getUserId();
+    } else {
+        echo "Session invalide.";
+        exit();
+    }
+} else {
+    echo "Utilisateur non connecté.";
+    exit();
+}
 
-    $database = (Database::getInstance());
+if (!isset($_GET['contact_id'])) {
+    echo "Contact non spécifié.";
+    exit();
+}
 
-    // Récupérer les messages entre les deux utilisateurs
-    $messages = $database->getMessagesBetweenUsers($userId, $contactId);
+$contactId = intval($_GET['contact_id']);
 
-    // Fonction pour formater les dates
-    require_once '../../Model/utils.php';
+$database = (Database::getInstance());
+
+try {
+    // Récupérer les messages entre l'utilisateur et le contact
+    $stmt = $database->getConnection()->prepare("
+        SELECT m.*, d.filepath AS file_path
+        FROM Message m
+        LEFT JOIN Document_Message dm ON m.id = dm.message_id
+        LEFT JOIN Document d ON dm.document_id = d.id
+        WHERE (m.sender_id = :user_id AND m.receiver_id = :contact_id)
+           OR (m.sender_id = :contact_id AND m.receiver_id = :user_id)
+        ORDER BY m.timestamp ASC
+    ");
+    $stmt->bindParam(':user_id', $userId);
+    $stmt->bindParam(':contact_id', $contactId);
+    $stmt->execute();
+    $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Marquer les messages comme lus
+    $stmt = $database->getConnection()->prepare("
+        UPDATE Message
+        SET `read` = 1
+        WHERE receiver_id = :user_id AND sender_id = :contact_id AND `read` = 0
+    ");
+    $stmt->bindParam(':user_id', $userId);
+    $stmt->bindParam(':contact_id', $contactId);
+    $stmt->execute();
 
     // Afficher les messages
     foreach ($messages as $msg) {
-        $messageClass = ($msg['sender_id'] == $userId) ? 'self' : 'other';
-        echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-        echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>";
-        // Afficher le timestamp formaté
-        echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
-        echo "</div>";
+        if ($msg['sender_id'] == $userId) {
+            $messageType = 'self';
+        } else {
+            $messageType = 'other';
+        }
+
+        echo '<div class="message ' . $messageType . '" data-message-id="' . $msg['id'] . '">';
+        if (!empty($msg['contenu'])) {
+            echo '<p>' . htmlspecialchars($msg['contenu']) . '</p>';
+        }
+        if (!empty($msg['file_path'])) {
+            $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path']));
+            $fileName = basename($msg['file_path']);
+            echo '<a href="' . $fileUrl . '" download>' . htmlspecialchars($fileName) . '</a>';
+        }
+        echo '<div class="timestamp-container"><span class="timestamp">' . htmlspecialchars($msg['timestamp']) . '</span></div>';
+        echo '</div>';
     }
+} catch (Exception $e) {
+    error_log("Erreur lors de la récupération des messages : " . $e->getMessage());
+    echo "Erreur lors de la récupération des messages.";
 }
 ?>

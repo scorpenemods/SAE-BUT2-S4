@@ -44,7 +44,6 @@ if (isset($_GET['section'])) {
 // Définit la section active par défaut (Accueil) si aucune n'est spécifiée
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
 
-
 // Récupérer les préférences de l'utilisateur
 $preferences = $database->getUserPreferences($person->getUserId());
 
@@ -106,11 +105,12 @@ $maitres = $database->getTutor() ?? [];
     <nav>
         <!-- Boutons de navigation entre les différents contenus de la section -->
         <span onclick="window.location.href='Secretariat.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>" id="content-0">Accueil</span>
-        <span onclick="window.location.href='Secretariat.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1">Gestion Utilisateurs</span>
-        <span onclick="window.location.href='Secretariat.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Rapports</span>
-        <span onclick="window.location.href='Secretariat.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Documents</span>
-        <span onclick="window.location.href='Secretariat.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Messagerie</span>
-        <span onclick="window.location.href='Secretariat.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5">Groupes</span>
+        <span onclick="window.location.href='Secretariat.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1">Gestion Secrétariat</span>
+        <span onclick="window.location.href='Secretariat.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Gestion Utilisateurs</span>
+        <span onclick="window.location.href='Secretariat.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Rapports</span>
+        <span onclick="window.location.href='Secretariat.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Documents</span>
+        <span onclick="window.location.href='Secretariat.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5">Messagerie</span>
+        <span onclick="window.location.href='Secretariat.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>" id="content-6">Groupes</span>
 
     </nav>
     <div class="Contenus">
@@ -121,8 +121,41 @@ $maitres = $database->getTutor() ?? [];
         </div>
 
 
-        <!-- Section Gestion des utilisateurs -->
+        <!-- Section Gestion des secrétaires -->
         <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">
+            <div class="user-management">
+                <!-- Section pour la création de nouveau secrétaire -->
+                <div class="pending-requests">
+                    <button>Nouveau secrétaire</button>
+                </div>
+                <!-- Section pour afficher les secrétaires actifs dans le système -->
+                <div class="active-users">
+                    <h2>Secrétaires actifs</h2>
+                    <?php
+                    // Récupération des utilisateurs actifs depuis la base de données
+                    $activeUsers = $database->getActiveUsers();
+                    foreach ($activeUsers as $user) {
+                        // Affichage de chaque utilisateur actif avec ses détails
+                        if ($user['role'] == 4) {
+                            echo "<div class='active-user'>";
+                            echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
+                            echo "<p><strong>Prénom:</strong> " . htmlspecialchars($user['prenom']) . "</p>";
+                            echo "<p><strong>Email:</strong> " . htmlspecialchars($user['email']) . "</p>";
+                            echo "<p><strong>Telephone:</strong> " . htmlspecialchars($user['telephone']) . "</p>";
+                            echo "<p><strong>Activité :</strong> " . htmlspecialchars($user['activite']) . "</p>";
+                            // Bouton pour supprimer le secrétaure du système
+                            echo "<button onclick='deleteUser(" . $user['id'] . ")'>🗑️ Supprimer</button>";
+                            echo "</div>";
+                        }
+                    }
+                    ?>
+                    </div>
+            </div>
+        </div>
+
+
+        <!-- Section Gestion des utilisateurs -->
+        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
             <div class="user-management">
                 <!-- Section pour les demandes d'utilisateur en attente d'approbation -->
                 <div class="pending-requests">
@@ -132,35 +165,34 @@ $maitres = $database->getTutor() ?? [];
                     $pendingUsers = $database->getPendingUsers();
                     foreach ($pendingUsers as $user) {
                         // Affichage de chaque utilisateur en attente avec ses détails
-                        echo "<div class='user-request'>";
-                        echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
-                        echo "<p><strong>Prénom:</strong> " . htmlspecialchars($user['prenom']) . "</p>";
-                        echo "<p><strong>Email:</strong> " . htmlspecialchars($user['email']) . "</p>";
-                        echo "<p><strong>Telephone:</strong> " . htmlspecialchars($user['telephone']) . "</p>";
-                        echo "<p><strong>Activité :</strong> " . htmlspecialchars($user['activite']) . "</p>";
-                        echo "<p><strong>Statut Email:</strong> " . ($user['valid_email'] ? 'Validé' : 'Non Validé') . "</p>";
+                        if ($user['role'] != 4) {
+                            echo "<div class='user-request'>";
+                            echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
+                            echo "<p><strong>Prénom:</strong> " . htmlspecialchars($user['prenom']) . "</p>";
+                            echo "<p><strong>Email:</strong> " . htmlspecialchars($user['email']) . "</p>";
+                            echo "<p><strong>Telephone:</strong> " . htmlspecialchars($user['telephone']) . "</p>";
+                            echo "<p><strong>Activité :</strong> " . htmlspecialchars($user['activite']) . "</p>";
+                            echo "<p><strong>Statut Email:</strong> " . ($user['valid_email'] ? 'Validé' : 'Non Validé') . "</p>";
 
-                        switch (htmlspecialchars($user['role'])){
-                            case 1:
-                                echo "<p><strong>Rôle:</strong> " . "Etudiant" . "</p>";
-                                break;
-                            case 2:
-                                echo "<p><strong>Rôle:</strong> " . "Professeur" . "</p>";
-                                break;
-                            case 3:
-                                echo "<p><strong>Rôle:</strong> " . "Maitre Stage" . "</p>";
-                                break;
-                            case 4:
-                                echo "<p><strong>Rôle:</strong> " . "Secrétariat" . "</p>";
-                                break;
-                            default:
-                                echo "<p><strong>Rôle:</strong> " . "Inconnue" . "</p>";
-                                break;
+                            switch (htmlspecialchars($user['role'])) {
+                                case 1:
+                                    echo "<p><strong>Rôle:</strong> " . "Etudiant" . "</p>";
+                                    break;
+                                case 2:
+                                    echo "<p><strong>Rôle:</strong> " . "Professeur" . "</p>";
+                                    break;
+                                case 3:
+                                    echo "<p><strong>Rôle:</strong> " . "Maitre Stage" . "</p>";
+                                    break;
+                                default:
+                                    echo "<p><strong>Rôle:</strong> " . "Inconnue" . "</p>";
+                                    break;
+                            }
+                            // Boutons pour approuver ou refuser la demande de l'utilisateur
+                            echo "<button onclick='approveUser(" . $user['id'] . ")'>✅ Accepter</button>";
+                            echo "<button onclick='rejectUser(" . $user['id'] . ")'>❌ Refuser</button>";
+                            echo "</div>";
                         }
-                        // Boutons pour approuver ou refuser la demande de l'utilisateur
-                        echo "<button onclick='approveUser(" . $user['id'] . ")'>✅ Accepter</button>";
-                        echo "<button onclick='rejectUser(" . $user['id'] . ")'>❌ Refuser</button>";
-                        echo "</div>";
                     }
                     ?>
                 </div>
@@ -172,34 +204,31 @@ $maitres = $database->getTutor() ?? [];
                     $activeUsers = $database->getActiveUsers();
                     foreach ($activeUsers as $user) {
                         // Affichage de chaque utilisateur actif avec ses détails
-                        echo "<div class='active-user'>";
-                        echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
-                        echo "<p><strong>Prénom:</strong> " . htmlspecialchars($user['prenom']) . "</p>";
-                        echo "<p><strong>Email:</strong> " . htmlspecialchars($user['email']) . "</p>";
-                        echo "<p><strong>Telephone:</strong> " . htmlspecialchars($user['telephone']) . "</p>";
-                        echo "<p><strong>Activité :</strong> " . htmlspecialchars($user['activite']) . "</p>";
-                        switch (htmlspecialchars($user['role'])){
-                            case 1:
-                                echo "<p><strong>Rôle:</strong> " . "Etudiant" . "</p>";
-                                break;
-                            case 2:
-                                echo "<p><strong>Rôle:</strong> " . "Professeur" . "</p>";
-                                break;
-                            case 3:
-                                echo "<p><strong>Rôle:</strong> " . "Maitre Stage" . "</p>";
-                                break;
-                            case 4:
-                                echo "<p><strong>Rôle:</strong> " . "Secrétariat" . "</p>";
-                                break;
-                            default:
-                                echo "<p><strong>Rôle:</strong> " . "Inconnue" . "</p>";
-                                break;
+                        if ($user['role'] != 4) {
+                            echo "<div class='active-user'>";
+                            echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
+                            echo "<p><strong>Prénom:</strong> " . htmlspecialchars($user['prenom']) . "</p>";
+                            echo "<p><strong>Email:</strong> " . htmlspecialchars($user['email']) . "</p>";
+                            echo "<p><strong>Telephone:</strong> " . htmlspecialchars($user['telephone']) . "</p>";
+                            echo "<p><strong>Activité :</strong> " . htmlspecialchars($user['activite']) . "</p>";
+                            switch (htmlspecialchars($user['role'])) {
+                                case 1:
+                                    echo "<p><strong>Rôle:</strong> " . "Etudiant" . "</p>";
+                                    break;
+                                case 2:
+                                    echo "<p><strong>Rôle:</strong> " . "Professeur" . "</p>";
+                                    break;
+                                case 3:
+                                    echo "<p><strong>Rôle:</strong> " . "Maitre Stage" . "</p>";
+                                    break;
+                                default:
+                                    echo "<p><strong>Rôle:</strong> " . "Inconnue" . "</p>";
+                                    break;
+                            }
+                            // Bouton pour supprimer l'utilisateur du système
+                            echo "<button onclick='deleteUser(" . $user['id'] . ")'>🗑️ Supprimer</button>";
+                            echo "</div>";
                         }
-                        // Bouton pour supprimer l'utilisateur du système
-                        echo "<button onclick='deleteUser(" . $user['id'] . ")'>🗑️ Supprimer</button>";
-                        echo "  ";
-                        echo "<a href='#popup-box'><button>🗑️ Modifier</button></a>";
-                        echo "</div>";
                     }
                     ?>
                 </div>
@@ -217,29 +246,58 @@ $maitres = $database->getTutor() ?? [];
             </div>
         </div>
         <!-- Section Rapports -->
-        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
+        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
             Contenu Rapports
         </div>
         <!-- Section Documents -->
-        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
+        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
             Contenu Documents
         </div>
 
 
 
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
+        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
             <!-- Messenger Contents -->
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
-                        <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                        <label for="search-input"></label>
+                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
                     </div>
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
-                        <li>Contact 1</li>
-                        <li>Contact 2</li>
-                        <li>Contact 3</li>
+                        <?php
+                        $roleMapping = [
+                            1 => "Etudiant",
+                            2 => "Professeur",
+                            3 => "Maitre de stage"
+                        ];
+
+                        // Récupérer les contacts associés à l'utilisateur connecté
+                        $userId = $person->getUserId();
+                        $contacts = $database->getGroupContacts($userId);
+
+                        // Sort contacts by role
+                        usort($contacts, fn($a, $b) => $a['role'] <=> $b['role']);
+
+                        // Group contacts by role
+                        $groupedContacts = [];
+                        foreach ($contacts as $contact) {
+                            $roleName = $roleMapping[$contact['role']] ?? "Unknown Role";
+                            $groupedContacts[$roleName][] = $contact;
+                        }
+
+                        // Display contacts grouped by role
+                        foreach ($groupedContacts as $roleName => $contactsGroup) {
+                            echo "<label><strong>$roleName :</strong></label>";
+                            foreach ($contactsGroup as $contact) {
+                                echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
+                                echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
+                                echo '</li>';
+                            }
+                        }
+                        ?>
                     </ul>
                 </div>
 
@@ -256,27 +314,7 @@ $maitres = $database->getTutor() ?? [];
                         <h3 id="chat-header-title">Chat avec Contact 1</h3>
                     </div>
                     <div class="chat-body" id="chat-body">
-                        <?php
-                        if (!$senderId) {
-                            die("Erreur: ID de l'utilisateur n'est pas défini dans la session.");
-                        }
-                        $messages = $database->getMessages($senderId, $receiverId);
-                        // Function for formatting date
-                        require_once '../Model/utils.php';
-                        // using loop to print messages
-                        foreach ($messages as $msg) {
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Determining the class depending on the sender
-                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // XSS protection
-                            if ($msg['filepath']) {
-                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['filepath']));
-                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
-                            }
-                            // Use the formatTimestamp function to output formatted date and time
-                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
-                            echo "</div>";
-                        }
-                        ?>
+                        <!-- JS messages dynamic -->
                     </div>
                     <div class="chat-footer">
                         <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
@@ -292,7 +330,7 @@ $maitres = $database->getTutor() ?? [];
         </div>
 
         <!-- Section Groupes -->
-        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
+        <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">
             <!-- Code pour le widget de création de groupes -->
 
             <!-- Bouton pour ouvrir la fenêtre modale de création de groupe -->

@@ -5,7 +5,7 @@ use PHPMailer\PHPMailer\Exception;
 
 class Email
 {
-    private $mail;
+    private PHPMailer $mail;
 
     public function __construct()
     {
@@ -22,7 +22,7 @@ class Email
         $this->mail->Port = 587; // SMTP port
     }
 
-    public function sendEmail($to, $toName, $subject, $body, $isHtml = false)
+    public function sendEmail($to, $toName, $subject, $body, $isHtml = false): bool
     {
         try {
             // Recipients

@@ -6,14 +6,18 @@ require "../Model/Person.php";
 
 $database = (Database::getInstance());
 
-// Убедитесь, что объект Person загружен
 $userName = "Guest";
 $senderId = $_SESSION['user_id'] ?? null;
+// Vérification de la session utilisateur
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
-        $senderId = $person->getUserId(); // Получаем ID пользователя для отправки сообщений
+        $userId = $person->getUserId(); // ID de l'utilisateur connecté
+        $userRole = $person->getRole(); // Rôle de l'utilisateur
+    } else {
+        header("Location: Logout.php");
+        exit();
     }
 } else {
     header("Location: Logout.php");
@@ -23,24 +27,28 @@ if (isset($_SESSION['user'])) {
 $userRole = $person->getRole(); // Получение роли пользователя
 date_default_timezone_set('Europe/Paris');
 
-// Ограничение доступа по ролям (настройте в зависимости от ролей)
-$allowedRoles = [2]; // Здесь указаны роли, которым разрешен доступ к странице. Например, роль 2 — преподаватель.
-if (!in_array($userRole, $allowedRoles)) {
-    header("Location: AccessDenied.php");  // Перенаправление на страницу отказа в доступе
+// Vérification du rôle de l'utilisateur (ici, rôle 2 pour Professeur)
+if ($userRole != 2) {
+    header("Location: AccessDenied.php");
     exit();
 }
 
-// Предполагаемый ID получателя (настроить динамически в зависимости от контакта)
-$receiverId = $_POST['receiver_id'] ?? 1; // Замените на динамическое значение
-
 $students = $database->getStudents($senderId);
-
 
 // Récupérer les préférences de l'utilisateur
 $preferences = $database->getUserPreferences($person->getUserId());
 
 // Vérifier si le mode sombre est activé dans les préférences
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
+
+if (isset($_GET['section'])) {
+    $_SESSION['active_section'] = $_GET['section'];
+}
+// Définit la section active par défaut (Accueil) si aucune n'est spécifiée
+$activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
+
+// Récupération des contacts (utilisateurs du même groupe)
+$contacts = $database->getGroupContacts($userId);
 ?>
 
 
@@ -51,8 +59,7 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage - Professeur</title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
-    <script src="../View/Principal/Principal.js" defer></script>
-    <script src="../View/Principal/deleteMessage.js" defer></script>
+    <script src="../View/Principal/Principal.js"></script>
 </head>
 
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
@@ -62,9 +69,11 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
         <span class="app-name">Le Petit Stage - Professeur</span>
     </div>
     <div class="navbar-right">
-        <button class="mainbtn" >
-            <img src="../Resources/Notif.png" alt="Settings">
-        </button>
+        <div id="notification-icon" class="notification-icon">
+            <img src="../Resources/Notif.png" alt="Notifications">
+            <span id="notification-count" class="notification-count"></span>
+        </div>
+
         <p><?php echo $userName; ?></p>
         <label class="switch">
             <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
@@ -83,14 +92,14 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
     </div>
 </header>
 
-<div class="sidebar-toggle" id="sidebar-toggle">&#11166;</div>
+<div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
 <div class="sidebar" id="sidebar">
     <div class="search">
-        <input type="text" id="search-input" placeholder="Search" onkeyup="searchStudents()">
+        <input type="text" id="search-input-sidebar" placeholder="Search" onkeyup="searchStudents()">
     </div>
     <div class="students">
         <?php foreach ($students as $student): ?>
-            <div class="student">
+            <div class="student" onclick="selectStudent(this)">
                 <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
             </div>
         <?php endforeach; ?>
@@ -99,45 +108,68 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
 
 <section class="Menus">
     <nav>
-        <span onclick="widget(0)" class="widget-button Current" id="content-0">Accueil</span>
-        <span onclick="widget(1)" class="widget-button" id="content-1">Gestion Étudiants</span>
-        <span onclick="widget(2)" class="widget-button" id="content-2">Livret de suivi</span>
-        <span onclick="widget(3)" class="widget-button" id="content-3">Documents</span>
-        <span onclick="widget(4)" class="widget-button" id="content-4">Messagerie</span>
-
-
-
+        <span onclick="window.location.href='Professor.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>" id="content-0">Accueil</span>
+        <span onclick="window.location.href='Professor.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1">Missions de stage</span>
+        <span onclick="window.location.href='Professor.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Gestion Étudiants</span>
+        <span onclick="window.location.href='Professor.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Livret de suivi</span>
+        <span onclick="window.location.href='Professor.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Documents</span>
+        <span onclick="window.location.href='Professor.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5">Messagerie</span>
+        <span onclick="window.location.href='Professor.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>" id="content-6">Notes</span>
     </nav>
     <div class="Contenus">
-        <div class="Visible" id="content-0">
+        <div class="<?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">
             <h2>Bienvenue sur la plateforme pour Professeurs!</h2><br>
             <p>Gérez les étudiants, suivez leur progression et communiquez facilement avec eux.</p><br>
         </div>
-        <div class="Contenu" id="content-1">Contenu Gestion Étudiants</div>
-        <div class="Contenu" id="content-2">Contenu Livret de suivi</div>
-        <div class="Contenu" id="content-3">Contenu Documents</div>
-        <div class="Contenu" id="content-4">
-            <!-- Содержимое мессенджера -->
+        <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">Contenu des missions de stage</div>
+        <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">Contenu Gestion Étudiants</div>
+        <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : 'Contenu'; ?>" id="content-3">Contenu Livret de suivi</div>
+        <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">Contenu Documents</div>
+        <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : 'Contenu'; ?>" id="content-5">
+            <!-- Messagerie Content -->
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
-                        <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                        <label for="search-input"></label>
+                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
                     </div>
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
                         <?php
+                        $roleMapping = [
+                            1 => "Etudiant",
+                            2 => "Professeur",
+                            3 => "Maitre de stage"
+                        ];
+
                         // Récupérer les contacts associés à l'utilisateur connecté
                         $userId = $person->getUserId();
                         $contacts = $database->getGroupContacts($userId);
 
+                        // Sort contacts by role
+                        usort($contacts, fn($a, $b) => $a['role'] <=> $b['role']);
+
+                        // Group contacts by role
+                        $groupedContacts = [];
                         foreach ($contacts as $contact) {
-                            echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
-                            echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
-                            echo '</li>';
+                            $roleName = $roleMapping[$contact['role']] ?? "Unknown Role";
+                            $groupedContacts[$roleName][] = $contact;
+                        }
+
+                        // Display contacts grouped by role
+                        foreach ($groupedContacts as $roleName => $contactsGroup) {
+                            echo "<label><strong>$roleName :</strong></label>";
+                            foreach ($contactsGroup as $contact) {
+                                echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
+                                echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
+                                echo '</li>';
+                            }
                         }
                         ?>
                     </ul>
                 </div>
+
+
 
                 <!-- Right click for delete -->
                 <div id="context-menu" class="context-menu">
@@ -152,31 +184,11 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                         <h3 id="chat-header-title">Chat avec Contact </h3>
                     </div>
                     <div class="chat-body" id="chat-body">
-                        <?php
-                        if (!$senderId) {
-                            die("Erreur: ID de l'utilisateur n'est pas défini dans la session.");
-                        }
-                        $messages = $database->getMessages($senderId, $receiverId);
-                        // Функция для форматирования даты
-                        require_once "../Model/utils.php";
-
-                        // Пример использования в вашем цикле для вывода сообщений
-                        foreach ($messages as $msg) {
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Определение класса в зависимости от отправителя
-                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Защита от XSS
-                            if ($msg['file_path']) {
-                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path']));
-                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
-                            }
-                            // Используем функцию formatTimestamp для вывода форматированной даты и времени
-                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
-                            echo "</div>";
-                        }
-                        ?>
+                        <!-- Les messages seront chargés dynamiquement via JavaScript -->
                     </div>
+
                     <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                             <!-- Champ caché pour le destinataire -->
@@ -188,9 +200,10 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                 </div>
             </div>
         </div>
-
+        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>"" id="content-6">Contenu des notes</div>
     </div>
 </section>
+<script src="../View/Principal/deleteMessage.js"></script>
 </body>
 
 <footer class="PiedDePage">

@@ -166,7 +166,7 @@ header .navbar-right .mainbtn {
     position: relative;
 }
 
-header .navbar-right .mainbtn img {
+header .navbar-right  img {
     width: 35px;
     height: 35px;
 }
@@ -355,7 +355,7 @@ footer a {
 
 .messenger {
     display: flex;
-    height: calc(100vh - 160px); /* Отступ под header и footer */
+    height: calc(100vh - 60px); /* Отступ под header и footer */
     max-width: 100%; /* Используем все свободное место */
 
 
@@ -371,11 +371,16 @@ footer a {
 
 /* updated styles */
 .contacts {
-    width: 30%;
+    width: 25%;
     background-color: #f5f5f5;
     padding: 20px;
     border-right: 1px solid #ddd;
     position: relative;
+}
+
+ul li.contact-active {
+    background-color: #3498db;
+    color: #fff;
 }
 
 .contacts h3 {
@@ -386,7 +391,6 @@ footer a {
 .contacts ul li {
     padding: 15px;
     margin: 10px 0;
-    background-color: #ecf0f1;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -401,7 +405,7 @@ footer a {
 }
 
 .chat-window {
-    width: 70%;
+    width: 80%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -485,7 +489,9 @@ footer a {
 }
 
 .chat-footer {
-    padding-top: 10px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    flex-direction:column;
 }
 
 /* Кнопка отправки */
@@ -597,6 +603,11 @@ button:hover,
     transform: translateX(-100%);
 }
 
+body.dark-mode .sidebar {
+    background-color: #3c424e;
+    border-right: 1px solid #5f6173;
+}
+
 .search {
     padding: 10px;
     border-bottom: 1px solid #ccc;
@@ -677,6 +688,10 @@ button:hover,
     transform: rotate(180deg);
 }
 
+.selected {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
 
 /****************************  DARK MODE MESSAGES  *******************************************************/
 
@@ -959,4 +974,84 @@ button {
 button:hover {
     background-color: #3498db;
 }
+
+.default-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #777;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.notification-icon {
+    position: relative;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+}
+
+.notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    display: none; /* Caché par défaut */
+}
+
+.new-message-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #e47d34; /* Couleur de l'indicateur */
+    border-radius: 50%;
+    border: 0;
+    margin-left: 5px;
+}
+
+/*---------------------- Notes ------------------*/
+
+.notes-container {
+    margin-top: 20px;
+}
+
+.notes-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.notes-table th, .notes-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.notes-table th {
+    background-color: #f4f4f4;
+}
+
+.notes-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: right;
+}
+
+.mainbtn {
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.mainbtn:hover {
+    background-color: #0056b3;
+}
+
 

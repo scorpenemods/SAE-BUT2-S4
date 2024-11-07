@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="@141.94.245.139" uuid="379cb668-c733-44f1-b377-408cf205929c">
+    <data-source source="LOCAL" name="SAEDataBase" uuid="1bc62e56-8d3d-42fd-9fcd-5c335d65511c">
       <driver-ref>mariadb</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mariadb://141.94.245.139:3306</jdbc-url>
+      <jdbc-url>jdbc:mariadb://82.66.53.143:64893/sae</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

@@ -37,11 +37,11 @@ if (isset($_GET['section'])) {
 // Définit la section active par défaut (Accueil) si aucune n'est spécifiée
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
 
-
 // Récupération des messages entre l'utilisateur actuel et le destinataire
 $receiverId = 2; // À définir dynamiquement
 $messages = $database->getMessages($senderId, $receiverId);
 
+$students = $database->getStudents(7);
 ?>
 
 <!DOCTYPE html>
@@ -51,9 +51,7 @@ $messages = $database->getMessages($senderId, $receiverId);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="/View/Principal/Principal.css">
-    <script src="/View/Principal/Principal.js" defer></script>
-    <script src="/View/Principal/deleteMessage.js" defer></script>
-
+    <script src="/View/Principal/Principal.js"></script>
     <style>
         /* Mode sombre dynamiquement */
         body.dark-mode {
@@ -91,9 +89,10 @@ $messages = $database->getMessages($senderId, $receiverId);
         <span class="app-name">Le Petit Stage</span>
     </div>
     <div class="navbar-right">
-        <button class="mainbtn" >
-            <img src="../Resources/Notif.png" alt="Settings">
-        </button>
+        <div id="notification-icon" class="notification-icon">
+            <img src="../Resources/Notif.png" alt="Notifications">
+            <span id="notification-count" class="notification-count"></span>
+        </div>
         <button class="mainbtn">
             <p><?php echo $userName; ?></p>
         </button>
@@ -120,10 +119,12 @@ $messages = $database->getMessages($senderId, $receiverId);
 <section class="Menus">
     <nav>
         <span onclick="window.location.href='Student.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : '0'; ?>">Accueil</span>
-        <span onclick="window.location.href='Student.php?section=4'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '1'; ?>">Livret de suivi</span>
-        <span onclick="window.location.href='Student.php?section=2'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '2'; ?>">Offres</span>
-        <span onclick="window.location.href='Student.php?section=3'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '3'; ?>">Documents</span>
-        <span onclick="window.location.href='Student.php?section=1'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '4'; ?>">Messagerie</span>
+        <span onclick="window.location.href='Student.php?section=6'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '1'; ?>">Missions de stage</span>
+        <span onclick="window.location.href='Student.php?section=4'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '2'; ?>">Livret de suivi</span>
+        <span onclick="window.location.href='Student.php?section=2'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '3'; ?>">Offres</span>
+        <span onclick="window.location.href='Student.php?section=3'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '4'; ?>">Documents</span>
+        <span onclick="window.location.href='Student.php?section=1'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '5'; ?>">Messagerie</span>
+        <span onclick="window.location.href='Student.php?section=5'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '6'; ?>">Notes</span>
     </nav>
     <div class="Contenus">
         <!-- Accueil Content -->
@@ -140,24 +141,49 @@ $messages = $database->getMessages($senderId, $receiverId);
             </ul><br>
         </div>
 
+
+        <!-- Missions Content -->
+        <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">Contenu Missions</div>
+
         <!-- Messagerie Content -->
         <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
-                        <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                        <label for="search-input"></label>
+                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
                     </div>
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
                         <?php
+                        $roleMapping = [
+                            1 => "Etudiant",
+                            2 => "Professeur",
+                            3 => "Maitre de stage"
+                        ];
+
                         // Récupérer les contacts associés à l'utilisateur connecté
                         $userId = $person->getUserId();
                         $contacts = $database->getGroupContacts($userId);
 
+                        // Sort contacts by role
+                        usort($contacts, fn($a, $b) => $a['role'] <=> $b['role']);
+
+                        // Group contacts by role
+                        $groupedContacts = [];
                         foreach ($contacts as $contact) {
-                            echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
-                            echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
-                            echo '</li>';
+                            $roleName = $roleMapping[$contact['role']] ?? "Unknown Role";
+                            $groupedContacts[$roleName][] = $contact;
+                        }
+
+                        // Display contacts grouped by role
+                        foreach ($groupedContacts as $roleName => $contactsGroup) {
+                            echo "<label><strong>$roleName :</strong></label>";
+                            foreach ($contactsGroup as $contact) {
+                                echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
+                                echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
+                                echo '</li>';
+                            }
                         }
                         ?>
                     </ul>
@@ -176,27 +202,9 @@ $messages = $database->getMessages($senderId, $receiverId);
                         <h3 id="chat-header-title">Chat avec Contact </h3>
                     </div>
                     <div class="chat-body" id="chat-body">
-                        <?php
-                        require_once '../Model/utils.php';
-
-                        // using loop to print messages
-                        foreach ($messages as $msg) {
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other'; // Utilise 'self' si l'utilisateur actuel est l'expéditeur, sinon 'other'
-
-                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>"; // Affiche le contenu du message, sécurisé contre les attaques XSS
-
-                            if ($msg['file_path']) {
-                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path'])); // Nettoie le chemin du fichier
-                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
-                            }
-
-                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
-                            echo "</div>";
-                        }
-
-                        ?>
+                        <!-- Les messages seront chargés dynamiquement via JavaScript -->
                     </div>
+
                     <div class="chat-footer">
                         <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
                             <input type="file" id="file-input" name="file" style="display:none">
@@ -219,6 +227,25 @@ $messages = $database->getMessages($senderId, $receiverId);
 
         <!-- Livret de suivi Content -->
         <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">Contenu Livret de suivi</div>
+        <!-- Notes Content -->
+        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
+            <div class="notes-container">
+                <table class="notes-table">
+                    <tr class="lsttitlenotes">
+                        <th>Sujet</th>
+                        <th>Appréciation</th>
+                        <th>Note</th>
+                    </tr>
+                    <?php foreach ($students as $student): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($student->getPrenom()); ?></td>
+                        <td><?php echo htmlspecialchars($student->getPrenom()); ?></td>
+                        <td><?php echo htmlspecialchars($student->getPrenom()); ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -227,6 +254,6 @@ $messages = $database->getMessages($senderId, $receiverId);
     <a href="Redirection.php">Informations</a>
     <a href="Redirection.php">À propos</a>
 </footer>
-
+<script src="/View/Principal/deleteMessage.js"></script>
 </body>
 </html>

@@ -9,9 +9,6 @@ require "../Model/Person.php";
 // Initialisation de la connexion à la base de données
 $database = (Database::getInstance());
 
-// Récupération de l'ID de l'utilisateur à partir de la session
-$senderId = $_SESSION['user_id'] ?? null;
-
 // Initialisation du nom de l'utilisateur par défaut (Guest) si non connecté
 $userName = "Guest";
 
@@ -23,6 +20,7 @@ if (isset($_SESSION['user'])) {
     if ($person instanceof Person) {
         // Récupère le prénom et le nom de l'utilisateur en protégeant contre les attaques XSS (Cross-Site Scripting)
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+        $senderId = $person->getUserId(); // Récupération de l'ID de l'utilisateur connecté
     }
 } else {
     // Redirection vers la page de déconnexion si l'utilisateur n'est pas trouvé dans la session
@@ -49,6 +47,13 @@ $preferences = $database->getUserPreferences($person->getUserId());
 
 // Vérification si le mode sombre est activé dans les préférences de l'utilisateur
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
+
+if (isset($_GET['section'])) {
+    $_SESSION['active_section'] = $_GET['section'];
+}
+// Définit la section active par défaut (Accueil) si aucune n'est spécifiée
+$activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
+
 ?>
 
 <!DOCTYPE html>
@@ -60,7 +65,8 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
     <!-- Inclusion du fichier CSS pour la mise en page -->
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <!-- Inclusion du fichier JS pour les interactions -->
-    <script src="../View/Principal/Principal.js" defer></script>
+    <script src="../View/Principal/Principal.js"></script>
+
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>"> <!-- Ajout de la classe 'dark-mode' si activée -->
 
@@ -71,9 +77,10 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
         <span class="app-name">Le Petit Stage - Maitre de Stage</span>
     </div>
     <div class="navbar-right">
-        <button class="mainbtn">
-            <img src="../Resources/Notif.png" alt="Settings">
-        </button>
+        <div id="notification-icon" class="notification-icon">
+            <img src="../Resources/Notif.png" alt="Notifications">
+            <span id="notification-count" class="notification-count"></span>
+        </div>
         <p><?php echo $userName; ?></p> <!-- Affichage du nom de l'utilisateur -->
 
         <!-- Commutateur de langue -->
@@ -101,47 +108,68 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
 <!-- Section contenant les différents menus -->
 <section class="Menus">
     <nav>
-        <span onclick="widget(0)" class="widget-button Current" id="content-0">Accueil</span>
-        <span onclick="widget(1)" class="widget-button" id="content-1">Gestion Stagiaires</span>
-        <span onclick="widget(2)" class="widget-button" id="content-2">Evaluation Stages</span>
-        <span onclick="widget(3)" class="widget-button" id="content-3">Documents</span>
-        <span onclick="widget(4)" class="widget-button" id="content-4">Messagerie</span>
-
-
-
+        <span onclick="window.location.href='MaitreStage.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>" id="content-0">Accueil</span>
+        <span onclick="window.location.href='MaitreStage.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1">Missions de stage</span>
+        <span onclick="window.location.href='MaitreStage.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Gestion Stagiaires</span>
+        <span onclick="window.location.href='MaitreStage.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Evaluation Stages</span>
+        <span onclick="window.location.href='MaitreStage.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Documents</span>
+        <span onclick="window.location.href='MaitreStage.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5">Messagerie</span>
+        <span onclick="window.location.href='MaitreStage.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>" id="content-6">Notes</span>
     </nav>
 
     <div class="Contenus">
         <!-- Contenu de l'Accueil -->
-        <div class="Visible" id="content-0">
+        <div class="<?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">
             <h2>Bienvenue sur la plateforme pour les Maitres de Stage!</h2><br>
             <p>Gérez vos stagiaires, communiquez facilement et suivez l'évolution de leurs compétences.</p><br>
         </div>
 
         <!-- Contenu des autres sections -->
-        <div class="Contenu" id="content-1">Contenu Gestion Stagiaires</div>
-        <div class="Contenu" id="content-2">Contenu Evaluation Stages</div>
-        <div class="Contenu" id="content-3">Contenu Documents</div>
+        <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">Missions de stage</div>
+        <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">Contenu Gestion Stagiaires</div>
+        <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : 'Contenu'; ?>" id="content-3">Contenu Evaluation Stages</div>
+        <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">Contenu Documents</div>
 
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu" id="content-4">
+        <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : 'Contenu'; ?>" id="content-5">
             <div class="messenger">
                 <!-- Barre de recherche de contacts -->
                 <div class="contacts">
                     <div class="search-bar">
-                        <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                        <label for="search-input"></label>
+                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
                     </div>
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
                         <?php
+                        $roleMapping = [
+                            1 => "Etudiant",
+                            2 => "Professeur",
+                            3 => "Maitre de stage"
+                        ];
+
                         // Récupérer les contacts associés à l'utilisateur connecté
                         $userId = $person->getUserId();
                         $contacts = $database->getGroupContacts($userId);
 
+                        // Sort contacts by role
+                        usort($contacts, fn($a, $b) => $a['role'] <=> $b['role']);
+
+                        // Group contacts by role
+                        $groupedContacts = [];
                         foreach ($contacts as $contact) {
-                            echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
-                            echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
-                            echo '</li>';
+                            $roleName = $roleMapping[$contact['role']] ?? "Unknown Role";
+                            $groupedContacts[$roleName][] = $contact;
+                        }
+
+                        // Display contacts grouped by role
+                        foreach ($groupedContacts as $roleName => $contactsGroup) {
+                            echo "<label><strong>$roleName :</strong></label>";
+                            foreach ($contactsGroup as $contact) {
+                                echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
+                                echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
+                                echo '</li>';
+                            }
                         }
                         ?>
                     </ul>
@@ -162,38 +190,7 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
                     </div>
 
                     <div class="chat-body" id="chat-body">
-                        <?php
-                        // Si l'ID de l'utilisateur n'est pas défini, afficher une erreur et arrêter le script
-                        if (!$senderId) {
-                            die("Erreur: ID de l'utilisateur n'est pas défini dans la session.");
-                        }
-
-                        // Récupère les messages entre l'utilisateur et le destinataire
-                        $messages = $database->getMessages($senderId, $receiverId);
-
-                        // Fonction pour formater la date d'un message
-                        require_once '../Model/utils.php';
-
-                        // Boucle pour afficher les messages
-                        foreach ($messages as $msg) {
-                            // Détermine si le message a été envoyé par l'utilisateur ou reçu (classe CSS différente)
-                            $messageClass = ($msg['sender_id'] == $senderId) ? 'self' : 'other';
-
-                            // Affiche le message avec la protection contre les attaques XSS
-                            echo "<div class='message $messageClass' data-message-id='" . htmlspecialchars($msg['id']) . "'>";
-                            echo "<p>" . htmlspecialchars($msg['contenu']) . "</p>";
-
-                            // Si le message contient un fichier joint, affiche un lien de téléchargement
-                            if ($msg['file_path']) {
-                                $fileUrl = htmlspecialchars(str_replace("../", "/", $msg['file_path']));
-                                echo "<a href='" . $fileUrl . "' download>Télécharger le fichier</a>";
-                            }
-
-                            // Affiche la date et l'heure formatées du message
-                            echo "<div class='timestamp-container'><span class='timestamp'>" . formatTimestamp($msg['timestamp']) . "</span></div>";
-                            echo "</div>";
-                        }
-                        ?>
+                        <!-- Les messages seront chargés dynamiquement via JavaScript -->
                     </div>
 
                     <!-- Zone de saisie pour envoyer un nouveau message -->
@@ -211,8 +208,7 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
             </div>
         </div>
 
-
-
+        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">Contenu des notes</div>
     </div>
 </section>
 
@@ -222,5 +218,6 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
     <a href="Redirection.php">Informations</a>
     <a href="Redirection.php">À propos</a>
 </footer>
+<script src="../View/Principal/deleteMessage.js"></script>
 </body>
 </html>
