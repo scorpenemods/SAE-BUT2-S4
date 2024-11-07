@@ -30,7 +30,7 @@ if (isset($_SESSION['user'])) {
 
 // Vérification de la méthode de requête
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $database = new Database();
+    $database = (Database::getInstance());
 
     // Récupération des données du formulaire
     $receiverId = $_POST['receiver_id'] ?? null;

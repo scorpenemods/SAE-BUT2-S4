@@ -5,7 +5,7 @@ session_start();
 require_once 'Model/Database.php';
 require_once 'Model/Person.php';
 
-$database = new Database();
+$database = (Database::getInstance());
 $errorMessage = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

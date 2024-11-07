@@ -20,7 +20,7 @@ if (isset($_SESSION['user'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['message_id'])) {
     $messageId = $_POST['message_id'];
 
-    $database = new Database();
+    $database = (Database::getInstance());
     $message = $database->getMessageById($messageId);
 
     if ($message && $message['sender_id'] == $currentUserId) {

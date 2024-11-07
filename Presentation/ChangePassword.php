@@ -4,7 +4,7 @@ session_start(); // Start the session
 require "../Model/Database.php";// Fichier nécessaire pour accéder à la base de données
 require "../Model/Person.php"; //Fichier nécessaire pour récupérer le user
 
-$db = new Database();
+$db = (Database::getInstance());
 $error = '';
 $success = '';
 

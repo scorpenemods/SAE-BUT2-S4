@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['user_id'])) {
         $userId = $_POST['user_id'];
 
-        $db = new Database();
+        $db = (Database::getInstance());
         $user = $db->getUserById($userId);
 
         if ($user && $db->rejectUser($userId)) {

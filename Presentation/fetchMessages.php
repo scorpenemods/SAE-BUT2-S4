@@ -25,7 +25,7 @@ $receiverId = $_POST['receiver_id'] ?? null;
 // Vérifie si l'ID de l'expéditeur et celui du destinataire sont présents
 if ($senderId && $receiverId) {
     // Crée une instance de la base de données
-    $database = new Database();
+    $database = (Database::getInstance());
 
     // Récupère les messages échangés entre l'expéditeur et le destinataire
     $messages = $database->getMessages($senderId, $receiverId);

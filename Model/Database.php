@@ -2,11 +2,17 @@
 
 class Database
 {
-    private $connection;
+    private static ?Database $instance = null;
+    private ?PDO $connection;
+    private function __construct(){}
 
-    public function __construct()
+    public static function getInstance(): Database
     {
-        $this->connect();
+        if (self::$instance === null) {
+            self::$instance = new Database();
+            self::$instance->connect();
+        }
+        return self::$instance;
     }
 
     private function connect(): void
@@ -57,17 +63,15 @@ class Database
 
 
     // Adding a new user
-    public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom)
+public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom,$status)
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $status = 0; // Default status
+
+
+        $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status_user, valid_email) 
+                VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status, 0)";
 
         try {
-            $this->connection->beginTransaction();
-
-            $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status_user, valid_email) 
-                    VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status_user, 0)";
-
             $stmt = $this->connection->prepare($sqlUser);
             $stmt->execute([
                 ':email' => $email,
@@ -78,7 +82,6 @@ class Database
                 ':nom' => $nom,
                 ':status_user' => $status
             ]);
-
             $userId = $this->connection->lastInsertId();
 
             $sqlPassword = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, 1)";
@@ -95,13 +98,9 @@ class Database
                 ':user_id' => $userId
             ]);
 
-            $this->connection->commit();
-            echo "User $email added successfully.<br>";
             return true;
-
         } catch (PDOException $e) {
-            $this->connection->rollBack();
-            echo "Insert error for $email: " . $e->getMessage() . "<br>";
+            echo "Insert error: " . $e->getMessage();
             return false;
         }
     }

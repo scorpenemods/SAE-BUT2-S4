@@ -4,7 +4,7 @@ session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";
 
-$database = new Database();
+$database = (Database::getInstance());
 
 $userName = "Guest";
 $senderId = $_SESSION['user_id'] ?? null;

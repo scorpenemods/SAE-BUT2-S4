@@ -16,7 +16,7 @@ error_reporting(E_ALL);
 date_default_timezone_set('Europe/Paris');
 
 // Initialisation de la connexion à la base de données
-$database = new Database();
+$database = (Database::getInstance());
 
 // Récupérer les détails de l'utilisateur à partir de la session
 $userName = $_SESSION['user_name'] ?? 'Guest'; // Nom de l'utilisateur ou 'Guest' s'il n'est pas connecté

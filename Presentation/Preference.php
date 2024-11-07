@@ -15,7 +15,7 @@ if (isset($_SESSION['user'])) {
 }
 
 // Connexion à la base de données
-$db = new Database();
+$db = (Database::getInstance());
 
 // Si la requête est envoyée via POST, traiter la mise à jour
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

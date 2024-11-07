@@ -3,7 +3,7 @@ session_start();
 
 require_once "../Model/Database.php"; // db connect
 
-$database = new Database();
+$database = (Database::getInstance());
 $conn = $database->getConnection();
 
 if (!$conn) {

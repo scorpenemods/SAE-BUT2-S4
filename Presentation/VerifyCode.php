@@ -2,7 +2,7 @@
 session_start();
 require "../Model/Database.php";
 
-$db = new Database();
+$db = (Database::getInstance());
 $error = '';
 $success = '';
 

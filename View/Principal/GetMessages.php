@@ -23,7 +23,7 @@ if (!isset($_GET['contact_id'])) {
 
 $contactId = intval($_GET['contact_id']);
 
-$database = new Database();
+$database = (Database::getInstance());
 
 try {
     // Récupérer les messages entre l'utilisateur et le contact

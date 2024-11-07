@@ -7,7 +7,7 @@ require "../Model/Database.php";
 require "../Model/Person.php";
 
 // Initialisation de la connexion à la base de données
-$database = new Database();
+$database = (Database::getInstance());
 
 // Initialisation du nom de l'utilisateur par défaut (Guest) si non connecté
 $userName = "Guest";

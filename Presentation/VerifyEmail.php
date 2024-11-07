@@ -4,7 +4,7 @@ require "../Model/Database.php";
 
 date_default_timezone_set('Europe/Paris');  // Setting the time zone
 
-$database = new Database();
+$database = (Database::getInstance());
 $verificationError = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
