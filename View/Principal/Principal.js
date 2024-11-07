@@ -462,6 +462,19 @@ function hideNewMessageIndicator(contactId) {
 
 // -------------------------------------------------------------------------------------//
 
+// ---------------------------------- Add secretariat ----------------------------------//
+
+function showForm(){
+    document.getElementById("showButton").style.display = "none";
+    document.getElementById("secretariatCreation").style.display = "block";
+}
+
+function hideForm() {
+    document.getElementById("showButton").style.display = "inline";
+    document.getElementById("secretariatCreation").style.display = "none";
+    document.getElementById("formData").reset();
+    document.getElementById("response").innerHTML = "";
+}
 
 // ---------------------------------- Student list -------------------------------------//
 function sidebar(){

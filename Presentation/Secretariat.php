@@ -54,6 +54,84 @@ $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] =
 $students = $database->getAllStudents() ?? [];
 $professors = $database->getProfessor() ?? [];
 $maitres = $database->getTutor() ?? [];
+
+
+//------------------------------- Création de compte secrétaire -------------------------------//
+$conn = $database->getConnection();
+
+$errorMessage = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Initialise l'activité du user
+    $function = isset($_POST['function']) ? htmlspecialchars(trim($_POST['function'])) : '';
+
+    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+    $name = htmlspecialchars(trim($_POST['name']));
+    $firstname = htmlspecialchars(trim($_POST['firstname']));
+    $phone = htmlspecialchars(trim($_POST['phone']));
+    $password = $_POST['password'];
+    $confirmPassword = $_POST['confirm_password'];
+
+    // Valide l'email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errorMessage = 'Adresse email invalide.';
+    }
+
+    // Valide mdp
+    if ($password !== $confirmPassword) {
+        $errorMessage = 'Les mots de passe ne correspondent pas!';
+    }
+
+    // Check si l'email exist déjà
+    $queryCheckEmail = "SELECT COUNT(*) FROM User WHERE email = :email";
+    $stmtCheck = $conn->prepare($queryCheckEmail);
+    $stmtCheck->bindParam(':email', $email);
+    $stmtCheck->execute();
+    $emailExists = $stmtCheck->fetchColumn();
+
+    if ($emailExists > 0) {
+        $errorMessage = 'Cet email est déjà enregistré. Veuillez utiliser un autre email.';
+    }
+
+    if (!$errorMessage) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        // Inserer user
+        $query = "INSERT INTO User (nom, prenom, email, telephone, role, activite, valid_email, status_user, last_connexion, account_creation) 
+                  VALUES (:nom, :prenom, :email, :telephone, 4, :activite, 0, 1, NOW(), NOW())";
+        $stmt = $conn->prepare($query);
+        $stmt->bindValue(':nom', $name);
+        $stmt->bindValue(':prenom', $firstname);
+        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':telephone', $phone);
+        $stmt->bindValue(':activite', $function);
+
+        if ($stmt->execute()) {
+            $userID = $conn->lastInsertId();
+
+            // Inserer mdp
+            $queryPass = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, 1)";
+            $stmtPass = $conn->prepare($queryPass);
+            $stmtPass->bindValue(':user_id', $userID);
+            $stmtPass->bindValue(':password_hash', $hashedPassword);
+
+            if ($stmtPass->execute()) {
+                $_SESSION['user_email'] = $email;
+                $_SESSION['user_id'] = $userID;
+                $_SESSION['user_name'] = $name . " " . $firstname;
+
+                // Ajout de log pour vérifier que l'étape est atteinte
+                echo "<script>window.location.reload();</script>";
+                exit();
+            } else {
+                $errorMessage = 'Erreur lors de l\'insertion du mot de passe.';
+            }
+        } else {
+            $errorMessage = 'Erreur lors de la création de l\'utilisateur.';
+        }
+    }
+}
 ?>
 
 
@@ -126,16 +204,48 @@ $maitres = $database->getTutor() ?? [];
             <div class="user-management">
                 <!-- Section pour la création de nouveau secrétaire -->
                 <div class="pending-requests">
-                    <button>Nouveau secrétaire</button>
+                    <button id="showButton" onclick="showForm()"">Nouveau secrétaire</button>
+                    <!-- Form -->
+                    <div id="secretariatCreation" style="display: none;">
+                        <form action="Secretariat.php" method="POST">
+                            <!-- Hidden role input field (for secretariat role) -->
+                            <input type="hidden" name="choice" value="secretariat">
+
+                            <label for="activite">Fonction :</label> <label style="color: red"> *</label>
+                            <input type="text" id="activite" name="function" required><br><br>
+
+                            <label for="nom">Nom :</label> <label style="color: red"> *</label>
+                            <input type="text" id="nom" name="name" required><br><br>
+
+                            <label for="surname">Prénom :</label> <label style="color: red"> *</label>
+                            <input type="text" id="surname" name="firstname" required><br><br>
+
+                            <label for="email">Email :</label> <label style="color: red"> *</label>
+                            <input type="email" id="email" name="email" required><br><br>
+
+                            <label for="phone">Téléphone :</label>
+                            <input type="text" id="phone" name="phone"><br><br>
+
+                            <label for="mdp">Mot de passe :</label> <label style="color: red"> *</label>
+                            <input type="password" id="mdp" name="password" required><br><br>
+
+                            <label for="mdpconfirm">Confirmation mot de passe:</label> <label style="color: red"> *</label>
+                            <input type="password" id="mdpconfirm" name="confirm_password" required><br><br>
+
+                            <button type="submit">Enregistrer</button>
+                            <a href="#" onclick="hideForm()" style="text-decoration: none"> Annuler</a>
+                        </form>
+                    </div>
+
                 </div>
                 <!-- Section pour afficher les secrétaires actifs dans le système -->
                 <div class="active-users">
                     <h2>Secrétaires actifs</h2>
                     <?php
-                    // Récupération des utilisateurs actifs depuis la base de données
+                    // Récupération des secrétaires actifs depuis la base de données
                     $activeUsers = $database->getActiveUsers();
                     foreach ($activeUsers as $user) {
-                        // Affichage de chaque utilisateur actif avec ses détails
+                        // Affichage de chaque secrétaire actif avec ses détails
                         if ($user['role'] == 4) {
                             echo "<div class='active-user'>";
                             echo "<p><strong>Nom:</strong> " . htmlspecialchars($user['nom']) . "</p>";
@@ -143,7 +253,7 @@ $maitres = $database->getTutor() ?? [];
                             echo "<p><strong>Email:</strong> " . htmlspecialchars($user['email']) . "</p>";
                             echo "<p><strong>Telephone:</strong> " . htmlspecialchars($user['telephone']) . "</p>";
                             echo "<p><strong>Activité :</strong> " . htmlspecialchars($user['activite']) . "</p>";
-                            // Bouton pour supprimer le secrétaure du système
+                            // Bouton pour supprimer le secrétaire du système
                             echo "<button onclick='deleteUser(" . $user['id'] . ")'>🗑️ Supprimer</button>";
                             echo "</div>";
                         }
