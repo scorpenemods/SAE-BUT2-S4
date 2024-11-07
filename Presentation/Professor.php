@@ -69,7 +69,7 @@ $contacts = $database->getGroupContacts($userId);
         <span class="app-name">Le Petit Stage - Professeur</span>
     </div>
     <div class="navbar-right">
-        <div id="notification-icon" class="notification-icon">
+        <div class="notification-icon" id="notification-icon">
             <img src="../Resources/Notif.png" alt="Notifications">
             <span id="notification-count" class="notification-count"></span>
         </div>
@@ -106,15 +106,15 @@ $contacts = $database->getGroupContacts($userId);
     </div>
 </div>
 
-<section class="Menus">
+<section class="Menus" id="Menus">
     <nav>
-        <span onclick="window.location.href='Professor.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>" id="content-0">Accueil</span>
-        <span onclick="window.location.href='Professor.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1">Missions de stage</span>
-        <span onclick="window.location.href='Professor.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Gestion Étudiants</span>
-        <span onclick="window.location.href='Professor.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Livret de suivi</span>
-        <span onclick="window.location.href='Professor.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Documents</span>
-        <span onclick="window.location.href='Professor.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5">Messagerie</span>
-        <span onclick="window.location.href='Professor.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>" id="content-6">Notes</span>
+        <span onclick="widget(0)" class="widget-button Current">Accueil</span>
+        <span onclick="widget(1)" class="widget-button">Mission de stage</span>
+        <span onclick="widget(2)" class="widget-button">Gestion Étudiants</span>
+        <span onclick="widget(3)" class="widget-button">Livret de suivi</span>
+        <span onclick="widget(4)" class="widget-button">Documents</span>
+        <span onclick="widget(5)" class="widget-button">Messagerie</span>
+        <span onclick="widget(6)" class="widget-button">Notes</span>
     </nav>
     <div class="Contenus">
         <div class="<?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">

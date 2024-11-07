@@ -466,9 +466,11 @@ function hideNewMessageIndicator(contactId) {
 // ---------------------------------- Student list -------------------------------------//
 function sidebar(){
     const sidebar = document.getElementById('sidebar');
-    document.getElementById('sidebar-toggle').classList.toggle('active')
+    const menu = document.getElementById('Menus');
+    const arrow = document.getElementById('sidebar-toggle');
+    menu.classList.toggle('responsive');
     sidebar.classList.toggle('visible'); // Toggle la visibilité de la sidebar
-    this.classList.toggle('active'); // Toggle la classe active pour la flèche
+    arrow.classList.toggle('active'); // Toggle la classe active pour la flèche
 }
 
 function searchStudents() {
