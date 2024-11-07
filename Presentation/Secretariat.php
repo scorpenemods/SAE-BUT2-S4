@@ -203,6 +203,17 @@ $maitres = $database->getTutor() ?? [];
                     }
                     ?>
                 </div>
+                <!-- Section pour déposer un fichier CSV -->
+                <div class="csv-upload">
+                    <h2>Importer des utilisateurs via CSV</h2>
+                    <form action="Batch.php" method="post" enctype="multipart/form-data">
+                        <label for="csvFile">Sélectionner un fichier CSV:</label>
+                        <input type="file" name="csv_file" id="csvFile" accept=".csv" required>
+                        <button type="submit">📂 Importer le CSV</button>
+                    </form>
+
+                    <p>Le fichier CSV doit contenir les colonnes suivantes : Nom, Prénom, Email, Rôle, Activité, Téléphone.</p>
+                </div>
             </div>
         </div>
         <!-- Section Rapports -->

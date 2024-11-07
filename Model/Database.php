@@ -60,23 +60,16 @@ class Database
     }
 
 
-
-
-
-
-
-
-
     // Adding a new user
-    public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom,$status)
+    public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom, $status)
     {
+        // Hash the password
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-
-
-        $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status_user, valid_email) 
-                VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status, 0)";
-
+        // Define the SQL query for inserting a new user
+        $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status_user, valid_email, account_creation) 
+                VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status_user, 0, NOW())";
         try {
+            // Prepare and execute the user insert statement
             $stmt = $this->connection->prepare($sqlUser);
             $stmt->execute([
                 ':email' => $email,
@@ -87,28 +80,28 @@ class Database
                 ':nom' => $nom,
                 ':status_user' => $status
             ]);
+            // Get the last inserted user ID
             $userId = $this->connection->lastInsertId();
-
+            // Insert the password with user_id reference
             $sqlPassword = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, 1)";
             $stmt = $this->connection->prepare($sqlPassword);
             $stmt->execute([
                 ':user_id' => $userId,
                 ':password_hash' => $passwordHash
             ]);
-
-            // Insert default preferences
+            // Insert default preferences for the new user
             $sqlPreference = "INSERT INTO Preference (user_id, notification, a2f, darkmode) VALUES (:user_id, 1, 0, 0)";
             $stmt = $this->connection->prepare($sqlPreference);
             $stmt->execute([
                 ':user_id' => $userId
             ]);
-
             return true;
         } catch (PDOException $e) {
             echo "Insert error: " . $e->getMessage();
             return false;
         }
     }
+
 
 
     // Getting user information
