@@ -226,7 +226,10 @@ $students = $database->getStudents(7);
         <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">Contenu Documents</div>
 
         <!-- Livret de suivi Content -->
-        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">Contenu Livret de suivi</div>
+        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
+            <?php include_once("LivretSuivi.php");?>
+        </div>
+
         <!-- Notes Content -->
         <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
             <div class="notes-container">
