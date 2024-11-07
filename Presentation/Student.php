@@ -40,6 +40,8 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
 // Récupération des messages entre l'utilisateur actuel et le destinataire
 $receiverId = 2; // À définir dynamiquement
 $messages = $database->getMessages($senderId, $receiverId);
+
+$students = $database->getStudents(7);
 ?>
 
 <!DOCTYPE html>
@@ -226,7 +228,24 @@ $messages = $database->getMessages($senderId, $receiverId);
         <!-- Livret de suivi Content -->
         <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">Contenu Livret de suivi</div>
         <!-- Notes Content -->
-        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">Contenu Notes</div>
+        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
+            <div class="notes-container">
+                <table class="notes-table">
+                    <tr class="lsttitlenotes">
+                        <th>Sujet</th>
+                        <th>Appréciation</th>
+                        <th>Note</th>
+                    </tr>
+                    <?php foreach ($students as $student): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($student->getPrenom()); ?></td>
+                        <td><?php echo htmlspecialchars($student->getPrenom()); ?></td>
+                        <td><?php echo htmlspecialchars($student->getPrenom()); ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+        </div>
     </div>
 </section>
 
