@@ -10,7 +10,7 @@ class Person
     private string $activite;   // Activité professionnelle ou académique de l'utilisateur
     private int $id;            // Identifiant unique de l'utilisateur
     private string $email;      // Adresse e-mail de l'utilisateur
-    private [] $lstStudent;
+    private array $lstStudent;
 
     // Constructeur pour initialiser un objet de type Person avec les valeurs fournies
     public function __construct($nom, $prenom, $telephone, $role, $activite, $email, $id)
@@ -22,6 +22,7 @@ class Person
         $this->activite = $activite;
         $this->email = $email;
         $this->id = $id;
+        $this->lstStudent = array();
     }
     //getter pour l'id
     public function getId(): int{
