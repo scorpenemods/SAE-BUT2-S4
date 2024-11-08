@@ -99,6 +99,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Envoi du message à la base de données et récupération de l'ID du message
     $messageId = $database->sendMessage($senderId, $receiverId, $message, $filePath, $fileName);
     if ($messageId) {
+
+        $notificationContent = "Vous avez reçu un nouveau message.";
+        $database->addNotification($receiverId, $notificationContent, "new_message");
         // Récupérer le message inséré pour obtenir le timestamp exact
         $stmt = $database->getConnection()->prepare("
             SELECT m.*, d.filepath AS file_path

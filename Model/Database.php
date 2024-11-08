@@ -793,6 +793,89 @@ class Database
         }
         return $notes;
     }
+
+
+    public function hasUnreadNotifications($userId): bool
+    {
+        $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id AND seen = 0";
+
+        try {
+            echo "User ID : $userId<br>";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([':user_id' => $userId]);
+            $count = (int) $stmt->fetchColumn();
+            echo "Nombre de notifications non lues : $count<br>";
+            return $count > 0;
+        } catch (PDOException $e) {
+            echo "Erreur PDO : " . $e->getMessage();
+            return false;
+        }
+    }
+
+
+    public function getUnreadNotificationCount($userId): int
+    {
+        $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id AND seen = 0";
+
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([':user_id' => $userId]);
+            $count = (int) $stmt->fetchColumn();
+            return $count; // Retourne le nombre de notifications non lues
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération du nombre de notifications non lues : " . $e->getMessage());
+            return 0; // Retourne 0 en cas d'erreur
+        }
+    }
+
+    public function markAllNotificationsAsSeen($userId): bool
+    {
+        $sql = "UPDATE Notification SET seen = 1 WHERE user_id = :user_id AND seen = 0";
+
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([':user_id' => $userId]);
+            return true;
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la mise à jour des notifications : " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Example endpoint to get notifications
+    function getNotifications($userId): false|array
+    {
+        $sql = "SELECT content, type, seen, created_at FROM Notification WHERE user_id = :user_id ORDER BY created_at DESC";
+
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([':user_id' => $userId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération des notifications : " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function addNotification(int $userId, string $content, string $type): bool
+    {
+        $sql = "INSERT INTO Notification (user_id, content, type, 0, NOW()) 
+            VALUES (:user_id, :content, :type)";
+
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':content', $content, PDO::PARAM_STR);
+            $stmt->bindParam(':type', $type, PDO::PARAM_STR);
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Erreur lors de l'ajout de la notification: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
 }
 
 ?>

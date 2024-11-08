@@ -1,0 +1,49 @@
+#notification-icon {
+    position: relative;
+    cursor: pointer;
+}
+
+#notification-popup {
+    display: none;
+    position: absolute;
+    top: 100%; /* Adjusts the popup to appear below the icon */
+    right: 0; /* Aligns the popup to the right of the icon */
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px; /* Adjust as needed */
+    z-index: 10;
+    border-radius: 5px;
+}
+
+#notification-popup.visible {
+    display: block;
+}
+
+.notification-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ddd;
+}
+
+.notification-popup-content {
+    max-height: 300px; /* Limit the height */
+    overflow-y: auto; /* Add scroll if content overflows */
+    padding: 10px;
+}
+
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-item.unseen {
+    background-color: #e8f0fe; /* Different background for unseen notifications */
+}
+
+.notification-item.seen {
+    background-color: #f9f9f9; /* Different background for seen notifications */
+}
