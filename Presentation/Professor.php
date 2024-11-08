@@ -72,7 +72,6 @@ if (isset($_POST['submit_notes'])) {
                 'coeff' => $_POST['coeff'][$index],
             ];
         }
-
         // Appeler la méthode addNotes pour insérer les notes dans la base de données
         $database = Database::getInstance(); // Assurez-vous que vous utilisez votre instance de base de données
         try {
@@ -87,6 +86,19 @@ if (isset($_POST['submit_notes'])) {
         echo "Veuillez remplir tous les champs.";
     }
 }
+
+if (!empty($students)) {
+    $student = $students[0];
+} else {
+    $student = null;
+}
+if ($student !== null) {
+    $studentName = htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom());
+} else {
+    $studentName = "Vous n'avez pas d'étudiants";
+}
+
+$hasStudents = !empty($students);
 
 ?>
 
@@ -213,7 +225,7 @@ if (isset($_POST['submit_notes'])) {
             </div>
         </div>
         <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">
-            <h2 id="student-name"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></h2>
+            <h2 id="student-name"><?php echo $studentName; ?></h2>
             <form method="post" action="">
                 <div class="notes-container">
                     <table class="notes-table">
@@ -256,7 +268,7 @@ if (isset($_POST['submit_notes'])) {
                 </div>
 
                 <div class="notes-buttons">
-                    <button type ="button" class="mainbtn" onclick="enableNotes()">Ajouter les notes</button>
+                    <button type ="button" class="mainbtn" onclick="enableNotes()" <?php echo !$hasStudents ? 'disabled' : ''; ?>>Ajouter les notes</button>
                     <button type="submit" name="submit_notes" class="mainbtn" onclick="validateNotes()" disabled id="validateBtn">Valider les notes</button>
                     <button class="mainbtn" onclick="cancelNotes()"  id="cancelBtn">Annuler</button>
                 </div>
@@ -264,7 +276,7 @@ if (isset($_POST['submit_notes'])) {
         </div>
     </div>
 
-    </div>
+
 </section>
 <script src="../View/Principal/deleteMessage.js"></script>
 </body>
