@@ -1,19 +1,35 @@
 <?php
 
-
-
-echo "test";
 ?>
 
 
 <body>
-<div >
-    <aside class="sidebar">
-        <div class="vignette">1ère rencontre</div>
-        <div class="vignette"2ème rencontre</div>
-        <div class="vignette">3ème rencontre</div>
-        <div></div>
+<div class="livret-container">
+    <aside class="livretbar">
+        <span class="vignette" onclick="showContent(0)">1ère rencontre</span><br>
+        <span class="vignette" onclick="showContent(1)">2ème rencontre</span><br>
+        <span class="vignette" onclick="showContent(2)">3ème rencontre</span><br>
+        <span class="vignette" onclick="showContent(3)">Dépôt du mémoire ou rapport</span><br>
     </aside>
+
+    <div class="content-container">
+        <div class="content-section" id="0">
+            <h2>1ère rencontre</h2>
+            <p>Content for the first meeting.</p>
+        </div>
+        <div class="content-section" id="1">
+            <h2>2ème rencontre</h2>
+            <p>Content for the second meeting.</p>
+        </div>
+        <div class="content-section" id="2">
+            <h2>3ème rencontre</h2>
+            <p>Content for the third meeting.</p>
+        </div>
+        <div class="content-section" id="3">
+            <h2>Dépôt du mémoire ou rapport</h2>
+            <p>Content for the report submission.</p>
+        </div>
+    </div>
 
 
 </div>

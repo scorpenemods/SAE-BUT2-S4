@@ -714,6 +714,37 @@ body.dark-mode .sidebar {
     border: 1px solid #ccc;
 }
 
+/*-------------------------------- Livret de suivi -----------------------------------------------------------*/
+.livret-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.livretbar {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+}
+
+.vignette {
+    background-color: #b3bcc9;
+    padding: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #34495e;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.content-section {
+    display: none;
+    padding: 20px;
+}
+.content-section.active {
+    display: block;
+}
+
 /****************************  DARK MODE MESSAGES  *******************************************************/
 
 body.dark-mode .messenger {

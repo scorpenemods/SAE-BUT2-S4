@@ -460,7 +460,19 @@ function hideNewMessageIndicator(contactId) {
 }
 
 
-// -------------------------------------------------------------------------------------//
+// ---------------------------------- Livret de suivi -----------------------------------//
+
+function showContent(x) {
+    // Hide all content sections
+    document.querySelectorAll('.content-section').forEach((section) => {
+        section.classList.remove('active');
+    });
+
+    // Show the selected content section
+    document.getElementById(`${x}`).classList.add('active');
+}
+
+
 
 // ---------------------------------- Add secretariat ----------------------------------//
 
