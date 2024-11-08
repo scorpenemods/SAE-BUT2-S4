@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Europe/Paris');
 
 class Database
 {
@@ -153,6 +154,7 @@ class Database
             $stmt->bindParam(':receiver_id', $receiverId);
             $stmt->bindParam(':contenu', $message);
             $stmt->execute();
+
             $messageId = $this->connection->lastInsertId();
 
             // Si un fichier est associé, insérer dans Document et Document_Message
@@ -859,8 +861,9 @@ class Database
 
     public function addNotification(int $userId, string $content, string $type): bool
     {
-        $sql = "INSERT INTO Notification (user_id, content, type, 0, NOW()) 
-            VALUES (:user_id, :content, :type)";
+        date_default_timezone_set('Europe/Paris');
+        $sql = "INSERT INTO Notification (user_id, content, type, seen, created_at) 
+            VALUES (:user_id, :content, :type, 0 , NOW())";
 
         try {
             $stmt = $this->connection->prepare($sql);
