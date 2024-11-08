@@ -215,14 +215,17 @@ $notes = $database->getNotes($senderId);
                             echo '<th>Sujet</th>';
                             echo '<th>Appréciation</th>';
                             echo '<th>Note</th>';
+                            echo '<th>Coefficient</th>';
                         echo '</tr>';
                         foreach ($notes as $note):
                             echo '<tr>';
                                 echo '<td>' . htmlspecialchars($note->getSujet()); '</td>';
                                 echo '<td>' . htmlspecialchars($note->getAppreciation()); '</td>';
-                                echo '<td>' . htmlspecialchars($note->getNote()); '</td>';
+                                echo '<td>' . htmlspecialchars($note->getNote()) . " / 20"; '</td>';
+                                echo '<td>' . htmlspecialchars($note->getCoeff()); '</td>';
                             echo '</tr>';
                             endforeach;
+                            echo '<td class="test"></td>';
                             echo '<td class="test"></td>';
                             echo '<td class="test"></td>';
                             $add = [];
