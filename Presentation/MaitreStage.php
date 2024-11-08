@@ -124,15 +124,15 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
 </div>
 
 <!-- Section contenant les différents menus -->
-<section class="Menus">
+<section class="Menus" id="Menus">
     <nav>
-        <span onclick="window.location.href='MaitreStage.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>" id="content-0">Accueil</span>
-        <span onclick="window.location.href='MaitreStage.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1">Missions de stage</span>
-        <span onclick="window.location.href='MaitreStage.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Gestion Stagiaires</span>
-        <span onclick="window.location.href='MaitreStage.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Evaluation Stages</span>
-        <span onclick="window.location.href='MaitreStage.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Documents</span>
-        <span onclick="window.location.href='MaitreStage.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5">Messagerie</span>
-        <span onclick="window.location.href='MaitreStage.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>" id="content-6">Notes</span>
+        <span onclick="widget(0)" class="widget-button Current">Accueil</span>
+        <span onclick="widget(1)" class="widget-button">Mission de stage</span>
+        <span onclick="widget(2)" class="widget-button">Gestion Stagiaire</span>
+        <span onclick="widget(3)" class="widget-button">Evaluation Stages</span>
+        <span onclick="widget(4)" class="widget-button">Documents</span>
+        <span onclick="widget(5)" class="widget-button">Messagerie</span>
+        <span onclick="widget(6)" class="widget-button">Notes</span>
     </nav>
 
     <div class="Contenus">
