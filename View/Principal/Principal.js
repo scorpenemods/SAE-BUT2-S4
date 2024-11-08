@@ -625,29 +625,16 @@ function validateNotes() {
         validationMessage.textContent = 'Notes validées avec succès !';
         validationMessage.style.color = 'green';
     } else {
-        validationMessage.textContent = 'Veuillez remplir les champs avec des notes valides entre 0 et 20.';
+        validationMessage.textContent = 'Veuillez remplir tous les champs avec des notes valides entre 0 et 20.';
         validationMessage.style.color = 'red';
     }
 }
-document.addEventListener('DOMContentLoaded', function() {
-    // Vérifier si un étudiant est déjà sélectionné
-    const studentNameElement = document.getElementById('student-name');
-
-    if (!studentNameElement.textContent.trim()) {
-        // Si aucun étudiant n'est sélectionné, sélectionner le premier étudiant
-        const firstStudentElement = document.querySelector('.student');
-        if (firstStudentElement) {
-            selectStudent(firstStudentElement);
-        }
-    }
-});
-
 document.getElementById('messageForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevent the default form submission
 
     const formData = new FormData(this);
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'submit_notes.php', true);
+    xhr.open('POST', 'Professor.php', true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
@@ -662,3 +649,38 @@ document.getElementById('messageForm').addEventListener('submit', function(event
     };
     xhr.send(formData);
 });
+
+function submitNotes() {
+    const formData = new FormData();
+    const sujets = document.querySelectorAll('textarea[name="sujet[]"]');
+    const appreciations = document.querySelectorAll('textarea[name="appreciations[]"]');
+    const notes = document.querySelectorAll('input[name="note[]"]');
+    const coeffs = document.querySelectorAll('input[name="coeff[]"]');
+
+    // Ajoute les données des formulaires dans l'objet FormData
+    sujets.forEach((sujet, index) => {
+        formData.append(`sujet[${index}]`, sujet.value);
+        formData.append(`appreciations[${index}]`, appreciations[index].value);
+        formData.append(`note[${index}]`, notes[index].value);
+        formData.append(`coeff[${index}]`, coeffs[index].value);
+    });
+
+    // Envoie la requête via la méthode fetch
+    fetch('Professor.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Notes ajoutées avec succès !');
+            } else {
+                alert('Erreur : ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Une erreur est survenue lors de l\'envoi du formulaire.');
+            console.error('Erreur :', error);
+        });
+}
+

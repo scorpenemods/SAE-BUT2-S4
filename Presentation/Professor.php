@@ -78,6 +78,7 @@ if (isset($_POST['submit_notes'])) {
             // Appeler la fonction addNotes
             $database->addNotes($userId, $notesData, $pdo); // Passez l'ID de l'utilisateur, les notes et le PDO
             // Rediriger après l'ajout
+            header("Location: Professor.php");
             exit();
         } catch (PDOException $e) {
             echo "Erreur lors de l'ajout des notes : " . $e->getMessage();
@@ -312,7 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'mark_as_seen'
                 <div class="notes-buttons">
                     <button type ="button" class="mainbtn" onclick="enableNotes()" <?php echo !$hasStudents ? 'disabled' : ''; ?>>Ajouter les notes</button>
                     <button type="submit" name="submit_notes" class="mainbtn" onclick="validateNotes()" disabled id="validateBtn">Valider les notes</button>
-                    <button class="mainbtn" onclick="cancelNotes()"  id="cancelBtn">Annuler</button>
+                    <button type="button" class="mainbtn" onclick="cancelNotes()"  id="cancelBtn">Annuler</button>
                 </div>
             </form>
         </div>
