@@ -129,7 +129,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
         <span onclick="widget(0)" class="widget-button Current">Accueil</span>
         <span onclick="widget(1)" class="widget-button">Mission de stage</span>
         <span onclick="widget(2)" class="widget-button">Gestion Stagiaire</span>
-        <span onclick="widget(3)" class="widget-button">Evaluation Stages</span>
+        <span onclick="widget(3)" class="widget-button">Livret de Suivi</span>
         <span onclick="widget(4)" class="widget-button">Documents</span>
         <span onclick="widget(5)" class="widget-button">Messagerie</span>
         <span onclick="widget(6)" class="widget-button">Notes</span>
@@ -145,7 +145,11 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
         <!-- Contenu des autres sections -->
         <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">Missions de stage</div>
         <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">Contenu Gestion Stagiaires</div>
-        <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : 'Contenu'; ?>" id="content-3">Contenu Evaluation Stages</div>
+        <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : 'Contenu'; ?>" id="content-3">
+            <?php include_once("LivretSuivi.php");?>
+
+
+        </div>
         <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">Contenu Documents</div>
 
         <!-- Contenu de la Messagerie -->
