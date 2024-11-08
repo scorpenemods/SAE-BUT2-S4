@@ -49,6 +49,45 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
 
 // Récupération des contacts (utilisateurs du même groupe)
 $contacts = $database->getGroupContacts($userId);
+
+$database = Database::getInstance();
+$pdo = $database->getConnection();
+
+// Récupérer l'utilisateur connecté (vous avez déjà ce processus dans votre code)
+$person = unserialize($_SESSION['user']);
+$userId = $person->getUserId(); // Assurez-vous que vous avez l'ID de l'utilisateur connecté
+
+// Vérifier que le formulaire a été soumis
+if (isset($_POST['submit_notes'])) {
+    // Vérifiez que les données nécessaires existent
+    if (!empty($_POST['sujet']) && !empty($_POST['appreciations']) && !empty($_POST['note']) && !empty($_POST['coeff'])) {
+        // Récupérer les données du formulaire
+        $notesData = [];
+        foreach ($_POST['sujet'] as $index => $sujet) {
+            // Préparer chaque note à insérer dans la base de données
+            $notesData[] = [
+                'sujet' => $_POST['sujet'][$index],
+                'appreciation' => $_POST['appreciations'][$index],
+                'note' => $_POST['note'][$index],
+                'coeff' => $_POST['coeff'][$index],
+            ];
+        }
+
+        // Appeler la méthode addNotes pour insérer les notes dans la base de données
+        $database = Database::getInstance(); // Assurez-vous que vous utilisez votre instance de base de données
+        try {
+            // Appeler la fonction addNotes
+            $database->addNotes($userId, $notesData, $pdo); // Passez l'ID de l'utilisateur, les notes et le PDO
+            // Rediriger après l'ajout
+            exit();
+        } catch (PDOException $e) {
+            echo "Erreur lors de l'ajout des notes : " . $e->getMessage();
+        }
+    } else {
+        echo "Veuillez remplir tous les champs.";
+    }
+}
+
 ?>
 
 
@@ -175,45 +214,53 @@ $contacts = $database->getGroupContacts($userId);
         </div>
         <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">
             <h2 id="student-name"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></h2>
-            <div class="notes-container">
-                <table class="notes-table">
-                    <thead>
-                    <tr>
-                        <th>Sujet</th>
-                        <th>Appréciations</th>
-                        <th>Note /20</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
-                        <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
-                        <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                    </tr>
-                    <tr>
-                        <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
-                        <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
-                        <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                    </tr>
-                    <tr>
-                        <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
-                        <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
-                        <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                    </tr>
-                    <tr>
-                        <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
-                        <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
-                        <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div id="validationMessage" class="validation-message"></div>
-            </div>
-            <div class="notes-buttons">
-                <button class="mainbtn" onclick="enableNotes()">Ajouter les notes</button>
-                <button class="mainbtn" onclick="validateNotes()" disabled id="validateBtn">Valider les notes</button>
-                <button class="mainbtn" onclick="cancelNotes()" disabled id="cancelBtn">Annuler</button>
-            </div>
+            <form method="post" action="">
+                <div class="notes-container">
+                    <table class="notes-table">
+                        <thead>
+                        <tr>
+                            <th>Sujet</th>
+                            <th>Appréciations</th>
+                            <th>Note /20</th>
+                            <th>Coefficient</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
+                            <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
+                            <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                            <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
+                        </tr>
+                        <tr>
+                            <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
+                            <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
+                            <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                            <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
+                        </tr>
+                        <tr>
+                            <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
+                            <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
+                            <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                            <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
+                        </tr>
+                        <tr>
+                            <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
+                            <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
+                            <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                            <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div id="validationMessage" class="validation-message"></div>
+                </div>
+
+                <div class="notes-buttons">
+                    <button type ="button" class="mainbtn" onclick="enableNotes()">Ajouter les notes</button>
+                    <button type="submit" name="submit_notes" class="mainbtn" onclick="validateNotes()" disabled id="validateBtn">Valider les notes</button>
+                    <button class="mainbtn" onclick="cancelNotes()"  id="cancelBtn">Annuler</button>
+                </div>
+            </form>
         </div>
     </div>
 

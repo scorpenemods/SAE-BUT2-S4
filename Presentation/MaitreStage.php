@@ -210,6 +210,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
                     <th>Sujet</th>
                     <th>Appréciations</th>
                     <th>Note /20</th>
+                    <th>Coefficient</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -217,21 +218,25 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
                     <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
                     <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
                     <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                    <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
                 </tr>
                 <tr>
                     <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
                     <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
                     <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                    <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
                 </tr>
                 <tr>
                     <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
                     <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
                     <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                    <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
                 </tr>
                 <tr>
                     <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
                     <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
                     <td><input type="number" name="note[]" placeholder="Note" disabled></td>
+                    <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
                 </tr>
                 </tbody>
             </table>

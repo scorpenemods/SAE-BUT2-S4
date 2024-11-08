@@ -575,6 +575,8 @@ function cancelNotes() {
     });
 
     document.getElementById('validateBtn').setAttribute('disabled', '');
+    document.getElementById('cancelBtn').removeAttribute('disabled');
+
     document.getElementById('validationMessage').textContent = '';
 }
 
@@ -584,19 +586,23 @@ function validateNotes() {
     let valid = true;
 
     inputs.forEach(input => {
-        const value = parseFloat(input.value.trim());
-        if (isNaN(value) || value < 0 || value > 20) {
-            valid = false;
-            input.style.borderColor = 'red';
+        const value = input.value.trim();
+        if (value !== '') {
+            const numericValue = parseFloat(value);
+            if (isNaN(numericValue) || numericValue < 0 || numericValue > 20) {
+                valid = false;
+                input.style.borderColor = 'red';
+            } else {
+                input.style.borderColor = '';
+            }
         } else {
             input.style.borderColor = '';
         }
     });
 
     textareas.forEach(textarea => {
-        if (textarea.value.trim() === '') {
-            valid = false;
-            textarea.style.borderColor = 'red';
+        if (textarea.value.trim() !== '') {
+            textarea.style.borderColor = '';
         } else {
             textarea.style.borderColor = '';
         }
@@ -607,7 +613,7 @@ function validateNotes() {
         validationMessage.textContent = 'Notes validées avec succès !';
         validationMessage.style.color = 'green';
     } else {
-        validationMessage.textContent = 'Veuillez remplir tous les champs avec des notes entre 0 et 20.';
+        validationMessage.textContent = 'Veuillez remplir les champs avec des notes valides entre 0 et 20.';
         validationMessage.style.color = 'red';
     }
 }
@@ -622,4 +628,25 @@ document.addEventListener('DOMContentLoaded', function() {
             selectStudent(firstStudentElement);
         }
     }
+});
+
+document.getElementById('messageForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const formData = new FormData(this);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'submit_notes.php', true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                alert('Notes added successfully!');
+            } else {
+                alert('Error: ' + response.message);
+            }
+        } else {
+            alert('An error occurred while submitting the form.');
+        }
+    };
+    xhr.send(formData);
 });

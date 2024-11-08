@@ -617,6 +617,44 @@ class Database
         }
         return $students;
     }
+    // -------------------- Add Note in Database ------------------------------------------ //
+
+    function addNotes($userId, $notesData, $pdo)
+    {
+        try {
+            // Préparation de la requête d'insertion
+            $query = $pdo->prepare("INSERT INTO Note (sujet, appreciation, note, coeff, user_id)
+        VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
+
+
+            foreach ($notesData as $note) {
+                // Validation de la note (conversion en float)
+                $noteValue = $note['note'];
+                if ($noteValue === '' || !is_numeric($noteValue)) {
+                    continue; // Ignorer cette note si elle est invalide
+                } else {
+                    $noteValue = floatval($noteValue); // Convertir en float
+                }
+
+                // Validation de la coefficient (conversion en float)
+                $coeffValue = $note['coeff'];
+                if ($coeffValue === '' || !is_numeric($coeffValue)) {
+                    continue; // Ignorer ce coefficient s'il est invalide
+                } else {
+                    $coeffValue = floatval($coeffValue); // Convertir en float
+                }
+                $query->execute([
+                    ':sujet' => $note['sujet'],
+                    ':appreciation' => $note['appreciation'],
+                    ':note' => $noteValue,
+                    ':coeff' => $coeffValue,
+                    ':user_id' => $userId
+                ]);
+            }
+        } catch (PDOException $e) {
+            echo "Erreur : " . $e->getMessage();
+        }
+    }
 
     public function getProfessor(): array
     {
