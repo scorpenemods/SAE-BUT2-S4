@@ -1080,4 +1080,15 @@ section.responsive{
     transform: translateX(11%);
     transition: transform 0.3s ease;
 }
+section.Menus div.Contenus div.Contenu td.test{
+    border: transparent;
+
+}
+
+section.Menus div.Contenus div.Contenu p.noNotes{
+    display: flex;
+    justify-content: center;
+    margin: 1%;
+}
+
 

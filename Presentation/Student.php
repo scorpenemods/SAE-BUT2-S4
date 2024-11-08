@@ -41,6 +41,8 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
 $receiverId = 2; // À définir dynamiquement
 $messages = $database->getMessages($senderId, $receiverId);
 
+// Récupération des notes des élèves
+$notes = $database->getNotes($senderId);
 ?>
 
 <!DOCTYPE html>
@@ -203,18 +205,37 @@ $messages = $database->getMessages($senderId, $receiverId);
         <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
             <div class="notes-container">
                 <table class="notes-table">
-                    <tr class="lsttitlenotes">
-                        <th>Sujet</th>
-                        <th>Appréciation</th>
-                        <th>Note</th>
-                    </tr>
-                    <?php foreach ($students as $student): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($student->getPrenom()); ?></td>
-                        <td><?php echo htmlspecialchars($student->getPrenom()); ?></td>
-                        <td><?php echo htmlspecialchars($student->getPrenom()); ?></td>
-                    </tr>
-                    <?php endforeach; ?>
+                    <?php
+                    $noter = "";
+                    foreach ($notes as $note):
+                        $noter = $note->getNote();
+                    endforeach;
+                    if($noter != ""){
+                        echo '<tr class="lsttitlenotes">';
+                            echo '<th>Sujet</th>';
+                            echo '<th>Appréciation</th>';
+                            echo '<th>Note</th>';
+                        echo '</tr>';
+                        foreach ($notes as $note):
+                            echo '<tr>';
+                                echo '<td>' . htmlspecialchars($note->getSujet()); '</td>';
+                                echo '<td>' . htmlspecialchars($note->getAppreciation()); '</td>';
+                                echo '<td>' . htmlspecialchars($note->getNote()); '</td>';
+                            echo '</tr>';
+                            endforeach;
+                            echo '<td class="test"></td>';
+                            echo '<td class="test"></td>';
+                            $add = [];
+                            $coeff = [];
+                            foreach ($notes as $note) {
+                                array_push($add,$note->getNote()*$note->getCoeff());
+                                array_push($coeff, $note->getCoeff());
+                            } echo "<td>" . "Moyenne : " . array_sum($add)/array_sum($coeff) . "</td>";
+                    }
+                    else {
+                        echo '<p class="noNotes"> Aucune note disponible ! </p>';
+                    }
+                    ?>
                 </table>
             </div>
         </div>

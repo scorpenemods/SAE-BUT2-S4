@@ -735,6 +735,29 @@ class Database
         }
     }
 
+    public function getNotes($userId): array {
+        $sql = "SELECT Note.sujet, Note.appreciation, Note.note, Note.coeff
+                FROM Note
+                WHERE Note.user_id = :user_id";
 
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $notes = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            require_once "Note.php";
+            $notes[] = new Note(
+                $row['sujet'] ?? '',
+                $row['appreciation'] ?? '',
+                $row['note'] ??'',
+                $row['coeff'] ?? ''
+            );
+        }
+        return $notes;
+    }
 }
+
 ?>
+
+
+
