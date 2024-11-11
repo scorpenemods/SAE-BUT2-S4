@@ -8,4 +8,5 @@ const DB_USER = 'sae';
 const DB_PASSWORD = 'sae2024';
 
 
+const MAX_NOTIFICATIONS = 6;
 ?>

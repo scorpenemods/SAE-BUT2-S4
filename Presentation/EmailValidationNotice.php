@@ -55,6 +55,7 @@ function sendVerificationEmail($database, $userId, $email, $firstname) {
     return $emailSender->sendEmail($email, $firstname, $subject, $body, true);
 }
 
+
 // Gestion de la demande de ré-envoi du code de vérification
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['resend_code'])) {
     // Appelle la fonction d'envoi de l'email et affiche un message de succès ou d'erreur
@@ -175,7 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
 
         <!-- Formulaire pour renvoyer le code de vérification -->
         <form action="" method="POST">
-            <button type="submit" name="resend_code" class="btn">Renvoyer le code</button>
+            <button type="submit" name="resend_code" class="btn">Envoyer le code</button>
         </form>
 
         <hr>

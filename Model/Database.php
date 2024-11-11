@@ -22,7 +22,7 @@ class Database
             require_once __DIR__ . '/Config.php';
             $this->connection = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->connection->exec("SET time_zone = '+02:00'");
+            $this->connection->exec("SET time_zone = '+01:00'");
         } catch (PDOException $e) {
             echo "Connection error: " . $e->getMessage();
             exit;
@@ -295,7 +295,7 @@ class Database
         }
     }
 
-    public function approveUser($userId)
+    public function approveUser($userId): bool
     {
         $sql = "UPDATE User SET status_user = 1 WHERE id = :id";
         try {
@@ -797,36 +797,16 @@ class Database
     }
 
 
-    public function hasUnreadNotifications($userId): bool
-    {
-        $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id AND seen = 0";
-
-        try {
-            echo "User ID : $userId<br>";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->execute([':user_id' => $userId]);
-            $count = (int) $stmt->fetchColumn();
-            echo "Nombre de notifications non lues : $count<br>";
-            return $count > 0;
-        } catch (PDOException $e) {
-            echo "Erreur PDO : " . $e->getMessage();
-            return false;
-        }
-    }
-
-
     public function getUnreadNotificationCount($userId): int
     {
         $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id AND seen = 0";
-
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([':user_id' => $userId]);
-            $count = (int) $stmt->fetchColumn();
-            return $count; // Retourne le nombre de notifications non lues
+            return (int) $stmt->fetchColumn();
         } catch (PDOException $e) {
-            error_log("Erreur lors de la récupération du nombre de notifications non lues : " . $e->getMessage());
-            return 0; // Retourne 0 en cas d'erreur
+            error_log("Error fetching unread notifications count: " . $e->getMessage());
+            return 0;
         }
     }
 
@@ -836,16 +816,18 @@ class Database
 
         try {
             $stmt = $this->connection->prepare($sql);
-            $stmt->execute([':user_id' => $userId]);
-            return true;
+            $result = $stmt->execute([':user_id' => $userId]);
+            // Debugging: Check if any rows were updated
+            $affectedRows = $stmt->rowCount();
+            error_log("Notifications marked as seen: $affectedRows");
+            return $result;
         } catch (PDOException $e) {
-            error_log("Erreur lors de la mise à jour des notifications : " . $e->getMessage());
+            error_log("Error marking notifications as seen: " . $e->getMessage());
             return false;
         }
     }
 
-    // Example endpoint to get notifications
-    function getNotifications($userId): false|array
+    public function getNotifications($userId): array
     {
         $sql = "SELECT content, type, seen, created_at FROM Notification WHERE user_id = :user_id ORDER BY created_at DESC";
 
@@ -862,20 +844,65 @@ class Database
     public function addNotification(int $userId, string $content, string $type): bool
     {
         date_default_timezone_set('Europe/Paris');
-        $sql = "INSERT INTO Notification (user_id, content, type, seen, created_at) 
-            VALUES (:user_id, :content, :type, 0 , NOW())";
+        require_once __DIR__ . '/Config.php';
+        $sql = "INSERT INTO Notification (user_id, content, type, seen, created_at) VALUES (:user_id, :content, :type, 0, NOW())";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':content' => $content,
+            ':type' => $type
+        ]);
 
+        // Check the total number of notifications
+        $totalNotifications = $this->getTotalNotifications($userId);
+
+        if ($totalNotifications > MAX_NOTIFICATIONS) {
+            // Delete the oldest notification(s)
+            $this->deleteOldNotifications($userId, $totalNotifications - MAX_NOTIFICATIONS);
+        }
+
+        return true;
+    }
+
+    public function getTotalNotifications($userId): int
+    {
+        $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([':user_id' => $userId]);
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function deleteOldNotifications($userId, $numberToDelete)
+    {
+        date_default_timezone_set('Europe/Paris');
+        $sql = "DELETE FROM Notification WHERE user_id = :user_id ORDER BY created_at ASC LIMIT :limit";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $numberToDelete, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+
+    public function hasNewNotifications($userId): bool
+    {
+        $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id AND seen = 0";
         try {
             $stmt = $this->connection->prepare($sql);
-            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-            $stmt->bindParam(':content', $content, PDO::PARAM_STR);
-            $stmt->bindParam(':type', $type, PDO::PARAM_STR);
-
-            return $stmt->execute();
+            $stmt->execute([':user_id' => $userId]);
+            $count = $stmt->fetchColumn();
+            return $count > 0;
         } catch (PDOException $e) {
-            error_log("Erreur lors de l'ajout de la notification: " . $e->getMessage());
+            error_log("Error checking for new notifications: " . $e->getMessage());
             return false;
         }
+    }
+
+    public function emailExists($email): bool
+    {
+        $sql = "SELECT COUNT(*) FROM User WHERE email = :email";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([':email' => $email]);
+        return (bool) $stmt->fetchColumn();
     }
 
 

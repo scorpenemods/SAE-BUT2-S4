@@ -1,6 +1,5 @@
 <?php
-
-// Démarre la session au début du script
+// Démarre la session au début du script pour gérer les informations utilisateur
 session_start();
 
 // Inclure les fichiers nécessaires pour les classes Database et Person
@@ -9,53 +8,45 @@ require_once "../Model/Person.php";
 
 // Initialiser le nom d'utilisateur comme 'Guest' au cas où aucun utilisateur n'est connecté
 $userName = "Guest";
+
 // Définir le fuseau horaire sur Paris
 date_default_timezone_set('Europe/Paris');
 
-// Vérifie que l'utilisateur est connecté
+// Vérifie que l'utilisateur est connecté en regardant si une session utilisateur est active
 if (isset($_SESSION['user'])) {
-    $person = unserialize($_SESSION['user']);
-    if ($person instanceof Person) {
-        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
-        $senderId = $person->getUserId(); // Récupère l'ID de l'utilisateur
+    $person = unserialize($_SESSION['user']); // Récupère l'objet Person stocké en session
+    if ($person instanceof Person) { // Vérifie que l'objet est bien une instance de Person
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom()); // Définit le nom de l'utilisateur en utilisant son prénom et son nom
+        $senderId = $person->getUserId(); // Récupère l'ID de l'utilisateur pour les requêtes de base de données
     }
 } else {
+    // Redirige l'utilisateur vers la page de déconnexion s'il n'est pas connecté
     header("Location: Logout.php");
     exit();
 }
 
-// Instanciation de l'objet Database
+// Instanciation de l'objet Database (singleton pour une seule instance de connexion)
 $database = (Database::getInstance());
 
-// Récupération des préférences de l'utilisateur
+// Récupération des préférences de l'utilisateur depuis la base de données
 $preferences = $database->getUserPreferences($senderId);
-$darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? 'checked' : ''; // Gestion du mode sombre
+$darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? 'checked' : ''; // Vérifie si le mode sombre est activé dans les préférences utilisateur
 
+// Si une section est spécifiée dans l'URL, elle est stockée dans la session pour gérer l'affichage de la section active
 if (isset($_GET['section'])) {
     $_SESSION['active_section'] = $_GET['section'];
 }
-// Définit la section active par défaut (Accueil) si aucune n'est spécifiée
+
+// Définit la section active par défaut sur 'Accueil' si aucune section n'est spécifiée
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
 
-// Récupération des messages entre l'utilisateur actuel et le destinataire
-$receiverId = 2; // À définir dynamiquement
+// Récupération des messages entre l'utilisateur actuel et un destinataire (défini dynamiquement)
+$receiverId = 2; // À définir dynamiquement en fonction de l'interface utilisateur
 $messages = $database->getMessages($senderId, $receiverId);
 
-// Récupération des notes des élèves
+// Récupération des notes de l'utilisateur depuis la base de données
 $notes = $database->getNotes($senderId);
 
-$notifications = $database->getNotifications($senderId);
-
-// Vérifier si des notifications non lues sont présentes
-$notifPresent = $database->hasUnreadNotifications($senderId);
-
-// Obtenir le nombre de notifications non lues
-$unreadCount = $database->getUnreadNotificationCount($senderId);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'mark_as_seen') {
-    $result = $database->markAllNotificationsAsSeen($senderId);
-
-}
 ?>
 
 <!DOCTYPE html>
@@ -67,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'mark_as_seen'
     <link rel="stylesheet" href="/View/Principal/Principal.css">
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <script src="/View/Principal/Principal.js"></script>
+    <script src="/View/Principal/Notif.js"></script>
     <style>
         /* Mode sombre dynamiquement */
         body.dark-mode {
@@ -95,7 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'mark_as_seen'
         });
 
     </script>
-    <script src="/View/Principal/Notif.js"></script>
 </head>
 <body>
 <header class="navbar">
@@ -106,32 +97,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'mark_as_seen'
     <div class="navbar-right">
 
 
-        <div id="notification-icon" class="notification-icon" onclick="toggleNotificationPopup()">
-            <img src="../Resources/<?php echo $notifPresent ? 'notifpresent.png' : 'Notif.png'; ?>" alt="Notifications">
-            <?php if ($notifPresent): ?>
-                <span id="notification-count" class="notification-count"><?php echo $unreadCount; ?></span>
-            <?php endif; ?>
+        <div id="notification-icon" onclick="toggleNotificationPopup()">
+            <img id="notification-icon-img" src="../Resources/Notif.png" alt="Notifications">
+            <span id="notification-count" style="display: none;"></span>
         </div>
 
+        <!-- Notification Popup -->
         <div id="notification-popup" class="notification-popup">
             <div class="notification-popup-header">
                 <h3>Notifications</h3>
                 <button onclick="closeNotificationPopup()">X</button>
             </div>
             <div class="notification-popup-content">
-                <?php if (!empty($notifications)): ?>
-                    <ul class="notification-list">
-                        <?php foreach ($notifications as $notification): ?>
-                            <li class="notification-item <?php echo $notification['seen'] ? 'seen' : 'unseen'; ?>">
-                                <strong><?php echo htmlspecialchars($notification['type']); ?></strong>
-                                <p><?php echo htmlspecialchars($notification['content']); ?></p>
-                                <small><?php echo date('d/m/Y H:i', strtotime($notification['created_at'])); ?></small>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php else: ?>
-                    <p>Aucune notification.</p>
-                <?php endif; ?>
+                <ul id="notification-list">
+                    <!-- Notifications will be loaded here via JavaScript -->
+                </ul>
             </div>
         </div>
 

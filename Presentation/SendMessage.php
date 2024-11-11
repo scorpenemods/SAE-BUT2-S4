@@ -3,11 +3,6 @@ session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";
 
-// Activer l'affichage des erreurs (il nous supprimer plus tard en production)
-//ini_set('display_errors', 1);
-//ini_set('display_startup_errors', 1);
-//error_reporting(E_ALL);
-
 // Définir le fuseau horaire
 date_default_timezone_set('Europe/Paris');
 
@@ -18,6 +13,7 @@ header('Content-Type: application/json; charset=utf-8');
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
         $senderId = $person->getUserId(); // ID de l'utilisateur connecté
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Session invalide. Veuillez vous reconnecter.']);
@@ -98,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Envoi du message à la base de données et récupération de l'ID du message
     $messageId = $database->sendMessage($senderId, $receiverId, $message, $filePath, $fileName);
-    $notificationContent = "Vous avez reçu un nouveau message.";
+    $notificationContent = "Vous avez reçu un nouveau message de $userName";
     $database->addNotification($receiverId, $notificationContent, "new_message");
     if ($messageId) {
 

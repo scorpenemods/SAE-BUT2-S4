@@ -58,18 +58,6 @@ if (isset($_GET['section'])) {
 // Définit la section active par défaut (Accueil) si aucune n'est spécifiée
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
 
-$notifications = $database->getNotifications($senderId);
-
-// Vérifier si des notifications non lues sont présentes
-$notifPresent = $database->hasUnreadNotifications($senderId);
-
-// Obtenir le nombre de notifications non lues
-$unreadCount = $database->getUnreadNotificationCount($senderId);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'mark_as_seen') {
-    $result = $database->markAllNotificationsAsSeen($senderId);
-
-}
 
 ?>
 
@@ -79,9 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'mark_as_seen'
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage - Maitre de Stage</title>
-    <!-- Inclusion du fichier CSS pour la mise en page -->
     <link rel="stylesheet" href="../View/Principal/Principal.css">
-    <!-- Inclusion du fichier JS pour les interactions -->
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <script src="/View/Principal/Notif.js"></script>
@@ -97,32 +83,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'mark_as_seen'
     <div class="navbar-right">
 
 
-        <div id="notification-icon" class="notification-icon" onclick="toggleNotificationPopup()">
-            <img src="../Resources/<?php echo $notifPresent ? 'notifpresent.png' : 'Notif.png'; ?>" alt="Notifications">
-            <?php if ($notifPresent): ?>
-                <span id="notification-count" class="notification-count"><?php echo $unreadCount; ?></span>
-            <?php endif; ?>
+        <div id="notification-icon" onclick="toggleNotificationPopup()">
+            <img id="notification-icon-img" src="../Resources/Notif.png" alt="Notifications">
+            <span id="notification-count" style="display: none;"></span>
         </div>
 
+        <!-- Notification Popup -->
         <div id="notification-popup" class="notification-popup">
             <div class="notification-popup-header">
                 <h3>Notifications</h3>
                 <button onclick="closeNotificationPopup()">X</button>
             </div>
             <div class="notification-popup-content">
-                <?php if (!empty($notifications)): ?>
-                    <ul class="notification-list">
-                        <?php foreach ($notifications as $notification): ?>
-                            <li class="notification-item <?php echo $notification['seen'] ? 'seen' : 'unseen'; ?>">
-                                <strong><?php echo htmlspecialchars($notification['type']); ?></strong>
-                                <p><?php echo htmlspecialchars($notification['content']); ?></p>
-                                <small><?php echo date('d/m/Y H:i', strtotime($notification['created_at'])); ?></small>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php else: ?>
-                    <p>Aucune notification.</p>
-                <?php endif; ?>
+                <ul id="notification-list">
+                    <!-- Notifications will be loaded here via JavaScript -->
+                </ul>
             </div>
         </div>
 
