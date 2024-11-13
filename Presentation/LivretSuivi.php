@@ -1,10 +1,11 @@
 <?php
-
+$etudiant='Lucie';
+$professeur='Julien';
+$MDS='Marie';
 ?>
 
 
 <body>
-<h3>Livret de suivi de</h3><br>
 <div class="livret-container">
     <aside class="livretbar">
         <span class="vignette" onclick="showContent(0)">1ère rencontre</span><br>
@@ -14,11 +15,28 @@
     </aside>
 
     <div class="content-livret">
-        <h3>Stage suivi par </h3><br>
 
         <div class="livret-header">
-            <h3>Entreprise </h3>
-        </div><br>
+            <h3>Participants </h3>
+        </div>
+        <div style="display: flex; gap: 20px;">
+            <div class="participants">
+                <h3>Etudiant :</h3>
+                <p><?php echo $etudiant; ?></p>
+            </div>
+
+            <div class="participants">
+                <h3>Professeur :</h3>
+                <p><?php echo $professeur; ?></p>
+            </div>
+
+            <div class="participants">
+                <h3>Maitre de stage :</h3>
+                <p><?php echo $MDS; ?></p>
+            </div>
+        </div>
+
+
 
 
 

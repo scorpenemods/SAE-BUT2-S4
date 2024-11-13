@@ -767,6 +767,11 @@ body.dark-mode .vignette{
     display: block;
 }
 
+.participants {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
 /****************************  DARK MODE MESSAGES  *******************************************************/
 
 body.dark-mode .messenger {
