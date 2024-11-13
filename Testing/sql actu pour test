@@ -1,0 +1,223 @@
+create table Convention
+(
+	id int auto_increment
+		primary key,
+	convention varchar(256) not null
+);
+
+create table DATABASECHANGELOG
+(
+	ID varchar(255) not null,
+	AUTHOR varchar(255) not null,
+	FILENAME varchar(255) not null,
+	DATEEXECUTED datetime not null,
+	ORDEREXECUTED int not null,
+	EXECTYPE varchar(10) not null,
+	MD5SUM varchar(35) null,
+	DESCRIPTION varchar(255) null,
+	COMMENTS varchar(255) null,
+	TAG varchar(255) null,
+	LIQUIBASE varchar(20) null,
+	CONTEXTS varchar(255) null,
+	LABELS varchar(255) null,
+	DEPLOYMENT_ID varchar(10) null
+);
+
+create table DATABASECHANGELOGLOCK
+(
+	ID int not null,
+	LOCKED tinyint(1) not null,
+	LOCKGRANTED datetime null,
+	LOCKEDBY varchar(255) null,
+	primary key (ID)
+);
+
+create table Document
+(
+	id int auto_increment
+		primary key,
+	filepath varchar(256) not null
+);
+
+create table User
+(
+	id int auto_increment
+		primary key,
+	nom text not null,
+	prenom text not null,
+	email varchar(100) not null,
+	telephone varchar(10) null,
+	role tinyint not null,
+	activite text not null,
+	valid_email tinyint(1) default 0 not null,
+	status_user tinyint(1) default 0 not null,
+	last_connexion datetime null,
+	account_creation datetime null,
+	constraint email
+		unique (email),
+	constraint unique_email
+		unique (email)
+);
+
+create table Groupe
+(
+	id int auto_increment,
+	user_id int not null,
+	conv_id int null,
+	primary key (id, user_id),
+	constraint fk_convention
+		foreign key (conv_id) references Convention (id)
+			on delete set null,
+	constraint fk_user
+		foreign key (user_id) references User (id)
+			on delete cascade
+);
+
+create table LivretSuivi
+(
+	id int auto_increment
+		primary key,
+	user_id int not null,
+	date date not null,
+	description text not null,
+	status varchar(50) default 'En cours' not null,
+	feedback text null,
+	constraint fk_user_id_livret
+		foreign key (user_id) references User (id)
+			on delete cascade
+);
+
+create table Logs
+(
+	id int auto_increment
+		primary key,
+	user_id int null,
+	type enum('INFO', 'WARNING', 'ERROR', 'ACTION') not null,
+	description text null,
+	date datetime null,
+	constraint fk_user_logs
+		foreign key (user_id) references User (id)
+			on delete cascade
+);
+
+create table Message
+(
+	id int auto_increment
+		primary key,
+	sender_id int not null,
+	receiver_id int not null,
+	contenu text not null,
+	timestamp datetime not null,
+	`read` tinyint(1) default 0 not null,
+	constraint fk_receiver_message
+		foreign key (receiver_id) references User (id)
+			on delete cascade,
+	constraint fk_sender_message
+		foreign key (sender_id) references User (id)
+			on delete cascade
+);
+
+create table Document_Message
+(
+	document_id int not null,
+	message_id int not null,
+	primary key (document_id, message_id),
+	constraint fk_document_document_message
+		foreign key (document_id) references Document (id)
+			on delete cascade,
+	constraint fk_message_document_message
+		foreign key (message_id) references Message (id)
+			on delete cascade
+);
+
+create table MessageGroupe
+(
+	id int auto_increment
+		primary key,
+	groupe_id int not null,
+	sender_id int not null,
+	contenu text not null,
+	timestamp datetime default current_timestamp() null,
+	is_read tinyint(1) default 0 not null,
+	constraint fk_groupe_id
+		foreign key (groupe_id) references Groupe (id)
+			on delete cascade,
+	constraint fk_sender_id
+		foreign key (sender_id) references User (id)
+			on delete cascade
+);
+
+create table Note
+(
+	id int auto_increment
+		primary key,
+	sujet text not null,
+	appreciation text not null,
+	note float null,
+	coeff float null,
+	user_id int not null,
+	constraint fk_user_id_note
+		foreign key (user_id) references User (id)
+			on delete cascade
+);
+
+create table Notification
+(
+	id int auto_increment
+		primary key,
+	user_id int not null,
+	content text not null,
+	type varchar(50) not null,
+	seen tinyint(1) default 0 not null,
+	created_at timestamp default current_timestamp() null,
+	constraint fk_user_id_notif
+		foreign key (user_id) references User (id)
+			on delete cascade
+);
+
+create table Password
+(
+	id int auto_increment
+		primary key,
+	user_id int not null,
+	password_hash varchar(255) not null,
+	actif tinyint(1) not null,
+	constraint fk_user_password
+		foreign key (user_id) references User (id)
+			on delete cascade
+);
+
+create table Preference
+(
+	notification tinyint(1) not null,
+	a2f tinyint(1) not null,
+	darkmode tinyint(1) not null,
+	user_id int not null,
+	primary key (user_id),
+	constraint fk_user_preference
+		foreign key (user_id) references User (id)
+			on delete cascade
+);
+
+create table Reset_Password
+(
+	verification_code varchar(10) not null,
+	expires_at datetime not null,
+	user_id int not null,
+	primary key (user_id),
+	constraint fk_user_reset_password
+		foreign key (user_id) references User (id)
+			on delete cascade
+);
+
+create table Verification_Code
+(
+	user_id int not null,
+	code varchar(6) not null,
+	expires_at datetime not null,
+	primary key (user_id),
+	constraint fk_user_verification_code
+		foreign key (user_id) references User (id)
+			on delete cascade
+);
+
