@@ -55,15 +55,20 @@ $pdo = $database->getConnection();
 
 // Récupérer l'utilisateur connecté (vous avez déjà ce processus dans votre code)
 $person = unserialize($_SESSION['user']);
-$userId = $person->getUserId(); // Assurez-vous que vous avez l'ID de l'utilisateur connecté
+$userId = $person->getUserId();
 
-// Vérifier que le formulaire a été soumis
+
 if (isset($_POST['submit_notes'])) {
-    // Vérifiez que les données nécessaires existent
-    if (!empty($_POST['sujet']) && !empty($_POST['appreciations']) && !empty($_POST['note']) && !empty($_POST['coeff'])) {
-        // Récupérer les données du formulaire
+    if (isset($_POST['sujet'], $_POST['appreciations'], $_POST['note'], $_POST['coeff'])) {
+        // Vérification que tous les champs sont remplis
+        $allFieldsFilled = true;
         $notesData = [];
+
         foreach ($_POST['sujet'] as $index => $sujet) {
+            if (empty($_POST['sujet'][$index]) || empty($_POST['appreciations'][$index]) || empty($_POST['note'][$index]) || empty($_POST['coeff'][$index])) {
+                $allFieldsFilled = false;
+                break;
+            }
             // Préparer chaque note à insérer dans la base de données
             $notesData[] = [
                 'sujet' => $_POST['sujet'][$index],
@@ -88,6 +93,44 @@ if (isset($_POST['submit_notes'])) {
     }
 }
 
+if (isset($_POST['saveNotes'])) {
+    if (isset($_POST['sujet'], $_POST['appreciations'], $_POST['note'], $_POST['coeff'])) {
+        // Vérification que tous les champs sont remplis
+        $allFieldsFilled = true;
+        $notesData = [];
+
+        foreach ($_POST['sujet'] as $index => $sujet) {
+            if (empty($_POST['sujet'][$index]) || empty($_POST['appreciations'][$index]) || empty($_POST['note'][$index]) || empty($_POST['coeff'][$index])) {
+                $allFieldsFilled = false;
+                break;
+            }
+            // Préparer chaque note à insérer dans la base de données
+            $notesData[] = [
+                'sujet' => $_POST['sujet'][$index],
+                'appreciation' => $_POST['appreciations'][$index],
+                'note' => $_POST['note'][$index],
+                'coeff' => $_POST['coeff'][$index],
+            ];
+        }
+
+        if ($allFieldsFilled) {
+            try {
+                $database->updateNotes($userId, $notesData, $pdo);
+                // Rediriger après l'ajout
+                header("Location: Professor.php");
+                exit();
+            } catch (PDOException $e) {
+                echo "Erreur lors de l'ajout des notes : " . $e->getMessage();
+            }
+        } else {
+            echo "Veuillez remplir tous les champs.";
+        }
+    } else {
+        echo "Erreur lors de la soumission du formulaire. Veuillez réessayer.";
+    }
+}
+
+
 if (!empty($students)) {
     $student = $students[0];
 } else {
@@ -100,6 +143,7 @@ if ($student !== null) {
 }
 
 $hasStudents = !empty($students);
+$notes = $database->getNotes($userId);
 
 ?>
 
@@ -247,7 +291,7 @@ $hasStudents = !empty($students);
             <h2 id="student-name"><?php echo $studentName; ?></h2>
             <form method="post" action="">
                 <div class="notes-container">
-                    <table class="notes-table">
+                    <table id="notesTable" class="notes-table">
                         <thead>
                         <tr>
                             <th>Sujet</th>
@@ -257,38 +301,24 @@ $hasStudents = !empty($students);
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
-                            <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
-                            <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                            <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
-                        </tr>
-                        <tr>
-                            <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
-                            <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
-                            <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                            <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
-                        </tr>
-                        <tr>
-                            <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
-                            <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
-                            <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                            <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
-                        </tr>
-                        <tr>
-                            <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
-                            <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
-                            <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                            <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
-                        </tr>
+                        <?php foreach ($notes as $note): ?>
+                            <tr>
+                                <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)"><?php echo htmlspecialchars($note->getSujet()); ?></textarea></td>
+                                <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled><?php echo htmlspecialchars($note->getAppreciation()); ?></textarea></td>
+                                <td><input type="number" name="note[]" placeholder="Note" value="<?php echo htmlspecialchars($note->getNote()); ?>" disabled></td>
+                                <td><input type="number" name="coeff[]" placeholder="Coefficient" value="<?php echo htmlspecialchars($note->getCoeff()); ?>" disabled></td>
+                            </tr>
+                        <?php endforeach; ?>
                         </tbody>
                     </table>
                     <div id="validationMessage" class="validation-message"></div>
                 </div>
 
                 <div class="notes-buttons">
-                    <button type ="button" class="mainbtn" onclick="enableNotes()" <?php echo !$hasStudents ? 'disabled' : ''; ?>>Ajouter les notes</button>
-                    <button type="submit" name="submit_notes" class="mainbtn" onclick="validateNotes()" disabled id="validateBtn">Valider les notes</button>
+                    <button type="button"  id="addNoteButton" class="mainbtn" onclick="addNoteRow()"   <?php echo !$hasStudents ? 'disabled' : ''; ?>>Ajouter une note</button>
+                    <button type="button" id="editNotesButton" class="mainbtn" onclick="enableNotes()">Modifier les notes</button>
+                    <button type="submit" name="saveNotes" class="mainbtn" onclick="saveNote()" >Sauvegarder les notes</button>
+                    <button type="submit" name="submit_notes" class="mainbtn" onclick="validateNotes()"  id="validateBtn">Valider les notes</button>
                     <button type="button" class="mainbtn" onclick="cancelNotes()"  id="cancelBtn">Annuler</button>
                 </div>
             </form>

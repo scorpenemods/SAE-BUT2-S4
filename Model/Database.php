@@ -658,6 +658,29 @@ class Database
         }
     }
 
+    public function updateNotes($userId, $notesData, $pdo) {
+        try {
+            $pdo->beginTransaction();
+            foreach ($notesData as $note) {
+                $stmt = $pdo->prepare("UPDATE Note SET sujet = :sujet, appreciation = :appreciation, note = :note, coeff = :coeff WHERE user_id = :user_id");
+                $stmt->execute([
+                    ':sujet' => $note['sujet'],
+                    ':appreciation' => $note['appreciation'],
+                    ':note' => $note['note'],
+                    ':coeff' => $note['coeff'],
+                    ':user_id' => $userId
+                ]);
+            }
+            $pdo->commit();
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
+
+
+    // ------------------------------------------------------------------------------------------------------- //
+
     public function getProfessor(): array
     {
         $query = "SELECT DISTINCT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id from User

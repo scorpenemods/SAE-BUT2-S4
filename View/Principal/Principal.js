@@ -557,13 +557,22 @@ window.onbeforeunload = function() {
 
 // -----------------------------------Notes--------------------------------------------------//
 function enableNotes() {
-    const inputs = document.querySelectorAll('.notes-table input ');
+    const inputs = document.querySelectorAll('.notes-table input');
     const textareas = document.querySelectorAll('.notes-table textarea');
     inputs.forEach(input => input.removeAttribute('disabled'));
     textareas.forEach(textarea => textarea.removeAttribute('disabled'));
 
     document.getElementById('validateBtn').removeAttribute('disabled');
+    document.getElementById('cancelBtn').removeAttribute('disabled');
 }
+
+document.getElementById('editNotesButton').addEventListener('click', enableNotes);
+document.getElementById('validateBtn').addEventListener('click', function() {
+    validateNotes();
+    document.querySelector('form').submit();
+});
+
+
 
 function autoExpand(element) {
     element.style.height = 'inherit';
@@ -587,10 +596,13 @@ function cancelNotes() {
     });
 
     document.getElementById('validateBtn').setAttribute('disabled', '');
-    document.getElementById('cancelBtn').removeAttribute('disabled');
+    document.getElementById('cancelBtn').setAttribute('disabled', '');
 
     document.getElementById('validationMessage').textContent = '';
 }
+
+document.getElementById('editNotesButton').addEventListener('click', enableNotes);
+document.getElementById('cancelBtn').addEventListener('click', cancelNotes);
 
 function validateNotes() {
     const inputs = document.querySelectorAll('.notes-table input');
@@ -650,37 +662,82 @@ document.getElementById('messageForm').addEventListener('submit', function(event
     xhr.send(formData);
 });
 
-function submitNotes() {
-    const formData = new FormData();
-    const sujets = document.querySelectorAll('textarea[name="sujet[]"]');
-    const appreciations = document.querySelectorAll('textarea[name="appreciations[]"]');
-    const notes = document.querySelectorAll('input[name="note[]"]');
-    const coeffs = document.querySelectorAll('input[name="coeff[]"]');
+function addNoteRow() {
+    const table = document.getElementById('notesTable').getElementsByTagName('tbody')[0];
+    const newRow = table.insertRow();
 
-    // Ajoute les données des formulaires dans l'objet FormData
-    sujets.forEach((sujet, index) => {
-        formData.append(`sujet[${index}]`, sujet.value);
-        formData.append(`appreciations[${index}]`, appreciations[index].value);
-        formData.append(`note[${index}]`, notes[index].value);
-        formData.append(`coeff[${index}]`, coeffs[index].value);
+
+    const sujetCell = newRow.insertCell(0);
+    const apreciationCell = newRow.insertCell(1);
+    const noteCell = newRow.insertCell(2);
+    const coeffCell = newRow.insertCell(3);
+
+
+    sujetCell.innerHTML = '<textarea name="sujet[]" rows="">';
+    apreciationCell.innerHTML = '<textarea name="appreciations[]" rows="0">';
+    noteCell.innerHTML = '<input type="number" name="note[]" required>';
+    coeffCell.innerHTML = '<input type="number" name="coeff[]" required>';
+}
+
+
+function saveNote() {
+    const inputs = document.querySelectorAll('.notes-table input');
+    const textareas = document.querySelectorAll('.notes-table textarea');
+    let valid = true;
+
+    inputs.forEach(input => {
+        const value = input.value.trim();
+        if (value !== '') {
+            const numericValue = parseFloat(value);
+            if (isNaN(numericValue) || numericValue < 0 || numericValue > 20) {
+                valid = false;
+                input.style.borderColor = 'red';
+            } else {
+                input.style.borderColor = '';
+            }
+        } else {
+            input.style.borderColor = '';
+        }
     });
 
-    // Envoie la requête via la méthode fetch
-    fetch('Professor.php', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Notes ajoutées avec succès !');
+    textareas.forEach(textarea => {
+        if (textarea.value.trim() !== '') {
+            textarea.style.borderColor = '';
+        } else {
+            textarea.style.borderColor = '';
+        }
+    });
+
+    const validationMessage = document.getElementById('validationMessage');
+    if (valid) {
+        validationMessage.textContent = 'Notes validées avec succès !';
+        validationMessage.style.color = 'green';
+    } else {
+        validationMessage.textContent = 'Veuillez remplir tous les champs avec des notes valides entre 0 et 20.';
+        validationMessage.style.color = 'red';
+    }
+
+document.getElementById('messageForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const formData = new FormData(this);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'Professor.php', true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                alert('Notes added successfully!');
             } else {
-                alert('Erreur : ' + data.message);
+                alert('Error: ' + response.message);
             }
-        })
-        .catch(error => {
-            alert('Une erreur est survenue lors de l\'envoi du formulaire.');
-            console.error('Erreur :', error);
-        });
-}
+        } else {
+            alert('An error occurred while submitting the form.');
+        }
+    };
+    xhr.send(formData);
+});
+    }
+
+
 
