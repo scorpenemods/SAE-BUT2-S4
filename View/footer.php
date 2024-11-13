@@ -13,7 +13,7 @@
                     <a href="/conditions-utilisation">Conditions d'utilisation</a>
                 </nav>
                 <div class="logo-container">
-                    <img src="/Ressources/uphf.png" alt="Université Polytechnique Logo" width="120" height="60" />
+                    <img src="../Ressources/uphf.png" alt="Université Polytechnique Logo" width="120" height="60" />
                 </div>
             </div>
             <div class="copyright">

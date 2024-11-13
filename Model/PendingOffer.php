@@ -1,7 +1,7 @@
 <?php
 
-require dirname(__FILE__) . '/../presenter/database.php';
-require dirname(__FILE__) . '/../models/Offer.php';
+require dirname(__FILE__) . '/../Presentation/database.php';
+require dirname(__FILE__) . '/../Model/Offer.php';
 
 //Class to manage pending offers
 class PendingOffer extends Offer

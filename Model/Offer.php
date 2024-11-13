@@ -1,6 +1,6 @@
 <?php
 
-require dirname(__FILE__) . '/../presenter/database.php';
+require dirname(__FILE__) . '/../Presentation/database.php';
 
 //Class to manage offers
 class Offer {
