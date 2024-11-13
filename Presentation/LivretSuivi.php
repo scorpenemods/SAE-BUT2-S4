@@ -26,6 +26,7 @@ Description : fezrgzgfiqfhuHTY";
         <span class="vignette" onclick="showContent(1)">2ème rencontre</span><br>
         <span class="vignette" onclick="showContent(2)">3ème rencontre</span><br>
         <span class="vignette" onclick="showContent(3)">Dépôt du mémoire ou rapport</span><br>
+        <button>+ Nouvelle rencontre</button>
     </aside>
 
 
@@ -62,7 +63,17 @@ Description : fezrgzgfiqfhuHTY";
                 <h3>1ère rencontre</h3>
             </div>
 
-            <p class="participants">Content for the first meeting.</p>
+            <p class="participants">Date de rencontre : <label style="color: red">*</label> <br>
+
+                <input type="date" name="meeting"/><br><br><br>
+
+
+                Lieu de la rencontre : <label style="color: red">*</label> <br>
+
+                <input type="radio"><label> En entreprise</label> <br>
+                <input type="radio"><label> Par téléphone</label> <br>
+                <input type="radio"><label> En visio</label> <br>
+                <input type="radio"><label> Autre</label> <input type="text"> <br><br></p>
         </div>
 
         <div class="content-section" id="1">
@@ -71,7 +82,17 @@ Description : fezrgzgfiqfhuHTY";
                 <h3>2ème rencontre</h3>
             </div>
 
-            <p class="participants">Content for the second meeting.</p>
+            <p class="participants">Date de rencontre : <label style="color: red">*</label> <br>
+
+                <input type="date" name="meeting"/><br><br><br>
+
+
+                Lieu de la rencontre : <label style="color: red">*</label> <br>
+
+                <input type="radio"><label> En entreprise</label> <br>
+                <input type="radio"><label> Par téléphone</label> <br>
+                <input type="radio"><label> En visio</label> <br>
+                <input type="radio"><label> Autre</label> <input type="text"> <br><br></p>
         </div>
 
         <div class="content-section" id="2">
@@ -80,7 +101,17 @@ Description : fezrgzgfiqfhuHTY";
                 <h3>3ème rencontre</h3>
             </div>
 
-            <p class="participants">Content for the third meeting.</p>
+            <p class="participants">Date de rencontre : <label style="color: red">*</label> <br>
+
+                <input type="date" name="meeting"/> <br><br><br>
+
+
+                Lieu de la rencontre : <label style="color: red">*</label> <br>
+
+                <input type="radio"><label> En entreprise</label> <br>
+                <input type="radio"><label> Par téléphone</label> <br>
+                <input type="radio"><label> En visio</label> <br>
+                <input type="radio"><label> Autre</label> <input type="text"> <br><br></p>
         </div>
 
         <div class="content-section" id="3">
