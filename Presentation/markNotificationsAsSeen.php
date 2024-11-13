@@ -2,6 +2,7 @@
 // Démarre la session au début du script pour accéder aux variables de session
 session_start();
 
+
 // Inclut les fichiers nécessaires, notamment la classe Database pour la gestion de la base de données
 require_once "../Model/Database.php";
 
@@ -28,4 +29,4 @@ if (isset($_SESSION['user'])) {
     // Si l'utilisateur n'est pas connecté, renvoie un message d'échec
     echo json_encode(['success' => false]);
 }
-?>
+
