@@ -743,13 +743,13 @@ body.dark-mode .sidebar {
 
 .content-section {
     display: none;
-    padding: 20px;
+    margin-top: 30px;
 }
 
 .livret-header {
     background-color: #3498db;
     color: white;
-    padding: 15px;
+    padding: 10px;
     font-size: 1.5em;
     border-radius: 8px 8px 0 0;
 }
@@ -768,7 +768,7 @@ body.dark-mode .vignette{
 }
 
 .participants {
-    padding: 10px;
+    padding: 30px;
     border: 1px solid #ccc;
 }
 
