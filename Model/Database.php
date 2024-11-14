@@ -668,6 +668,18 @@ class Database
             $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
             $stmt->execute();
 
+            // Delete entries in Document_Message related to the group's messages
+            $stmt = $this->connection->prepare("
+            DELETE dm FROM Document_Message dm
+            JOIN MessageGroupe mg ON dm.message_id = mg.id
+            WHERE mg.groupe_id = :group_id
+        ");
+            $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Optionally delete documents if they are not linked to other messages
+            // (This requires additional logic to check if the document is linked elsewhere)
+
             // Delete group members in Groupe
             $stmt = $this->connection->prepare("DELETE FROM Groupe WHERE conv_id = :group_id");
             $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
@@ -720,6 +732,22 @@ class Database
         } else {
             return false;
         }
+    }
+
+    public function getGroupMessagesSince($groupId, $lastTimestamp) {
+        $sql = "SELECT MessageGroupe.*, Document.filepath, User.prenom, User.nom
+            FROM MessageGroupe
+            LEFT JOIN Document_Message ON MessageGroupe.id = Document_Message.message_id
+            LEFT JOIN Document ON Document_Message.document_id = Document.id
+            JOIN User ON MessageGroupe.sender_id = User.id
+            WHERE MessageGroupe.groupe_id = :group_id
+            AND MessageGroupe.timestamp > :last_timestamp
+            ORDER BY MessageGroupe.timestamp ASC";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+        $stmt->bindParam(':last_timestamp', $lastTimestamp);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // -------------------- Student list in professor home ------------------------------------------ //
@@ -1098,7 +1126,6 @@ class Database
 
 }
 
-?>
 
 
 

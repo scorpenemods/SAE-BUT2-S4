@@ -136,3 +136,53 @@ function formatTimestamp(timestamp) {
     // Implement your timestamp formatting logic here
     return timestamp; // Placeholder
 }
+
+// Function to start long polling
+function startLongPolling() {
+    if (!window.currentGroupId) return;
+
+    let lastTimestamp = window.lastMessageTimestamp || '';
+
+    function poll() {
+        fetch(`GetNewGroupMessages.php?group_id=${window.currentGroupId}&last_timestamp=${encodeURIComponent(lastTimestamp)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success' && data.messages.length > 0) {
+                    data.messages.forEach(msg => {
+                        const senderId = msg.sender_id;
+                        const senderName = msg.sender_name;
+                        const messageContent = msg.contenu;
+                        const filePath = msg.filepath ? msg.filepath : null;
+                        const timestamp = msg.timestamp;
+                        const messageId = msg.id;
+
+                        // Update last message timestamp
+                        window.lastMessageTimestamp = timestamp;
+
+                        // Determine message type
+                        const messageType = (senderId == window.currentUserId) ? 'self' : 'other';
+
+                        displayGroupMessage(
+                            messageContent,
+                            filePath,
+                            messageType,
+                            timestamp,
+                            messageId,
+                            senderName
+                        );
+                    });
+                }
+
+                // Continue polling immediately to check for new messages
+                poll();
+            })
+            .catch(error => {
+                console.error('Error in long polling:', error);
+                // Retry after a delay if there is an error
+                setTimeout(poll, 5000);
+            });
+    }
+
+    // Start polling
+    poll();
+}

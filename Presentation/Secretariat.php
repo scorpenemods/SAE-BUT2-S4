@@ -149,6 +149,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
     <!-- Lien vers le script JavaScript principal -->
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
+    <link rel="stylesheet" href="../View/Principal/Modals.css">
     <script src="/View/Principal/Notif.js"></script>
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
@@ -443,18 +444,22 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <div class="group-list">
                 <h3>Groupes existants</h3>
                 <?php if (!empty($groupsWithMembers)): ?>
-                    <ul>
+                    <ul class="group-list-ul">
                         <?php foreach ($groupsWithMembers as $group): ?>
-                            <li>
-                                <strong><?php echo htmlspecialchars($group['group_name']); ?></strong>
-                                <ul>
+                            <li class="group-item">
+                                <div class="group-header">
+                                    <strong><?php echo htmlspecialchars($group['group_name']); ?></strong>
+                                    <!-- Buttons to modify or delete the group -->
+                                    <div class="group-actions">
+                                        <button onclick="openEditGroupModal(<?php echo $group['group_id']; ?>)">Modifier</button>
+                                        <button onclick="deleteGroup(<?php echo $group['group_id']; ?>)">Supprimer</button>
+                                    </div>
+                                </div>
+                                <ul class="member-list">
                                     <?php foreach ($group['members'] as $member): ?>
                                         <li><?php echo htmlspecialchars($member['first_name'] . ' ' . $member['last_name']); ?></li>
                                     <?php endforeach; ?>
                                 </ul>
-                                <!-- Buttons to modify or delete the group -->
-                                <button onclick="openEditGroupModal(<?php echo $group['group_id']; ?>)">Modifier</button>
-                                <button onclick="deleteGroup(<?php echo $group['group_id']; ?>)">Supprimer</button>
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -471,18 +476,20 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
                 <div class="modal-content">
                     <h2>Créer un nouveau groupe</h2>
 
-                    <!-- Formulaire pour la création du groupe -->
+                    <!-- Form for creating the group -->
                     <form id="createGroupForm" method="POST" action="#">
-                        <!-- Sélection de l'étudiant -->
-                        <label for="student-select">Étudiant :</label>
-                        <select id="student-select" name="student_id" required>
-                            <option value="">Sélectionnez un étudiant</option>
+                        <!-- Hidden input to identify the form -->
+                        <input type="hidden" name="create_group" value="1">
+
+                        <!-- Selection of students -->
+                        <label for="student-select">Étudiant(s):</label>
+                        <select id="student-select" name="student_ids[]" multiple required>
                             <?php foreach ($students as $student): ?>
                                 <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
                             <?php endforeach; ?>
                         </select>
 
-                        <!-- Sélection du professeur -->
+                        <!-- Selection of professor -->
                         <label for="professor-select">Professeur :</label>
                         <select id="professor-select" name="professor_id" required>
                             <option value="">Sélectionnez un professeur</option>
@@ -491,7 +498,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
                             <?php endforeach; ?>
                         </select>
 
-                        <!-- Sélection du maître de stage -->
+                        <!-- Selection of internship supervisor -->
                         <label for="maitre-select">Maître de stage :</label>
                         <select id="maitre-select" name="maitre_id" required>
                             <option value="">Sélectionnez un maître de stage</option>
@@ -500,13 +507,13 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
                             <?php endforeach; ?>
                         </select>
 
-                        <!-- Bouton pour soumettre le formulaire et créer le groupe -->
+                        <!-- Button to submit the form and create the group -->
                         <button type="submit" class="submit-group-button">Créer le groupe</button>
                     </form>
 
-                    <!-- Zone pour afficher le message de résultat -->
+                    <!-- Area to display the result message -->
                     <div id="resultMessage"></div>
-                    <!-- Bouton pour fermer la fenêtre modale -->
+                    <!-- Button to close the modal window -->
                     <span class="close-modal">&times;</span>
                 </div>
             </div>
@@ -516,13 +523,12 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
                 <div class="modal-content">
                     <h2>Modifier le groupe</h2>
                     <form id="editGroupForm" method="POST" action="#">
-                        <!-- Hidden field for group ID -->
+                        <!-- Hidden fields -->
+                        <input type="hidden" name="edit_group" value="1">
                         <input type="hidden" name="group_id" id="edit-group-id">
                         <!-- Fields for selecting new members -->
-                        <!-- Similar to the createGroupForm, but pre-filled with existing members -->
-                        <label for="edit-student-select">Étudiant :</label>
-                        <select id="edit-student-select" name="student_id" required>
-                            <option value="">Sélectionnez un étudiant</option>
+                        <label for="edit-student-select">Étudiant(s):</label>
+                        <select id="edit-student-select" name="student_ids[]" multiple required>
                             <?php foreach ($students as $student): ?>
                                 <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
                             <?php endforeach; ?>
@@ -547,6 +553,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
                         <button type="submit" class="submit-group-button">Enregistrer les modifications</button>
                     </form>
                     <div id="editResultMessage"></div>
+                    <!-- Button to close the modal window -->
                     <span class="close-modal">&times;</span>
                 </div>
             </div>
