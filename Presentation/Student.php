@@ -179,6 +179,7 @@ $notes = $database->getNotes($senderId);
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
                         <?php include_once("ContactList.php");?>
+                        <?php include_once("GroupContactList.php");?>
                     </ul>
                 </div>
 
@@ -202,9 +203,10 @@ $notes = $database->getNotes($senderId);
                         <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                            <!-- Champ caché pour le destinataire -->
-                            <input type="hidden" name="receiver_id" id="receiver_id" value=""> <!-- Ce champ sera mis à jour dynamiquement -->
-                            <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
+                            <!-- Hidden fields for receiver_id and group_id -->
+                            <input type="hidden" name="receiver_id" id="receiver_id" value="">
+                            <input type="hidden" name="group_id" id="group_id" value="">
+                            <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
                             <button type="button" onclick="sendMessage(event)">Envoyer</button>
                         </form>
                     </div>
@@ -273,5 +275,6 @@ $notes = $database->getNotes($senderId);
     <a href="Redirection.php">À propos</a>
 </footer>
 <script src="/View/Principal/deleteMessage.js"></script>
+<script src="/View/Principal/GroupMessenger.js"></script>
 </body>
 </html>

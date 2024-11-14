@@ -1149,4 +1149,30 @@ section.Menus div.Contenus div.Contenu p.noNotes{
     margin: 1%;
 }
 
+.message .sender-name {
+    font-weight: bold;
+    margin-right: 5px;
+    margin-bottom: 15px;
+
+    cursor: pointer;
+    width: 100%;
+    padding: 0;
+    text-align: center;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0 0 0 ;
+    transition: background-color 0.3s ease;
+}
+.message .sender-name:hover {
+    background-color: rgba(27, 77, 133, 0.35);
+}
+
+.message.self .sender-name {
+    color: blue;
+}
+
+.message.other .sender-name {
+    color: green;
+}
+
 

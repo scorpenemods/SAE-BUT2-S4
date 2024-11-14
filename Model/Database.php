@@ -555,6 +555,173 @@ class Database
         return $students;
     }
 
+    //Get the groups a user belongs to.
+    public function getUserGroups($userId) {
+        $sql = "SELECT DISTINCT Groupe.conv_id AS id, Convention.convention
+                FROM Groupe
+                JOIN Convention ON Groupe.conv_id = Convention.id
+                WHERE Groupe.user_id = :user_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // get a message from a group
+    public function getGroupMessages($groupId) {
+        $sql = "SELECT MessageGroupe.*, Document.filepath
+                FROM MessageGroupe
+                LEFT JOIN Document_Message ON MessageGroupe.id = Document_Message.message_id
+                LEFT JOIN Document ON Document_Message.document_id = Document.id
+                WHERE MessageGroupe.groupe_id = :group_id
+                ORDER BY MessageGroupe.timestamp ASC";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // message to a group
+    public function sendGroupMessage($groupId, $senderId, $message, $filePath = null) {
+        try {
+            $this->connection->beginTransaction();
+
+            // Insert the message
+            $stmt = $this->connection->prepare("
+                INSERT INTO MessageGroupe (groupe_id, sender_id, contenu, timestamp)
+                VALUES (:groupe_id, :sender_id, :contenu, NOW())
+            ");
+            $stmt->bindParam(':groupe_id', $groupId);
+            $stmt->bindParam(':sender_id', $senderId);
+            $stmt->bindParam(':contenu', $message);
+            $stmt->execute();
+
+            $messageId = $this->connection->lastInsertId();
+
+            // If a file is attached, insert into Document and Document_Message
+            if ($filePath) {
+                // Insert into Document
+                $stmt = $this->connection->prepare("
+                    INSERT INTO Document (filepath)
+                    VALUES (:filepath)
+                ");
+                $stmt->bindParam(':filepath', $filePath);
+                $stmt->execute();
+                $documentId = $this->connection->lastInsertId();
+
+                // Insert into Document_Message
+                $stmt = $this->connection->prepare("
+                    INSERT INTO Document_Message (document_id, message_id)
+                    VALUES (:document_id, :message_id)
+                ");
+                $stmt->bindParam(':document_id', $documentId);
+                $stmt->bindParam(':message_id', $messageId);
+                $stmt->execute();
+            }
+
+            $this->connection->commit();
+
+            return true;
+        } catch (PDOException $e) {
+            $this->connection->rollBack();
+            error_log("Error sending group message: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // get all groups with their members
+    public function getAllGroupsWithMembers() {
+        $sql = "SELECT c.id AS group_id, c.convention AS group_name, u.id AS user_id, u.nom AS last_name, u.prenom AS first_name
+                FROM Groupe g
+                JOIN Convention c ON g.conv_id = c.id
+                JOIN User u ON g.user_id = u.id
+                ORDER BY c.id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $groups = [];
+        foreach ($results as $row) {
+            $groupId = $row['group_id'];
+            if (!isset($groups[$groupId])) {
+                $groups[$groupId] = [
+                    'group_id' => $groupId,
+                    'group_name' => $row['group_name'],
+                    'members' => []
+                ];
+            }
+            $groups[$groupId]['members'][] = [
+                'user_id' => $row['user_id'],
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name']
+            ];
+        }
+        return $groups;
+    }
+
+    public function deleteGroup($groupId) {
+        try {
+            $this->connection->beginTransaction();
+
+            // Delete messages in MessageGroupe
+            $stmt = $this->connection->prepare("DELETE FROM MessageGroupe WHERE groupe_id = :group_id");
+            $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Delete group members in Groupe
+            $stmt = $this->connection->prepare("DELETE FROM Groupe WHERE conv_id = :group_id");
+            $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Delete the group in Convention
+            $stmt = $this->connection->prepare("DELETE FROM Convention WHERE id = :group_id");
+            $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $this->connection->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->connection->rollBack();
+            error_log("Error deleting group: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function updateGroupMembers($groupId, $memberIds) {
+        try {
+            $this->connection->beginTransaction();
+
+            // Delete existing group members
+            $stmt = $this->connection->prepare("DELETE FROM Groupe WHERE conv_id = :group_id");
+            $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Add new group members
+            foreach ($memberIds as $userId) {
+                $stmt = $this->connection->prepare("INSERT INTO Groupe (conv_id, user_id) VALUES (:conv_id, :user_id)");
+                $stmt->execute([':conv_id' => $groupId, ':user_id' => $userId]);
+            }
+
+            $this->connection->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->connection->rollBack();
+            error_log("Error updating group members: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getGroupMembers($groupId) {
+        $sql = "SELECT user_id FROM Groupe WHERE conv_id = :group_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+        if ($stmt->execute()) {
+            return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        } else {
+            return false;
+        }
+    }
+
     // -------------------- Student list in professor home ------------------------------------------ //
     public function getStudentsProf($professorId): array
     {

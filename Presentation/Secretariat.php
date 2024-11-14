@@ -133,6 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Fetch all groups with their members
+$groupsWithMembers = $database->getAllGroupsWithMembers();
 ?>
 
 
@@ -400,37 +402,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
-                        <?php
-                        $roleMapping = [
-                            1 => "Etudiant",
-                            2 => "Professeur",
-                            3 => "Maitre de stage"
-                        ];
-
-                        // Récupérer les contacts associés à l'utilisateur connecté
-                        $userId = $person->getUserId();
-                        $contacts = $database->getGroupContacts($userId);
-
-                        // Sort contacts by role
-                        usort($contacts, fn($a, $b) => $a['role'] <=> $b['role']);
-
-                        // Group contacts by role
-                        $groupedContacts = [];
-                        foreach ($contacts as $contact) {
-                            $roleName = $roleMapping[$contact['role']] ?? "Unknown Role";
-                            $groupedContacts[$roleName][] = $contact;
-                        }
-
-                        // Display contacts grouped by role
-                        foreach ($groupedContacts as $roleName => $contactsGroup) {
-                            echo "<label><strong>$roleName :</strong></label>";
-                            foreach ($contactsGroup as $contact) {
-                                echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
-                                echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
-                                echo '</li>';
-                            }
-                        }
-                        ?>
+                        <?php include_once("ContactList.php");?>
+                        <?php include_once("GroupContactList.php");?>
                     </ul>
                 </div>
 
@@ -453,8 +426,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                            <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- Recipient ID -->
-                            <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
+                            <!-- Hidden fields for receiver_id and group_id -->
+                            <input type="hidden" name="receiver_id" id="receiver_id" value="">
+                            <input type="hidden" name="group_id" id="group_id" value="">
+                            <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
                             <button type="button" onclick="sendMessage(event)">Envoyer</button>
                         </form>
                     </div>
@@ -464,7 +439,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Section Groupes -->
         <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">
-            <!-- Code pour le widget de création de groupes -->
+            <!-- List of existing groups -->
+            <div class="group-list">
+                <h3>Groupes existants</h3>
+                <?php if (!empty($groupsWithMembers)): ?>
+                    <ul>
+                        <?php foreach ($groupsWithMembers as $group): ?>
+                            <li>
+                                <strong><?php echo htmlspecialchars($group['group_name']); ?></strong>
+                                <ul>
+                                    <?php foreach ($group['members'] as $member): ?>
+                                        <li><?php echo htmlspecialchars($member['first_name'] . ' ' . $member['last_name']); ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <!-- Buttons to modify or delete the group -->
+                                <button onclick="openEditGroupModal(<?php echo $group['group_id']; ?>)">Modifier</button>
+                                <button onclick="deleteGroup(<?php echo $group['group_id']; ?>)">Supprimer</button>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p>Aucun groupe n'a été créé pour le moment.</p>
+                <?php endif; ?>
+            </div>
 
             <!-- Bouton pour ouvrir la fenêtre modale de création de groupe -->
             <button class="open-create-group-modal">Créer un nouveau groupe</button>
@@ -513,6 +510,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <span class="close-modal">&times;</span>
                 </div>
             </div>
+
+            <!-- Modal for editing a group -->
+            <div id="editGroupModal" class="modal">
+                <div class="modal-content">
+                    <h2>Modifier le groupe</h2>
+                    <form id="editGroupForm" method="POST" action="#">
+                        <!-- Hidden field for group ID -->
+                        <input type="hidden" name="group_id" id="edit-group-id">
+                        <!-- Fields for selecting new members -->
+                        <!-- Similar to the createGroupForm, but pre-filled with existing members -->
+                        <label for="edit-student-select">Étudiant :</label>
+                        <select id="edit-student-select" name="student_id" required>
+                            <option value="">Sélectionnez un étudiant</option>
+                            <?php foreach ($students as $student): ?>
+                                <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <label for="edit-professor-select">Professeur :</label>
+                        <select id="edit-professor-select" name="professor_id" required>
+                            <option value="">Sélectionnez un professeur</option>
+                            <?php foreach ($professors as $professor): ?>
+                                <option value="<?php echo $professor->getUserId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <label for="edit-maitre-select">Maître de stage :</label>
+                        <select id="edit-maitre-select" name="maitre_id" required>
+                            <option value="">Sélectionnez un maître de stage</option>
+                            <?php foreach ($maitres as $maitre): ?>
+                                <option value="<?php echo $maitre->getUserId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <button type="submit" class="submit-group-button">Enregistrer les modifications</button>
+                    </form>
+                    <div id="editResultMessage"></div>
+                    <span class="close-modal">&times;</span>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -527,6 +564,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- Script JavaScript pour la gestion des utilisateurs -->
 <script src="../View/Principal/userManagement.js"></script>
 <script src="../View/Principal/GroupCreation.js"></script>
+<script src="/View/Principal/GroupMessenger.js"></script>
 </body>
 </html>
 

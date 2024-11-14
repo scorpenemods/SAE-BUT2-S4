@@ -58,3 +58,51 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+// Function to delete a group
+function deleteGroup(groupId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce groupe ?')) {
+        fetch('../View/Principal/DeleteGroup.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ group_id: groupId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Groupe supprimé avec succès.');
+                    window.location.reload();
+                } else {
+                    alert('Erreur lors de la suppression du groupe.');
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+    }
+}
+
+// Function to open the edit group modal
+function openEditGroupModal(groupId) {
+    // Fetch group details and pre-fill the form
+    fetch('../View/Principal/GetGroupDetails.php?group_id=' + groupId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Open the modal and pre-fill the form with existing members
+                const editGroupModal = document.getElementById('editGroupModal');
+                editGroupModal.style.display = 'flex';
+
+                document.getElementById('edit-group-id').value = groupId;
+
+                // Pre-select members in the form
+                document.getElementById('edit-student-select').value = data.members.student_id;
+                document.getElementById('edit-professor-select').value = data.members.professor_id;
+                document.getElementById('edit-maitre-select').value = data.members.maitre_id;
+
+            } else {
+                alert('Erreur lors de la récupération des détails du groupe.');
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+}
