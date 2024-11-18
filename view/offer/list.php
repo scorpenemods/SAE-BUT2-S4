@@ -289,7 +289,73 @@ if ($type == null) {
 
             const createNotificationBtn = document.getElementById('createNotification');
             createNotificationBtn.addEventListener('click', () => {
-                alert('Fonctionnalité de création de demande de notification à implémenter');
+                const urlParams = new URLSearchParams(window.location.search);
+                const filters = {
+                    minSalary: urlParams.get('minSalary'),
+                    address: urlParams.get('address'),
+                    diploma: urlParams.get('diploma'),
+                    duration: urlParams.get('duration'),
+                    calendar: urlParams.get('calendar')
+                };
+
+                for (const key in filters) {
+                    if (filters[key] === '') {
+                        filters[key] = null;
+                    }
+                }
+
+                //log
+                console.log("Données envoyées :", {
+                    duration: filters.duration,
+                    address: filters.address,
+                    study_level: filters.diploma,
+                    begin_date: filters.calendar,
+                    salary: filters.minSalary
+                });
+
+                let valid = false
+                for (const key in filters){
+                    if (filters[key] !== null){
+                        valid = true;
+                        break;
+                    }
+                }
+
+                if (valid !== true){
+                    alert("Veuillez renseigner un ou plusieurs filtres afin de créer une demande de notification")
+                    return;
+                }
+                else{
+                    $.ajax({
+                        url: '/presenter/offer/createAlert.php',
+                        type: 'POST',
+                        data: {
+                            duration: filters.duration,
+                            address: filters.address,
+                            study_level: filters.diploma,
+                            begin_date: filters.calendar,
+                            salary: filters.minSalary
+                        },
+                        success: function(response) {
+                            try {
+                                const result = JSON.parse(response);
+
+                                if (result.status === "success") {
+                                    alert("Notification créée avec succès !");
+                                } else {
+                                    alert("Erreur : " + (result.message || "Une erreur est survenue."));
+                                }
+                            } catch (error) {
+                                console.error("Erreur lors de l'analyse de la réponse :", error);
+                                alert("Une erreur inattendue est survenue.");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Erreur AJAX :", error);
+                            alert("Une erreur réseau est survenue lors de la création de la notification.");
+                        }
+                    });
+                }
             });
 
             const groupeSecretariat = <?php echo json_encode($groupeSecretariat); ?>;
