@@ -4,7 +4,6 @@ session_start();
 require dirname(__FILE__) . "/../../models/PendingOffer.php";
 require dirname(__FILE__) . "/../../models/Company.php";
 
-
 $user_id = $_SESSION['user'] ?? false;
 if (!$user_id) {
     header("Location: ../offer/view/create.php");
@@ -23,8 +22,7 @@ if (isset($_POST['id'])) {
 }
 
 if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) && isset($_POST['description']) && isset($_POST['duration']) && isset($_POST['salary']) && isset($_POST['education']) && isset($_POST['start-date']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['website'])) {
-
-    $id = $_POST['id']  ?? 0;
+    $id = $_POST['id'] ?? 0;
     $company_id = $_POST['company_id'];
     $title = $_POST['title'];
     $address = $_POST['address'];
@@ -47,11 +45,8 @@ if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['addre
         }
     }
 
-
-
     //Create the offer
     $offer = pendingOffer::createPending($company_id, $title, $description, $job, $duration, $salary, $address, $education, $startDate, $selectedTags, $email, $phone, $website, $user_id, $id);
-
 
     //If the offer is created, redirect to the list of pending offers
     if ($offer) {
