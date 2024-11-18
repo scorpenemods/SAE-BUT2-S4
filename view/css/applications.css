@@ -27,6 +27,8 @@ h2 {
     padding: 15px;
     border-bottom: 1px solid #eee;
     transition: background-color 0.3s;
+    box-radius: 4px;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
 }
 .candidat:hover {
     background-color: #f8f8f8;

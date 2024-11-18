@@ -24,9 +24,8 @@ class Applications {
         return $this->created_at;
     }
 
-    public function getUsername(): ?string {
+    public static function getUsername(int $id_user): ?string {
         global $db;
-        $id_user = $this->getIdUser();
 
         $stmt = $db->prepare("SELECT * FROM users WHERE id = :id");
         $stmt->bindParam(":id", $id_user);

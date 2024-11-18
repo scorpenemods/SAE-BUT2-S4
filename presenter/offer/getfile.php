@@ -1,4 +1,6 @@
 <?php
+require '../../models/Applications.php';
+
 function downloadFile($user, $offer, $type) {
     error_reporting(E_ALL ^ E_DEPRECATED);
     $user = filter_var($user, FILTER_SANITIZE_NUMBER_INT);
@@ -10,7 +12,7 @@ function downloadFile($user, $offer, $type) {
 
     if (file_exists($file_path)) {
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="' . $name . '.pdf"');
+        header('Content-Disposition: attachment; filename="' . Applications::getUsername($user) . '_' . $type . '.pdf"');
         header('Content-Length: ' . filesize($file_path));
 
 

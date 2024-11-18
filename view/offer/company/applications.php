@@ -48,20 +48,21 @@ $applications = Applications::getAllForOffer($offerId);
             <?php
                 if ($applications) {
                     foreach($applications as $apply){
+                        $id_user = $apply->getIdUser();
                         echo "<div class='candidat'>";
                         echo "<div class='info'>";
-                        echo "<h3 class='nom'>".$apply->getUsername()."</h3>";
+                        echo "<h3 class='nom'>".Applications::getUsername($id_user)."</h3>";
                         echo "<ul class='fichiers'>";
                         //Todo
-                        echo "<li class='fichier' onclick='getFile(\"" . $apply->getIdUser() . "\", \"" . $offerId . "\", \"cv\")'>📎 CV</li>";
-                        echo "<li class='fichier' onclick='getFile(\"" . $apply->getIdUser() . "\", \"" . $offerId . "\", \"motivation\")'>📎 Lettre de motivation</li>";
+                        echo "<li class='fichier' onclick='getFile(\"" . $id_user . "\", \"" . $offerId . "\", \"cv\")'>📎 CV</li>";
+                        echo "<li class='fichier' onclick='getFile(\"" . $id_user . "\", \"" . $offerId . "\", \"motivation\")'>📎 Lettre de motivation</li>";
                         echo "</ul>";
                         echo "</div>";
-                        echo "<span class='date'>Date</span>";
+                        echo "<span class='date'>".$apply->getCreatedAt()."</span>";
                         echo "<div class='actions'>";
-                        echo "<button class='btn' title='Marquer comme favori' aria-label='Marquer ".$apply->getUsername()." comme favori'>⭐</button>";
-                        echo "<button class='btn' title='Répondre' aria-label='Répondre à ".$apply->getUsername()."'>✉️</button>";
-                        echo "<button class='btn' title='Supprimer' aria-label='Supprimer la candidature de ".$apply->getUsername()."'>🗑️</button>";
+                        echo "<button class='btn' title='Marquer comme favori' aria-label='Marquer ".Applications::getUsername($id_user)." comme favori'>⭐</button>";
+                        echo "<button class='btn' title='Répondre' aria-label='Répondre à ".Applications::getUsername($id_user)."'>✉️</button>";
+                        echo "<button class='btn' title='Supprimer' aria-label='Supprimer la candidature de ".Applications::getUsername($id_user)."'>🗑️</button>";
                         echo "</div>";
                         echo "</div>";
                     }
