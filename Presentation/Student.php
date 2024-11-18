@@ -213,7 +213,13 @@ $notes = $database->getNotes($senderId);
         </div>
 
         <!-- Offres Content -->
-        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">Contenu Offres</div>
+        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
+            Contenu Offres
+            <a href="../View/offer/list.php?type=all">
+                <button type="button">Voir les offres</button>
+            </a>
+        </div>
+
 
         <!-- Documents Content -->
         <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">Contenu Documents</div>

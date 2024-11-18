@@ -1,6 +1,7 @@
 <?php
 
-require dirname(__FILE__) . '/../Presentation/database.php';
+require_once "Database.php";
+$db = Database::getInstance();
 require dirname(__FILE__) . '/../Model/Offer.php';
 
 //Class to manage pending offers
@@ -45,7 +46,7 @@ class PendingOffer extends Offer
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM tags JOIN pending_tags ON tags.id = pending_tags.tag_id WHERE pending_tags.pending_id = :offer_id");
+        $stmt = $db->getConnection()->getConnection()->prepare("SELECT * FROM tags JOIN pending_tags ON tags.id = pending_tags.tag_id WHERE pending_tags.pending_id = :offer_id");
         $stmt->bindParam(":offer_id", $this->id);
         $stmt->execute();
 
@@ -78,7 +79,7 @@ class PendingOffer extends Offer
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE id = :id");
+        $stmt = $db->getConnection()->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
@@ -119,7 +120,7 @@ class PendingOffer extends Offer
     // Get pending offers by offer id
     public static function getByOffer(int $id): ?array {
         global $db;
-        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE offer_id = :id");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
@@ -169,7 +170,7 @@ class PendingOffer extends Offer
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM pending_offers");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer");
         $stmt->execute();
 
         if ($db->errorCode() != 0) {
@@ -215,10 +216,10 @@ class PendingOffer extends Offer
     public static function getAllNew(): ?array {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE type = 'new offer' AND status = 'Pending'");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE type = 'new offer' AND status = 'Pending'");
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -261,7 +262,7 @@ class PendingOffer extends Offer
     public static function getAllUpdated(): ?array {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE type = 'updated offer' AND status = 'Pending'");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE type = 'updated offer' AND status = 'Pending'");
         $stmt->execute();
 
         if ($db->errorCode() != 0) {
@@ -317,7 +318,7 @@ class PendingOffer extends Offer
         }
 
         //Insert the offer in the pending_offers table
-        $stmt = $db->prepare("INSERT INTO pending_offers (user_id, type, offer_id, company_id, title, address, job, description, duration, salary,
+        $stmt = $db->getConnection()->prepare("INSERT INTO Pending_Offer (user_id, type, offer_id, company_id, title, address, job, description, duration, salary,
                             study_level, email, phone, website, begin_date) VALUES (:user_id, :type, :offer_id, :company_id, :title, :address, :job, :description, :duration, :salary,
                             :study_level, :email, :phone, :website, :begin_date)");
         $stmt->bindParam(":user_id", $user_id);
@@ -345,7 +346,7 @@ class PendingOffer extends Offer
 
         //Add tags in pending_tags table
         foreach ($tags as $tag) {
-            $stmt = $db->prepare("INSERT INTO pending_tags (tag_id, pending_id) VALUES ((SELECT tag FROM tags WHERE id = :tag_id), :offer_id)");
+            $stmt = $db->getConnection()->prepare("INSERT INTO Pending_Tag (tag_id, pending_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $id);
             $stmt->execute();
@@ -413,7 +414,7 @@ class PendingOffer extends Offer
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM tags;");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Tag;");
         $stmt->execute();
 
         $result = $stmt->fetchAll();
@@ -430,7 +431,7 @@ class PendingOffer extends Offer
     public static function setStatus(int $getId, string $string) {
         global $db;
 
-        $stmt = $db->prepare("UPDATE pending_offers SET status = :status WHERE id = :id");
+        $stmt = $db->getConnection()->prepare("UPDATE Pending_Offer SET status = :status WHERE id = :id");
         $stmt->bindParam(":status", $string);
         $stmt->bindParam(":id", $getId);
         $stmt->execute();

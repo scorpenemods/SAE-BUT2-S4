@@ -1,6 +1,6 @@
 <?php
-
-require dirname(__FILE__) . '/../Presentation/database.php';
+require_once "Database.php";
+$db = Database::getInstance();
 
 //Class to manage offers
 class Offer {
@@ -110,9 +110,10 @@ class Offer {
 
     public function getTags(): ?array
     {
-        global $db;
 
-        $stmt = $db->prepare("SELECT * FROM tags JOIN tags_offers ON tags.id = tags_offers.tag_id WHERE tags_offers.offer_id = :offer_id");
+
+        global $db;
+        $stmt = $db->prepare("SELECT * FROM Tag JOIN Tag_Offer ON Tag.id = Tag_Offer.tag_id WHERE Tag_Offer.offer_id = :offer_id");
         $stmt->bindParam(":offer_id", $this->id);
         $stmt->execute();
 
@@ -131,11 +132,12 @@ class Offer {
     }
 
     //Update an offer
-    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, string $getWebsite) {
+    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, string $getWebsite): ?Offer
+    {
         global $db;
 
         //Update the offer
-        $stmt = $db->prepare("UPDATE offers SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone, website = :website WHERE id = :id");
+        $stmt = $db->prepare("UPDATE Offer SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone, website = :website WHERE id = :id");
         $stmt->bindParam(":title", $getTitle);
         $stmt->bindParam(":description", $getDescription);
         $stmt->bindParam(":job", $getJob);
@@ -156,7 +158,7 @@ class Offer {
         }
 
         //Delete the tags in the tags_offers table
-        $stmt = $db->prepare("DELETE FROM tags_offers WHERE offer_id = :id");
+        $stmt = $db->prepare("DELETE FROM Tag_Offer WHERE offer_id = :id");
         $stmt->bindParam(":id", $getId);
         $stmt->execute();
 
@@ -166,7 +168,7 @@ class Offer {
 
         //Add the tags in the tags_offers table
         foreach ($getTags as $tag) {
-            $stmt = $db->prepare("INSERT INTO tags_offers (tag_id, offer_id) VALUES ((SELECT tag FROM tags WHERE id = :tag_id), :offer_id)");
+            $stmt = $db->prepare("INSERT INTO Tag_Offer (tag_id, offer_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $getId);
             $stmt->execute();
@@ -210,7 +212,7 @@ class Offer {
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM offers WHERE id = :id");
+        $stmt = $db->prepare("SELECT * FROM Offer WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
         $result = $stmt->fetch();
@@ -251,7 +253,7 @@ class Offer {
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM offers");
+        $stmt = $db->prepare("SELECT * FROM Offer");
         $stmt->execute();
 
         if ($db->errorCode() != 0) {
@@ -297,7 +299,7 @@ class Offer {
         global $db;
 
         //Insert the offer in the offers table
-        $stmt = $db->prepare("INSERT INTO offers (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
+        $stmt = $db->prepare("INSERT INTO Offer (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
                     email, phone, website) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,
                     :email, :phone, :website)");
         $stmt->bindParam(":company_id", $company_id);
@@ -323,7 +325,7 @@ class Offer {
 
         //Add the tags in the tags_offers table
         foreach ($tags as $tag) {
-            $stmt = $db->prepare("INSERT INTO tags_offers (tag_id, offer_id) VALUES ((SELECT tag FROM tags WHERE id = :tag_id), :offer_id)");
+            $stmt = $db->prepare("INSERT INTO Tag_Offer (tag_id, offer_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $id);
             $stmt->execute();
@@ -389,7 +391,7 @@ class Offer {
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM tags;");
+        $stmt = $db->prepare("SELECT * FROM Tag;");
         $stmt->execute();
 
         $result = $stmt->fetchAll();
@@ -411,7 +413,7 @@ class Offer {
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM offers WHERE company_id = :company_id;");
+        $stmt = $db->prepare("SELECT * FROM Offer WHERE company_id = :company_id;");
         $stmt->bindParam(":company_id", $companyId);
         $stmt->execute();
 
@@ -457,13 +459,13 @@ class Offer {
     public static function getFilteredOffers(int $n, array $filters): ?array {
         global $db;
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS offers.*, tag FROM offers LEFT JOIN tags_offers ON offers.id = tags_offers.offer_id LEFT JOIN tags ON tags.id = tags_offers.tag_id WHERE is_active AND begin_date >= CURDATE()";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS Offer.*, tag FROM Offer LEFT JOIN Tag_Offer ON Offer.id = Tag_Offer.offer_id LEFT JOIN Tag ON Tag.id = Tag_Offer.tag_id WHERE is_active AND begin_date >= CURDATE()";
         $params = [];
 
         if (!empty($filters['title'])) {
             preg_match('/title\s*:\s*"(.*?)"/', $filters['title'], $titleMatches);
             if (isset($titleMatches[1])) {
-                $sql .= ' AND offers.title LIKE :titleMatch';
+                $sql .= ' AND Offer.title LIKE :titleMatch';
                 $params[':titleMatch'] = '%' . $titleMatches[1] . '%';
             }
 
@@ -471,39 +473,39 @@ class Offer {
 
             preg_match('/description\s*:\s*"(.*?)"/', $filters['title'], $descriptionMatches);
             if (isset($descriptionMatches[1])) {
-                $sql .= ' AND offers.description LIKE :descriptionMatch';
+                $sql .= ' AND Offer.description LIKE :descriptionMatch';
                 $params[':descriptionMatch'] = '%' . $descriptionMatches[1] . '%';
             }
 
             $filters['title'] = preg_replace('/description\s*:\s*"(.*?)"/', '', $filters['title']);
             
 
-            $sql .= ' AND offers.title LIKE :title';
+            $sql .= ' AND Offer.title LIKE :title';
             $params[':title'] = '%' . $filters['title'] . '%';
         }
 
         if (!empty($filters['startDate'])) {
-            $sql .= ' AND offers.begin_date >= :startDate';
+            $sql .= ' AND Offer.begin_date >= :startDate';
             $params[':startDate'] = $filters['startDate'];
         }
 
         if (!empty($filters['diploma'])) {
-            $sql .= ' AND offers.study_level = :diploma';
+            $sql .= ' AND Offer.study_level = :diploma';
             $params[':diploma'] = $filters['diploma'];
         }
 
         if (!empty($filters['minSalary'])) {
-            $sql .= ' AND offers.salary >= :minSalary';
+            $sql .= ' AND Offer.salary >= :minSalary';
             $params[':minSalary'] = $filters['minSalary'];
         }
 
         if (!empty($filters['maxSalary'])) {
-            $sql .= ' AND offers.salary <= :maxSalary';
+            $sql .= ' AND Offer.salary <= :maxSalary';
             $params[':maxSalary'] = $filters['maxSalary'];
         }
 
         if (!empty($filters['address'])) {
-            $sql .= ' AND offers.address LIKE :address';
+            $sql .= ' AND Offer.address LIKE :address';
             $params[':address'] = '%' . $filters['address'] . '%';
         }
 
@@ -522,7 +524,7 @@ class Offer {
         }
 
         if (!empty($filters['sector'])) {
-            $sql .= ' AND offers.job = :sector';
+            $sql .= ' AND Offer.job = :sector';
             $params[':sector'] = $filters['sector'];
         }
 
@@ -536,7 +538,7 @@ class Offer {
         }
 
         if (!empty($filters['company_id'])) {
-            $sql .= ' AND offers.company_id = :company_id';
+            $sql .= ' AND Offer.company_id = :company_id';
             $params[':company_id'] = $filters['company_id'];
         }
 
@@ -560,13 +562,13 @@ class Offer {
 
         $sql .= " LIMIT 12 OFFSET ". ($n - 1) * 12;
 
-        $stmt = $db->prepare($sql);
+        $stmt = $db->getConnection()->prepare($sql);
         foreach ($params as $key => $value) {
             $stmt->bindValue($key, $value);
         }
         $stmt->execute();
 
-        $stmt2 = $db->query("SELECT FOUND_ROWS() as total");
+        $stmt2 = $db->getConnection()->query("SELECT FOUND_ROWS() as total");
         $count = $stmt2->fetch()['total'];
 
         $offers = [];
@@ -603,9 +605,9 @@ class Offer {
 
     //Hide an offer
     public static function hide($id) {
-        global $db;
+        $db = Database::getInstance();
 
-        $stmt = $db->prepare("UPDATE offers SET is_active = !is_active WHERE id = :id");
+        $stmt = $db->prepare("UPDATE Offer SET is_active = !is_active WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
@@ -619,7 +621,7 @@ class Offer {
     public static function isCompanyOffer(int $id, int $company_id): ?bool {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM offers WHERE id = :id AND company_id = :company_id");
+        $stmt = $db->prepare("SELECT * FROM Offer WHERE id = :id AND company_id = :company_id");
         $stmt->bindParam(":id", $id);
         $stmt->bindParam(":company_id", $company_id);
         $stmt->execute();
@@ -641,7 +643,7 @@ class Offer {
     public static function isAlreadyPending(int $id): ?bool {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM pending_offers WHERE offer_id = :offer_id AND status = 'Pending'");
+        $stmt = $db->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :offer_id AND status = 'Pending'");
         $stmt->bindParam(":offer_id", $id);
         $stmt->execute();
 
@@ -662,7 +664,7 @@ class Offer {
     public static function makeFavorite(int $id, int $user_id): ?bool {
         global $db;
 
-        $stmt = $db->prepare("INSERT INTO favorite_offers (offer_id, user_id) VALUES (:offer_id, :user_id)");
+        $stmt = $db->prepare("INSERT INTO Favorite_Offer (offer_id, user_id) VALUES (:offer_id, :user_id)");
         $stmt->bindParam(":offer_id", $id);
         $stmt->bindParam(":user_id", $user_id);
         $stmt->execute();
@@ -678,7 +680,7 @@ class Offer {
     public static function removeFavorite(int $id, int $user_id): ?bool {
         global $db;
 
-        $stmt = $db->prepare("DELETE FROM favorite_offers WHERE offer_id = :offer_id AND user_id = :user_id");
+        $stmt = $db->prepare("DELETE FROM Favorite_Offer WHERE offer_id = :offer_id AND user_id = :user_id");
         $stmt->bindParam(":offer_id", $id);
         $stmt->bindParam(":user_id", $user_id);
         $stmt->execute();
@@ -694,7 +696,7 @@ class Offer {
     public static function isFavorite(int $id, int $user_id): ?bool {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM favorite_offers WHERE offer_id = :offer_id AND user_id = :user_id");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Favorite_Offer WHERE offer_id = :offer_id AND user_id = :user_id");
         $stmt->bindParam(":offer_id", $id);
         $stmt->bindParam(":user_id", $user_id);
         $stmt->execute();
@@ -716,10 +718,10 @@ class Offer {
     public static function getAllInactive(int $company_id = 0): ?array {
         global $db;
         if ($company_id != 0) {
-            $stmt = $db->prepare("SELECT * FROM offers WHERE is_active = 0 AND company_id = :company_id ORDER BY begin_date DESC");
+            $stmt = $db->prepare("SELECT * FROM Offer WHERE is_active = 0 AND company_id = :company_id ORDER BY begin_date DESC");
             $stmt->bindParam(":company_id", $company_id);
         } else {
-            $stmt = $db->prepare("SELECT * FROM offers WHERE is_active = 0 ORDER BY begin_date DESC");
+            $stmt = $db->prepare("SELECT * FROM Offer WHERE is_active = 0 ORDER BY begin_date DESC");
         }
         $stmt->execute();
 

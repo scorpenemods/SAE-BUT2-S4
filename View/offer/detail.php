@@ -5,7 +5,7 @@ require dirname(__FILE__) . '/../../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../../Model/Company.php';
 require dirname(__FILE__) . '/../../Presentation/offer/filter.php';
 
-$returnUrl = "/View/offer/list.php";
+
 if (isset($_SERVER["HTTP_REFERER"])) {
     $returnUrl = $_SERVER["HTTP_REFERER"];
 }
@@ -19,7 +19,7 @@ if (!$offerId) {
 }
 
 // Verification de qui est l'utilisateur
-$company_id = 0;
+
 $groupeSecretariat = false;
 if (isset($_SESSION['secretariat'])) {
     $groupeSecretariat = $_SESSION['secretariat'];
@@ -137,7 +137,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                         echo "<div class='apply-button-container'>";
                             echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
                             echo "<button class='apply-button-edit' id='apply-button' onclick='openModalWithMessage()'>Postuler</button>";
-                            echo "<form action='./company/edit.php' method='get' id='edit-form'>";
+                            echo "<form action='../../View/offer/company/edit.php' method='get' id='edit-form'>";
                                 echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
                                 if ($isAlreadyPending) {
                                     echo "<button class='apply-button-edit' id='edit-button'>Modification en attente de validation</button>";
@@ -203,8 +203,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                 }
                 ?>
             </div>
-        </div>
-        <?php if ($type != 'updated') {
+    <?php if ($type != 'updated') {
             // add modal
             echo "<div id='applyModal' class='modal'>";
                 echo "<div class='modal-content'>";

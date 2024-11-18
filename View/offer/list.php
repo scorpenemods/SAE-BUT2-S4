@@ -1,21 +1,19 @@
 <?php
 session_start();
-$_SESSION['company_id'] = 0;
-$_SESSION['secretariat'] = true;
-$_SESSION['user'] = 1;
+
 
 // Verification de qui est l'utilisateur
-$company_id = 0;
+
 if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
 }
 
-$groupeSecretariat = false;
+
 if (isset($_SESSION['secretariat'])) {
     $groupeSecretariat = $_SESSION['secretariat'];
 }
 
-$user_id = 0;
+
 if (isset($_SESSION['user'])) {
     $user_id = $_SESSION['user'];
 }
@@ -97,10 +95,10 @@ if ($type == null) {
         <meta name="description" content="Le Petit Stage - Offres">
         <title>Le Petit Stage - Advanced</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="/View/css/list.css">
-        <link rel="stylesheet" href="/View/css/header.css">
-        <link rel="stylesheet" href="/View/css/footer.css">
-        <link rel="stylesheet" href="/View/css/list.css">
+        <link rel="stylesheet" href="../css/list.css">
+        <link rel="stylesheet" href="../css/header.css">
+        <link rel="stylesheet" href="../css/footer.css">
+        <link rel="stylesheet" href="../css/list.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
@@ -144,11 +142,11 @@ if ($type == null) {
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
-                    echo "<a class='company-link' href='/view/offer/detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
+                    echo "<a class='company-link' href='/View/offer/detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
                         echo "<div class='company-card'>";
                             echo "<div class='company-header'>";
                                 if ($type == 'all') {
-                                    echo '<button title="Like" class="heart" onclick="heartUpdate(' . $offer->getId() . ')"><i id="heart-icon-' . $offer->getId() . '" class="'. (Offer::isFavorite($offer->getId(), $user_id) ? 'fa-solid' : 'fa-regular') . ' fa-heart"></i></button>';
+                                    echo '<button title="Like" class="heart" onclick="heartUpdate(' . $offer->getId() . ')"><i id="heart-icon-' . $offer->getId() . '" class="'. (Offer::isFavorite($offer->getId(), $_SESSION["user_id"]) ? 'fa-solid' : 'fa-regular') . ' fa-heart"></i></button>';
                                 }
                                 echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
                                 echo "<h3 class='title'>". $offer->getTitle() ."</h3>";
@@ -318,7 +316,7 @@ if ($type == null) {
                     url: '/presenter/offer/favorite.php',
                     type: 'POST',
                     data: {id: id},
-                    success: function(msg, status, jqXHR) {
+                    success: function(msg, status) {
                         if (status === "success") {
                             const heartIcon = document.getElementById('heart-icon-' + id);
                             if (heartIcon.classList.contains('fa-regular')) {
