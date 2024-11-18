@@ -45,6 +45,50 @@ class PendingOffer extends Offer {
         $this->status = $status;
     }
 
+    /**
+     * instantiateRows
+     * Instantiates the rows of the statement
+     * @param false|PDOStatement $stmt
+     * @return array|null
+     */
+    private static function instantiateRows(false|PDOStatement $stmt): ?array {
+        $result = $stmt->fetchAll();
+
+        if (!$result) {
+            return null;
+        }
+
+        foreach ($result as $row) {
+            $company = Company::getById($row["company_id"]);
+
+            if (!$company) {
+                continue;
+            }
+
+            $offers[] = new PendingOffer(
+                $row["id"],
+                $row["company_id"],
+                $row["type"],
+                $company,
+                $row["title"],
+                $row["description"],
+                $row["job"],
+                $row["duration"],
+                $row["begin_date"],
+                $row["salary"],
+                $row["address"],
+                $row["study_level"],
+                date("Y-m-d H:i:s", strtotime($row["created_at"])),
+                $row["email"],
+                $row["phone"],
+                $row["website"],
+                $row["offer_id"],
+                $row["status"]
+            );
+        }
+        return $offers;
+    }
+
 
     /**
      * getId
@@ -180,41 +224,7 @@ class PendingOffer extends Offer {
             return null;
         }
 
-        $result = $stmt->fetchAll();
-
-        if (!$result) {
-            return null;
-        }
-
-        foreach ($result as $row) {
-            $company = Company::getById($row["company_id"]);
-
-            if (!$company) {
-                continue;
-            }
-
-            $offers[] = new PendingOffer(
-                $row["id"],
-                $row["company_id"],
-                $row["type"],
-                $company,
-                $row["title"],
-                $row["description"],
-                $row["job"],
-                $row["duration"],
-                $row["begin_date"],
-                $row["salary"],
-                $row["address"],
-                $row["study_level"],
-                date("Y-m-d H:i:s", strtotime($row["created_at"])),
-                $row["email"],
-                $row["phone"],
-                $row["website"],
-                $row["offer_id"],
-                $row["status"]
-            );
-        }
-        return $offers;
+        return self::instantiateRows($stmt);
     }
 
     /**
