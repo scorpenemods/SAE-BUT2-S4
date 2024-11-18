@@ -13,6 +13,7 @@ if (isset($_SERVER["HTTP_REFERER"])) {
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? 'Pending';
 if (!$offerId) {
     header("Location: " . $returnUrl);
     die();
@@ -26,7 +27,7 @@ if (!$groupeSecretariat || ($company_id != 0 && !Offer::isCompanyOffer($offerId,
     die();
 }
 
-$applications = Applications::getAllForOffer($offerId);
+$applications = Applications::getAllForOffer($offerId, $type);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -36,7 +37,7 @@ $applications = Applications::getAllForOffer($offerId);
     <title>Liste des Candidatures</title>
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/applications.css">
-    <link rel="stylesheet" href="/view/css/footer.css">
+    <link rel="stylesheet" href="../../css/footer.css">
 </head>
 <body>
 <?php include '../../header.php' ?>
@@ -60,9 +61,22 @@ $applications = Applications::getAllForOffer($offerId);
                         echo "</div>";
                         echo "<span class='date'>".$apply->getCreatedAt()."</span>";
                         echo "<div class='actions'>";
-                        echo "<button class='btn' title='Marquer comme favori' aria-label='Marquer ".Applications::getUsername($id_user)." comme favori'>⭐</button>";
-                        echo "<button class='btn' title='Répondre' aria-label='Répondre à ".Applications::getUsername($id_user)."'>✉️</button>";
-                        echo "<button class='btn' title='Supprimer' aria-label='Supprimer la candidature de ".Applications::getUsername($id_user)."'>🗑️</button>";
+                            echo "<form action='../../../presenter/offer/applications/favorite.php' method='post'>";
+                                echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
+                                if ($apply->getFavorite()) {
+                                    echo "<input class='btn' type='submit' name='Favoris' style='font-size:250%;color:yellow;width: 50px;height: 50px;' value='★'>";
+                                } else {
+                                    echo "<input class='btn' type='submit' name='Favoris' style='font-size:250%;color:yellow;width: 50px;height: 50px' value='☆'>";
+                                }
+                            echo "</form>";
+                            echo "<form action='../../../presenter/offer/applications/validate.php' method='post'>";
+                                echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
+                                echo "<input class='btn' type='submit' name='Favoris' style='font-size:200%;background: lawngreen;width: 50px;height: 50px' value='V'>";
+                            echo "</form>";
+                            echo "<form action='../../../presenter/offer/applications/validate.php' method='post'>";
+                                echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
+                                echo "<input class='btn' type='submit' name='Favoris' style='font-size:200%;background: red;width: 50px;height: 50px' value='R'>";
+                            echo "</form>";
                         echo "</div>";
                         echo "</div>";
                     }
@@ -85,13 +99,13 @@ $applications = Applications::getAllForOffer($offerId);
                 responseType: 'blob'
             },
             success: function(data, status, xhr) {
-                var disposition = xhr.getResponseHeader('Content-Disposition');
-                var matches = /"([^"]*)"/.exec(disposition);
-                var filename = (matches != null && matches[1] ? matches[1] : fileName + '.pdf');
+                let disposition = xhr.getResponseHeader('Content-Disposition');
+                let matches = /"([^"]*)"/.exec(disposition);
+                let filename = (matches != null && matches[1] ? matches[1] : fileName + '.pdf');
 
                 // Create blob link to download
-                var blob = new Blob([data], { type: 'application/pdf' });
-                var link = document.createElement('a');
+                let blob = new Blob([data], { type: 'application/pdf' });
+                let link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
                 link.download = filename;
 
@@ -104,7 +118,7 @@ $applications = Applications::getAllForOffer($offerId);
                 // Clean up and remove the link
                 link.parentNode.removeChild(link);
             },
-            error: function(xhr, status, error) {
+            error: function(xhr, _status, _error) {
                 if (xhr.status === 404) {
                     alert('File not found.');
                 } else {
