@@ -53,7 +53,7 @@ $isAlreadyPending = Offer::isAlreadyPending($offerId);
  * @return void
  */
 function renderDetail($label, $iconClass, $oldValue, $newValue, bool $isLink = false, string $linkPrefix = ''): void {
-    echo "<div class='detail-item'>";
+    echo "<div class='detail-item' label='$label'>";
         echo "<span>";
         echo "<i class='$iconClass'> </i>";
         if ($oldValue != $newValue) {

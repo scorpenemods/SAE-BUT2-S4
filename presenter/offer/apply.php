@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!isset($_SESSION["user"])) {
         header('Location: ' . $_SERVER["HTTP_REFERER"] ?? "/");
-        die();
     } else {
         $stmt = $db->prepare("select * from applications where idUser = :idUser and idOffer = :idOffre");
         $stmt->bindParam(":idUser", $idUser);
@@ -62,6 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: /view/offer/detail.php?id=$offer&status=already_applied");
         }
 
-        die();
     }
+    die();
 }
