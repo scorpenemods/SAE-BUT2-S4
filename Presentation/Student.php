@@ -47,6 +47,9 @@ $messages = $database->getMessages($senderId, $receiverId);
 // Récupération des notes de l'utilisateur depuis la base de données
 $notes = $database->getNotes($senderId);
 
+// Récupération des différents stages de l'utilisateur depuis la base de données
+$stages = $database->getStages($senderId);
+
 ?>
 
 <!DOCTYPE html>
@@ -138,8 +141,17 @@ $notes = $database->getNotes($senderId);
         </div>
     </div>
 </header>
-
-<section class="Menus">
+<div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
+<div class="sidebar" id="sidebar">
+    <div class="students">
+        <?php foreach ($stages as $stage): ?>
+            <div class="student" onclick="selectStudent(this)">
+                <span><?php echo $stage; ?></span>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+<section class="Menus" id="Menus">
     <nav>
         <span onclick="window.location.href='Student.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : '0'; ?>">Accueil</span>
         <span onclick="window.location.href='Student.php?section=6'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '1'; ?>">Missions de stage</span>
