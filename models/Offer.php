@@ -1,5 +1,4 @@
 <?php
-
 require dirname(__FILE__) . '/../presenter/database.php';
 
 /**
@@ -46,7 +45,7 @@ class Offer {
      * @param string $created_at
      * @param string $updated_at
      */
-    private function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $website, string $created_at, string $updated_at) {
+    protected function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $website, string $created_at, string $updated_at) {
         $this->id = $id;
         $this->company_id = $company_id;
         $this->company = $company;
