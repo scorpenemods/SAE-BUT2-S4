@@ -164,6 +164,45 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
         <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">Missions de stage</div>
         <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">Contenu Gestion Stagiaires</div>
         <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : 'Contenu'; ?>" id="content-3">
+            <!-- Affichage des participants -->
+
+            <div class="livret-header" style="margin-bottom: 10px">
+                <h2 style="text-align: center">Participants</h2>
+            </div><br>
+            <div style="display: flex; gap: 10%; justify-content: center;">
+                <div class="participants">
+                    <h3>Etudiant :</h3><br>
+                    <p>Nom prénom : <label id="student-name"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></label></p>
+                    <p>Formation : <label><?php echo htmlspecialchars($student->getActivite()); ?></label></p>
+                    <p>Email : <label><?php echo htmlspecialchars($student->getEmail()); ?></label></p>
+                    <?php if ($student->getTelephone() != 0){?>
+                        <p>Téléphone : <label><?php echo htmlspecialchars($student->getTelephone()); ?></label></p>
+                    <?php }?>
+                </div>
+
+                <div class="participants">
+                    <h3>Professeur :</h3><br>
+                    <p>Nom prénom : <label><?php echo '(Professeur)' ?></label></p>
+                    <p>Spécialité : <label><?php echo '(Spécialité)' ?></label></p>
+                    <p>Email : <label><?php echo '(Professeur@email.com)' ?></label></p>
+                    <?php if (0==0){?>
+                        <p>Téléphone : <label><?php echo '(téléphone)' ?></label></p>
+                    <?php }?>
+                </div>
+
+                <div class="participants">
+                    <h3>Maitre de stage :</h3><br>
+                    <p>Nom prénom : <label><?php echo $userName; ?></label></p>
+                    <p>Spécialité : <label><?php echo htmlspecialchars($person->getActivite()); ?></label></p>
+                    <p>Email : <label><?php echo htmlspecialchars($person->getEmail()); ?></label></p>
+                    <?php if ($person->getTelephone() != 0){?>
+                        <p>Téléphone : <label><?php echo htmlspecialchars($person->getTelephone()); ?></label></p>
+                    <?php }?>
+                </div>
+            </div><br>
+
+            <!-- Affichage du livret de suivi -->
+
             <?php include_once("LivretSuivi.php");?>
 
 

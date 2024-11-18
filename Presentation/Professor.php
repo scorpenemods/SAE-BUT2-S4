@@ -267,9 +267,9 @@ $notes = $database->getNotes($userId);
 
                 <div class="participants">
                     <h3>Maitre de stage :</h3><br>
-                    <p>Nom prénom : <label><?php echo '(Nom et prenom)'; ?></label></p>
+                    <p>Nom prénom : <label><?php echo '(MdS)'; ?></label></p>
                     <p>Spécialité : <label><?php echo '(Spécialité)' ?></label></p>
-                    <p>Email : <label><?php echo '(Email@email.com)' ?></label></p>
+                    <p>Email : <label><?php echo '(mds@email.com)' ?></label></p>
                     <?php if (0==0){?>
                         <p>Téléphone : <label><?php echo '(téléphone)' ?></label></p>
                     <?php }?>
