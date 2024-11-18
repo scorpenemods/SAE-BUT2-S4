@@ -1,4 +1,5 @@
 <?php
+
 $etudiant="Lucie <br> 
 Email : lucie@gmail.com <br>
 Telephone : 0657284298 <br>
@@ -15,45 +16,23 @@ Telephone : 0657284298 <br>
 Description : fezrgzgfiqfhuHTY";
 ?>
 
-
 <body>
 
 <!-- Création des différentes rencontres / dépôts : -->
 
 <div class="livret-container">
     <aside class="livretbar">
+        <h3 style="text-decoration: underline;">Rencontres / dépôts</h3><br>
         <span class="vignette" onclick="showContent(0)">1ère rencontre</span><br>
         <span class="vignette" onclick="showContent(1)">2ème rencontre</span><br>
         <span class="vignette" onclick="showContent(2)">3ème rencontre</span><br>
         <span class="vignette" onclick="showContent(3)">Dépôt du mémoire ou rapport</span><br>
-        <button>+ Nouvelle rencontre</button>
     </aside>
 
 
     <!-- Affichage des informations des participants : -->
 
     <div class="content-livret">
-
-        <div class="livret-header">
-            <h2>Participants </h2>
-        </div>
-        <div style="display: flex; gap: 200px;">
-            <div class="participants">
-                <h3>Etudiant :</h3>
-                <p><?php echo $etudiant; ?></p>
-            </div>
-
-            <div class="participants">
-                <h3>Professeur :</h3>
-                <p><?php echo $professeur; ?></p>
-            </div>
-
-            <div class="participants">
-                <h3>Maitre de stage :</h3>
-                <p><?php echo $MDS; ?></p>
-            </div>
-        </div>
-
 
         <!-- Les différents formulaire pour chaque rencontre : -->
 
@@ -73,7 +52,17 @@ Description : fezrgzgfiqfhuHTY";
                 <input type="radio"><label> En entreprise</label> <br>
                 <input type="radio"><label> Par téléphone</label> <br>
                 <input type="radio"><label> En visio</label> <br>
-                <input type="radio"><label> Autre</label> <input type="text"> <br><br></p>
+                <input type="radio"><label> Autre</label> <input type="text"> <br><br><br>
+
+
+                Remarques du professeur : <label style="color: red">*</label> <br>
+
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea><br><br><br>
+
+
+                Apréciations du maitre de stage : <label style="color: red">*</label> <br>
+
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos apréciations lors de la rencontre..." class="textareaLivret"></textarea><br><br></p>
         </div>
 
         <div class="content-section" id="1">
@@ -92,7 +81,17 @@ Description : fezrgzgfiqfhuHTY";
                 <input type="radio"><label> En entreprise</label> <br>
                 <input type="radio"><label> Par téléphone</label> <br>
                 <input type="radio"><label> En visio</label> <br>
-                <input type="radio"><label> Autre</label> <input type="text"> <br><br></p>
+                <input type="radio"><label> Autre</label> <input type="text"> <br><br><br>
+
+
+                Remarques du professeur : <label style="color: red">*</label> <br>
+
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea><br><br><br>
+
+
+                Apréciations du maitre de stage : <label style="color: red">*</label> <br>
+
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos apréciations lors de la rencontre..." class="textareaLivret"></textarea><br><br></p>
         </div>
 
         <div class="content-section" id="2">
@@ -111,7 +110,17 @@ Description : fezrgzgfiqfhuHTY";
                 <input type="radio"><label> En entreprise</label> <br>
                 <input type="radio"><label> Par téléphone</label> <br>
                 <input type="radio"><label> En visio</label> <br>
-                <input type="radio"><label> Autre</label> <input type="text"> <br><br></p>
+                <input type="radio"><label> Autre</label> <input type="text"> <br><br><br>
+
+
+                Remarques du professeur : <label style="color: red">*</label> <br>
+
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea><br><br><br>
+
+
+                Apréciations du maitre de stage : <label style="color: red">*</label> <br>
+
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos apréciations lors de la rencontre..." class="textareaLivret"></textarea><br><br></p>
         </div>
 
         <div class="content-section" id="3">
