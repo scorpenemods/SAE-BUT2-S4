@@ -55,7 +55,7 @@ function renderDetail($label, $iconClass, $oldValue, $newValue, $isLink = false,
     * If the values are different, it renders a link to the old value and a link to the new value.
     * If the values are the same, it renders the new value as a link if $isLink is true, or as a plain text otherwise.
     */
-    echo "<div class='detail-item'>";
+    echo "<div class='detail-item' label='$label'>";
     echo "<span>";
     echo "<i class='$iconClass'> </i>";
     if ($oldValue != $newValue) {

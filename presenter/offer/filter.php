@@ -17,4 +17,3 @@ function getPageOffers(int $n, array $filters): ?array {
         "totalPages" => $filteredOffers[1]
     );
 }
-?>
