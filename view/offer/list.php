@@ -1,51 +1,31 @@
 <?php
 session_start();
-$_SESSION['company_id'] = 0;
-$_SESSION['secretariat'] = true;
-$_SESSION['user'] = 1;
-
-// Verification de qui est l'utilisateur
-$company_id = 0;
-if (isset($_SESSION['company_id'])) {
-    $company_id = $_SESSION['company_id'];
-}
-
-$groupeSecretariat = false;
-if (isset($_SESSION['secretariat'])) {
-    $groupeSecretariat = $_SESSION['secretariat'];
-}
-
-$user_id = 0;
-if (isset($_SESSION['user'])) {
-    $user_id = $_SESSION['user'];
-}
 
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../models/PendingOffer.php';
-require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 require dirname(__FILE__) . '/../../presenter/utils.php';
+require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
-$pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT);
-if ($pageId == null) {
-    $pageId = 1;
-}
+$_SESSION['user'] = 1;
+$_SESSION['company_id'] = 0;
+$_SESSION['secretariat'] = true;
 
-$curURL = $_SERVER["REQUEST_URI"];
+$user_id = $_SESSION['user'] ?? 0;
+$company_id = $_SESSION['company_id'] ?? 0;
+$secretariat_group = $_SESSION['secretariat'] ?? false;
+
+$pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT) ?? 1;
+$currentURL = $_SERVER["REQUEST_URI"];
 
 function setPageId($url, $newPageId): string {
     $parsedUrl = parse_url($url);
-
     parse_str($parsedUrl['query'] ?? '', $queryParams);
 
     $queryParams['pageId'] = $newPageId;
-
     $newQueryString = http_build_query($queryParams);
 
-    return (isset($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '')
-            . ($parsedUrl['host'] ?? '')
-            . ($parsedUrl['path'] ?? '')
-            . (!empty($newQueryString) ? '?' . $newQueryString : '');
+    return (isset($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '') . ($parsedUrl['host'] ?? '') . ($parsedUrl['path'] ?? '') . (!empty($newQueryString) ? '?' . $newQueryString : '');
 }
 
 /*
@@ -54,7 +34,6 @@ function setPageId($url, $newPageId): string {
  */
 error_reporting(E_ALL ^ E_DEPRECATED);
 $filters = array();
-
 $title = filter_input(INPUT_GET, 'title');
 $sort = filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING);
 $startDate = filter_input(INPUT_GET, 'startDate', FILTER_SANITIZE_STRING);
@@ -65,7 +44,7 @@ $address = filter_input(INPUT_GET, 'address', FILTER_SANITIZE_STRING);
 $duration = filter_input(INPUT_GET, 'duration', FILTER_VALIDATE_INT);
 $sector = filter_input(INPUT_GET, 'sector', FILTER_SANITIZE_STRING);
 $keywords = filter_input(INPUT_GET, 'keywords', FILTER_SANITIZE_STRING);
-$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
+$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? 'all';
 
 if (isset($title)) { $filters["title"] = $title; }
 if (isset($sort)) { $filters["sort"] = $sort; }
@@ -77,18 +56,13 @@ if (isset($address)) { $filters["address"] = $address; }
 if (isset($duration)) { $filters["duration"] = $duration; }
 if (isset($sector)) { $filters["sector"] = $sector; }
 if (isset($keywords)) { $filters["keywords"] = $keywords; }
-if (isset($type) && ($groupeSecretariat || $company_id != 0)) { $filters["type"] = $type; }
+if (isset($type) && ($secretariat_group || $company_id != 0)) { $filters["type"] = $type; }
 if ($company_id != 0) { $filters["company_id"] = $company_id; }
 
 $filteredOffers = getPageOffers($pageId, $filters);
 $offers = $filteredOffers["offers"] ?? array();
 $totalPages = $filteredOffers["totalPages"] ?? 1;
-
-if ($type == null) {
-    $type = 'all';
-}
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
     <head>
@@ -125,21 +99,18 @@ if ($type == null) {
                 </div>
             </form>
             <div class="pagination button-group" style="text-align: center">
-                <div id="all">
-                    <a href="/view/offer/list.php?type=all">Tous les offres</i></a>
-                </div>
-                <div id="new">
-                    <a href="/view/offer/list.php?type=new">Nouvelles offres</i></a>
-                </div>
-                <div id="updated">
-                    <a href="/view/offer/list.php?type=updated">Offres mises à jour</i></a>
-                </div>
-                <div id="inactive">
-                    <a href="/view/offer/list.php?type=inactive">Offres inactives</i></a>
-                </div>
-                <div id="create" style="text-align: center">
-                    <a href="create.php">Créer une offre</i></a>
-                </div>
+                <?php
+                if ($secretariat_group) {
+                    echo '<div id="all"><a href="/view/offer/list.php?type=all">Tous les offres</i></a> </div>';
+                    echo '<div id="new"> <a href="/view/offer/list.php?type=new">Nouvelles offres</i></a> </div>';
+                }
+
+                if ($secretariat_group || $company_id != 0) {
+                    echo '<div id="updated"> <a href="/view/offer/list.php?type=updated">Offres mises à jour</i></a> </div>';
+                    echo '<div id="inactive"> <a href="/view/offer/list.php?type=inactive">Offres inactives</i></a> </div>';
+                }
+                ?>
+                <div id="create" style="text-align: center"> <a href="create.php">Créer une offre</i></a> </div>
             </div>
             <div class="company-listings">
                 <?php
@@ -167,11 +138,11 @@ if ($type == null) {
                 ?>
             </div>
             <div id="pagination" class="pagination">
-                <a href="<?php echo setPageId($curURL, 1); ?>" class="first-page"><i class="fas fa-angle-double-left"></i></a>
-                <a href="<?php echo setPageId($curURL, $pageId > 1 ? $pageId - 1 : $pageId); ?>" class="prev-page"><i class="fas fa-angle-left"></i></a>
+                <a href="<?php echo setPageId($currentURL, 1); ?>" class="first-page"><i class="fas fa-angle-double-left"></i></a>
+                <a href="<?php echo setPageId($currentURL, $pageId > 1 ? $pageId - 1 : $pageId); ?>" class="prev-page"><i class="fas fa-angle-left"></i></a>
                 <a disabled="true" href="#"><?php echo $pageId; ?> / <?php echo $totalPages; ?></a>
-                <a href="<?php echo setPageId($curURL, $pageId < $totalPages ? $pageId + 1 : $pageId); ?>" class="next-page"><i class="fas fa-angle-right"></i></a>
-                <a href="<?php echo setPageId($curURL, $totalPages); ?>" class="last-page"><i class="fas fa-angle-double-right"></i></a>
+                <a href="<?php echo setPageId($currentURL, $pageId < $totalPages ? $pageId + 1 : $pageId); ?>" class="next-page"><i class="fas fa-angle-right"></i></a>
+                <a href="<?php echo setPageId($currentURL, $totalPages); ?>" class="last-page"><i class="fas fa-angle-double-right"></i></a>
             </div>
         </main>
         <div class="filter-panel" id="filterPanel">
@@ -235,7 +206,6 @@ if ($type == null) {
                         <input type="text" id="skills" name="keywords" placeholder="Ex: JavaScript, Marketing, Finance">
                     </div>
 
-                    <!-- Ajout du bouton submit -->
                     <div class="filter-panel-footer">
                         <button type="submit" form="filterForm">Appliquer les filtres</button>
                         <button type="button" class="close-filter" id="closeFilter" aria-label="Fermer les filtres">
@@ -250,7 +220,6 @@ if ($type == null) {
         </div>
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
         <script>
-            // Filter panel functionality
             const filterPanel = document.getElementById('filterPanel');
             const blurOverlay = document.getElementById('blurOverlay');
             const openFilterBtn = document.getElementById('openFilter');
@@ -276,42 +245,17 @@ if ($type == null) {
             closeFilterBtn.addEventListener('click', closeFilterPanel);
             blurOverlay.addEventListener('click', closeFilterPanel);
 
-
-
-
-            // Close filter panel when pressing Escape key
             document.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
                     closeFilterPanel();
                 }
             });
 
-
             const createNotificationBtn = document.getElementById('createNotification');
-            createNotificationBtn.addEventListener('click', () => {
-                alert('Fonctionnalité de création de demande de notification à implémenter');
+            createNotificationBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Fonctionnalité de création de demande de notification à implémenter')
             });
-
-            const groupeSecretariat = <?php echo json_encode($groupeSecretariat); ?>;
-            const companyId = <?php echo json_encode($company_id); ?>;
-            if (groupeSecretariat) {
-                document.getElementById('all').style.display = "block";
-                document.getElementById('new').style.display = "block";
-                document.getElementById('updated').style.display = "block";
-                document.getElementById('create').style.display = "block";
-                document.getElementById('inactive').style.display = "block";
-            } else {
-                document.getElementById('all').style.display = "none";
-                document.getElementById('new').style.display = "none";
-                document.getElementById('updated').style.display = "none";
-                document.getElementById('inactive').style.display = "none";
-                document.getElementById('create').style.display = "block";
-            }
-
-            if (companyId !== 0) {
-                document.getElementById('all').style.display = "block";
-                document.getElementById('inactive').style.display = "block";
-            }
 
             function heartUpdate(id) {
                 $.ajax({
