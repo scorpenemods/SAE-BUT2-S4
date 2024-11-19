@@ -71,6 +71,11 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <script src="/View/Principal/Notif.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include EmojiOneArea -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>"> <!-- Ajout de la classe 'dark-mode' si activée -->
 
@@ -212,55 +217,48 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
         <!-- Contenu de la Messagerie -->
         <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : 'Contenu'; ?>" id="content-5">
             <div class="messenger">
-                <!-- Barre de recherche de contacts -->
                 <div class="contacts">
                     <div class="search-bar">
-                        <label for="search-input"></label>
-                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                        <input type="text" id="search-input" placeholder="Search contacts..." onkeyup="searchContacts()">
                     </div>
                     <h3>Contacts</h3>
                     <ul id="contacts-list">
                         <?php include_once("ContactList.php");?>
                         <?php include_once("GroupContactList.php");?>
-
                     </ul>
                 </div>
 
-                <!-- Menu contextuel pour copier ou supprimer un message -->
+                <!-- Context menu for message actions -->
                 <div id="context-menu" class="context-menu">
                     <ul>
-                        <li id="copy-text">Copier</li>
-                        <li id="delete-message">Supprimer</li>
+                        <li id="copy-text">Copy</li>
+                        <li id="delete-message">Delete</li>
                     </ul>
                 </div>
 
-                <!-- Fenêtre de chat -->
                 <div class="chat-window">
                     <div class="chat-header">
-                        <h3 id="chat-header-title">Chat avec Contact </h3>
+                        <h3 id="chat-header-title">Select a chat to start messaging.</h3>
                     </div>
-
                     <div class="chat-body" id="chat-body">
-                        <!-- Les messages seront chargés dynamiquement via JavaScript -->
+                        <!-- Messages will be loaded here dynamically via JavaScript -->
                     </div>
-
-                    <!-- Zone de saisie pour envoyer un nouveau message -->
                     <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                             <!-- Hidden fields for receiver_id and group_id -->
                             <input type="hidden" name="receiver_id" id="receiver_id" value="">
                             <input type="hidden" name="group_id" id="group_id" value="">
                             <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="button" onclick="sendMessage(event)">Envoyer</button>
+                            <button type="submit">Envoyer</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>"</div>
+        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>">
         <h2 id="student-name"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></h2>
         <div class="notes-container">
             <table class="notes-table">
@@ -316,6 +314,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <a href="Redirection.php">Informations</a>
     <a href="Redirection.php">À propos</a>
 </footer>
+
 <script src="../View/Principal/deleteMessage.js"></script>
 <script src="/View/Principal/GroupMessenger.js"></script>
 </body>

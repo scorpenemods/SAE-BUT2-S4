@@ -1,54 +1,86 @@
-// groupMessenger.js
+// Global variables
+window.currentGroupId = null;
+let lastGroupMessageTimestamp = null;
 
+// Function to open a group chat
 function openGroupChat(groupId, groupName) {
-    // Update the chat header with the group name
-    document.getElementById('chat-header-title').innerText = 'Chat de groupe : ' + groupName;
+    // Update chat header
+    document.getElementById('chat-header-title').innerText = 'Group Chat: ' + groupName;
 
-    // Save the current group ID
+    // Set current chat context
     window.currentGroupId = groupId;
-    window.currentChatContactId = null; // Reset private chat contact
+    window.currentChatContactId = null; // Reset contact ID
 
-    // Change form action to SendGroupMessage.php
+    // Set hidden input values
+    document.getElementById('group_id').value = groupId;
+    document.getElementById('receiver_id').value = '';
+
+    // Update the form action
     const messageForm = document.getElementById('messageForm');
     messageForm.action = 'SendGroupMessage.php';
 
-    // Set the group_id hidden input
-    document.getElementById('group_id').value = groupId;
+    // Update active group styling
+    const contacts = document.querySelectorAll('#contacts-list li');
+    contacts.forEach(contact => {
+        contact.classList.remove('contact-active');
+    });
 
-    // Clear receiver_id value
-    document.getElementById('receiver_id').value = '';
+    const activeGroup = document.querySelector(`#contacts-list li[data-group-id="${groupId}"]`);
+    if (activeGroup) {
+        activeGroup.classList.add('contact-active');
+    }
 
-    // Fetch group messages
-    fetch('../View/Principal/GetGroupMessages.php?group_id=' + groupId)
+    // Fetch and display group messages
+    fetchGroupMessages();
+}
+
+// Assign sendGroupMessage to window for global access
+window.sendGroupMessage = sendGroupMessage;
+
+// Function to fetch and display group messages
+function fetchGroupMessages() {
+    if (!currentGroupId) return;
+
+    const chatBody = document.getElementById('chat-body');
+    const previousScrollHeight = chatBody.scrollHeight;
+    const scrollPosition = chatBody.scrollBottom;
+
+    fetch(`../View/Principal/GetGroupMessages.php?group_id=${currentGroupId}`)
         .then(response => response.text())
         .then(html => {
-            const chatBody = document.getElementById('chat-body');
             chatBody.innerHTML = html;
-            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Restore scroll position
+            chatBody.scrollBottom = scrollPosition;
+
+            // Update last message timestamp
+            const messages = chatBody.querySelectorAll('.message');
+            if (messages.length > 0) {
+                const lastMessage = messages[messages.length - 1];
+                const timestampElement = lastMessage.querySelector('.timestamp');
+                if (timestampElement) {
+                    lastGroupMessageTimestamp = timestampElement.innerText;
+                }
+            }
         })
         .catch(error => console.error('Error:', error));
 }
 
 // Function to send group message
-function sendMessage(event) {
+function sendGroupMessage(event) {
     event.preventDefault();
 
-    const messageInput = document.getElementById('message-input');
-    const message = messageInput.value.trim();
+    const messageInputElement = $("#message-input").data("emojioneArea");
+    const message = messageInputElement ? messageInputElement.getText().trim() : document.getElementById('message-input').value.trim();
     const fileInput = document.getElementById('file-input');
-    const groupId = document.getElementById('group_id').value;
-
-    if (!groupId) {
-        alert("Veuillez sélectionner un groupe.");
-        return;
-    }
 
     if (!message && !fileInput.files.length) {
-        alert("Veuillez entrer un message ou sélectionner un fichier.");
+        alert("Please enter a message or select a file.");
         return;
     }
 
     const formData = new FormData(document.getElementById('messageForm'));
+    formData.set('message', message);
 
     fetch("SendGroupMessage.php", {
         method: "POST",
@@ -57,28 +89,33 @@ function sendMessage(event) {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
+                if (messageInputElement) {
+                    messageInputElement.setText(''); // Clear the EmojiOneArea editor
+                } else {
+                    document.getElementById('message-input').value = '';
+                }
                 displayGroupMessage(
                     data.message,
                     data.file_path,
-                    data.sender_id == data.current_user_id ? 'self' : 'other',
+                    'self',
                     data.timestamp,
-                    data.message_id,
                     data.sender_name
                 );
-                messageInput.value = '';
+                messageInputElement.value = '';
                 fileInput.value = '';
             } else {
-                alert("Erreur: " + data.message);
+                alert("Error: " + data.message);
             }
         })
-        .catch(error => console.error("Erreur lors de l'envoi du message: ", error));
+        .catch(error => console.error("Error sending message: ", error));
 }
 
-// Function to display group messages
-function displayGroupMessage(messageContent, filePath, messageType, timestamp, messageId, senderName) {
+// Function to display a group message
+function displayGroupMessage(messageContent, filePath, messageType, timestamp, senderName) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', messageType);
-    messageElement.dataset.messageId = messageId;
+    messageElement.dataset.messageId = Date.now(); // Use a temporary ID or the real message ID if available
+    messageElement.dataset.messageType = 'group';
 
     // Add sender name
     const senderElement = document.createElement('span');
@@ -93,14 +130,24 @@ function displayGroupMessage(messageContent, filePath, messageType, timestamp, m
         messageElement.appendChild(messageText);
     }
 
-    // Add file link if exists
+    // Add file link or image if exists
     if (filePath) {
-        const fileLink = document.createElement('a');
-        fileLink.href = filePath;
-        fileLink.download = true;
-        const fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
-        fileLink.textContent = fileName || 'Télécharger le fichier';
-        messageElement.appendChild(fileLink);
+        const fileExtension = filePath.split('.').pop().toLowerCase();
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        if (imageExtensions.includes(fileExtension)) {
+            const imageElement = document.createElement('img');
+            imageElement.src = filePath;
+            imageElement.style.maxWidth = '200px';
+            imageElement.style.maxHeight = '200px';
+            messageElement.appendChild(imageElement);
+        } else {
+            const fileLink = document.createElement('a');
+            fileLink.href = filePath;
+            fileLink.download = true;
+            const fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+            fileLink.textContent = fileName || 'Download File';
+            messageElement.appendChild(fileLink);
+        }
     }
 
     // Add timestamp
@@ -114,75 +161,66 @@ function displayGroupMessage(messageContent, filePath, messageType, timestamp, m
     chatBody.scrollTop = chatBody.scrollHeight;
 }
 
-// Function to periodically update group chat
-//setInterval(updateGroupChat, 5000);
-
-function updateGroupChat() {
-    const groupId = window.currentGroupId;
-    if (!groupId) return;
-
-    fetch('../View/Principal/GetGroupMessages.php?group_id=' + groupId)
-        .then(response => response.text())
-        .then(html => {
-            const chatBody = document.getElementById('chat-body');
-            chatBody.innerHTML = html;
-            chatBody.scrollTop = chatBody.scrollHeight;
-        })
-        .catch(error => console.error('Erreur:', error));
-}
-
-// Function to format timestamp (reuse your existing formatTimestamp function)
+// Function to format timestamp
 function formatTimestamp(timestamp) {
-    // Implement your timestamp formatting logic here
-    return timestamp; // Placeholder
-}
+    const messageDate = new Date(timestamp);
+    const now = new Date();
 
-// Function to start long polling
-function startLongPolling() {
-    if (!window.currentGroupId) return;
+    const isToday = messageDate.toDateString() === now.toDateString();
 
-    let lastTimestamp = window.lastMessageTimestamp || '';
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    const isYesterday = messageDate.toDateString() === yesterday.toDateString();
 
-    function poll() {
-        fetch(`GetNewGroupMessages.php?group_id=${window.currentGroupId}&last_timestamp=${encodeURIComponent(lastTimestamp)}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success' && data.messages.length > 0) {
-                    data.messages.forEach(msg => {
-                        const senderId = msg.sender_id;
-                        const senderName = msg.sender_name;
-                        const messageContent = msg.contenu;
-                        const filePath = msg.filepath ? msg.filepath : null;
-                        const timestamp = msg.timestamp;
-                        const messageId = msg.id;
+    let formattedTime = messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                        // Update last message timestamp
-                        window.lastMessageTimestamp = timestamp;
-
-                        // Determine message type
-                        const messageType = (senderId == window.currentUserId) ? 'self' : 'other';
-
-                        displayGroupMessage(
-                            messageContent,
-                            filePath,
-                            messageType,
-                            timestamp,
-                            messageId,
-                            senderName
-                        );
-                    });
-                }
-
-                // Continue polling immediately to check for new messages
-                poll();
-            })
-            .catch(error => {
-                console.error('Error in long polling:', error);
-                // Retry after a delay if there is an error
-                setTimeout(poll, 5000);
-            });
+    if (isToday) {
+        return 'Today at ' + formattedTime;
+    } else if (isYesterday) {
+        return 'Yesterday at ' + formattedTime;
+    } else {
+        return messageDate.toLocaleDateString() + ' at ' + formattedTime;
     }
-
-    // Start polling
-    poll();
 }
+
+// Function to check for new group messages
+function checkForNewGroupMessages() {
+    if (!currentGroupId || !lastGroupMessageTimestamp) return;
+
+    fetch(`GetNewGroupMessages.php?group_id=${currentGroupId}&last_timestamp=${encodeURIComponent(lastGroupMessageTimestamp)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success' && data.messages.length > 0) {
+                data.messages.forEach(msg => {
+                    const messageType = (msg.sender_id == currentUserId) ? 'self' : 'other';
+                    displayGroupMessage(
+                        msg.contenu,
+                        msg.filepath,
+                        messageType,
+                        msg.timestamp,
+                        msg.sender_name
+                    );
+                });
+
+                // Update last message timestamp
+                const lastMsg = data.messages[data.messages.length - 1];
+                lastGroupMessageTimestamp = lastMsg.timestamp;
+            }
+        })
+        .catch(error => console.error('Error fetching new messages:', error));
+}
+
+// Set interval to check for new group messages every 5 seconds
+setInterval(checkForNewGroupMessages, 5000);
+
+// Initialize EmojiOneArea if it's included
+$(document).ready(function() {
+    if ($.fn.emojioneArea) {
+        $("#message-input").emojioneArea({
+            pickerPosition: "top",
+            tonesStyle: "bullet"
+        });
+    }
+});
+// Ensure fetchGroupMessages is accessible globally
+window.fetchGroupMessages = fetchGroupMessages;

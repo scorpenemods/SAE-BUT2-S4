@@ -569,12 +569,13 @@ class Database
 
     // get a message from a group
     public function getGroupMessages($groupId) {
-        $sql = "SELECT MessageGroupe.*, Document.filepath
-                FROM MessageGroupe
-                LEFT JOIN Document_Message ON MessageGroupe.id = Document_Message.message_id
-                LEFT JOIN Document ON Document_Message.document_id = Document.id
-                WHERE MessageGroupe.groupe_id = :group_id
-                ORDER BY MessageGroupe.timestamp ASC";
+        $sql = "SELECT MessageGroupe.*, Document.filepath, User.prenom, User.nom
+            FROM MessageGroupe
+            LEFT JOIN Document_Message ON MessageGroupe.id = Document_Message.message_id
+            LEFT JOIN Document ON Document_Message.document_id = Document.id
+            JOIN User ON MessageGroupe.sender_id = User.id
+            WHERE MessageGroupe.groupe_id = :group_id
+            ORDER BY MessageGroupe.timestamp ASC";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
         $stmt->execute();
@@ -735,14 +736,14 @@ class Database
     }
 
     public function getGroupMessagesSince($groupId, $lastTimestamp) {
-        $sql = "SELECT MessageGroupe.*, Document.filepath, User.prenom, User.nom
-            FROM MessageGroupe
-            LEFT JOIN Document_Message ON MessageGroupe.id = Document_Message.message_id
-            LEFT JOIN Document ON Document_Message.document_id = Document.id
-            JOIN User ON MessageGroupe.sender_id = User.id
-            WHERE MessageGroupe.groupe_id = :group_id
-            AND MessageGroupe.timestamp > :last_timestamp
-            ORDER BY MessageGroupe.timestamp ASC";
+        $sql = "SELECT mg.*, d.filepath, u.prenom, u.nom
+            FROM MessageGroupe mg
+            LEFT JOIN Document_Message dm ON mg.id = dm.message_id
+            LEFT JOIN Document d ON dm.document_id = d.id
+            JOIN User u ON mg.sender_id = u.id
+            WHERE mg.groupe_id = :group_id
+              AND mg.timestamp > :last_timestamp
+            ORDER BY mg.timestamp ASC";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
         $stmt->bindParam(':last_timestamp', $lastTimestamp);

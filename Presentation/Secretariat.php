@@ -151,6 +151,11 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <link rel="stylesheet" href="../View/Principal/Modals.css">
     <script src="/View/Principal/Notif.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include EmojiOneArea -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
 <header class="navbar">
@@ -431,7 +436,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
                             <input type="hidden" name="receiver_id" id="receiver_id" value="">
                             <input type="hidden" name="group_id" id="group_id" value="">
                             <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="button" onclick="sendMessage(event)">Envoyer</button>
+                            <button type="submit">Envoyer</button>
                         </form>
                     </div>
                 </div>

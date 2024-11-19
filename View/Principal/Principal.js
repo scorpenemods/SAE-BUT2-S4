@@ -153,52 +153,30 @@ function displayMessage(messageContent, filePath = null, messageType, timestamp,
     chatBody.scrollTop = chatBody.scrollHeight; // Faire défiler vers le bas
 }
 
-
-function fetchMessages() {
-    const receiverId = document.querySelector('input[name="receiver_id"]').value;
-    const formData = new FormData();
-    formData.append("receiver_id", receiverId);
-
-    fetch("fetchMessages.php", {
-        method: "POST",
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                updateChat(data.messages);
-            } else {
-                console.error("Erreur: " + data.message);
-            }
-        })
-        .catch(error => console.error("Erreur lors de la récupération des messages: ", error));
-}
-
 // Fonction pour mettre à jour le chat dynamiquement
 function updateChat() {
-    if (!currentChatContactId) return; // Si aucun contact n'est sélectionné, ne rien faire
+    if (!currentChatContactId) return; // If no contact is selected, do nothing
+
+    const chatBody = document.getElementById('chat-body');
+    const previousScrollHeight = chatBody.scrollHeight;
+    const scrollPosition = chatBody.scrollBottom;
 
     fetch('../View/Principal/GetMessages.php?contact_id=' + currentChatContactId)
         .then(response => response.text())
         .then(html => {
-            const chatBody = document.getElementById('chat-body');
-            // Sauvegarder la position de défilement actuelle
-            const previousScrollHeight = chatBody.scrollHeight;
-            const isAtBottom = chatBody.scrollTop + chatBody.clientHeight >= previousScrollHeight - 10;
-
-            // Mettre à jour le contenu du chat
             chatBody.innerHTML = html;
 
-            // Si l'utilisateur était en bas du chat, faire défiler jusqu'en bas
-            if (isAtBottom) {
-                chatBody.scrollTop = chatBody.scrollHeight;
-            }
+            // Restore scroll position
+            chatBody.scrollBottom = scrollPosition;
+
+            // Optionally, scroll to the bottom if you prefer
+            // chatBody.scrollTop = chatBody.scrollHeight;
         })
         .catch(error => console.error('Erreur:', error));
 }
 
 // Actualiser le chat toutes les 5 secondes
-//DON'T touch  setInterval(updateChat, 5000);
+setInterval(updateChat, 5000);
 
 function sendFile(fileInput) {
     const file = fileInput.files[0];
@@ -284,43 +262,67 @@ function searchContacts() {
     });
 }
 
+// Global variables
+window.currentChatContactId = null;
+window.currentGroupId = null;
+
+// Attach event listener to messageForm
+document.addEventListener('DOMContentLoaded', function() {
+    const messageForm = document.getElementById('messageForm');
+
+    messageForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (window.currentGroupId) {
+            sendGroupMessage(event);
+        } else if (window.currentChatContactId) {
+            sendMessage(event);
+        } else {
+            alert('Veuillez sélectionner un chat pour envoyer un message.');
+        }
+    });
+});
+
+// Assign sendMessage to window for global access
+window.sendMessage = sendMessage;
+// Ensure updateChat is accessible globally
+window.updateChat = updateChat;
+
+// Function to open a private chat
 function openChat(contactId, contactName) {
-    // Mettre à jour l'en-tête du chat avec le nom du contact
+    // Update chat header
     document.getElementById('chat-header-title').innerText = 'Chat avec ' + contactName;
 
-    // Enregistrer l'ID du contact dans le Local Storage
-    localStorage.setItem('selectedContactId', contactId);
-
-    // Enregistrer le nom du contact dans le Local Storage
-    localStorage.setItem('selectedContactName', contactName);
-
-    // Sauvegarder l'ID du contact actuel pour envoyer un message
+    // Set current chat context
     window.currentChatContactId = contactId;
+    window.currentGroupId = null; // Reset group ID
 
-    // Définir la valeur de receiver_id
+    // Set hidden input values
     document.getElementById('receiver_id').value = contactId;
+    document.getElementById('group_id').value = '';
 
-    // Cacher l'indicateur de nouveau message pour ce contact
+    // Update the form action
+    const messageForm = document.getElementById('messageForm');
+    messageForm.action = 'SendMessage.php';
+
+    // Hide new message indicator
     hideNewMessageIndicator(contactId);
 
-    // Supprimer la classe 'contact-active' de tous les contacts
+    // Update active contact styling
     const contacts = document.querySelectorAll('#contacts-list li');
     contacts.forEach(contact => {
         contact.classList.remove('contact-active');
     });
 
-    // Ajouter la classe 'contact-active' au contact sélectionné
     const activeContact = document.querySelector(`#contacts-list li[data-contact-id="${contactId}"]`);
     if (activeContact) {
         activeContact.classList.add('contact-active');
     }
 
-    // Récupérer les messages via une requête AJAX
+    // Fetch messages via AJAX
     fetch('../View/Principal/GetMessages.php?contact_id=' + contactId)
         .then(response => response.text())
         .then(html => {
             document.getElementById('chat-body').innerHTML = html;
-            // Faire défiler le chat vers le bas
             document.getElementById('chat-body').scrollTop = document.getElementById('chat-body').scrollHeight;
         })
         .catch(error => console.error('Erreur:', error));

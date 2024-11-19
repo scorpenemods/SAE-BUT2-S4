@@ -1,6 +1,4 @@
 <?php
-// SendGroupMessage.php
-
 session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";
@@ -12,19 +10,19 @@ date_default_timezone_set('Europe/Paris');
 header('Content-Type: application/json; charset=utf-8');
 
 // Check user session
-if (isset($_SESSION['user'])) {
-    $person = unserialize($_SESSION['user']);
-    if ($person instanceof Person) {
-        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
-        $senderId = $person->getUserId(); // ID of the logged-in user
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Invalid session. Please log in again.']);
-        exit();
-    }
-} else {
+if (!isset($_SESSION['user'])) {
     echo json_encode(['status' => 'error', 'message' => 'User not logged in.']);
     exit();
 }
+
+$person = unserialize($_SESSION['user']);
+if (!$person instanceof Person) {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid session. Please log in again.']);
+    exit();
+}
+
+$senderId = $person->getUserId();
+$senderName = htmlspecialchars($person->getPrenom() . ' ' . $person->getNom());
 
 // Check request method
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -34,7 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $groupId = $_POST['group_id'] ?? null;
     $message = $_POST['message'] ?? '';
     $filePath = '';
-    $fileName = '';
 
     // Validate group ID
     if (!$groupId) {
@@ -104,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             'file_path'       => $filePath ? htmlspecialchars(str_replace("../", "/", $filePath)) : null,
             'timestamp'       => date('c'), // ISO 8601 format
             'sender_id'       => $senderId,
-            'sender_name'     => htmlspecialchars($person->getPrenom() . ' ' . $person->getNom()),
+            'sender_name'     => $senderName,
             'current_user_id' => $senderId,
         ];
         echo json_encode($response);

@@ -3,44 +3,39 @@ session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";
 
-// Définir le fuseau horaire
-date_default_timezone_set('Europe/Paris');
-
-// Définir le type de contenu de la réponse
+// Set response content type
 header('Content-Type: application/json; charset=utf-8');
 
-// Vérification de la session utilisateur
-if (isset($_SESSION['user'])) {
-    $person = unserialize($_SESSION['user']);
-    if ($person instanceof Person) {
-        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
-        $senderId = $person->getUserId(); // ID de l'utilisateur connecté
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Session invalide. Veuillez vous reconnecter.']);
-        exit();
-    }
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'Utilisateur non connecté.']);
+// Check user session
+if (!isset($_SESSION['user'])) {
+    echo json_encode(['status' => 'error', 'message' => 'User not logged in.']);
     exit();
 }
 
-// Vérification de la méthode de requête
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $database = (Database::getInstance());
+$person = unserialize($_SESSION['user']);
+if (!$person instanceof Person) {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid session. Please log in again.']);
+    exit();
+}
 
-    // Récupération des données du formulaire
+$senderId = $person->getUserId();
+
+// Check request method
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $database = Database::getInstance();
+
+    // Get form data
     $receiverId = $_POST['receiver_id'] ?? null;
     $message = $_POST['message'] ?? '';
     $filePath = '';
-    $fileName = '';
 
-    // Validation de l'ID du destinataire
+    // Validate receiver ID
     if (!$receiverId) {
-        echo json_encode(['status' => 'error', 'message' => 'ID du destinataire non spécifié.']);
+        echo json_encode(['status' => 'error', 'message' => 'Receiver ID not specified.']);
         exit();
     }
 
-    // Traitement du fichier si un fichier est envoyé
+    // Handle file upload if a file is sent
     if (isset($_FILES['file']) && $_FILES['file']['error'] !== UPLOAD_ERR_NO_FILE) {
         if ($_FILES['file']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = "../uploads/";
@@ -51,84 +46,62 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $fileName = basename($_FILES['file']['name']);
             $fileTmpPath = $_FILES['file']['tmp_name'];
 
-            // Validation du type de fichier
+            // Validate file type
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'gif', 'mp4', 'avi', 'zip', 'rar', 'csv'];
             $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
             if (!in_array($fileExtension, $allowedExtensions)) {
-                echo json_encode(['status' => 'error', 'message' => 'Type de fichier non autorisé.']);
+                echo json_encode(['status' => 'error', 'message' => 'File type not allowed.']);
                 exit();
             }
 
-            // Validation de la taille du fichier (max 10 MB)
+            // Validate file size (max 10 MB)
             $maxFileSize = 10 * 1024 * 1024; // 10 MB
             if ($_FILES['file']['size'] > $maxFileSize) {
-                echo json_encode(['status' => 'error', 'message' => 'Le fichier est trop volumineux.']);
+                echo json_encode(['status' => 'error', 'message' => 'File is too large.']);
                 exit();
             }
 
-            // Génération d'un nom de fichier unique
+            // Generate a unique file name
             $newFileName = uniqid('file_', true) . '.' . $fileExtension;
             $filePath = $uploadDir . $newFileName;
 
             if (move_uploaded_file($fileTmpPath, $filePath)) {
-                // Fichier téléchargé avec succès
+                // File uploaded successfully
                 if (empty($message)) {
-                    $message = "Fichier envoyé: " . $fileName;
+                    $message = "File sent: " . $fileName;
                 }
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Erreur lors du téléchargement du fichier.']);
+                echo json_encode(['status' => 'error', 'message' => 'Error uploading file.']);
                 exit();
             }
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Erreur lors du téléchargement du fichier.']);
+            echo json_encode(['status' => 'error', 'message' => 'Error uploading file.']);
             exit();
         }
     }
 
-    // Validation du contenu du message ou du fichier
+    // Validate message content or file
     if (empty($message) && empty($filePath)) {
-        echo json_encode(['status' => 'error', 'message' => 'Le message est vide.']);
+        echo json_encode(['status' => 'error', 'message' => 'Message is empty.']);
         exit();
     }
 
-    // Envoi du message à la base de données et récupération de l'ID du message
-    $messageId = $database->sendMessage($senderId, $receiverId, $message, $filePath, $fileName);
-    $notificationContent = "Vous avez reçu un nouveau message de $userName";
-    $database->addNotification($receiverId, $notificationContent, "new_message");
-    if ($messageId) {
+    // Send the message to the database
+    $isMessageSent = $database->sendMessage($senderId, $receiverId, $message, $filePath);
 
-        // Récupérer le message inséré pour obtenir le timestamp exact
-        $stmt = $database->getConnection()->prepare("
-            SELECT m.*, d.filepath AS file_path
-            FROM Message m
-            LEFT JOIN Document_Message dm ON m.id = dm.message_id
-            LEFT JOIN Document d ON dm.document_id = d.id
-            WHERE m.id = :message_id
-        ");
-
-
-        $stmt->bindParam(':message_id', $messageId);
-        $stmt->execute();
-        $messageData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($messageData) {
-            $response = [
-                'status'     => 'success',
-                'message'    => htmlspecialchars($messageData['contenu']),
-                'file_path'  => $messageData['file_path'] ? htmlspecialchars(str_replace("../", "/", $messageData['file_path'])) : null,
-                'timestamp'  => date('c'), // format ISO 8601
-                'sender_id'  => $messageData['sender_id'],
-                'message_id' => $messageData['id'],
-            ];
-            echo json_encode($response);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la récupération du message.']);
-        }
+    if ($isMessageSent) {
+        $response = [
+            'status'    => 'success',
+            'message'   => htmlspecialchars($message),
+            'file_path' => $filePath ? htmlspecialchars(str_replace("../", "/", $filePath)) : null,
+            'timestamp' => date('c'), // ISO 8601 format
+            'message_id' => $database->getLastMessageId(),
+        ];
+        echo json_encode($response);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'envoi du message.']);
+        echo json_encode(['status' => 'error', 'message' => 'Error sending message.']);
     }
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Méthode de requête invalide.']);
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
 }
-?>

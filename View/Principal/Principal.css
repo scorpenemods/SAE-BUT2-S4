@@ -460,6 +460,15 @@ ul li.contact-active {
     max-width: 60%;
     word-wrap: break-word;
 }
+#messageForm{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.emojionearea.emojionearea-inline{
+    border-radius: 25px;
+}
 
 /* Стили для сообщений отправителя */
 .message.self {

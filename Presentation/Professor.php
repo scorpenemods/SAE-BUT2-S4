@@ -158,6 +158,11 @@ $notes = $database->getNotes($userId);
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <script src="/View/Principal/Notif.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include EmojiOneArea -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
 </head>
 
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
@@ -315,14 +320,14 @@ $notes = $database->getNotes($userId);
                     </div>
 
                     <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
                             <!-- Hidden fields for receiver_id and group_id -->
                             <input type="hidden" name="receiver_id" id="receiver_id" value="">
                             <input type="hidden" name="group_id" id="group_id" value="">
                             <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="button" onclick="sendMessage(event)">Envoyer</button>
+                            <button type="submit">Envoyer</button>
                         </form>
                     </div>
                 </div>
@@ -365,17 +370,14 @@ $notes = $database->getNotes($userId);
             </form>
         </div>
     </div>
-
-
 </section>
-<script src="../View/Principal/deleteMessage.js"></script>
-<script src="/View/Principal/GroupMessenger.js"></script>
-</body>
 
 <footer class="PiedDePage">
     <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
     <a href="Redirection.php">Informations</a>
     <a href="Redirection.php">À propos</a>
 </footer>
-
+<script src="../View/Principal/deleteMessage.js"></script>
+<script src="/View/Principal/GroupMessenger.js"></script>
+</body>
 </html>
