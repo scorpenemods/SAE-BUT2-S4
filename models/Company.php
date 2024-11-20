@@ -1,8 +1,10 @@
 <?php
-
 require dirname(__FILE__)."/../presenter/database.php";
 
-//Class to manage companies
+/**
+ * Company
+ * Represents a Company in the database
+ */
 class Company {
     private int $id;
     private string $name;
@@ -12,7 +14,18 @@ class Company {
     private string $created_at;
     private string $updated_at;
 
-    public function __construct(int $id, string $name, int $size, string $address, string $siren, string $created_at, string $updated_at) {
+    /**
+     * __construct
+     * Constructor used to instantiate the object, used only internally
+     * @param int $id
+     * @param string $name
+     * @param int $size
+     * @param string $address
+     * @param string $siren
+     * @param string $created_at
+     * @param string $updated_at
+     */
+    private function __construct(int $id, string $name, int $size, string $address, string $siren, string $created_at, string $updated_at) {
         $this->id = $id;
         $this->name = $name;
         $this->size = $size;
@@ -22,35 +35,75 @@ class Company {
         $this->updated_at = $updated_at;
     }
 
+    /**
+     * getId
+     * Returns the id of the company
+     * @return int
+     */
     public function getId(): int {
         return $this->id;
     }
 
+    /**
+     * getName
+     * Returns the name of the company
+     * @return string
+     */
     public function getName(): string {
         return $this->name;
     }
 
+    /**
+     * getSize
+     * Returns the size of the company
+     * @return int
+     */
     public function getSize(): int {
         return $this->size;
     }
 
+    /**
+     * getAddress
+     * Returns the address of the company
+     * @return string
+     */
     public function getAddress(): string {
         return $this->address;
     }
 
+    /**
+     * getSiren
+     * Returns the siren of the company
+     * @return string
+     */
     public function getSiren(): string {
         return $this->siren;
     }
 
+    /**
+     * getCreatedAt
+     * Returns the creation date of the company
+     * @return string
+     */
     public function getCreatedAt(): string {
         return $this->created_at;
     }
 
+    /**
+     * getUpdatedAt
+     * Returns the last update date of the company
+     * @return string
+     */
     public function getUpdatedAt(): string {
         return $this->updated_at;
     }
 
-    //Get a company by its id
+    /**
+     * getById
+     * Returns a company by its id
+     * @param int $id
+     * @return Company|null
+     */
     public static function getById(int $id): ?Company {
         global $db;
 
@@ -79,7 +132,11 @@ class Company {
         );
     }
 
-    //Get all companies
+    /**
+     * getAll
+     * Returns all companies
+     * @return array|null
+     */
     public static function getAll(): ?array {
         global $db;
 
@@ -108,7 +165,15 @@ class Company {
         return $companies;
     }
 
-    //Create a new company
+    /**
+     * update
+     * Updates a company in the database
+     * @param string $name
+     * @param int $size
+     * @param string $address
+     * @param string $siren
+     * @return Company|null
+     */
     public static function create(string $name, int $size, string $address, string $siren): ?Company {
         global $db;
 
