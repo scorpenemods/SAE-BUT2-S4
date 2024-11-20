@@ -36,12 +36,13 @@ Description : fezrgzgfiqfhuHTY";
 
         <!-- Les différents formulaire pour chaque rencontre : -->
 
+        <!-- Rencontre 1 -->
         <div class="content-section" id="0">
             <h3 style="padding: 10px">Formulaire</h3>
             <div class="livret-header">
                 <h3>1ère rencontre</h3>
             </div>
-
+            <!-- Formulaire -->
             <p class="participants">Date de rencontre : <label style="color: red">*</label> <br>
 
                 <input type="date" name="meeting"/><br><br><br>
@@ -62,15 +63,27 @@ Description : fezrgzgfiqfhuHTY";
 
                 Apréciations du maitre de stage : <label style="color: red">*</label> <br>
 
-                <textarea name="remarque[]" placeholder="Veuillez entrer vos apréciations lors de la rencontre..." class="textareaLivret"></textarea><br><br></p>
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques sur l'étudiant en entreprise..." class="textareaLivret"></textarea><br><br><br>
+
+                Remarques de l'étudiant : <label style="color: red">*</label> <br>
+
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques durant votre stage..." class="textareaLivret"></textarea><br><br></p>
+
+            <!-- Validation du formulaire -->
+            <div class="validation">
+                <h3 style="padding: 10px">Validation du formulaire</h3>
+            </div>
+
+                <button>Valider modifications</button>
         </div>
 
+        <!-- Rencontre 2 -->
         <div class="content-section" id="1">
             <h3 style="padding: 10px">Formulaire</h3>
             <div class="livret-header">
                 <h3>2ème rencontre</h3>
             </div>
-
+            <!-- Formulaire -->
             <p class="participants">Date de rencontre : <label style="color: red">*</label> <br>
 
                 <input type="date" name="meeting"/><br><br><br>
@@ -91,15 +104,27 @@ Description : fezrgzgfiqfhuHTY";
 
                 Apréciations du maitre de stage : <label style="color: red">*</label> <br>
 
-                <textarea name="remarque[]" placeholder="Veuillez entrer vos apréciations lors de la rencontre..." class="textareaLivret"></textarea><br><br></p>
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques sur l'étudiant en entreprise..." class="textareaLivret"></textarea><br><br><br>
+
+                Remarques de l'étudiant : <label style="color: red">*</label> <br>
+
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques durant votre stage..." class="textareaLivret"></textarea><br><br></p>
+
+            <!-- Validation du formulaire -->
+            <div class="validation">
+                <h3 style="padding: 10px">Validation du formulaire</h3>
+            </div>
+
+                <button>Valider modifications</button>
         </div>
 
+        <!-- Rencontre 3 -->
         <div class="content-section" id="2">
-            <h3 style="padding: 10px">Formulaire</h3>
+            <h3 style="padding: 10px; text-align: left">Formulaire</h3>
             <div class="livret-header">
                 <h3>3ème rencontre</h3>
             </div>
-
+            <!-- Formulaire -->
             <p class="participants">Date de rencontre : <label style="color: red">*</label> <br>
 
                 <input type="date" name="meeting"/> <br><br><br>
@@ -120,15 +145,28 @@ Description : fezrgzgfiqfhuHTY";
 
                 Apréciations du maitre de stage : <label style="color: red">*</label> <br>
 
-                <textarea name="remarque[]" placeholder="Veuillez entrer vos apréciations lors de la rencontre..." class="textareaLivret"></textarea><br><br></p>
-        </div>
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques sur l'étudiant en entreprise..." class="textareaLivret"></textarea><br><br><br>
 
-        <div class="content-section" id="3">
-            <div class="livret-header">
-                <h3>Dépôt du mémoire ou rapport</h3>
+                Remarques de l'étudiant : <label style="color: red">*</label> <br>
+
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques durant votre stage..." class="textareaLivret"></textarea><br><br></p>
+
+
+            <!-- Validation du formulaire -->
+            <div class="validation">
+                <h3 style="padding: 10px">Validation du formulaire</h3>
             </div>
 
-            <p class="participants">Content for the report submission.</p>
+                <button>Valider modifications</button>
+        </div>
+
+        <!-- Bilan -->
+        <div class="content-section" id="3">
+            <div class="livret-header">
+                <h3>Bilan du stage</h3>
+            </div>
+
+            <p class="participants"> à remplir </p>
         </div>
     </div>
 
