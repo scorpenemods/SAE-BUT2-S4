@@ -61,21 +61,13 @@ $applications = Applications::getAllForOffer($offerId, $type);
                         echo "</div>";
                         echo "<span class='date'>".$apply->getCreatedAt()."</span>";
                         echo "<div class='actions'>";
-                            echo "<form action='../../../presenter/offer/applications/favorite.php' method='post'>";
+                            echo "<form action='../../../presenter/offer/applications/validate.php' method='post'>";
                                 echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
-                                if ($apply->getFavorite()) {
-                                    echo "<input class='btn' type='submit' name='Favoris' style='font-size:250%;color:yellow;width: 50px;height: 50px;' value='★'>";
-                                } else {
-                                    echo "<input class='btn' type='submit' name='Favoris' style='font-size:250%;color:yellow;width: 50px;height: 50px' value='☆'>";
-                                }
+                                echo "<input class='button accept' type='submit' name='Valider' value='Valider'>";
                             echo "</form>";
                             echo "<form action='../../../presenter/offer/applications/validate.php' method='post'>";
                                 echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
-                                echo "<input class='btn' type='submit' name='Favoris' style='font-size:200%;background: lawngreen;width: 50px;height: 50px' value='V'>";
-                            echo "</form>";
-                            echo "<form action='../../../presenter/offer/applications/validate.php' method='post'>";
-                                echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
-                                echo "<input class='btn' type='submit' name='Favoris' style='font-size:200%;background: red;width: 50px;height: 50px' value='R'>";
+                                echo "<input class='button refuse' id='refuseButton' type='submit' name='Refuser' value='Refuser'>";
                             echo "</form>";
                         echo "</div>";
                         echo "</div>";
