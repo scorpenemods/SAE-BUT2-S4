@@ -3,6 +3,8 @@ session_start();
 
 require dirname(__FILE__) . '/../../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../../models/Company.php';
+require dirname(__FILE__) . '/../../../models/Database.php';
+
 
 
 if (isset($_SESSION['secretariat']) && isset($_POST['id']) && isset($_SERVER["HTTP_REFERER"])) {
