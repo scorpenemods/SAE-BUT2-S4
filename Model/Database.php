@@ -874,6 +874,33 @@ class Database
         }
     }
 
+    // Database.php
+    public function deleteNote($noteId, $userId, $pdo): void
+    {
+        try {
+            // Commence une transaction
+            $pdo->beginTransaction();
+
+            // Préparer la requête pour supprimer la note
+            $stmt = $pdo->prepare("DELETE FROM Note WHERE id = :id AND user_id = :user_id");
+
+            // Exécuter la requête avec les paramètres
+            $stmt->execute([
+                ':id' => $noteId,
+                ':user_id' => $userId
+            ]);
+
+            // Valider la transaction
+            $pdo->commit();
+        } catch (PDOException $e) {
+            // Annuler la transaction en cas d'erreur
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
+
+
+
 
     // ------------------------------------------------------------------------------------------------------- //
 
@@ -995,7 +1022,7 @@ class Database
     }
 
     public function getNotes($userId): array {
-        $sql = "SELECT Note.sujet, Note.appreciation, Note.note, Note.coeff
+        $sql = "SELECT Note.id, Note.sujet, Note.appreciation, Note.note, Note.coeff
                 FROM Note
                 WHERE Note.user_id = :user_id";
 
@@ -1006,6 +1033,7 @@ class Database
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             require_once "Note.php";
             $notes[] = new Note(
+                $row['id'] ?? '',
                 $row['sujet'] ?? '',
                 $row['appreciation'] ?? '',
                 $row['note'] ??'',

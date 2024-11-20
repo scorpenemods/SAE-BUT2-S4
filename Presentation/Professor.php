@@ -130,6 +130,30 @@ if (isset($_POST['saveNotes'])) {
     }
 }
 
+if (isset($_POST['delete_note'])) {
+    if (isset($_POST['note_id']) && !empty($_POST['note_id'])) {
+        // Récupérer l'ID de la note à supprimer
+        $noteId = intval($_POST['note_id']);
+
+        // Obtenir l'instance de la base de données
+        $database = Database::getInstance();
+        $pdo = $database->getConnection();
+
+        try {
+            // Appeler la méthode deleteNoteById pour supprimer la note de la base de données
+            $database->deleteNote($noteId, $userId, $pdo);
+            // Rediriger après suppression pour voir la mise à jour
+            header("Location: Professor.php");
+            exit();
+        } catch (PDOException $e) {
+            echo "Erreur lors de la suppression de la note : " . $e->getMessage();
+        }
+    } else {
+        echo "ID de la note manquant.";
+    }
+}
+
+
 
 if (!empty($students)) {
     $student = $students[0];
@@ -340,22 +364,30 @@ $notes = $database->getNotes($userId);
                     <table id="notesTable" class="notes-table">
                         <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Sujet</th>
                             <th>Appréciations</th>
                             <th>Note /20</th>
                             <th>Coefficient</th>
+                            <th>Supprimer</th>
                         </tr>
                         </thead>
                         <tbody>
                         <?php foreach ($notes as $note): ?>
                             <tr>
-                                <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)"><?php echo htmlspecialchars($note->getSujet()); ?></textarea></td>
-                                <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled><?php echo htmlspecialchars($note->getAppreciation()); ?></textarea></td>
-                                <td><input type="number" name="note[]" placeholder="Note" value="<?php echo htmlspecialchars($note->getNote()); ?>" disabled></td>
-                                <td><input type="number" name="coeff[]" placeholder="Coefficient" value="<?php echo htmlspecialchars($note->getCoeff()); ?>" disabled></td>
+                                <td><?= htmlspecialchars($note->getId()); ?></td>
+                                <td><?= htmlspecialchars($note->getSujet()); ?></td>
+                                <td><?= htmlspecialchars($note->getAppreciation()); ?></td>
+                                <td><?= htmlspecialchars($note->getNote()); ?></td>
+                                <td><?= htmlspecialchars($note->getCoeff()); ?></td>
+                                <td>
+                                    <form method="POST" action="Professor.php" style="display:inline;">
+                                        <input type="hidden" name="note_id" value="<?= htmlspecialchars($note->getId()); ?>">
+                                        <button type="button" name="delete_note" class="btn btn-danger" onclick="showConfirmation(<?= htmlspecialchars($note->getId()); ?>,event)">Supprimer</button>
+                                    </form>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
-                        </tbody>
                     </table>
                     <div id="validationMessage" class="validation-message"></div>
                 </div>

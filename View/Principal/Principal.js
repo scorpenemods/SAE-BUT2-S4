@@ -564,7 +564,7 @@ function enableNotes() {
     inputs.forEach(input => input.removeAttribute('disabled'));
     textareas.forEach(textarea => textarea.removeAttribute('disabled'));
 
-    document.getElementById('validateBtn').removeAttribute('disabled');
+    document.getElementById('validateBtn').setAttribute('disabled', 'true');
     document.getElementById('cancelBtn').removeAttribute('disabled');
 }
 
@@ -575,7 +575,6 @@ document.getElementById('validateBtn').addEventListener('click', function() {
 });
 
 
-
 function autoExpand(element) {
     element.style.height = 'inherit';
     element.style.height = `${element.scrollHeight}px`;
@@ -584,35 +583,43 @@ function autoExpand(element) {
 function cancelNotes() {
     const inputs = document.querySelectorAll('.notes-table input');
     const textareas = document.querySelectorAll('.notes-table textarea');
-
-    inputs.forEach(input => {
-        input.setAttribute('disabled', '');
-        input.value = ''; // Reset value
-        input.style.borderColor = ''; // Reset border
-    });
-
-    textareas.forEach(textarea => {
-        textarea.setAttribute('disabled', '');
-        textarea.value = ''; // Reset value
-        textarea.style.borderColor = ''; // Reset border
-    });
+    inputs.forEach(input => input.setAttribute('disabled', ''));
+    textareas.forEach(textarea => textarea.setAttribute('disabled', ''));
 
     document.getElementById('validateBtn').setAttribute('disabled', '');
     document.getElementById('cancelBtn').setAttribute('disabled', '');
 
-    document.getElementById('validationMessage').textContent = '';
+    const newNoteRows = document.querySelectorAll('.new-note-row');
+    newNoteRows.forEach(row => row.remove());
+
+    fetch('Professor.php')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('#notesTable tbody');
+            tableBody.innerHTML = '';
+
+            data.notes.forEach((note, index) => {
+                const newRow = tableBody.insertRow();
+                newRow.innerHTML = `
+                    <td><textarea name="sujet[]" disabled>${note.sujet}</textarea></td>
+                    <td><textarea name="appreciations[]" disabled>${note.appreciation}</textarea></td>
+                    <td><input type="number" name="note[]" value="${note.note}" disabled></td>
+                    <td><input type="number" name="coeff[]" value="${note.coeff}" disabled></td>
+                    <td><input type="radio" name="selectedNote" value="${index}"></td>
+                `;
+            });
+        })
+        .catch(error => console.error('Error fetching notes:', error));
 }
 
-document.getElementById('editNotesButton').addEventListener('click', enableNotes);
-document.getElementById('cancelBtn').addEventListener('click', cancelNotes);
 
 function validateNotes() {
     const inputs = document.querySelectorAll('.notes-table input');
-    const textareas = document.querySelectorAll('.notes-table textarea');
     let valid = true;
 
     inputs.forEach(input => {
         const value = input.value.trim();
+
         if (value !== '') {
             const numericValue = parseFloat(value);
             if (isNaN(numericValue) || numericValue < 0 || numericValue > 20) {
@@ -626,15 +633,8 @@ function validateNotes() {
         }
     });
 
-    textareas.forEach(textarea => {
-        if (textarea.value.trim() !== '') {
-            textarea.style.borderColor = '';
-        } else {
-            textarea.style.borderColor = '';
-        }
-    });
-
     const validationMessage = document.getElementById('validationMessage');
+
     if (valid) {
         validationMessage.textContent = 'Notes validées avec succès !';
         validationMessage.style.color = 'green';
@@ -642,104 +642,144 @@ function validateNotes() {
         validationMessage.textContent = 'Veuillez remplir tous les champs avec des notes valides entre 0 et 20.';
         validationMessage.style.color = 'red';
     }
+
+    return valid;
 }
 document.getElementById('messageForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevent the default form submission
 
     const formData = new FormData(this);
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'Professor.php', true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            if (response.success) {
+    fetch('Professor.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
                 alert('Notes added successfully!');
             } else {
-                alert('Error: ' + response.message);
+                alert('Error: ' + data.message);
             }
-        } else {
-            alert('An error occurred while submitting the form.');
-        }
-    };
-    xhr.send(formData);
+        })
+        .catch(error => {
+            alert('An error occurred: ' + error.message);
+        });
 });
 
 function addNoteRow() {
     const table = document.getElementById('notesTable').getElementsByTagName('tbody')[0];
+    const rowCount = table.rows.length;
+    const validationMessage = document.getElementById('validationMessage');
+
+    if (rowCount >= 4) {
+        validationMessage.textContent = 'Vous ne pouvez pas ajouter plus de 4 notes.';
+        validationMessage.style.color = 'red';
+        return;
+    }
+
+    validationMessage.textContent = '';
+
     const newRow = table.insertRow();
+    const newId = `new-${rowCount + 1}`; // Generate a new ID for the row
+    newRow.setAttribute('data-id', newId); // Set the data-id attribute
 
+    const idCell = newRow.insertCell(0);
+    const sujetCell = newRow.insertCell(1);
+    const appreciationCell = newRow.insertCell(2);
+    const noteCell = newRow.insertCell(3);
+    const coeffCell = newRow.insertCell(4);
 
-    const sujetCell = newRow.insertCell(0);
-    const apreciationCell = newRow.insertCell(1);
-    const noteCell = newRow.insertCell(2);
-    const coeffCell = newRow.insertCell(3);
-
-
-    sujetCell.innerHTML = '<textarea name="sujet[]" rows="">';
-    apreciationCell.innerHTML = '<textarea name="appreciations[]" rows="0">';
+    idCell.textContent = newId; // Display the ID
+    sujetCell.innerHTML = '<textarea name="sujet[]" rows=""></textarea>';
+    appreciationCell.innerHTML = '<textarea name="appreciations[]" rows="0"></textarea>';
     noteCell.innerHTML = '<input type="number" name="note[]" required>';
     coeffCell.innerHTML = '<input type="number" name="coeff[]" required>';
 }
 
-
-function saveNote() {
-    const inputs = document.querySelectorAll('.notes-table input');
-    const textareas = document.querySelectorAll('.notes-table textarea');
-    let valid = true;
-
-    inputs.forEach(input => {
-        const value = input.value.trim();
-        if (value !== '') {
-            const numericValue = parseFloat(value);
-            if (isNaN(numericValue) || numericValue < 0 || numericValue > 20) {
-                valid = false;
-                input.style.borderColor = 'red';
-            } else {
-                input.style.borderColor = '';
-            }
-        } else {
-            input.style.borderColor = '';
-        }
-    });
-
-    textareas.forEach(textarea => {
-        if (textarea.value.trim() !== '') {
-            textarea.style.borderColor = '';
-        } else {
-            textarea.style.borderColor = '';
-        }
-    });
-
-    const validationMessage = document.getElementById('validationMessage');
-    if (valid) {
-        validationMessage.textContent = 'Notes validées avec succès !';
-        validationMessage.style.color = 'green';
-    } else {
-        validationMessage.textContent = 'Veuillez remplir tous les champs avec des notes valides entre 0 et 20.';
-        validationMessage.style.color = 'red';
+function showConfirmation(noteId, event) {
+    // Empêche le comportement par défaut du clic
+    if (event) {
+        event.preventDefault();
     }
 
-document.getElementById('messageForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+    // Vérifiez si le pop-up existe déjà, sinon créez-le dynamiquement
+    let popup = document.getElementById('confirmationPopup');
+    if (!popup) {
+        // Créer le conteneur du pop-up
+        popup = document.createElement('div');
+        popup.id = 'confirmationPopup';
+        popup.className = 'popup';
 
-    const formData = new FormData(this);
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'Professor.php', true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            if (response.success) {
-                alert('Notes added successfully!');
-            } else {
-                alert('Error: ' + response.message);
-            }
-        } else {
-            alert('An error occurred while submitting the form.');
-        }
+        // Ajouter le contenu du pop-up
+        popup.innerHTML = `
+            <div class="popup-content">
+                <p>Voulez-vous vraiment supprimer cette note ?</p>
+                <div class="popup-buttons">
+                    <button id="confirmDelete" class="btn btn-danger">Valider</button>
+                    <button id="cancelDelete" class="btn btn-secondary">Annuler</button>
+                </div>
+            </div>
+        `;
+
+        // Ajouter le pop-up au body
+        document.body.appendChild(popup);
+    }
+
+    // Afficher le pop-up
+    popup.style.display = 'flex';
+
+    // Gérer les actions "Valider" et "Annuler"
+    const confirmDelete = document.getElementById('confirmDelete');
+    const cancelDelete = document.getElementById('cancelDelete');
+
+    // Nettoyer les anciens gestionnaires pour éviter les duplications
+    confirmDelete.onclick = null;
+    cancelDelete.onclick = null;
+
+    // Action Valider
+    confirmDelete.onclick = function () {
+        console.log('Validation en cours pour ID : ', noteId); // Debug
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'Professor.php';
+
+        const noteIdInput = document.createElement('input');
+        noteIdInput.type = 'hidden';
+        noteIdInput.name = 'note_id';
+        noteIdInput.value = noteId;
+
+        const deleteInput = document.createElement('input');
+        deleteInput.type = 'hidden';
+        deleteInput.name = 'delete_note';
+        deleteInput.value = '1';
+
+        form.appendChild(noteIdInput);
+        form.appendChild(deleteInput);
+        document.body.appendChild(form);
+
+        // Soumettre le formulaire
+        form.submit();
     };
-    xhr.send(formData);
-});
-    }
+
+    // Action Annuler
+    cancelDelete.onclick = function () {
+        popup.style.display = 'none'; // Masque le pop-up
+    };
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
