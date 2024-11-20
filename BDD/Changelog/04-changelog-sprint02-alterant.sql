@@ -2,7 +2,7 @@
 
 --changeset LiRuZ:1 labels:create-table context:creercompanies
 --comment: Create table companies
-CREATE TABLE Companie (
+CREATE TABLE Company (
     id         INTEGER PRIMARY KEY AUTO_INCREMENT,                             -- Auto-increment primary key for companies
     name       VARCHAR(255)        NOT NULL,                                   -- Name of the companies
     size       INTEGER             NOT NULL CHECK (size > 0),                  -- companies size (number of employees), must be positive
@@ -31,7 +31,7 @@ CREATE TABLE Offer (
     begin_date  DATE,                                                                        -- Date when the offer begins
     created_at  TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,                             -- Automatically set timestamp on creation
     updated_at  TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Auto-update timestamp on change
-    FOREIGN KEY (company_id) REFERENCES Companie (id)                                       -- Foreign key to companies with cascading delete
+    FOREIGN KEY (company_id) REFERENCES Company (id)                                       -- Foreign key to companies with cascading delete
 );
 --rollback DROP TABLE Offer;
 
@@ -99,19 +99,19 @@ CREATE TABLE Pending_Offer (
     begin_date  DATE,                                   -- Date when the offer begins
     created_at  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP, -- Automatically set timestamp on creation
     status      VARCHAR(255) DEFAULT 'Pending',         -- Status of the offer
-    FOREIGN KEY (company_id) REFERENCES Companie (id), -- Foreign key to companies with cascading delete
+    FOREIGN KEY (company_id) REFERENCES Company (id), -- Foreign key to companies with cascading delete
     FOREIGN KEY (user_id) REFERENCES User (id)         -- Foreign key to users with cascading delete
 );
 --rollback DROP TABLE Pending_Offer;
 
 --changeset LiRuZ:9 labels:create-table
 -- comment: Create table users_companies (relationship table for linking users and companies)
-CREATE TABLE User_Companie (
+CREATE TABLE User_Company (
     user_id    INTEGER NOT NULL,                       -- Foreign key to the user
     company_id INTEGER NOT NULL,                       -- Foreign key to the company
     PRIMARY KEY (user_id, company_id),                 -- Composite primary key
     FOREIGN KEY (user_id) REFERENCES User (id),       -- Foreign key to users with cascading delete
-    FOREIGN KEY (company_id) REFERENCES Companie (id) -- Foreign key to companies with cascading delete
+    FOREIGN KEY (company_id) REFERENCES Company (id) -- Foreign key to companies with cascading delete
 );
 --rollback DROP TABLE User_Companie;
 
