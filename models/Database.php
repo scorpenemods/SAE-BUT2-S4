@@ -1138,19 +1138,18 @@ class Database
         return $stages;
     }
 
-
     /**
      * @throws Exception
      */
     public function addAlert($userId, $duration, $address, $study_level, $salary, $begin_date){
 
-        $query = 'insert into alerts (user_id, duration, address, study_level, salary, begin_date) VALUES (:user_id, :duration, :address, :study_level, :salary, :begin_date);';
+        $query = 'insert into Alert (user_id, duration, address, study_level, salary, begin_date) VALUES (:user_id, :duration, :address, :study_level, :salary, :begin_date);';
         $stmt = $this->getConnection()->prepare($query);
         $stmt->bindParam(':user_id', $userId);
-        $stmt->bindParam(':duration', $duration);
+        $stmt->bindParam(':duration', $duration, is_null($duration) ? PDO::PARAM_NULL : PDO::PARAM_INT);
         $stmt->bindParam(':address', $address);
         $stmt->bindParam(':study_level', $study_level);
-        $stmt->bindParam(':salary', $salary);
+        $stmt->bindParam(':salary', $salary, is_null($salary) ? PDO::PARAM_NULL : PDO::PARAM_INT);
         $stmt->bindParam(':begin_date', $begin_date);
         try {
             $stmt->execute();
@@ -1163,7 +1162,7 @@ class Database
 
     public function getAlert(): array
     {
-        $stmt = $this->getConnection()->prepare('select * from alerts;');
+        $stmt = $this->getConnection()->prepare('select * from Alert;');
         $stmt->execute();
         $alerts = [];
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

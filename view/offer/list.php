@@ -252,8 +252,8 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             });
 
             const createNotificationBtn = document.getElementById('createNotification');
-            createNotificationBtn.addEventListener('click', () => {
-                e.preventDefault()
+            createNotificationBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 const urlParams = new URLSearchParams(window.location.search);
                 const filters = {
                     minSalary: urlParams.get('minSalary'),

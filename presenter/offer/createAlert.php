@@ -16,7 +16,7 @@ $study_level = filter_input(INPUT_POST, 'study_level', FILTER_SANITIZE_SPECIAL_C
 $salary = filter_input(INPUT_POST, 'salary', FILTER_VALIDATE_INT);
 $begin_date = filter_input(INPUT_POST, 'begin_date', FILTER_SANITIZE_SPECIAL_CHARS);
 
-if ($duration === null && $address === null && $study_level === null && $salary === null && $begin_date === null) {
+if ($duration == null && $address == null && $study_level == null && $salary == null && $begin_date == null) {
     echo json_encode(["status" => "error", "message" => "Aucun filtre valide fourni."]);
     exit;
 }

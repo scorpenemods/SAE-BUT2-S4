@@ -10,7 +10,7 @@ function sendNotification($offer){
         $params = [];
         $user_id = $alert['user_id'];
 
-        if ($alert['duration'] !== '') {
+        if ($alert['duration'] !== 0) {
             $params['duration'] = $alert['duration'];
         }
         if ($alert['address'] !== '') {
@@ -19,7 +19,7 @@ function sendNotification($offer){
         if ($alert['study_level'] !== '') {
             $params['study_level'] = $alert['study_level'];
         }
-        if ($alert['salary'] !== '') {
+        if ($alert['salary'] !== 0) {
             $params['salary'] = $alert['salary'];
         }
         if ($alert['begin_date'] !== '') {
@@ -32,8 +32,10 @@ function sendNotification($offer){
             if (method_exists($offer, $method)) {
                 $value2 = $offer->$method();
             }
-            if (!($value == $value2)){
-                $comparaison = false;
+            if (isset($value2)) {
+                if (!($value == $value2)){
+                    $comparaison = false;
+                }
             }
         }
 
