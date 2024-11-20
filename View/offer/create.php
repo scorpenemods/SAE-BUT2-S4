@@ -95,7 +95,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                             include dirname(__FILE__) . '/../../Model/Offer.php';
                             $tags = Offer::getAllTags();
                             foreach ($tags as $tag) {
-                                echo "<label><input type='checkbox' name='tag_" . $tag . "' value='" . $tag . "'> " . $tag . "</label>";
+                                echo "<label><input type='checkbox' name='tag" . $tag . "' value='" . $tag . "'> " . $tag . "</label>";
                             }
                             ?>
                         </div>

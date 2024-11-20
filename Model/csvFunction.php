@@ -8,7 +8,7 @@ error_reporting(E_ALL);
 
 function importCsv($filePath): void
 {
-    $db = new Database();
+    $db = Database::getInstance();
     echo "Starting CSV import..." . PHP_EOL;
 
     if (($handle = fopen($filePath, "r")) !== FALSE) {
@@ -33,7 +33,7 @@ function importCsv($filePath): void
             echo "Processing user: $email" . PHP_EOL;
 
             // Attempt to add user and check if it was successful
-            if ($db->addUser($email, $password, $telephone, $prenom, $activite, $role, $nom)) {
+            if ($db->addUser($email, $password, $telephone, $prenom, $activite, $role, $nom,1)) {
                 echo "User $email added successfully." . PHP_EOL;
             } else {
                 echo "Failed to add user $email." . PHP_EOL;

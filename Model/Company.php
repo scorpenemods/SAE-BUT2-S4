@@ -1,7 +1,7 @@
 <?php
 
-require dirname(__FILE__)."/../Presentation/database.php";
-
+require_once "Database.php";
+$db = Database::getInstance();
 //Class to manage companies
 class Company {
     private int $id;
@@ -53,15 +53,12 @@ class Company {
     //Get a company by its id
     public static function getById(int $id): ?Company {
         global $db;
-
-        $stmt = $db->prepare("SELECT * FROM companies WHERE id = :id");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Company WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
-
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
-
         $result = $stmt->fetch();
 
         if (!$result) {
@@ -83,10 +80,10 @@ class Company {
     public static function getAll(): ?array {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM companies");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Company");
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -112,18 +109,18 @@ class Company {
     public static function create(string $name, int $size, string $address, string $siren): ?Company {
         global $db;
 
-        $stmt = $db->prepare("INSERT INTO companies (name, size, address, siren) VALUES (:name, :size, :address, :siren)");
+        $stmt = $db->getConnection()->prepare("INSERT INTO Company (name, size, address, siren) VALUES (:name, :size, :address, :siren)");
         $stmt->bindParam(":name", $name);
         $stmt->bindParam(":size", $size);
         $stmt->bindParam(":address", $address);
         $stmt->bindParam(":siren", $siren);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
-        $id = $db->lastInsertId();
+        $id = $db->getConnection()->lastInsertId();
 
         return new Company(
             $id,

@@ -57,6 +57,7 @@ $notes = $database->getNotes($senderId);
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="/View/Principal/Principal.css">
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
+    <link rel="stylesheet" href="/View/css/footer.css">
     <script src="/View/Principal/Principal.js"></script>
     <script src="/View/Principal/Notif.js"></script>
     <style>
@@ -273,10 +274,8 @@ $notes = $database->getNotes($senderId);
     </div>
 </section>
 
-<footer class="PiedDePage">
-    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
-    <a href="Redirection.php">Informations</a>
-    <a href="Redirection.php">À propos</a>
+<footer>
+    <?php include_once '../View/footer.php'; ?>
 </footer>
 <script src="/View/Principal/deleteMessage.js"></script>
 </body>

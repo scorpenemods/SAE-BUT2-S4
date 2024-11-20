@@ -19,10 +19,7 @@
 
 <nav class="nav-bar">
     <ul>
-        <li><a href="#accueil" class="active"><i class="fas fa-home"></i> Accueil</a></li>
-        <li><a href="#messagerie"><i class="fas fa-envelope"></i> Messagerie</a></li>
-        <li><a href="#offres"><i class="fas fa-briefcase"></i> Offres</a></li>
-        <li><a href="#documents"><i class="fas fa-file-alt"></i> Documents</a></li>
-        <li><a href="#livret"><i class="fas fa-book"></i> Livret de suivi</a></li>
+        <li><a href="../../Presentation/Redirection.php" class="active"><i class="fas fa-home"></i> Retour au site de gestion</a></li>
+        <li><a href="../../Presentation/"><i class="fas fa-envelope"></i> Messagerie</a></li>
     </ul>
 </nav>

@@ -45,3 +45,6 @@
 
 
 </body>
+<footer>
+    <?php include dirname(__FILE__) . '/../footer.php'; ?>
+</footer>

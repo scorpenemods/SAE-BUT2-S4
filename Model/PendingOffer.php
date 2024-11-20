@@ -46,11 +46,11 @@ class PendingOffer extends Offer
     {
         global $db;
 
-        $stmt = $db->getConnection()->getConnection()->prepare("SELECT * FROM tags JOIN pending_tags ON tags.id = pending_tags.tag_id WHERE pending_tags.pending_id = :offer_id");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM tags JOIN pending_tags ON tags.id = pending_tags.tag_id WHERE pending_tags.pending_id = :offer_id");
         $stmt->bindParam(":offer_id", $this->id);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -79,11 +79,11 @@ class PendingOffer extends Offer
     {
         global $db;
 
-        $stmt = $db->getConnection()->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE id = :id");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -124,7 +124,7 @@ class PendingOffer extends Offer
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -173,7 +173,7 @@ class PendingOffer extends Offer
         $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer");
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -265,7 +265,7 @@ class PendingOffer extends Offer
         $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE type = 'updated offer' AND status = 'Pending'");
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -338,11 +338,11 @@ class PendingOffer extends Offer
         $stmt->bindParam(":begin_date", $startDate);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
-        $id = $db->lastInsertId();
+        $id = $db->getConnection()->lastInsertId();
 
         //Add tags in pending_tags table
         foreach ($tags as $tag) {

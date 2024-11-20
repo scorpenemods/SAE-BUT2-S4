@@ -111,6 +111,7 @@ $hasStudents = !empty($students);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage - Professeur</title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
+    <link rel="stylesheet" href="/View/css/footer.css">
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <script src="/View/Principal/Notif.js"></script>
@@ -186,7 +187,11 @@ $hasStudents = !empty($students);
         <span onclick="widget(4)" class="widget-button">Documents</span>
         <span onclick="widget(5)" class="widget-button">Messagerie</span>
         <span onclick="widget(6)" class="widget-button">Notes</span>
+        <span onclick="widget(7)" class="widget-button">Offres</span>
+
     </nav>
+
+
     <div class="Contenus">
         <div class="<?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">
             <h2>Bienvenue sur la plateforme pour Professeurs!</h2><br>
@@ -294,6 +299,13 @@ $hasStudents = !empty($students);
                 </div>
             </form>
         </div>
+
+    <!-- Offres Content -->
+    <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
+        Contenu Offres
+        <a href="../View/offer/list.php?type=all">
+            <button type="button">Voir les offres</button>
+        </a>
     </div>
 
 
@@ -301,10 +313,8 @@ $hasStudents = !empty($students);
 <script src="../View/Principal/deleteMessage.js"></script>
 </body>
 
-<footer class="PiedDePage">
-    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
-    <a href="Redirection.php">Informations</a>
-    <a href="Redirection.php">À propos</a>
+<footer>
+    <?php include_once '../View/footer.php'; ?>
 </footer>
 
 </html>

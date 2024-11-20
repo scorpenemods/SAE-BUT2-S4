@@ -113,11 +113,11 @@ class Offer {
 
 
         global $db;
-        $stmt = $db->prepare("SELECT * FROM Tag JOIN Tag_Offer ON Tag.id = Tag_Offer.tag_id WHERE Tag_Offer.offer_id = :offer_id");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Tag JOIN Tag_Offer ON Tag.id = Tag_Offer.tag_id WHERE Tag_Offer.offer_id = :offer_id");
         $stmt->bindParam(":offer_id", $this->id);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -137,7 +137,7 @@ class Offer {
         global $db;
 
         //Update the offer
-        $stmt = $db->prepare("UPDATE Offer SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone, website = :website WHERE id = :id");
+        $stmt = $db->getConnection()->prepare("UPDATE Offer SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone, website = :website WHERE id = :id");
         $stmt->bindParam(":title", $getTitle);
         $stmt->bindParam(":description", $getDescription);
         $stmt->bindParam(":job", $getJob);
@@ -153,22 +153,22 @@ class Offer {
 
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
         //Delete the tags in the tags_offers table
-        $stmt = $db->prepare("DELETE FROM Tag_Offer WHERE offer_id = :id");
+        $stmt = $db->getConnection()->prepare("DELETE FROM Tag_Offer WHERE offer_id = :id");
         $stmt->bindParam(":id", $getId);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
         //Add the tags in the tags_offers table
         foreach ($getTags as $tag) {
-            $stmt = $db->prepare("INSERT INTO Tag_Offer (tag_id, offer_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
+            $stmt = $db->getConnection()->prepare("INSERT INTO Tag_Offer (tag_id, offer_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $getId);
             $stmt->execute();
@@ -212,12 +212,12 @@ class Offer {
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM Offer WHERE id = :id");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Offer WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
         $result = $stmt->fetch();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -253,10 +253,10 @@ class Offer {
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM Offer");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Offer");
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -299,7 +299,7 @@ class Offer {
         global $db;
 
         //Insert the offer in the offers table
-        $stmt = $db->prepare("INSERT INTO Offer (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
+        $stmt = $db->getConnection()->prepare("INSERT INTO Offer (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
                     email, phone, website) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,
                     :email, :phone, :website)");
         $stmt->bindParam(":company_id", $company_id);
@@ -316,16 +316,16 @@ class Offer {
         $stmt->bindParam(":website", $website);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
 
-        $id = $db->lastInsertId();
+        $id = $db->getConnection()->lastInsertId();
 
         //Add the tags in the tags_offers table
         foreach ($tags as $tag) {
-            $stmt = $db->prepare("INSERT INTO Tag_Offer (tag_id, offer_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
+            $stmt = $db->getConnection()->prepare("INSERT INTO Tag_Offer (tag_id, offer_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $id);
             $stmt->execute();
@@ -391,7 +391,7 @@ class Offer {
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM Tag;");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Tag;");
         $stmt->execute();
 
         $result = $stmt->fetchAll();
@@ -413,11 +413,11 @@ class Offer {
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM Offer WHERE company_id = :company_id;");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Offer WHERE company_id = :company_id;");
         $stmt->bindParam(":company_id", $companyId);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -607,11 +607,11 @@ class Offer {
     public static function hide($id) {
         $db = Database::getInstance();
 
-        $stmt = $db->prepare("UPDATE Offer SET is_active = !is_active WHERE id = :id");
+        $stmt = $db->getConnection()->prepare("UPDATE Offer SET is_active = !is_active WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -621,12 +621,12 @@ class Offer {
     public static function isCompanyOffer(int $id, int $company_id): ?bool {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM Offer WHERE id = :id AND company_id = :company_id");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Offer WHERE id = :id AND company_id = :company_id");
         $stmt->bindParam(":id", $id);
         $stmt->bindParam(":company_id", $company_id);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -643,11 +643,11 @@ class Offer {
     public static function isAlreadyPending(int $id): ?bool {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :offer_id AND status = 'Pending'");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :offer_id AND status = 'Pending'");
         $stmt->bindParam(":offer_id", $id);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -664,12 +664,12 @@ class Offer {
     public static function makeFavorite(int $id, int $user_id): ?bool {
         global $db;
 
-        $stmt = $db->prepare("INSERT INTO Favorite_Offer (offer_id, user_id) VALUES (:offer_id, :user_id)");
+        $stmt = $db->getConnection()->prepare("INSERT INTO Favorite_Offer (offer_id, user_id) VALUES (:offer_id, :user_id)");
         $stmt->bindParam(":offer_id", $id);
         $stmt->bindParam(":user_id", $user_id);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -680,12 +680,12 @@ class Offer {
     public static function removeFavorite(int $id, int $user_id): ?bool {
         global $db;
 
-        $stmt = $db->prepare("DELETE FROM Favorite_Offer WHERE offer_id = :offer_id AND user_id = :user_id");
+        $stmt = $db->getConnection()->prepare("DELETE FROM Favorite_Offer WHERE offer_id = :offer_id AND user_id = :user_id");
         $stmt->bindParam(":offer_id", $id);
         $stmt->bindParam(":user_id", $user_id);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -701,7 +701,7 @@ class Offer {
         $stmt->bindParam(":user_id", $user_id);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -718,14 +718,14 @@ class Offer {
     public static function getAllInactive(int $company_id = 0): ?array {
         global $db;
         if ($company_id != 0) {
-            $stmt = $db->prepare("SELECT * FROM Offer WHERE is_active = 0 AND company_id = :company_id ORDER BY begin_date DESC");
+            $stmt = $db->getConnection()->prepare("SELECT * FROM Offer WHERE is_active = 0 AND company_id = :company_id ORDER BY begin_date DESC");
             $stmt->bindParam(":company_id", $company_id);
         } else {
-            $stmt = $db->prepare("SELECT * FROM Offer WHERE is_active = 0 ORDER BY begin_date DESC");
+            $stmt = $db->getConnection()->prepare("SELECT * FROM Offer WHERE is_active = 0 ORDER BY begin_date DESC");
         }
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 

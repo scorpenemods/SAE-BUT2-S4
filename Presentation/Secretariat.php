@@ -147,6 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Lien vers le script JavaScript principal -->
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
+    <link rel="stylesheet" href="/View/css/footer.css">
     <script src="/View/Principal/Notif.js"></script>
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
@@ -212,6 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <span onclick="window.location.href='Secretariat.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Documents</span>
         <span onclick="window.location.href='Secretariat.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5">Messagerie</span>
         <span onclick="window.location.href='Secretariat.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>" id="content-6">Groupes</span>
+        <span onclick="window.location.href='Secretariat.php?section=7'" class="widget-button <?php echo $activeSection == '7' ? 'Current' : ''; ?>" id="content-7">Offres</span>
 
     </nav>
     <div class="Contenus">
@@ -514,15 +516,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
         </div>
+    <!-- Offres Content -->
+    <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
+        Contenu Offres
+        <a href="../View/offer/list.php?type=all">
+            <button type="button">Voir les offres</button>
+        </a>
     </div>
 </section>
 
-<footer class="PiedDePage">
-    <!-- Pied de page avec logo et liens -->
-    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
-    <a href="Redirection.php">Informations</a>
-    <a href="Redirection.php">À propos</a>
-</footer>
 
 <!-- Script JavaScript pour la gestion des utilisateurs -->
 <script src="../View/Principal/userManagement.js"></script>
@@ -560,3 +562,6 @@ $tutors = $database -> getTutor();
         <a href="#" class="cross">&times;</a>
     </div>
 </div>
+<footer>
+    <?php include_once'../View/footer.php'; ?>
+</footer>

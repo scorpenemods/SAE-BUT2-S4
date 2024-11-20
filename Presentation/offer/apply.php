@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: ' . $_SERVER["HTTP_REFERER"] ?? "/");
         die();
     } else {
-        $stmt = $db->prepare("select * from applications where idUser = :idUser and idOffer = :idOffre");
+        $stmt = $db->getConnection()->prepare("select * from Application where idUser = :idUser and idOffer = :idOffre");
         $stmt->bindParam(":idUser", $idUser);
         $stmt->bindParam(":idOffre", $offer);
         $stmt->execute();
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 move_uploaded_file($tempName, $uploadDir . $newName . "." .$fileExt);
             }
 
-            $stmt = $db->prepare("INSERT INTO applications (idUser, idOffer) VALUES (:idUser, :idOffer)");
+            $stmt = $db->getConnection()->prepare("INSERT INTO Application (idUser, idOffer) VALUES (:idUser, :idOffer)");
             $stmt->bindParam(':idUser', $idUser);
             $stmt->bindParam(':idOffer', $offer);
             $stmt->execute();

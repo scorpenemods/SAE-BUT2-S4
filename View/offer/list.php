@@ -3,16 +3,16 @@ session_start();
 
 
 // Verification de qui est l'utilisateur
-
+$groupeSecretariat = false;
+$company_id = 0;
 if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
 }
 
 
-if (isset($_SESSION['secretariat'])) {
-    $groupeSecretariat = $_SESSION['secretariat'];
+if ($_SESSION["user_role"]==4||$_SESSION["user_role"]==5) {
+    $groupeSecretariat = true;
 }
-
 
 if (isset($_SESSION['user'])) {
     $user_id = $_SESSION['user'];

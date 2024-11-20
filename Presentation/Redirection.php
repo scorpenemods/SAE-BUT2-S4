@@ -11,12 +11,28 @@
     <h1>Redirection...</h1>
     <p>Retour à la page d'accueil dans 3 secondes...</p>
 </div>
+<?php
+session_start();
 
-<script>
-    // JavaScript redirige vers l'index après 3 seconds
-    setTimeout(function() {
-        window.location.href = "Main.php";
-    }, 3000);
-</script>
+if($_SESSION["user_role"] == 4 || $_SESSION["user_role"] == 5){
+    header('Location: Secretariat.php?section=0');
+    die();
+}
+if($_SESSION["user_role"] == 3 ){
+    header('Location: MaitreStage.php?section=1');
+
+}
+if($_SESSION["user_role"] == 2 ){
+    header('Location: Professor.php?section=1');
+
+}
+if($_SESSION["user_role"] == 1){
+    header('Location: Student.php?section=1');
+
+}
+
+
+
+?>
 </body>
 </html>
