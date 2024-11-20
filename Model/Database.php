@@ -1166,4 +1166,14 @@ class Database
         }
         return $stages;
     }
+
+    //---------------- Secretariat send a message to everyone --------------------------------- //
+    public function getAllValidUsers()
+    {
+        $conn = $this->getConnection();
+        $query = "SELECT * FROM User WHERE status_user = 1";
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

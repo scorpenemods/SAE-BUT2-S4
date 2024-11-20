@@ -7,6 +7,11 @@ class Email
 {
     private PHPMailer $mail;
 
+    public function getMail(): PHPMailer
+    {
+        return $this->mail;
+    }
+
     public function __construct()
     {
         // Create an instance of PHPMailer

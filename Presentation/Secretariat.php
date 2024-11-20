@@ -156,6 +156,12 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
     <!-- Include EmojiOneArea -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
+
+    <!-- Test styles from bootstrap | delete or adjust  -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
 <header class="navbar">
@@ -298,6 +304,18 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
         <!-- Section Gestion des utilisateurs -->
         <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
             <div class="user-management">
+                <!-- Section pour déposer un fichier CSV -->
+                <div class="csv-upload" style="padding-top: 25px">
+                    <h2>Importer des utilisateurs via CSV</h2>
+                    <form action="Batch.php" method="post" enctype="multipart/form-data">
+                        <label for="csvFile">Sélectionner un fichier CSV:</label>
+                        <input type="file" name="csv_file" id="csvFile" accept=".csv" required>
+                        <button type="submit">📂 Importer le CSV</button>
+                    </form>
+
+                    <p>Le fichier CSV doit contenir les colonnes suivantes : Nom, Prénom, Email, Rôle, Activité, Téléphone.</p>
+                </div>
+
                 <!-- Section pour les demandes d'utilisateur en attente d'approbation -->
                 <div class="pending-requests">
                     <h2>Demandes en attente</h2>
@@ -373,17 +391,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
                     }
                     ?>
                 </div>
-                <!-- Section pour déposer un fichier CSV -->
-                <div class="csv-upload">
-                    <h2>Importer des utilisateurs via CSV</h2>
-                    <form action="Batch.php" method="post" enctype="multipart/form-data">
-                        <label for="csvFile">Sélectionner un fichier CSV:</label>
-                        <input type="file" name="csv_file" id="csvFile" accept=".csv" required>
-                        <button type="submit">📂 Importer le CSV</button>
-                    </form>
 
-                    <p>Le fichier CSV doit contenir les colonnes suivantes : Nom, Prénom, Email, Rôle, Activité, Téléphone.</p>
-                </div>
             </div>
         </div>
         <!-- Section Rapports -->
@@ -398,47 +406,23 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
 
 
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
+        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?> animate__animated animate__fadeIn" id="content-5">
             <!-- Messenger Contents -->
             <div class="messenger">
-                <div class="contacts">
-                    <div class="search-bar">
-                        <label for="search-input"></label>
-                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
-                    </div>
-                    <h3>Contacts</h3>
-                    <ul id="contacts-list">
-                        <?php include_once("ContactList.php");?>
-                        <?php include_once("GroupContactList.php");?>
-                    </ul>
-                </div>
-
-                <!-- Right click for delete -->
-                <div id="context-menu" class="context-menu">
-                    <ul>
-                        <li id="copy-text">Copy</li>
-                        <li id="delete-message">Delete</li>
-                    </ul>
-                </div>
-
-                <div class="chat-window">
-                    <div class="chat-header">
-                        <h3 id="chat-header-title">Chat avec Contact 1</h3>
-                    </div>
-                    <div class="chat-body" id="chat-body">
-                        <!-- JS messages dynamic -->
-                    </div>
-                    <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
-                            <input type="file" id="file-input" name="file" style="display:none">
-                            <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                            <!-- Hidden fields for receiver_id and group_id -->
-                            <input type="hidden" name="receiver_id" id="receiver_id" value="">
-                            <input type="hidden" name="group_id" id="group_id" value="">
-                            <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="submit">Envoyer</button>
-                        </form>
-                    </div>
+                <div class="container mt-5">
+                    <h2 class="text-center mb-4 animate__animated animate__bounceIn">Envoyer un message à tous les utilisateurs</h2>
+                    <form id="broadcastMessageForm" enctype="multipart/form-data" method="POST" action="SendMessageToAll.php" class="animate__animated animate__fadeInUp">
+                        <div class="form-group">
+                            <label for="message" class="form-label">Message :</label>
+                            <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
+                        </div>
+                        <div class="form-group position-relative">
+                            <label for="file" class="form-label">Joindre un fichier :</label>
+                            <input type="file" class="form-control-file animated-file-input" id="file" name="file">
+                            <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné">✖️</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block animated-button">Envoyer à tous les utilisateurs</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -577,9 +561,48 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
 <script src="../View/Principal/userManagement.js"></script>
 <script src="../View/Principal/GroupCreation.js"></script>
 <script src="/View/Principal/GroupMessenger.js"></script>
+<script>
+    // Ajouter une classe d'animation
+    document.querySelectorAll('.form-control, .form-control-file').forEach(element => {
+        element.addEventListener('focus', () => {
+            element.classList.add('animated-border');
+        });
+
+        element.addEventListener('blur', () => {
+            element.classList.remove('animated-border');
+        });
+    });
+
+    // Animation de validation du fichier lors de la sélection
+    document.getElementById('file').addEventListener('change', function() {
+        if (this.files.length > 0) {
+            // Afficher le bouton d'annulation
+            document.getElementById('resetFileBtn').style.display = 'block';
+        } else {
+            document.getElementById('resetFileBtn').style.display = 'none';
+        }
+    });
+
+    // Fonction pour réinitialiser le champ de fichier lorsque le bouton d'annulation est cliqué
+    document.getElementById('resetFileBtn').addEventListener('click', function() {
+        const fileInput = document.getElementById('file');
+        fileInput.value = ''; // Réinitialise le champ de fichier
+        this.style.display = 'none'; // Cache le bouton d'annulation
+    });
+
+    // Animation lors de la saisie du texte
+    const messageInput = document.getElementById('message');
+    messageInput.addEventListener('input', () => {
+        messageInput.classList.add('typing-animation');
+        clearTimeout(messageInput.typingTimer);
+        messageInput.typingTimer = setTimeout(() => {
+            messageInput.classList.remove('typing-animation');
+        }, 500);
+    });
+</script>
 </body>
 </html>
-
+<!--
 <?php
 // Récupère les profs
 $professors = $database -> getProfessor();
@@ -610,3 +633,4 @@ $tutors = $database -> getTutor();
         <a href="#" class="cross">&times;</a>
     </div>
 </div>
+!-->

@@ -1245,5 +1245,180 @@ section.Menus div.Contenus div.Contenu p.noNotes{
     cursor: pointer;
 }
 
+/* ----------------------------- Styles pour la Messagerie ----------------------------- */
+
+/* Conteneur de la Messagerie */
+.messenger {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.messenger:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Titre avec animation */
+.messenger h2 {
+    font-size: 1.8rem;
+    color: #333333;
+}
+
+/* Champs de formulaire avec bordure animée */
+.form-control.animated-input,
+.form-control-file.animated-file-input {
+    border: 2px solid transparent;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    transition: border 0.5s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.form-control.animated-input {
+    border: 2px solid #2575fc;
+}
+
+/* Animation de gradient sur le contour lors du focus */
+.animated-border {
+    border-image: linear-gradient(45deg, #6a11cb, #2575fc) 1;
+    box-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
+    transform: scale(1.02);
+}
+
+/* Placeholder avec animation lors du focus */
+.animated-input::placeholder {
+    transition: opacity 0.3s ease;
+    color: #999999;
+}
+
+.animated-input:focus::placeholder {
+    opacity: 0.5;
+}
+
+/* Animation lors de la saisie du texte */
+.typing-animation {
+    border-image: linear-gradient(45deg, #ff6a00, #ee0979) 1;
+    box-shadow: 0 0 10px rgba(238, 9, 121, 0.5);
+}
+
+/* Bouton de soumission avec animations */
+.btn-primary.animated-button {
+    background-color: #2575fc;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary.animated-button:hover {
+    background-color: #6a11cb;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary.animated-button:active {
+    animation: pulse 0.3s;
+}
+
+/* Animation de pulsation au clic */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Bouton d'annulation de fichier */
+.reset-file-btn {
+    position: absolute;
+    top: 60%;
+    right: 10px;
+    transform: translateY(-30%);
+    background: transparent;
+    border: none;
+    color: #ff4d4d;
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.reset-file-btn:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Animation du contour lors de l'ajout de fichier */
+.animate__rubberBand {
+    animation: rubberBand 1s;
+}
+
+@keyframes rubberBand {
+    0%,
+    100% {
+        transform: scaleX(1);
+    }
+    30% {
+        transform: scaleX(1.25) scaleY(0.75);
+    }
+    40% {
+        transform: scaleX(0.75) scaleY(1.25);
+    }
+    50% {
+        transform: scaleX(1.15) scaleY(0.85);
+    }
+    65% {
+        transform: scaleX(0.95) scaleY(1.05);
+    }
+    75% {
+        transform: scaleX(1.05) scaleY(0.95);
+    }
+}
+
+/* Effet de saisie animé */
+.form-control.animated-input.typing-animation {
+    animation: typingEffect 0.5s forwards;
+}
+
+@keyframes typingEffect {
+    from {
+        border-image: linear-gradient(45deg, #ff6a00, #ee0979) 2;
+    }
+    to {
+        border-image: linear-gradient(45deg, #88da70, #2575fc) 2;
+    }
+}
+
+/* Transition douce pour les labels */
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333333;
+    transition: color 0.3s ease;
+}
+
+.form-label:hover {
+    color: #2575fc;
+}
+
+/* Position relative pour le groupe de formulaire contenant le champ de fichier */
+.form-group.position-relative {
+    position: relative;
+}
+
+/* ----------------------------- Fin des Styles pour la Messagerie ----------------------------- */
+
+
 
 
