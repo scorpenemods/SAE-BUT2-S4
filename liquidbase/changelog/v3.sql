@@ -16,23 +16,11 @@ drop column IF EXISTS distance;
 --changeset LiRuZ:21 labels:Modify-table
 --comment: Add created_at column to applications table
 ALTER TABLE applications
-    ADD COLUMN created_at TIMESTAMP;
+    ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 --rollback ALTER TABLE applications DROP COLUMN created_at;
 
 --changeset LiRuZ:22 labels:Modify-table
---comment: Add default for the collum created_at
-ALTER TABLE applications
-    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
---rollback ALTER TABLE applications ALTER COLUMN created_at DROP DEFAULT;
-
---changeset LiRuZ:23 labels:Modify-table
 --comment: Add status column to applications table
 ALTER TABLE applications
-    ADD COLUMN status VARCHAR(255);
+    ADD COLUMN status VARCHAR(255) DEFAULT 'Pending';
 --rollback ALTER TABLE applications DROP COLUMN status;
-
---changeset LiRuZ:24 labels:Modify-table
---comment: Add favorites column to applications table
-ALTER TABLE applications
-    ADD COLUMN favorite BOOLEAN;
---rollback ALTER TABLE applications DROP COLUMN favorite;

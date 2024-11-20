@@ -6,14 +6,12 @@ class Applications {
     private int $id_offer;
     private string $created_at;
     private string $status;
-    private bool $favorite;
 
-    public function __construct(int $id_user, int $id_offer, string $created_at, string $status, bool $favorite) {
+    public function __construct(int $id_user, int $id_offer, string $created_at, string $status) {
         $this->id_user = $id_user;
         $this->id_offer = $id_offer;
         $this->created_at = $created_at;
         $this->status = $status;
-        $this->favorite = $favorite;
     }
 
     public function getIdUser(): int {
@@ -96,7 +94,7 @@ class Applications {
 
         $applications = [];
         foreach ($result as $row) {
-            $applications[] = new Applications($row["idUser"], $row["idOffer"], $row["created_at"], $row["status"], $row["favorite"]);
+            $applications[] = new Applications($row["idUser"], $row["idOffer"], $row["created_at"], $row["status"]);
         }
         return $applications;
     }
@@ -115,7 +113,7 @@ class Applications {
 
     public static function validate(int $id_offer): ?bool {
         global $db;
-        $stmt = $db->prepare("UPDATE status SET status = 'Accepted' WHERE idOffer = :id;");
+        $stmt = $db->prepare("UPDATE applications SET status = 'Accepted' WHERE idOffer = :id;");
         $stmt->bindParam(":id", $id_offer);
         $stmt->execute();
 
