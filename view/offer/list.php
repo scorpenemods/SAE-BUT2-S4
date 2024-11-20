@@ -18,6 +18,13 @@ $secretariat_group = $_SESSION['secretariat'] ?? false;
 $pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT) ?? 1;
 $currentURL = $_SERVER["REQUEST_URI"];
 
+/**
+ * setPageId
+ * Sets the pageId query parameter in the given URL to the given value
+ * @param $url
+ * @param $newPageId
+ * @return string
+ */
 function setPageId($url, $newPageId): string {
     $parsedUrl = parse_url($url);
     parse_str($parsedUrl['query'] ?? '', $queryParams);
@@ -252,7 +259,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             });
 
             const createNotificationBtn = document.getElementById('createNotification');
-            createNotificationBtn.addEventListener('click', () => {
+            createNotificationBtn.addEventListener('click', (e) => {
                 e.preventDefault()
                 const urlParams = new URLSearchParams(window.location.search);
                 const filters = {
@@ -263,34 +270,19 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                     calendar: urlParams.get('calendar')
                 };
 
+                let valid = false;
                 for (const key in filters) {
                     if (filters[key] === '') {
                         filters[key] = null;
-                    }
-                }
-
-                //log
-                console.log("Données envoyées :", {
-                    duration: filters.duration,
-                    address: filters.address,
-                    study_level: filters.diploma,
-                    begin_date: filters.calendar,
-                    salary: filters.minSalary
-                });
-
-                let valid = false
-                for (const key in filters){
-                    if (filters[key] !== null){
+                    } else {
                         valid = true;
-                        break;
                     }
                 }
 
-                if (valid !== true){
+                if (valid !== true) {
                     alert("Veuillez renseigner un ou plusieurs filtres afin de créer une demande de notification")
-                    return;
-                }
-                else{
+                    return
+                } else {
                     $.ajax({
                         url: '/presenter/offer/createAlert.php',
                         type: 'POST',
@@ -302,21 +294,15 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                             salary: filters.minSalary
                         },
                         success: function(response) {
-                            try {
-                                const result = JSON.parse(response);
+                            const result = JSON.parse(response);
 
-                                if (result.status === "success") {
-                                    alert("Notification créée avec succès !");
-                                } else {
-                                    alert("Erreur : " + (result.message || "Une erreur est survenue."));
-                                }
-                            } catch (error) {
-                                console.error("Erreur lors de l'analyse de la réponse :", error);
-                                alert("Une erreur inattendue est survenue.");
+                            if (result.status === "success") {
+                                alert("Notification créée avec succès !");
+                            } else {
+                                alert("Erreur : " + (result.message || "Une erreur est survenue."));
                             }
                         },
                         error: function(xhr, status, error) {
-                            console.error("Erreur AJAX :", error);
                             alert("Une erreur réseau est survenue lors de la création de la notification.");
                         }
                     });
