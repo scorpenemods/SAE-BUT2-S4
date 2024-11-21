@@ -22,7 +22,7 @@ if ($userRole == 1) {
     $homePage = 'Professor.php';
 } elseif ($userRole == 3) {
     $homePage = 'MaitreStage.php';
-} elseif ($userRole == 4) {
+} elseif ($userRole == 4 or $userRole == 5) {
     $homePage = 'Secretariat.php';
 }
 
