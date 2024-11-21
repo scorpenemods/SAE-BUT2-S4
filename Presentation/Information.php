@@ -35,7 +35,7 @@ if (isset($_SESSION['user'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Rendre la page responsive -->
     <title>Informations du compte</title> <!-- Titre de la page -->
     <link rel="stylesheet" href="../View/Settings/Information.css"> <!-- Lien vers la feuille de style CSS -->
-    <link rel="stylesheet" href="/View/css/footer.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
     <script type="text/javascript" src="../View/Settings/Settings.js"></script> <!-- Lien vers le script JavaScript -->
 </head>
 <body>
@@ -69,6 +69,6 @@ if (isset($_SESSION['user'])) {
 </section>
 </body>
 <footer>
-    <?php include_once'../View/footer.php'; ?>
+    <?php include_once '../View/Footer.php'; ?>
 </footer>
 </html>

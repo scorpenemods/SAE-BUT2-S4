@@ -41,7 +41,7 @@ class PendingOffer extends Offer
         return $this->type;
     }
 
-    // Get all Tag for a pending offer
+    // Get all Tag for a pending Offer
     public function getTag(): ?array
     {
         global $db;
@@ -74,7 +74,7 @@ class PendingOffer extends Offer
 
 
 
-    //Get pending offer by is id
+    //Get pending Offer by is id
     public static function getByOfferId(int $id): ?PendingOffer
     {
         global $db;
@@ -117,7 +117,7 @@ class PendingOffer extends Offer
         );
     }
 
-    // Get pending offers by offer id
+    // Get pending offers by Offer id
     public static function getByOffer(int $id): ?array {
         global $db;
         $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :id");
@@ -216,7 +216,7 @@ class PendingOffer extends Offer
     public static function getAllNew(): ?array {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE type = 'new offer' AND status = 'Pending'");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE type = 'new Offer' AND status = 'Pending'");
         $stmt->execute();
 
         if ($db->getConnection()->errorCode() != 0) {
@@ -262,7 +262,7 @@ class PendingOffer extends Offer
     public static function getAllUpdated(): ?array {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE type = 'updated offer' AND status = 'Pending'");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE type = 'updated Offer' AND status = 'Pending'");
         $stmt->execute();
 
         if ($db->getConnection()->errorCode() != 0) {
@@ -305,19 +305,19 @@ class PendingOffer extends Offer
     }
 
 
-    //Create a new pending offer
+    //Create a new pending Offer
     public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $Tag, string $email, string $phone, string $website, int $user_id, int $offer_id): ?PendingOffer
     {
         global $db;
 
-        //Get the type of the offer
+        //Get the type of the Offer
         if ($offer_id == 0) {
-            $type = "new offer";
+            $type = "new Offer";
         } else {
-            $type = "updated offer";
+            $type = "updated Offer";
         }
 
-        //Insert the offer in the pending_offers table
+        //Insert the Offer in the pending_offers table
         $stmt = $db->getConnection()->prepare("INSERT INTO Pending_Offer (user_id, type, offer_id, company_id, title, address, job, description, duration, salary,
                             study_level, email, phone, website, begin_date) VALUES (:user_id, :type, :offer_id, :company_id, :title, :address, :job, :description, :duration, :salary,
                             :study_level, :email, :phone, :website, :begin_date)");
@@ -377,7 +377,7 @@ class PendingOffer extends Offer
         return $offer;
     }
 
-    //Get the real duration of the offer using modulo
+    //Get the real duration of the Offer using modulo
     public function getRealDuration(): string
     {
         $duration = $this->getDuration();
@@ -427,7 +427,7 @@ class PendingOffer extends Offer
         return $Tag;
     }
 
-    //Set the status of an offer
+    //Set the status of an Offer
     public static function setStatus(int $getId, string $string) {
         global $db;
 

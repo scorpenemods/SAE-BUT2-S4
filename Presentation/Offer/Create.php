@@ -7,7 +7,7 @@ require dirname(__FILE__) . "/../../Model/Company.php";
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 } else {
-    header("Location: ../offer/create.php");
+    header("Location: ../Offer/Create.php");
     die();
 }
 
@@ -16,7 +16,7 @@ if (isset($_POST['id'])) {
     foreach ($offers as $offer) {
         $status = $offer->getStatus();
         if ($status == "Pending") {
-            header("Location: ../../View/offer/list.php");
+            header("Location: ../../View/Offer/List.php");
             die();
         }
     }
@@ -52,13 +52,13 @@ if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['addre
 
 
 
-    //Create the offer
+    //Create the Offer
     $offer = pendingOffer::createPending($company_id, $title, $description, $job, $duration, $salary, $address, $education, $startDate, $selectedTags, $email, $phone, $website, $user_id, $id);
 
 
-    //If the offer is created, redirect to the list of pending offers
+    //If the Offer is created, redirect to the list of pending offers
     if ($offer) {
-        header("Location: ../../View/offer/list.php");
+        header("Location: ../../View/Offer/List.php");
         die();
     }
 }

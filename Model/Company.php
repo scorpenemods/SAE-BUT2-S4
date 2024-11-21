@@ -50,7 +50,7 @@ class Company {
         return $this->updated_at;
     }
 
-    //Get a company by its id
+    //Get a Company by its id
     public static function getById(int $id): ?Company {
         global $db;
         $stmt = $db->getConnection()->prepare("SELECT * FROM Company WHERE id = :id");
@@ -105,7 +105,7 @@ class Company {
         return $companies;
     }
 
-    //Create a new company
+    //Create a new Company
     public static function create(string $name, int $size, string $address, string $siren): ?Company {
         global $db;
 

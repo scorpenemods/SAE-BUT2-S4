@@ -5,18 +5,18 @@ global $tags;
 require dirname(__FILE__) . '/../../../Model/Offer.php';
 require dirname(__FILE__) . '/../../../Model/Company.php';
 
-// Check if user has a company
-if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset($_GET['id']))) {
+// Check if user has a Company
+if (isset($_SESSION['Secretariat']) || (isset($_SESSION['company_id']) && isset($_GET['id']))) {
     $company_id = $_SESSION['company_id'];
     $offer = Offer::getById($_GET['id']);
     if ($company_id!= null && !Offer::isCompanyOffer($_GET['id'], $company_id)) {
-        header("Location: ../../offer/list.php");
+        header("Location: ../../Offer/List.php");
         die();
     } else {
         $company_id = $offer->getCompanyId();
     }
 } else {
-    header("Location: ../../offer/list.php");
+    header("Location: ../../Offer/List.php");
     die();
 }
 
@@ -28,16 +28,16 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Le Petit Stage - Modifier une offre</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="/View/css/create.css">
-        <link rel="stylesheet" href="/View/css/header.css">
-        <link rel="stylesheet" href="/View/css/footer.css">
+        <link rel="stylesheet" href="/View/css/Create.css">
+        <link rel="stylesheet" href="/View/css/Header.css">
+        <link rel="stylesheet" href="/View/css/Footer.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../../header.php'; ?>
+        <?php include dirname(__FILE__) . '/../../Header.php'; ?>
         <main class="container-principal">
             <h1>Modifier une offre de stage</h1>
-            <form action="../../../Presentation/offer/create.php" method="post" enctype="multipart/form-data">
+            <form action="../../../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $offer->getId(); ?>">
                 <input type="hidden" name="company_id" value="<?php echo $company_id; ?>">
                 <div class="form-group">
@@ -115,7 +115,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
                 <button type="submit">Publier l'offre</button>
             </form>
         </main>
-        <?php include dirname(__FILE__) . '/../../footer.php'; ?>
+        <?php include dirname(__FILE__) . '/../../Footer.php'; ?>
         <script>
             const dropdownBtn = document.getElementById('tagsDropdownBtn');
             const dropdown = document.getElementById("tagsDropdown");

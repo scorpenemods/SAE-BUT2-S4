@@ -46,5 +46,5 @@
 
 </body>
 <footer>
-    <?php include dirname(__FILE__) . '/../footer.php'; ?>
+    <?php include dirname(__FILE__) . '/../Footer.php'; ?>
 </footer>

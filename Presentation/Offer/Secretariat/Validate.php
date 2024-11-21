@@ -5,7 +5,7 @@ require dirname(__FILE__) . '/../../../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../../../Model/Company.php';
 
 
-if (isset($_SESSION['secretariat']) && isset($_POST['id']) && isset($_SERVER["HTTP_REFERER"])) {
+if (isset($_SESSION['Secretariat']) && isset($_POST['id']) && isset($_SERVER["HTTP_REFERER"])) {
     $offer = PendingOffer::getByOfferId($_POST['id']);
     if ($offer->getStatus() == "Pending") {
         if ($offer->getOfferId() == 0) {
@@ -18,4 +18,4 @@ if (isset($_SESSION['secretariat']) && isset($_POST['id']) && isset($_SERVER["HT
         }
     }
 }
-header("Location: ../../../View/offer/list.php?type=all");
+header("Location: ../../../View/Offer/List.php?type=all");

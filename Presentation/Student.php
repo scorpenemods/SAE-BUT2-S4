@@ -57,7 +57,7 @@ $notes = $database->getNotes($senderId);
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="/View/Principal/Principal.css">
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
-    <link rel="stylesheet" href="/View/css/footer.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="/View/Principal/Principal.js"></script>
     <script src="/View/Principal/Notif.js"></script>
     <style>
@@ -216,7 +216,7 @@ $notes = $database->getNotes($senderId);
         <!-- Offres Content -->
         <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
             Contenu Offres
-            <a href="../View/offer/list.php?type=all">
+            <a href="../View/Offer/List.php?type=all">
                 <button type="button">Voir les offres</button>
             </a>
         </div>
@@ -275,7 +275,7 @@ $notes = $database->getNotes($senderId);
 </section>
 
 <footer>
-    <?php include_once '../View/footer.php'; ?>
+    <?php include_once '../View/Footer.php'; ?>
 </footer>
 <script src="/View/Principal/deleteMessage.js"></script>
 </body>

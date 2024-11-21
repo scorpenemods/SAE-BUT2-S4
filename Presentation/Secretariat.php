@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Lien vers le script JavaScript principal -->
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
-    <link rel="stylesheet" href="/View/css/footer.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="/View/Principal/Notif.js"></script>
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
@@ -519,7 +519,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Offres Content -->
     <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
         Contenu Offres
-        <a href="../View/offer/list.php?type=all">
+        <a href="../View/Offer/List.php?type=all">
             <button type="button">Voir les offres</button>
         </a>
     </div>
@@ -563,5 +563,5 @@ $tutors = $database -> getTutor();
     </div>
 </div>
 <footer>
-    <?php include_once'../View/footer.php'; ?>
+    <?php include_once '../View/Footer.php'; ?>
 </footer>

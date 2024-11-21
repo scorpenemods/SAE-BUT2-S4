@@ -70,7 +70,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
-    <link rel="stylesheet" href="/View/css/footer.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
 
     <script src="/View/Principal/Notif.js"></script>
 </head>
@@ -273,7 +273,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <!-- Offres Content -->
     <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
         Contenu Offres
-        <a href="../View/offer/list.php?type=all">
+        <a href="../View/Offer/List.php?type=all">
             <button type="button">Voir les offres</button>
         </a>
     </div>
@@ -281,7 +281,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
 <script src="../View/Principal/deleteMessage.js"></script>
 </body>
 <footer>
-    <?php include "../View/footer.php"; ?>
+    <?php include "../View/Footer.php"; ?>
 </footer>
 
 

@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_FILES['cv']) && $_FILES['cv']['error'] === 0) {
                 $fileExt = pathinfo($_FILES['cv']['name'], PATHINFO_EXTENSION);
                 if ($fileExt !== "pdf") {
-                    header("Location: /View/offer/detail.php?id=$offer&status=file_error");
+                    header("Location: /View/Offer/Detail.php?id=$offer&status=file_error");
                     die();
                 }
 
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_FILES['motivation']) && $_FILES['motivation']['error'] === 0) {
                 $fileExt = pathinfo($_FILES['motivation']['name'], PATHINFO_EXTENSION);
                 if ($fileExt !== "pdf") {
-                    header("Location: /View/offer/detail.php?id=$offer&status=file_error");
+                    header("Location: /View/Offer/Detail.php?id=$offer&status=file_error");
                     die();
                 }
 
@@ -57,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindParam(':idOffer', $offer);
             $stmt->execute();
 
-            header("Location: /View/offer/detail.php?id=$offer&status=success");
+            header("Location: /View/Offer/Detail.php?id=$offer&status=success");
         } else {
-            header("Location: /View/offer/detail.php?id=$offer&status=already_applied");
+            header("Location: /View/Offer/Detail.php?id=$offer&status=already_applied");
         }
 
         die();

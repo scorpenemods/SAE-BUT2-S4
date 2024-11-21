@@ -4,9 +4,9 @@ session_start();
 require dirname(__FILE__) . '/../../Model/Company.php';
 global $tags;
 
-if (isset($_SESSION['secretariat']) || isset($_SESSION['company_id'])) {
+if (isset($_SESSION['Secretariat']) || isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
-    $groupeSecretariat = $_SESSION['secretariat'];
+    $groupeSecretariat = $_SESSION['Secretariat'];
 }
 
 if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
@@ -20,19 +20,19 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Le Petit Stage - Proposer une offre</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="/View/css/create.css">
-        <link rel="stylesheet" href="/View/css/header.css">
-        <link rel="stylesheet" href="/View/css/footer.css">
+        <link rel="stylesheet" href="/View/css/Create.css">
+        <link rel="stylesheet" href="/View/css/Header.css">
+        <link rel="stylesheet" href="/View/css/Footer.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../header.php'; ?>
+        <?php include dirname(__FILE__) . '/../Header.php'; ?>
         <main class="container-principal">
             <h1>Proposer une offre de stage</h1>
-            <form action="../../Presentation/offer/create.php" method="post" enctype="multipart/form-data">
+            <form action="../../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
                 <?php if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                     echo "<div class='form-group'>";
-                    // Si l'utilisateur est un secretariat, il avoir un menu déroulant avec les companies
+                    // Si l'utilisateur est un Secretariat, il avoir un menu déroulant avec les companies
                     echo "<label for='company_id'>Choisissez une entreprise :</label>";
                     echo "<select name='company_id' id='company_id'>";
                     foreach ($companies as $company) {
@@ -121,7 +121,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 <button type="submit">Publier l'offre</button>
             </form>
         </main>
-        <?php include dirname(__FILE__) . '/../footer.php'; ?>
+        <?php include dirname(__FILE__) . '/../Footer.php'; ?>
         <script>
             /*
                Manage the visibility of the tags dropdown.

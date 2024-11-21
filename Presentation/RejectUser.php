@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com'; // SMTP-сервер вашего почтового провайдера
                 $mail->SMTPAuth = true;
-                $mail->Username = 'secretariat.lps.official@gmail.com'; // Ваш адрес электронной почты
+                $mail->Username = 'Secretariat.lps.official@gmail.com'; // Ваш адрес электронной почты
                 $mail->Password = 'xtdu vchi sldx qmyi'; // Пароль или пароль приложения
                 $mail->SMTPSecure = 'tls'; // Шифрование (tls или ssl)
                 $mail->Port = 587; // Порт SMTP (587 для tls, 465 для ssl)

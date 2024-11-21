@@ -49,7 +49,7 @@ if (!in_array($activeSection, $allowedSections)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings Le Petit Stage</title>
     <link rel="stylesheet" href="../View/Settings/Settings.css">
-    <link rel="stylesheet" href="/View/css/footer.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
     <script type="text/javascript" src="../View/Settings/Settings.js"></script>
 </head>
 <body>
@@ -106,6 +106,6 @@ if (!in_array($activeSection, $allowedSections)) {
 </body>
 
 <footer class="PiedDePage">
-    <?php include_once "../View/footer.php"?>
+    <?php include_once "../View/Footer.php" ?>
 </footer>
 </html>

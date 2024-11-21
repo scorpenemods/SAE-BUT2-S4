@@ -131,12 +131,12 @@ class Offer {
         return $tags;
     }
 
-    //Update an offer
+    //Update an Offer
     public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, string $getWebsite): ?Offer
     {
         global $db;
 
-        //Update the offer
+        //Update the Offer
         $stmt = $db->getConnection()->prepare("UPDATE Offer SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone, website = :website WHERE id = :id");
         $stmt->bindParam(":title", $getTitle);
         $stmt->bindParam(":description", $getDescription);
@@ -207,7 +207,7 @@ class Offer {
         imagedestroy($image);
     }
 
-    //Get an offer by its id
+    //Get an Offer by its id
     public static function getById(int $id): ?Offer
     {
         global $db;
@@ -294,11 +294,11 @@ class Offer {
         return $offers;
     }
 
-    //Create a new offer
+    //Create a new Offer
     public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $website) {
         global $db;
 
-        //Insert the offer in the offers table
+        //Insert the Offer in the offers table
         $stmt = $db->getConnection()->prepare("INSERT INTO Offer (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
                     email, phone, website) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,
                     :email, :phone, :website)");
@@ -354,7 +354,7 @@ class Offer {
         return $offer;
     }
 
-    //Get the real duration of the offer using modulo
+    //Get the real duration of the Offer using modulo
     public function getRealDuration(): string
     {
         $duration = $this->getDuration();
@@ -408,7 +408,7 @@ class Offer {
         return $this->website;
     }
 
-    //Get all offers of a company
+    //Get all offers of a Company
     public static function getCompanyOffers($companyId): ?array
     {
         global $db;
@@ -603,7 +603,7 @@ class Offer {
         return [$offers, ceil($count / 12)];
     }
 
-    //Hide an offer
+    //Hide an Offer
     public static function hide($id) {
         $db = Database::getInstance();
 
@@ -639,7 +639,7 @@ class Offer {
         return true;
     }
 
-    // Verify if an offer is already pending
+    // Verify if an Offer is already pending
     public static function isAlreadyPending(int $id): ?bool {
         global $db;
 
@@ -660,7 +660,7 @@ class Offer {
         return true;
     }
 
-    // Add a favorite offer for a user
+    // Add a favorite Offer for a user
     public static function makeFavorite(int $id, int $user_id): ?bool {
         global $db;
 
@@ -676,7 +676,7 @@ class Offer {
         return true;
     }
 
-    // Remove a favorite offer for a user
+    // Remove a favorite Offer for a user
     public static function removeFavorite(int $id, int $user_id): ?bool {
         global $db;
 
@@ -692,7 +692,7 @@ class Offer {
         return true;
     }
 
-    // Verify if a user has a favorite offer
+    // Verify if a user has a favorite Offer
     public static function isFavorite(int $id, int $user_id): ?bool {
         global $db;
 

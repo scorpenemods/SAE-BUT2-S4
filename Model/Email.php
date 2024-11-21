@@ -16,7 +16,7 @@ class Email
         $this->mail->isSMTP();
         $this->mail->Host = 'smtp.gmail.com';
         $this->mail->SMTPAuth = true;
-        $this->mail->Username = 'secretariat.lps.official@gmail.com'; // Email address
+        $this->mail->Username = 'Secretariat.lps.official@gmail.com'; // Email address
         $this->mail->Password = 'xtdu vchi sldx qmyi'; // Replace with environment variable in production
         $this->mail->SMTPSecure = 'tls'; // Encryption
         $this->mail->Port = 587; // SMTP port

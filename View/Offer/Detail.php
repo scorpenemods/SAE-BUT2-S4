@@ -3,7 +3,7 @@ session_start();
 
 require dirname(__FILE__) . '/../../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../../Model/Company.php';
-require dirname(__FILE__) . '/../../Presentation/offer/filter.php';
+require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 
 
 if (isset($_SERVER["HTTP_REFERER"])) {
@@ -21,13 +21,13 @@ if (!$offerId) {
 // Verification de qui est l'utilisateur
 
 $groupeSecretariat = false;
-if (isset($_SESSION['secretariat'])) {
-    $groupeSecretariat = $_SESSION['secretariat'];
+if (isset($_SESSION['Secretariat'])) {
+    $groupeSecretariat = $_SESSION['Secretariat'];
 }
 if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
     if ($company_id != 0 && !Offer::isCompanyOffer($offerId, $company_id)) {
-        header("Location: ../offer/list.php");
+        header("Location: ../Offer/List.php");
         die();
     }
 }
@@ -79,7 +79,7 @@ function renderDetail($label, $iconClass, $oldValue, $newValue, $isLink = false,
 
 function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): void {
     /*
-     * Renders a form with a hidden field for the offer ID and a button with the given text.
+     * Renders a form with a hidden field for the Offer ID and a button with the given text.
      * The form's action is set to $action and its method is set to 'post'.
      * The hidden field is added to the form with the given name and value.
      */
@@ -100,15 +100,15 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails de l'offre - Le Petit Stage</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/View/css/detail.css">
-    <link rel="stylesheet" href="/View/css/button.css">
-    <link rel="stylesheet" href="/View/css/header.css">
-    <link rel="stylesheet" href="/View/css/footer.css">
-    <link rel="stylesheet" href="/View/css/apply.css">
+    <link rel="stylesheet" href="/View/css/Detail.css">
+    <link rel="stylesheet" href="/View/css/Button.css">
+    <link rel="stylesheet" href="/View/css/Header.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
+    <link rel="stylesheet" href="/View/css/Apply.css">
     <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<?php include dirname(__FILE__) . '/../header.php'; ?>
+<?php include dirname(__FILE__) . '/../Header.php'; ?>
 <main>
     <div class='offer-card' style='margin-bottom: 10px'>
         <div class='offer-header'>
@@ -127,9 +127,9 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                 $tags = $offer->getTags();
 
                 foreach ($tags as $tag) {
-                    echo "<span class='offer-badge'>" . $tag . "</span>";
+                    echo "<span class='Offer-badge'>" . $tag . "</span>";
                 }
-                echo "<p class='offer-date'>" . "Publiée le " . $offer->getCreatedAt() . "</p>";
+                echo "<p class='Offer-date'>" . "Publiée le " . $offer->getCreatedAt() . "</p>";
                 ?>
                 </div>
                 <div class='apply-button-container'>
@@ -137,7 +137,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                         echo "<div class='apply-button-container'>";
                             echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
                             echo "<button class='apply-button-edit' id='apply-button' onclick='openModalWithMessage()'>Postuler</button>";
-                            echo "<form action='../../View/offer/company/edit.php' method='get' id='edit-form'>";
+                            echo "<form action='/Company/Edit.php' method='get' id='edit-form'>";
                                 echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
                                 if ($isAlreadyPending) {
                                     echo "<button class='apply-button-edit' id='edit-button'>Modification en attente de validation</button>";
@@ -145,9 +145,9 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                                     echo "<button class='apply-button-edit' id='edit-button'>Modifier</button>";
                                 }
                             echo "</form>";
-                            echo "<form action='../../Presentation/offer/company/hide.php' method='post' id='hide-form'>";
+                            echo "<form action='../../Presentation/Offer/Company/Hide.php' method='post' id='hide-form'>";
                             echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-                            echo "<input type='hidden' name='secretariat' value='" . htmlspecialchars($_SESSION['secretariat'], ENT_QUOTES, 'UTF-8') . "'>";
+                            echo "<input type='hidden' name='Secretariat' value='" . htmlspecialchars($_SESSION['Secretariat'], ENT_QUOTES, 'UTF-8') . "'>";
                             echo "<input type='hidden' name='id' value='" . htmlspecialchars($offer->getId(), ENT_QUOTES, 'UTF-8') . "'>";
 
 
@@ -160,8 +160,8 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                                 }
                             echo "</form>";
                     }
-                    renderForm('../../Presentation/offer/secretariat/deny.php', $offer->getId(), "Refuser", "deny-form", ['id' => $offer->getId()]);
-                    renderForm('../../Presentation/offer/secretariat/validate.php', $offer->getId(), "Valider", "validate-form", ['id' => $offer->getId()], "validate-form");
+                    renderForm('../../Presentation/Offer/Secretariat/Deny.php', $offer->getId(), "Refuser", "deny-form", ['id' => $offer->getId()]);
+                    renderForm('../../Presentation/Offer/Secretariat/Validate.php', $offer->getId(), "Valider", "validate-form", ['id' => $offer->getId()], "validate-form");
                     ?>
                     </div>
                 </div>
@@ -172,7 +172,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                 if ($type == 'updated') {
                     echo $offer_old->getCompany()->getName();
                     echo "</h3>";
-                    echo "<div class='offer-details'>";
+                    echo "<div class='Offer-details'>";
                     renderDetail("Durée", "fas fa-clock", $offer_old->getRealDuration(), $offer->getRealDuration(), false);
                     renderDetail("Téléphone", "fa-solid fa-phone", $offer_old->getPhone(), $offer->getPhone(), true, "tel:");
                     renderDetail("Email", "fa-solid fa-envelope", $offer_old->getEmail(), $offer->getEmail(), true, "mailto:");
@@ -183,7 +183,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                 } else {
                     echo $offer->getCompany()->getName();
                     echo "</h3>";
-                    echo "<div class='offer-details'>";
+                    echo "<div class='Offer-details'>";
                     renderDetail("Durée", "fas fa-clock", $offer->getRealDuration(), $offer->getRealDuration(), false);
                     renderDetail("Téléphone", "fa-solid fa-phone", $offer->getPhone(), $offer->getPhone(), true, "tel:");
                     renderDetail("Email", "fa-solid fa-envelope", $offer->getEmail(), $offer->getEmail(), true, "mailto:");
@@ -215,7 +215,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                 echo "<div class='modal-content'>";
                     echo "<span class='close' onclick='closeModal()'>&times;</span>";
                     echo "<h2>Déposez votre candidature pour cette offre :</h2><br>";
-                    echo "<form action='/Presentation/offer/apply.php' method='POST' enctype='multipart/form-data'>";
+                    echo "<form action='/Presentation/Offer/Apply.php' method='POST' enctype='multipart/form-data'>";
                         echo "<label for='cv'>Déposez votre CV :</label>";
                         echo "<input type='file' class='file-upload' id='cv' name='cv' accept='.pdf' required><br>";
                         echo "<label for='motivation'>Déposez votre lettre de motivation :</label>";
@@ -229,9 +229,9 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
             echo "</div>";
     } ?>
 </main>
-<?php include dirname(__FILE__) . '/../footer.php'; ?>
+<?php include dirname(__FILE__) . '/../Footer.php'; ?>
 <script type="text/javascript">
-    document.querySelectorAll('.offer-header').forEach(element => {
+    document.querySelectorAll('.Offer-header').forEach(element => {
         element.style.backgroundImage = `url(<?php echo $offer->getImage(); ?>)`;
     });
 
@@ -267,7 +267,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
     toggleVisibility('validate-form', false);
 
 
-    //Show or hide elements based on the status of the offer, the type of the offer, and the user's role
+    //Show or hide elements based on the status of the Offer, the type of the Offer, and the user's role
     if (status !== 'success') {
         if (type === 'updated' && secretariat) {
             toggleVisibility('deny-form', true);

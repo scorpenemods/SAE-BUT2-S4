@@ -111,7 +111,7 @@ $hasStudents = !empty($students);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage - Professeur</title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
-    <link rel="stylesheet" href="/View/css/footer.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <script src="/View/Principal/Notif.js"></script>
@@ -303,7 +303,7 @@ $hasStudents = !empty($students);
     <!-- Offres Content -->
     <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
         Contenu Offres
-        <a href="../View/offer/list.php?type=all">
+        <a href="../View/Offer/List.php?type=all">
             <button type="button">Voir les offres</button>
         </a>
     </div>
@@ -314,7 +314,7 @@ $hasStudents = !empty($students);
 </body>
 
 <footer>
-    <?php include_once '../View/footer.php'; ?>
+    <?php include_once '../View/Footer.php'; ?>
 </footer>
 
 </html>

@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['function'])) {
             $function = htmlspecialchars(trim($_POST['function']));
         }
-        // Field is not mandatory for 'tutorcompany' and 'secretariat'
+        // Field is not mandatory for 'tutorcompany' and 'Secretariat'
     }
 
     // Sanitize input data
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'student' => 1,
         'tutorprofessor' => 2,
         'tutorcompany' => 3,
-        'secretariat' => 4,
+        'Secretariat' => 4,
     ];
     $roleID = $roleMapping[$role] ?? null;
 

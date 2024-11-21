@@ -4,7 +4,7 @@ session_start();
 
 // Verification de qui est l'utilisateur
 $groupeSecretariat = false;
-$_SESSION["secretariat"] = false;
+$_SESSION["Secretariat"] = false;
 
 
 if (isset($_SESSION['company_id'])) {
@@ -18,7 +18,7 @@ else{
 
 if ($_SESSION["user_role"]==4||$_SESSION["user_role"]==5) {
     $groupeSecretariat = true;
-    $_SESSION["secretariat"] = true;
+    $_SESSION["Secretariat"] = true;
 }
 
 if (isset($_SESSION['user'])) {
@@ -27,9 +27,9 @@ if (isset($_SESSION['user'])) {
 
 require dirname(__FILE__) . '/../../Model/Company.php';
 require dirname(__FILE__) . '/../../Model/PendingOffer.php';
-require dirname(__FILE__) . '/../../Presentation/offer/filter.php';
+require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 
-require dirname(__FILE__) . '/../../Presentation/utils.php';
+require dirname(__FILE__) . '/../../Presentation/Utils.php';
 
 $pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT);
 if ($pageId == null) {
@@ -102,15 +102,15 @@ if ($type == null) {
         <meta name="description" content="Le Petit Stage - Offres">
         <title>Le Petit Stage - Advanced</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="../css/list.css">
-        <link rel="stylesheet" href="../css/header.css">
-        <link rel="stylesheet" href="../css/footer.css">
-        <link rel="stylesheet" href="../css/list.css">
+        <link rel="stylesheet" href="../css/List.css">
+        <link rel="stylesheet" href="../css/Header.css">
+        <link rel="stylesheet" href="../css/Footer.css">
+        <link rel="stylesheet" href="../css/List.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../header.php'; ?>
+        <?php include dirname(__FILE__) . '/../Header.php'; ?>
         <div class="blur-overlay" id="blurOverlay"></div>
         <main>
             <form method="GET">
@@ -131,37 +131,37 @@ if ($type == null) {
             </form>
             <div class="pagination button-group" style="text-align: center">
                 <div id="all">
-                    <a href="../offer/list.php?type=all">Toutes les offres</i></a>
+                    <a href="/list.php?type=all">Toutes les offres</i></a>
                 </div>
                 <div id="new">
-                    <a href="../offer/list.php?type=new">Nouvelles offres</i></a>
+                    <a href="/list.php?type=new">Nouvelles offres</i></a>
                 </div>
                 <div id="updated">
-                    <a href="../offer/list.php?type=updated">Offres mises à jour</i></a>
+                    <a href="/list.php?type=updated">Offres mises à jour</i></a>
                 </div>
                 <div id="inactive">
-                    <a href="../offer/list.php?type=inactive">Offres inactives</i></a>
+                    <a href="/list.php?type=inactive">Offres inactives</i></a>
                 </div>
                 <div id="create" style="text-align: center">
-                    <a href="create.php">Créer une offre</i></a>
+                    <a href="Create.php">Créer une offre</i></a>
                 </div>
             </div>
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
-                    echo "<a class='company-link' href='../offer/detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
-                        echo "<div class='company-card'>";
-                            echo "<div class='company-header'>";
+                    echo "<a class='Company-link' href='../Offer/Detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
+                        echo "<div class='Company-card'>";
+                            echo "<div class='Company-header'>";
                                 if ($type == 'all') {
                                     echo '<button title="Like" class="heart" onclick="heartUpdate(' . $offer->getId() . ')"><i id="heart-icon-' . $offer->getId() . '" class="'. (Offer::isFavorite($offer->getId(), $_SESSION["user_id"]) ? 'fa-solid' : 'fa-regular') . ' fa-heart"></i></button>';
                                 }
                                 echo "<img src='".$offer->getImage()."' alt='Logo de " . $offer->getCompany()->getName() . "'>";
                                 echo "<h3 class='title'>". $offer->getTitle() ."</h3>";
-                                echo "<span class='company'><i class='fas fa-building'></i> " . $offer->getCompany()->getName() . "</span>";
+                                echo "<span class='Company'><i class='fas fa-building'></i> " . $offer->getCompany()->getName() . "</span>";
                             echo "</div>";
-                            echo "<div class='company-info'>";
+                            echo "<div class='Company-info'>";
                                 echo "<p>" . truncateUTF8($offer->getDescription(), 100) . "</p>";
-                                echo "<div class='company-meta'>";
+                                echo "<div class='Company-meta'>";
                                     echo "<span><i class='fas fa-clock'></i> " . $offer->getRealDuration() . "</span>";
                                     echo "<span><i class='fas fa-graduation-cap'></i> " . $offer->getStudyLevel() . "</span>";
                                 echo "</div>";
@@ -253,7 +253,7 @@ if ($type == null) {
                 </form>
             </div>
         </div>
-        <?php include dirname(__FILE__) . '/../footer.php'; ?>
+        <?php include dirname(__FILE__) . '/../Footer.php'; ?>
         <script>
             // Filter panel functionality
             const filterPanel = document.getElementById('filterPanel');
