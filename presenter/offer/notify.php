@@ -1,8 +1,7 @@
 <?php
-//Tableau ( [id] => 3 [user_id] => 1 [duration] => 2 [address] => [study_level] => Bac+2 [salary] => [begin_date] => )
-//    public function addNotification(int $userId, string $content, string $type): bool
 
-function sendNotification($offer){
+function sendNotification($offer): void
+{
     $database = (Database::getInstance());
     $alerts = $database->getAlert();
 
@@ -44,9 +43,6 @@ function sendNotification($offer){
         }
 
     }
-
-
-
 
 }
 
