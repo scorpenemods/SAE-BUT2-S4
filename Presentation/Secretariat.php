@@ -460,92 +460,6 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <!-- Bouton pour ouvrir la fenêtre modale de création de groupe -->
             <button class="open-create-group-modal">Créer un nouveau groupe</button>
 
-            <!-- Fenêtre modale pour créer un nouveau groupe -->
-            <div id="createGroupModal" class="modal">
-                <div class="modal-content">
-                    <h2>Créer un nouveau groupe</h2>
-
-                    <!-- Form for creating the group -->
-                    <form id="createGroupForm" method="POST" action="#">
-                        <!-- Hidden input to identify the form -->
-                        <input type="hidden" name="create_group" value="1">
-
-                        <!-- Selection of students -->
-                        <label for="student-select">Étudiant(s):</label>
-                        <select id="student-select" name="student_ids[]" multiple required>
-                            <?php foreach ($students as $student): ?>
-                                <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-
-                        <!-- Selection of professor -->
-                        <label for="professor-select">Professeur :</label>
-                        <select id="professor-select" name="professor_id" required>
-                            <option value="">Sélectionnez un professeur</option>
-                            <?php foreach ($professors as $professor): ?>
-                                <option value="<?php echo $professor->getUserId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-
-                        <!-- Selection of internship supervisor -->
-                        <label for="maitre-select">Maître de stage :</label>
-                        <select id="maitre-select" name="maitre_id" required>
-                            <option value="">Sélectionnez un maître de stage</option>
-                            <?php foreach ($maitres as $maitre): ?>
-                                <option value="<?php echo $maitre->getUserId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-
-                        <!-- Button to submit the form and create the group -->
-                        <button type="submit" class="submit-group-button">Créer le groupe</button>
-                    </form>
-
-                    <!-- Area to display the result message -->
-                    <div id="resultMessage"></div>
-                    <!-- Button to close the modal window -->
-                    <span class="close-modal">&times;</span>
-                </div>
-            </div>
-
-            <!-- Modal for editing a group -->
-            <div id="editGroupModal" class="modal">
-                <div class="modal-content">
-                    <h2>Modifier le groupe</h2>
-                    <form id="editGroupForm" method="POST" action="#">
-                        <!-- Hidden fields -->
-                        <input type="hidden" name="edit_group" value="1">
-                        <input type="hidden" name="group_id" id="edit-group-id">
-                        <!-- Fields for selecting new members -->
-                        <label for="edit-student-select">Étudiant(s):</label>
-                        <select id="edit-student-select" name="student_ids[]" multiple required>
-                            <?php foreach ($students as $student): ?>
-                                <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-
-                        <label for="edit-professor-select">Professeur :</label>
-                        <select id="edit-professor-select" name="professor_id" required>
-                            <option value="">Sélectionnez un professeur</option>
-                            <?php foreach ($professors as $professor): ?>
-                                <option value="<?php echo $professor->getUserId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-
-                        <label for="edit-maitre-select">Maître de stage :</label>
-                        <select id="edit-maitre-select" name="maitre_id" required>
-                            <option value="">Sélectionnez un maître de stage</option>
-                            <?php foreach ($maitres as $maitre): ?>
-                                <option value="<?php echo $maitre->getUserId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-
-                        <button type="submit" class="submit-group-button">Enregistrer les modifications</button>
-                    </form>
-                    <div id="editResultMessage"></div>
-                    <!-- Button to close the modal window -->
-                    <span class="close-modal">&times;</span>
-                </div>
-            </div>
         </div>
     </div>
 </section>
@@ -556,6 +470,94 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
     <a href="Redirection.php">Informations</a>
     <a href="Redirection.php">À propos</a>
 </footer>
+
+<!-- Fenêtre modale pour créer un nouveau groupe -->
+<div id="createGroupModal" class="modal">
+    <div class="modal-content">
+        <h2>Créer un nouveau groupe</h2>
+
+        <!-- Form for creating the group -->
+        <form id="createGroupForm" method="POST" action="#">
+            <!-- Hidden input to identify the form -->
+            <input type="hidden" name="create_group" value="1">
+
+            <!-- Selection of students -->
+            <label for="student-select">Étudiant(s):</label>
+            <select id="student-select" name="student_ids[]" multiple required>
+                <?php foreach ($students as $student): ?>
+                    <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <!-- Selection of professor -->
+            <label for="professor-select">Professeur :</label>
+            <select id="professor-select" name="professor_id" required>
+                <option value="">Sélectionnez un professeur</option>
+                <?php foreach ($professors as $professor): ?>
+                    <option value="<?php echo $professor->getUserId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <!-- Selection of internship supervisor -->
+            <label for="maitre-select">Maître de stage :</label>
+            <select id="maitre-select" name="maitre_id" required>
+                <option value="">Sélectionnez un maître de stage</option>
+                <?php foreach ($maitres as $maitre): ?>
+                    <option value="<?php echo $maitre->getUserId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <!-- Button to submit the form and create the group -->
+            <button type="submit" class="submit-group-button">Créer le groupe</button>
+        </form>
+
+        <!-- Area to display the result message -->
+        <div id="resultMessage"></div>
+        <!-- Button to close the modal window -->
+        <span class="close-modal">&times;</span>
+    </div>
+</div>
+<!-- ------------------------------ ! Modal windows out of the page section ! -------------------------------------------------------------------  -->
+
+<!-- Modal for editing a group -->
+<div id="editGroupModal" class="modal">
+    <div class="modal-content">
+        <h2>Modifier le groupe</h2>
+        <form id="editGroupForm" method="POST" action="#">
+            <!-- Hidden fields -->
+            <input type="hidden" name="edit_group" value="1">
+            <input type="hidden" name="group_id" id="edit-group-id">
+            <!-- Fields for selecting new members -->
+            <label for="edit-student-select">Étudiant(s):</label>
+            <select id="edit-student-select" name="student_ids[]" multiple required>
+                <?php foreach ($students as $student): ?>
+                    <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="edit-professor-select">Professeur :</label>
+            <select id="edit-professor-select" name="professor_id" required>
+                <option value="">Sélectionnez un professeur</option>
+                <?php foreach ($professors as $professor): ?>
+                    <option value="<?php echo $professor->getUserId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="edit-maitre-select">Maître de stage :</label>
+            <select id="edit-maitre-select" name="maitre_id" required>
+                <option value="">Sélectionnez un maître de stage</option>
+                <?php foreach ($maitres as $maitre): ?>
+                    <option value="<?php echo $maitre->getUserId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <button type="submit" class="submit-group-button">Enregistrer les modifications</button>
+        </form>
+        <div id="editResultMessage"></div>
+        <!-- Button to close the modal window -->
+        <span class="close-modal">&times;</span>
+    </div>
+</div>
 
 <!-- Script JavaScript pour la gestion des utilisateurs -->
 <script src="../View/Principal/userManagement.js"></script>
@@ -602,35 +604,3 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
 </script>
 </body>
 </html>
-<!--
-<?php
-// Récupère les profs
-$professors = $database -> getProfessor();
-
-// Récupère les profs
-$tutors = $database -> getTutor();
-?>
-<div id="popup-box" class="popup">
-    <div class="content">
-        <h1>Changer les groupes</h1>
-        <br>
-        <div class="lists">
-            <select name="professeurResp">
-                <option value="">Aucun</option>
-                <?php foreach ($professors as $professor): ?>
-                    <option><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
-                <?php endforeach; ?>
-            </select>
-            <select name="Tuteur">
-                <option value="">Aucun</option>
-                <?php foreach ($tutors as $tutor): ?>
-                    <option><?php echo htmlspecialchars($tutor->getPrenom()) . ' ' . htmlspecialchars($tutor->getNom()); ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <br>
-        <a href="#" class="popupvalide"><button>Valider</button></a>
-        <a href="#" class="cross">&times;</a>
-    </div>
-</div>
-!-->

@@ -1419,6 +1419,136 @@ section.Menus div.Contenus div.Contenu p.noNotes{
 
 /* ----------------------------- Fin des Styles pour la Messagerie ----------------------------- */
 
+/* Styles pour la fenêtre modale */
+.modal {
+    display: none; /* Cachée par défaut */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5); /* Fond semi-transparent */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; /* 10% du haut, centré horizontalement */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Largeur de la fenêtre */
+    max-width: 600px;
+    border-radius: 10px;
+    animation-name: modalopen;
+    animation-duration: 0.5s;
+}
+
+@keyframes modalopen {
+    from {transform: scale(0.8); opacity: 0;}
+    to {transform: scale(1); opacity: 1;}
+}
+
+/* Bouton de fermeture */
+.modal .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal .close:hover,
+.modal .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Bouton 'Contacter le secrétariat' */
+.contact-secretariat-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #2575fc;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.contact-secretariat-btn:hover {
+    background-color: #6a11cb;
+}
+
+/* Champs de formulaire avec animations */
+.form-control.animated-input {
+    position: relative;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    padding: 10px 0;
+    width: 100%;
+    transition: border-color 0.3s ease;
+}
+
+.form-control.animated-input:focus {
+    outline: none;
+    border-bottom: 2px solid transparent;
+    animation: borderAnimation 4s ease-in-out infinite;
+}
+
+@keyframes borderAnimation {
+    0% {
+        border-image: linear-gradient(45deg, #88da70, #2575fc) 3;
+        transition: color 0.8s ease;
+    }
+    50% {
+        border-image: linear-gradient(45deg, #2575fc, #6a11cb) 4;
+        transition: color 0.8s ease;
+    }
+    100% {
+        border-image: linear-gradient(45deg, #88da70, #2575fc) 5;
+        transition: color 0.8s ease;
+    }
+}
+
+/* Correction du placement du texte */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Bouton d'annulation de fichier */
+.reset-file-btn {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #ff4d4d;
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.reset-file-btn:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Position relative pour le groupe de formulaire contenant le champ de fichier */
+.form-group.position-relative {
+    position: relative;
+}
 
 
 

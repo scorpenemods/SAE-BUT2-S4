@@ -7,7 +7,7 @@ require_once "../Model/Database.php"; // Classe pour gérer la base de données
 require_once "../Model/Email.php";    // Classe pour gérer l'envoi des emails
 require_once "../vendor/autoload.php"; // Chargement automatique de Composer (inclut PHPMailer)
 
-// Affichage des erreurs pour le débogage (à désactiver en production)
+// (à désactiver en production)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -54,7 +54,17 @@ function sendVerificationEmail($database, $userId, $email, $firstname) {
     $emailSender = new Email();
     return $emailSender->sendEmail($email, $firstname, $subject, $body, true);
 }
-
+// -> Send a code with page load if it doesn't  exist
+if ($_SERVER["REQUEST_METHOD"] === 'GET') {
+    $existingCode = $database->getVerificationCode($userId);
+    if (!$existingCode) {
+        if (sendVerificationEmail($database, $userId, $userEmail, explode(' ', $userName)[0])) {
+            $sendSuccess = "Le code de vérification a été envoyé à votre adresse email.";
+        } else {
+            $sendError = "Erreur lors de l'envoi de l'email.";
+        }
+    }
+}
 
 // Gestion de la demande de ré-envoi du code de vérification
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['resend_code'])) {
@@ -66,7 +76,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['resend_code'])) {
     }
 }
 
-// Gestion de la vérification du code de vérification saisi par l'utilisateur
 // Gestion de la vérification du code de vérification saisi par l'utilisateur
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
     $entered_code = trim($_POST['verification_code']); // Code saisi par l'utilisateur

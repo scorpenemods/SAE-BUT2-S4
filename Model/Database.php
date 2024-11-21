@@ -467,6 +467,7 @@ class Database
         return ($result && $result['valid_email'] == '1') ? true : false;
     }
 
+    //-------------- Update user status if email has been validated ------------------------- //
     public function updateEmailValidationStatus($userId, $status) {
         $sql = "UPDATE User SET valid_email = :status WHERE id = :user_id";
         $stmt = $this->connection->prepare($sql);
@@ -474,7 +475,7 @@ class Database
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         return $stmt->execute();
     }
-
+    // -------------------------------------------------------------------------------------- //
 
     public function getUserIdByEmail($email) {
         $query = "SELECT id FROM User WHERE email = :email";

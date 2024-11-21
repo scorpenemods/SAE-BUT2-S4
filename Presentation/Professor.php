@@ -319,6 +319,8 @@ $notes = $database->getNotes($userId);
                         <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
                     </div>
                     <h3>Contacts</h3>
+                    <!-- Bouton pour contacter le secrétariat -->
+                    <button id="contact-secretariat-btn" class="contact-secretariat-btn">Contacter le secrétariat</button>
                     <ul id="contacts-list">
                         <?php include_once("ContactList.php");?>
                         <?php include_once("GroupContactList.php");?>
@@ -404,6 +406,30 @@ $notes = $database->getNotes($userId);
     </div>
 </section>
 
+<!-- Fenêtre modale pour contacter le secrétariat -->
+<div id="contact-secretariat-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Envoyer un message au secrétariat</h3>
+        <form id="contactSecretariatForm" enctype="multipart/form-data" method="POST" action="ContactSecretariat.php">
+            <div class="form-group">
+                <label for="subject">Sujet :</label>
+                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="Sujet de votre message">
+            </div>
+            <div class="form-group">
+                <label for="message">Message :</label>
+                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
+            </div>
+            <div class="form-group position-relative">
+                <label for="file" class="form-label">Joindre un fichier :</label>
+                <input type="file" class="form-control-file animated-file-input" id="file" name="file">
+                <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné" style="display: none;">✖️</button>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block animated-button">Envoyer au secrétariat</button>
+        </form>
+    </div>
+</div>
+
 <footer class="PiedDePage">
     <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
     <a href="Redirection.php">Informations</a>
@@ -411,5 +437,59 @@ $notes = $database->getNotes($userId);
 </footer>
 <script src="../View/Principal/deleteMessage.js"></script>
 <script src="/View/Principal/GroupMessenger.js"></script>
+<script>
+    // Obtenir la modale
+    var modal = document.getElementById("contact-secretariat-modal");
+
+    // Obtenir le bouton qui ouvre la modale
+    var btn = document.getElementById("contact-secretariat-btn");
+
+    // Obtenir l'élément <span> qui ferme la modale
+    var span = document.getElementsByClassName("close")[0];
+
+    // Quand l'utilisateur clique sur le bouton, ouvrir la modale
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // Quand l'utilisateur clique sur <span> (x), fermer la modale
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Quand l'utilisateur clique en dehors de la modale, fermer la modale
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Animation du gradient sur le champ de saisie
+    document.querySelectorAll('.form-control.animated-input').forEach(element => {
+        element.addEventListener('focus', () => {
+            element.classList.add('gradient-border');
+        });
+
+        element.addEventListener('blur', () => {
+            element.classList.remove('gradient-border');
+        });
+    });
+
+    // Gestion du bouton d'annulation du fichier
+    document.getElementById('file').addEventListener('change', function() {
+        if (this.files.length > 0) {
+            // Afficher le bouton d'annulation
+            document.getElementById('resetFileBtn').style.display = 'block';
+        } else {
+            document.getElementById('resetFileBtn').style.display = 'none';
+        }
+    });
+
+    document.getElementById('resetFileBtn').addEventListener('click', function() {
+        const fileInput = document.getElementById('file');
+        fileInput.value = ''; // Réinitialise le champ de fichier
+        this.style.display = 'none'; // Cache le bouton d'annulation
+    });
+</script>
 </body>
 </html>
