@@ -141,14 +141,18 @@ $stages = $database->getStages($senderId);
 </header>
 <div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
 <div class="sidebar" id="sidebar">
-    <div class="students">
+    <form method="post" action="#" class="students">
         <?php foreach ($stages as $stage): ?>
-            <div class="student" onclick="selectStudent(this)">
-                <span><?php echo $stage; ?></span>
+            <div class="student">
+                <button type="submit" value="<?php echo $stage[1];?>" name="go"><?php echo "Stage de l'année : $stage[0]";?></button>
+                <?php if(isset($_POST['go'])){
+                    $notes = $database->getNotes($_POST['go']);
+                }?>
             </div>
         <?php endforeach; ?>
-    </div>
+    </form>
 </div>
+
 <section class="Menus" id="Menus">
     <nav>
         <span onclick="window.location.href='Student.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : '0'; ?>">Accueil</span>
@@ -329,3 +333,6 @@ $stages = $database->getStages($senderId);
 <script src="/View/Principal/GroupMessenger.js"></script>
 </body>
 </html>
+
+
+

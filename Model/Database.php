@@ -1154,15 +1154,15 @@ class Database
 
     public function getStages(): array
     {
-        $query = "SELECT User.nom, User.prenom
+        $query = "SELECT User.account_creation, User.id
                     FROM User
                     Join Groupe g on User.id = g.user_id
-                    WHERE g.user_id = 4 and User.role = 1";
+                    WHERE g.user_id = 4 or g.user_id = 5 and User.role = 1";
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
         $stages = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $stages[] = $row['nom'] . ' ' . $row['prenom'];
+            $stages[] = [substr($row['account_creation'], 0, 4), $row['id']];
         }
         return $stages;
     }
