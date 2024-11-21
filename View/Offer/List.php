@@ -131,16 +131,16 @@ if ($type == null) {
             </form>
             <div class="pagination button-group" style="text-align: center">
                 <div id="all">
-                    <a href="/list.php?type=all">Toutes les offres</i></a>
+                    <a href="../Offer/List.php?type=all">Toutes les offres</i></a>
                 </div>
                 <div id="new">
-                    <a href="/list.php?type=new">Nouvelles offres</i></a>
+                    <a href="../Offer/List.php?type=new">Nouvelles offres</i></a>
                 </div>
                 <div id="updated">
-                    <a href="/list.php?type=updated">Offres mises à jour</i></a>
+                    <a href="../Offer/List.php?type=updated">Offres mises à jour</i></a>
                 </div>
                 <div id="inactive">
-                    <a href="/list.php?type=inactive">Offres inactives</i></a>
+                    <a href="../Offer/List.php?type=inactive">Offres inactives</i></a>
                 </div>
                 <div id="create" style="text-align: center">
                     <a href="Create.php">Créer une offre</i></a>
