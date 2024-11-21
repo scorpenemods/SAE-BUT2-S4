@@ -113,7 +113,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                     </div>
                     <div class="form-group">
                         <label for="website">Site web</label>
-                        <input type="url" id="website" name="website" placeholder="Ex: https://www.example.com">
+                        <input type="url" id="website" name="website" placeholder="Ex: https://www.example.com" required>
                     </div>
                 </div>
 

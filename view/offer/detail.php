@@ -149,6 +149,7 @@ function renderForm($action, $id, $buttonText, $typeForm, array $hiddenFields = 
                                     }
 
                                     if ($company_id !== 0 || $secretariat_group) {
+                                        echo "<button class='apply-button-edit'><a href='./company/applications.php?id=".$offerId."'>Candidatures</a></button>";
                                         echo "<form action='./company/edit.php' method='get' id='edit-form'>";
                                             echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
                                             echo "<button class='apply-button-edit' id='edit-button'". ($isAlreadyPending ? "disabled=true> Modification en attente" : ">Modification") . "</button>";
