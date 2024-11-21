@@ -4,8 +4,8 @@ session_start();
 require dirname(__FILE__) . "/../../Model/PendingOffer.php";
 require dirname(__FILE__) . "/../../Model/Company.php";
 
-if (isset($_SESSION['user'])) {
-    $user_id = $_SESSION['user'];
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
 } else {
     header("Location: ../offer/create.php");
     die();

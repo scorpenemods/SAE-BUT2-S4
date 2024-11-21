@@ -20,6 +20,6 @@
 <nav class="nav-bar">
     <ul>
         <li><a href="../../Presentation/Redirection.php" class="active"><i class="fas fa-home"></i> Retour au site de gestion</a></li>
-        <li><a href="../../Presentation/"><i class="fas fa-envelope"></i> Messagerie</a></li>
+        <li><a href="../offer/list.php?type=all"><i class="fas fa-envelope"></i> Toutes les Offres</a></li>
     </ul>
 </nav>

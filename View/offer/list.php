@@ -4,14 +4,21 @@ session_start();
 
 // Verification de qui est l'utilisateur
 $groupeSecretariat = false;
-$company_id = 0;
+$_SESSION["secretariat"] = false;
+
+
 if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
+}
+else{
+    $company_id = 0;
+    $_SESSION["company_id"] = $company_id;
 }
 
 
 if ($_SESSION["user_role"]==4||$_SESSION["user_role"]==5) {
     $groupeSecretariat = true;
+    $_SESSION["secretariat"] = true;
 }
 
 if (isset($_SESSION['user'])) {
@@ -124,16 +131,16 @@ if ($type == null) {
             </form>
             <div class="pagination button-group" style="text-align: center">
                 <div id="all">
-                    <a href="/View/offer/list.php?type=all">Tous les offres</i></a>
+                    <a href="../offer/list.php?type=all">Toutes les offres</i></a>
                 </div>
                 <div id="new">
-                    <a href="/View/offer/list.php?type=new">Nouvelles offres</i></a>
+                    <a href="../offer/list.php?type=new">Nouvelles offres</i></a>
                 </div>
                 <div id="updated">
-                    <a href="/View/offer/list.php?type=updated">Offres mises à jour</i></a>
+                    <a href="../offer/list.php?type=updated">Offres mises à jour</i></a>
                 </div>
                 <div id="inactive">
-                    <a href="/View/offer/list.php?type=inactive">Offres inactives</i></a>
+                    <a href="../offer/list.php?type=inactive">Offres inactives</i></a>
                 </div>
                 <div id="create" style="text-align: center">
                     <a href="create.php">Créer une offre</i></a>
@@ -142,7 +149,7 @@ if ($type == null) {
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
-                    echo "<a class='company-link' href='/View/offer/detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
+                    echo "<a class='company-link' href='../offer/detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
                         echo "<div class='company-card'>";
                             echo "<div class='company-header'>";
                                 if ($type == 'all') {
@@ -218,7 +225,7 @@ if ($type == null) {
                     <div class="filter-section">
                         <h3><i class="fas fa-industry"></i> Secteur</h3>
                         <select id="sector" name="sector">
-                            <option value="">Tous les secteurs</option>
+                            <option value="">Toutes les secteurs</option>
                             <option value="Engineering">Ingénierie</option>
                             <option value="Research">Recherche</option>
                             <option value="Finance">Finance</option>

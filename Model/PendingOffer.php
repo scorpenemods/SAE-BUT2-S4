@@ -41,12 +41,12 @@ class PendingOffer extends Offer
         return $this->type;
     }
 
-    // Get all tags for a pending offer
-    public function getTags(): ?array
+    // Get all Tag for a pending offer
+    public function getTag(): ?array
     {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM tags JOIN pending_tags ON tags.id = pending_tags.tag_id WHERE pending_tags.pending_id = :offer_id");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Tag JOIN pending_Tag ON Tag.id = pending_Tag.tag_id WHERE pending_Tag.pending_id = :offer_id");
         $stmt->bindParam(":offer_id", $this->id);
         $stmt->execute();
 
@@ -56,12 +56,12 @@ class PendingOffer extends Offer
 
         $result = $stmt->fetchAll();
 
-        $tags = [];
+        $Tag = [];
         foreach ($result as $row) {
-            $tags[] = $row["tag"];
+            $Tag[] = $row["tag"];
         }
 
-        return $tags;
+        return $Tag;
     }
 
     public function getOfferId(): int {
@@ -306,7 +306,7 @@ class PendingOffer extends Offer
 
 
     //Create a new pending offer
-    public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $tags, string $email, string $phone, string $website, int $user_id, int $offer_id): ?PendingOffer
+    public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $Tag, string $email, string $phone, string $website, int $user_id, int $offer_id): ?PendingOffer
     {
         global $db;
 
@@ -344,8 +344,8 @@ class PendingOffer extends Offer
 
         $id = $db->getConnection()->lastInsertId();
 
-        //Add tags in pending_tags table
-        foreach ($tags as $tag) {
+        //Add Tag in pending_Tag table
+        foreach ($Tag as $tag) {
             $stmt = $db->getConnection()->prepare("INSERT INTO Pending_Tag (tag_id, pending_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $id);
@@ -409,8 +409,8 @@ class PendingOffer extends Offer
         return rtrim($result, ', ');
     }
 
-    // Get all tags
-    public static function getAllTags(): array
+    // Get all Tag
+    public static function getAllTag(): array
     {
         global $db;
 
@@ -419,12 +419,12 @@ class PendingOffer extends Offer
 
         $result = $stmt->fetchAll();
 
-        $tags = [];
+        $Tag = [];
         foreach ($result as $row) {
-            $tags[] = $row["tag"];
+            $Tag[] = $row["tag"];
         }
 
-        return $tags;
+        return $Tag;
     }
 
     //Set the status of an offer

@@ -12,7 +12,7 @@ if (isset($_SERVER["HTTP_REFERER"])) {
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
+$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? "all";
 if (!$offerId) {
     header("Location: " . $returnUrl);
     die();
@@ -146,6 +146,12 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                                 }
                             echo "</form>";
                             echo "<form action='../../Presentation/offer/company/hide.php' method='post' id='hide-form'>";
+                            echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
+                            echo "<input type='hidden' name='secretariat' value='" . htmlspecialchars($_SESSION['secretariat'], ENT_QUOTES, 'UTF-8') . "'>";
+                            echo "<input type='hidden' name='id' value='" . htmlspecialchars($offer->getId(), ENT_QUOTES, 'UTF-8') . "'>";
+
+
+
                                 echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
                                 if ($offer->getIsActive()) {
                                     echo "<button class='apply-button-edit'>Cacher (Actif)</button>";
