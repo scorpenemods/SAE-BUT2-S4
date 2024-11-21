@@ -108,7 +108,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
                     </div>
                     <div class="form-group">
                         <label for="website">Site web</label>
-                        <input type="url" id="website" name="website" value="<?php echo $offer->getWebsite(); ?>">
+                        <input type="url" id="website" name="website" value="<?php echo $offer->getWebsite(); ?>" required>
                     </div>
                 </div>
 

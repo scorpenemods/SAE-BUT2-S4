@@ -22,12 +22,13 @@ if (!$offerId) {
 // Verification de qui est l'utilisateur
 $groupeSecretariat = $_SESSION['secretariat'] ?? false;
 $company_id = $_SESSION['company_id'] ?? 0;
-if (!$groupeSecretariat || ($company_id != 0 && !Offer::isCompanyOffer($offerId, $company_id))) {
+
+if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $company_id))) {
+    $applications = Applications::getAllForOffer($offerId, $type);
+} else {
     header("Location: ../../offer/list.php");
     die();
 }
-
-$applications = Applications::getAllForOffer($offerId, $type);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -60,16 +61,18 @@ $applications = Applications::getAllForOffer($offerId, $type);
                         echo "</ul>";
                         echo "</div>";
                         echo "<span class='date'>".$apply->getCreatedAt()."</span>";
-                        echo "<div class='actions'>";
-                            echo "<form action='../../../presenter/offer/applications/validate.php' method='post'>";
-                                echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
-                                echo "<input class='button accept' type='submit' name='Valider' value='Valider'>";
-                            echo "</form>";
-                            echo "<form action='../../../presenter/offer/applications/validate.php' method='post'>";
-                                echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
-                                echo "<input class='button refuse' id='refuseButton' type='submit' name='Refuser' value='Refuser'>";
-                            echo "</form>";
-                        echo "</div>";
+                        if (!$groupeSecretariat) {
+                            echo "<div class='actions'>";
+                                echo "<form action='../../../presenter/offer/applications/validate.php' method='post'>";
+                                    echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
+                                    echo "<input class='button accept' type='submit' name='Valider' value='Valider'>";
+                                echo "</form>";
+                                echo "<form action='../../../presenter/offer/applications/validate.php' method='post'>";
+                                    echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
+                                    echo "<input class='button refuse' id='refuseButton' type='submit' name='Refuser' value='Refuser'>";
+                                echo "</form>";
+                            echo "</div>";
+                        }
                         echo "</div>";
                     }
                 } else {
