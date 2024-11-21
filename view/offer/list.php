@@ -82,8 +82,10 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <link rel="stylesheet" href="/view/css/list.css">
+        <link rel="stylesheet" href="../css/notification.css">
+        <script src="../js/notification.js" crossorigin="anonymous"></script>
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body>
         <?php include dirname(__FILE__) . '/../header.php'; ?>
@@ -272,7 +274,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
 
                 let valid = false;
                 for (const key in filters) {
-                    if (filters[key] === '') {
+                    if (filters[key] === '' || filters[key] === undefined) {
                         filters[key] = null;
                     } else {
                         valid = true;
@@ -280,7 +282,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 }
 
                 if (valid !== true) {
-                    alert("Veuillez renseigner un ou plusieurs filtres afin de créer une demande de notification")
+                    sendNotification("failure", "Erreur", "Veuillez renseigner un ou plusieurs filtres afin de créer une demande de notification", 5000)
                     return;
                 } else {
                     $.ajax({
@@ -297,13 +299,13 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                             const result = JSON.parse(response);
 
                             if (result.status === "success") {
-                                alert("Notification créée avec succès !");
+                                sendNotification("success", "Succès", "Notification créée avec succès !");
                             } else {
-                                alert("Erreur : " + (result.message || "Une erreur est survenue."));
+                                sendNotification("failure", "Erreur", result.message || "Une erreur est survenue.");
                             }
                         },
                         error: function(xhr, status, error) {
-                            alert("Une erreur réseau est survenue lors de la création de la notification.");
+                            sendNotification("failure", "Erreur", "Une erreur réseau est survenue lors de la création de la notification.");
                         }
                     });
                 }
