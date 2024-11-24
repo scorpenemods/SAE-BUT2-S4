@@ -559,22 +559,23 @@ window.onbeforeunload = function() {
 
 // -----------------------------------Notes--------------------------------------------------//
 function enableNotes() {
+    // Sélectionner les champs input et textarea de la table des notes
     const inputs = document.querySelectorAll('.notes-table input');
     const textareas = document.querySelectorAll('.notes-table textarea');
+
+    // Enlever l'attribut 'disabled' de chaque input et textarea
     inputs.forEach(input => input.removeAttribute('disabled'));
     textareas.forEach(textarea => textarea.removeAttribute('disabled'));
 
     document.getElementById('validateBtn').setAttribute('disabled', 'true');
     document.getElementById('cancelBtn').removeAttribute('disabled');
+
 }
-
 document.getElementById('editNotesButton').addEventListener('click', enableNotes);
-document.getElementById('validateBtn').addEventListener('click', function() {
-    validateNotes();
-    document.querySelector('form').submit();
-});
 
 
+
+// Permet aux zones de texte de s'agrandir selon la taille du texte inséré
 function autoExpand(element) {
     element.style.height = 'inherit';
     element.style.height = `${element.scrollHeight}px`;
@@ -592,6 +593,7 @@ function cancelNotes() {
     const newNoteRows = document.querySelectorAll('.new-note-row');
     newNoteRows.forEach(row => row.remove());
 
+    // Récupérer les données à partir de Professor.php pour réinitialiser les valeurs
     fetch('Professor.php')
         .then(response => response.json())
         .then(data => {
@@ -608,18 +610,15 @@ function cancelNotes() {
                     <td><input type="radio" name="selectedNote" value="${index}"></td>
                 `;
             });
-        })
-        .catch(error => console.error('Error fetching notes:', error));
+        });
 }
 
-
 function validateNotes() {
-    const inputs = document.querySelectorAll('.notes-table input');
+    const inputs = document.querySelectorAll('.notes-table input[name="note[]"], .notes-table input[name="coeff[]"]');
     let valid = true;
 
     inputs.forEach(input => {
         const value = input.value.trim();
-
         if (value !== '') {
             const numericValue = parseFloat(value);
             if (isNaN(numericValue) || numericValue < 0 || numericValue > 20) {
@@ -646,7 +645,7 @@ function validateNotes() {
     return valid;
 }
 document.getElementById('messageForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault();
 
     const formData = new FormData(this);
     fetch('Professor.php', {
@@ -680,8 +679,8 @@ function addNoteRow() {
     validationMessage.textContent = '';
 
     const newRow = table.insertRow();
-    const newId = `new-${rowCount + 1}`; // Generate a new ID for the row
-    newRow.setAttribute('data-id', newId); // Set the data-id attribute
+    const newId = `new-${rowCount + 1}`;
+    newRow.setAttribute('data-id', newId);
 
     const idCell = newRow.insertCell(0);
     const sujetCell = newRow.insertCell(1);
@@ -689,7 +688,7 @@ function addNoteRow() {
     const noteCell = newRow.insertCell(3);
     const coeffCell = newRow.insertCell(4);
 
-    idCell.textContent = newId; // Display the ID
+    idCell.textContent = newId;
     sujetCell.innerHTML = '<textarea name="sujet[]" rows=""></textarea>';
     appreciationCell.innerHTML = '<textarea name="appreciations[]" rows="0"></textarea>';
     noteCell.innerHTML = '<input type="number" name="note[]" required>';
@@ -697,20 +696,16 @@ function addNoteRow() {
 }
 
 function showConfirmation(noteId, event) {
-    // Empêche le comportement par défaut du clic
     if (event) {
         event.preventDefault();
     }
 
-    // Vérifiez si le pop-up existe déjà, sinon créez-le dynamiquement
     let popup = document.getElementById('confirmationPopup');
     if (!popup) {
-        // Créer le conteneur du pop-up
         popup = document.createElement('div');
         popup.id = 'confirmationPopup';
         popup.className = 'popup';
 
-        // Ajouter le contenu du pop-up
         popup.innerHTML = `
             <div class="popup-content">
                 <p>Voulez-vous vraiment supprimer cette note ?</p>
@@ -721,24 +716,18 @@ function showConfirmation(noteId, event) {
             </div>
         `;
 
-        // Ajouter le pop-up au body
         document.body.appendChild(popup);
     }
 
-    // Afficher le pop-up
     popup.style.display = 'flex';
 
-    // Gérer les actions "Valider" et "Annuler"
     const confirmDelete = document.getElementById('confirmDelete');
     const cancelDelete = document.getElementById('cancelDelete');
 
-    // Nettoyer les anciens gestionnaires pour éviter les duplications
     confirmDelete.onclick = null;
     cancelDelete.onclick = null;
 
-    // Action Valider
     confirmDelete.onclick = function () {
-        console.log('Validation en cours pour ID : ', noteId); // Debug
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = 'Professor.php';
@@ -757,15 +746,120 @@ function showConfirmation(noteId, event) {
         form.appendChild(deleteInput);
         document.body.appendChild(form);
 
-        // Soumettre le formulaire
         form.submit();
     };
 
-    // Action Annuler
     cancelDelete.onclick = function () {
-        popup.style.display = 'none'; // Masque le pop-up
+        popup.style.display = 'none';
     };
 }
+
+function editOrSave(noteId) {
+    const row = document.getElementById(`row_${noteId}`);
+    if (!row) {
+        return;
+    }
+
+    const editButton = document.getElementById(`edit_${noteId}`);
+    const inputs = row.querySelectorAll('input[type="number"]');
+    const textareas = row.querySelectorAll('textarea');
+
+    if (editButton.innerText === "Modifier les notes") {
+        inputs.forEach(input => {
+            input.disabled = false;
+            input.style.backgroundColor = "#ffffff";
+        });
+        textareas.forEach(textarea => {
+            textarea.disabled = false;
+            textarea.style.backgroundColor = "#ffffff";
+        });
+
+        editButton.innerText = "Sauvegarder les notes";
+        editButton.onclick = function() {
+            updateConfirmation(noteId);
+        };
+    }
+}
+
+function updateConfirmation(noteId) {
+    let popup = document.getElementById('confirmationPopup');
+
+    if (!popup) {
+        popup = document.createElement('div');
+        popup.id = 'confirmationPopup';
+        popup.className = 'popup';
+
+        popup.innerHTML = `
+            <div class="popup-content">
+                <p id="confirmationText">Voulez-vous vraiment sauvegarder les modifications de cette note ?</p>
+                <div class="popup-buttons">
+                    <button id="confirmAction" class="btn btn-success">Valider</button>
+                    <button id="cancelAction" class="btn btn-secondary">Annuler</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(popup);
+    }
+
+    popup.style.display = 'flex';
+
+    const confirmAction = document.getElementById('confirmAction');
+    const cancelAction = document.getElementById('cancelAction');
+
+    confirmAction.onclick = null;
+    cancelAction.onclick = null;
+
+    confirmAction.onclick = function () {
+        const row = document.getElementById(`row_${noteId}`);
+        if (!row) {
+            popup.style.display = 'none';
+            return;
+        }
+
+        const editButton = document.getElementById(`edit_${noteId}`);
+
+        const formData = new FormData();
+        formData.append('saveNote', true);
+        formData.append('note_id', noteId);
+        formData.append('sujet', row.querySelector('textarea[name^="sujet_"]').value);
+        formData.append('appreciations', row.querySelector('textarea[name^="appreciations_"]').value);
+        formData.append('note', row.querySelector('input[name^="note_"]').value);
+        formData.append('coeff', row.querySelector('input[name^="coeff_"]').value);
+
+        fetch('Professor.php', {
+            method: 'POST',
+            body: formData
+        }).then(response => response.text())
+            .then(data => {
+                if (data.includes("success")) {
+                    popup.style.display = 'none';
+
+                    row.querySelectorAll('input, textarea').forEach(element => {
+                        element.disabled = true;
+                        element.style.backgroundColor = "#d3d3d3";
+                    });
+
+                    editButton.innerText = "Modifier les notes";
+                    editButton.onclick = function() {
+                        editOrSave(noteId);
+                    };
+                }
+            });
+    }
+
+    cancelAction.onclick = function () {
+        popup.style.display = 'none';
+    };
+}
+
+
+
+
+
+
+
+
+
 
 
 

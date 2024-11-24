@@ -823,13 +823,12 @@ class Database
         try {
             // Préparation de la requête d'insertion
             $query = $pdo->prepare("INSERT INTO Note (sujet, appreciation, note, coeff, user_id)
-        VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
-
+    VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
 
             foreach ($notesData as $note) {
                 // Validation de la note (conversion en float)
                 $noteValue = $note['note'];
-                if ($noteValue === '' || !is_numeric($noteValue)) {
+                if ($noteValue === '' || !is_numeric($noteValue) || $noteValue < 0) {
                     continue; // Ignorer cette note si elle est invalide
                 } else {
                     $noteValue = floatval($noteValue); // Convertir en float
@@ -837,7 +836,7 @@ class Database
 
                 // Validation de la coefficient (conversion en float)
                 $coeffValue = $note['coeff'];
-                if ($coeffValue === '' || !is_numeric($coeffValue)) {
+                if ($coeffValue === '' || !is_numeric($coeffValue) || $coeffValue < 0) {
                     continue; // Ignorer ce coefficient s'il est invalide
                 } else {
                     $coeffValue = floatval($coeffValue); // Convertir en float
@@ -855,27 +854,40 @@ class Database
         }
     }
 
-    public function updateNotes($userId, $notesData, $pdo) {
+
+    public function updateNote($noteId, $userId, $sujet, $appreciation, $note, $coeff, $pdo): void
+    {
         try {
             $pdo->beginTransaction();
-            foreach ($notesData as $note) {
-                $stmt = $pdo->prepare("UPDATE Note SET sujet = :sujet, appreciation = :appreciation, note = :note, coeff = :coeff WHERE user_id = :user_id");
-                $stmt->execute([
-                    ':sujet' => $note['sujet'],
-                    ':appreciation' => $note['appreciation'],
-                    ':note' => $note['note'],
-                    ':coeff' => $note['coeff'],
-                    ':user_id' => $userId
-                ]);
+            $stmt = $pdo->prepare("
+            UPDATE Note
+            SET sujet = :sujet, appreciation = :appreciation, note = :note, coeff = :coeff
+            WHERE id = :id AND user_id = :user_id
+        ");
+
+            $stmt->execute([
+                ':sujet' => $sujet,
+                ':appreciation' => $appreciation,
+                ':note' => $note,
+                ':coeff' => $coeff,
+                ':id' => $noteId,
+                ':user_id' => $userId
+            ]);
+
+            if ($stmt->rowCount() === 0) {
+                throw new Exception("Aucune ligne modifiée. L'ID de la note est peut-être incorrect ou l'utilisateur n'a pas la permission.");
             }
+
             $pdo->commit();
         } catch (PDOException $e) {
             $pdo->rollBack();
-            throw $e;
+            throw new Exception("Erreur lors de la mise à jour de la note : " . $e->getMessage(), 0, $e);
         }
     }
 
-    // Database.php
+
+
+
     public function deleteNote($noteId, $userId, $pdo): void
     {
         try {
