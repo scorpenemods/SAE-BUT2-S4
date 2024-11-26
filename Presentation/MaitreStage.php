@@ -371,9 +371,6 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     });
 </script>
 </body>
-<footer>
-    <?php include "../View/Footer.php"; ?>
-</footer>
 
 
 </html>
