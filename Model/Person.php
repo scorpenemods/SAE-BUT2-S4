@@ -72,10 +72,4 @@ class Person
         return $this->email;
     }
 
-    // Méthode pour obtenir l'identifiant unique de l'utilisateur
-    public function getUserId(): int
-    {
-        return $this->id;
-    }
-
 }

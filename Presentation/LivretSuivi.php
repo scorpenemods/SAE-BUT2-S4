@@ -1,19 +1,22 @@
 <?php
 
-$etudiant="Lucie <br> 
-Email : lucie@gmail.com <br>
-Telephone : 0657284298 <br>
-Description : fezrgzgfiqfhuHTY";
+session_start();
 
-$professeur="Julien <br> 
-Email : Julien@gmail.com <br>
-Telephone : 0657284298 <br>
-Description : fezrgzgfiqfhuHTY";
+require_once '../Model/Database.php';
+require_once '../Model/Person.php';
 
-$MDS="Marie <br> 
-Email : Marie@gmail.com <br>
-Telephone : 0657284298 <br>
-Description : fezrgzgfiqfhuHTY";
+$etu = unserialize($_SESSION['user']);
+$nameetu = $_SESSION['user_name'];
+
+
+$db = (Database::getInstance());
+
+$id = $etu->getUserId() ;
+
+
+
+
+
 ?>
 
 <body>
@@ -27,11 +30,11 @@ Description : fezrgzgfiqfhuHTY";
 <div style="display: flex; gap: 10%; justify-content: center;">
     <div class="participants">
         <h3>Etudiant :</h3><br>
-        <p>Nom prénom : <label><?php echo '(Etudiant)'; ?></label></p>
-        <p>Formation : <label><?php echo '(Formation)'; ?></label></p>
-        <p>Email : <label><?php echo '(etudiant@email.com)'; ?></label></p>
-        <?php if (0 == 0){?>
-            <p>Téléphone : <?php echo '(téléphone)'; ?></label></p>
+        <p>Nom prénom : <label><?php echo $nameetu,$id; ?></label></p>
+        <p>Formation : <label><?php echo $etu->getActivite(); ?></label></p>
+        <p>Email : <label><?php echo $etu->getEmail(); ?></label></p>
+        <?php if ($etu->getTelephone() != null){?>
+            <p>Téléphone : <?php echo $etu->getTelephone(); ?></label></p>
         <?php }?>
     </div>
 
