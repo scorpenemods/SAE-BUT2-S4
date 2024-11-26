@@ -105,7 +105,6 @@ if ($type == null) {
         <link rel="stylesheet" href="../css/List.css">
         <link rel="stylesheet" href="../css/Header.css">
         <link rel="stylesheet" href="../css/Footer.css">
-        <link rel="stylesheet" href="../css/List.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
@@ -253,7 +252,7 @@ if ($type == null) {
                 </form>
             </div>
         </div>
-        <?php include dirname(__FILE__) . '/../Footer.php'; ?>
+        <?php include_once'../Footer.php'; ?>
         <script>
             // Filter panel functionality
             const filterPanel = document.getElementById('filterPanel');
@@ -320,7 +319,7 @@ if ($type == null) {
 
             function heartUpdate(id) {
                 $.ajax({
-                    url: '/presenter/offer/favorite.php',
+                    url: '../Presenter/Offer/Favorite.php',
                     type: 'POST',
                     data: {id: id},
                     success: function(msg, status) {

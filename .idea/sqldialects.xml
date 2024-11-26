@@ -5,6 +5,6 @@
     <file url="file://$PROJECT_DIR$/Model/Database.php" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/Model/Offer.php" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/Model/PendingOffer.php" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/Presentation/offer/apply.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/Presentation/Offer/Apply.php" dialect="GenericSQL" />
   </component>
 </project>

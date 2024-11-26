@@ -1,7 +1,7 @@
 <header>
-    <a href="list.php" class="logo-link">
+    <a href="/View/Offer/List.php" class="logo-link">
         <div class="logo">
-            <img src="../../Ressources/LPS%201.0.png" alt="Le Petit Stage Logo">
+            <img src="../Resources/LPS%201.0.png" alt="Le Petit Stage Logo">
             <h1>Le Petit Stage</h1>
         </div>
     </a>
@@ -10,16 +10,13 @@
             <option value="fr">Français</option>
             <option value="en">English</option>
         </select>
-        <div class="user-profile">
-            <img src="/placeholder.svg" alt="User Profile">
-            <span>John Doe</span>
-        </div>
+
     </div>
 </header>
 
 <nav class="nav-bar">
     <ul>
-        <li><a href="../../Presentation/Redirection.php" class="active"><i class="fas fa-home"></i> Retour au site de gestion</a></li>
-        <li><a href="../offer/list.php?type=all"><i class="fas fa-envelope"></i> Toutes les Offres</a></li>
+        <li><a href="../Presentation/Redirection.php" class="active"><i class="fas fa-home"></i> Retour au site de gestion</a></li>
+        <li><a href="/View/Offer/List.php?type=all"><i class="fas fa-envelope"></i> Toutes les Offres</a></li>
     </ul>
 </nav>
