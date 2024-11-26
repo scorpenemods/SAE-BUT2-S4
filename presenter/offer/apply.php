@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $offer = $_POST['offre'];
 
     if (!isset($_SESSION["user"])) {
-        header('Location: ' . $_SERVER["HTTP_REFERER"] ?? "/");
+        echo json_encode(array("status" => "not_logged"));
     } else {
         $stmt = $db->prepare("select * from applications where idUser = :idUser and idOffer = :idOffre");
         $stmt->bindParam(":idUser", $idUser);
@@ -28,8 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_FILES['cv']) && $_FILES['cv']['error'] === 0) {
                 $fileExt = pathinfo($_FILES['cv']['name'], PATHINFO_EXTENSION);
                 if ($fileExt !== "pdf") {
-                    header("Location: /view/offer/detail.php?id=$offer&status=file_error");
-                    die();
+                    echo json_encode(array("status" => "file_error"));
                 }
 
                 $tempName = $_FILES['cv']['tmp_name'];
@@ -41,8 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_FILES['motivation']) && $_FILES['motivation']['error'] === 0) {
                 $fileExt = pathinfo($_FILES['motivation']['name'], PATHINFO_EXTENSION);
                 if ($fileExt !== "pdf") {
-                    header("Location: /view/offer/detail.php?id=$offer&status=file_error");
-                    die();
+                    echo json_encode(array("status" => "file_error"));
                 }
 
                 $tempName = $_FILES['motivation']['tmp_name'];
@@ -56,11 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindParam(':idOffer', $offer);
             $stmt->execute();
 
-            header("Location: /view/offer/detail.php?id=$offer&status=success");
+            echo json_encode(array("status" => "success"));
         } else {
-            header("Location: /view/offer/detail.php?id=$offer&status=already_applied");
+            echo json_encode(array("status" => "already_applied"));
         }
-
     }
-    die();
 }
