@@ -1,5 +1,8 @@
 <?php
 session_start();
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
 
 require_once "../Model/Database.php"; // Include the Database class
 
@@ -76,6 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_email'] = $email;
         $_SESSION['user_name'] = $name . " " . $firstname;
 
+        // Get new user's ID
+        $user = $database->getUserByEmail($email);
+        if ($user) {
+            $_SESSION['user_id'] = $user['id'];
+        } else {
+            echo "<script>alert('Erreur lors de la récupération de l\'ID utilisateur.');</script>";
+            exit();
+        }
+
         // Redirect to email validation notice
         header("Location: EmailValidationNotice.php");
         exit();
@@ -84,9 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -125,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </header>
 
 <div class="container">
-    <h1>Création du compte</h1> <!-- Titre de la page de création de compte -->
+    <h1>Création du compte</h1>
 
     <!-- Formulaire pour la création de compte -->
     <form action="" method="post">

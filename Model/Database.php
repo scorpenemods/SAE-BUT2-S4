@@ -467,6 +467,7 @@ class Database
         return ($result && $result['valid_email'] == '1') ? true : false;
     }
 
+    //-------------- Update user status if email has been validated ------------------------- //
     public function updateEmailValidationStatus($userId, $status) {
         $sql = "UPDATE User SET valid_email = :status WHERE id = :user_id";
         $stmt = $this->connection->prepare($sql);
@@ -474,7 +475,7 @@ class Database
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         return $stmt->execute();
     }
-
+    // -------------------------------------------------------------------------------------- //
 
     public function getUserIdByEmail($email) {
         $query = "SELECT id FROM User WHERE email = :email";
@@ -555,6 +556,202 @@ class Database
         return $students;
     }
 
+    //Get the groups a user belongs to.
+    public function getUserGroups($userId) {
+        $sql = "SELECT DISTINCT Groupe.conv_id AS id, Convention.convention
+                FROM Groupe
+                JOIN Convention ON Groupe.conv_id = Convention.id
+                WHERE Groupe.user_id = :user_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // get a message from a group
+    public function getGroupMessages($groupId) {
+        $sql = "SELECT MessageGroupe.*, Document.filepath, User.prenom, User.nom
+            FROM MessageGroupe
+            LEFT JOIN Document_Message ON MessageGroupe.id = Document_Message.message_id
+            LEFT JOIN Document ON Document_Message.document_id = Document.id
+            JOIN User ON MessageGroupe.sender_id = User.id
+            WHERE MessageGroupe.groupe_id = :group_id
+            ORDER BY MessageGroupe.timestamp ASC";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // message to a group
+    public function sendGroupMessage($groupId, $senderId, $message, $filePath = null) {
+        try {
+            $this->connection->beginTransaction();
+
+            // Insert the message
+            $stmt = $this->connection->prepare("
+                INSERT INTO MessageGroupe (groupe_id, sender_id, contenu, timestamp)
+                VALUES (:groupe_id, :sender_id, :contenu, NOW())
+            ");
+            $stmt->bindParam(':groupe_id', $groupId);
+            $stmt->bindParam(':sender_id', $senderId);
+            $stmt->bindParam(':contenu', $message);
+            $stmt->execute();
+
+            $messageId = $this->connection->lastInsertId();
+
+            // If a file is attached, insert into Document and Document_Message
+            if ($filePath) {
+                // Insert into Document
+                $stmt = $this->connection->prepare("
+                    INSERT INTO Document (filepath)
+                    VALUES (:filepath)
+                ");
+                $stmt->bindParam(':filepath', $filePath);
+                $stmt->execute();
+                $documentId = $this->connection->lastInsertId();
+
+                // Insert into Document_Message
+                $stmt = $this->connection->prepare("
+                    INSERT INTO Document_Message (document_id, message_id)
+                    VALUES (:document_id, :message_id)
+                ");
+                $stmt->bindParam(':document_id', $documentId);
+                $stmt->bindParam(':message_id', $messageId);
+                $stmt->execute();
+            }
+
+            $this->connection->commit();
+
+            return true;
+        } catch (PDOException $e) {
+            $this->connection->rollBack();
+            error_log("Error sending group message: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // get all groups with their members
+    public function getAllGroupsWithMembers() {
+        $sql = "SELECT c.id AS group_id, c.convention AS group_name, u.id AS user_id, u.nom AS last_name, u.prenom AS first_name
+                FROM Groupe g
+                JOIN Convention c ON g.conv_id = c.id
+                JOIN User u ON g.user_id = u.id
+                ORDER BY c.id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $groups = [];
+        foreach ($results as $row) {
+            $groupId = $row['group_id'];
+            if (!isset($groups[$groupId])) {
+                $groups[$groupId] = [
+                    'group_id' => $groupId,
+                    'group_name' => $row['group_name'],
+                    'members' => []
+                ];
+            }
+            $groups[$groupId]['members'][] = [
+                'user_id' => $row['user_id'],
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name']
+            ];
+        }
+        return $groups;
+    }
+
+    public function deleteGroup($groupId) {
+        try {
+            $this->connection->beginTransaction();
+
+            // Delete messages in MessageGroupe
+            $stmt = $this->connection->prepare("DELETE FROM MessageGroupe WHERE groupe_id = :group_id");
+            $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Delete entries in Document_Message related to the group's messages
+            $stmt = $this->connection->prepare("
+            DELETE dm FROM Document_Message dm
+            JOIN MessageGroupe mg ON dm.message_id = mg.id
+            WHERE mg.groupe_id = :group_id
+        ");
+            $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Optionally delete documents if they are not linked to other messages
+            // (This requires additional logic to check if the document is linked elsewhere)
+
+            // Delete group members in Groupe
+            $stmt = $this->connection->prepare("DELETE FROM Groupe WHERE conv_id = :group_id");
+            $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Delete the group in Convention
+            $stmt = $this->connection->prepare("DELETE FROM Convention WHERE id = :group_id");
+            $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $this->connection->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->connection->rollBack();
+            error_log("Error deleting group: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function updateGroupMembers($groupId, $memberIds) {
+        try {
+            $this->connection->beginTransaction();
+
+            // Delete existing group members
+            $stmt = $this->connection->prepare("DELETE FROM Groupe WHERE conv_id = :group_id");
+            $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Add new group members
+            foreach ($memberIds as $userId) {
+                $stmt = $this->connection->prepare("INSERT INTO Groupe (conv_id, user_id) VALUES (:conv_id, :user_id)");
+                $stmt->execute([':conv_id' => $groupId, ':user_id' => $userId]);
+            }
+
+            $this->connection->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->connection->rollBack();
+            error_log("Error updating group members: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getGroupMembers($groupId) {
+        $sql = "SELECT user_id FROM Groupe WHERE conv_id = :group_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+        if ($stmt->execute()) {
+            return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        } else {
+            return false;
+        }
+    }
+
+    public function getGroupMessagesSince($groupId, $lastTimestamp) {
+        $sql = "SELECT mg.*, d.filepath, u.prenom, u.nom
+            FROM MessageGroupe mg
+            LEFT JOIN Document_Message dm ON mg.id = dm.message_id
+            LEFT JOIN Document d ON dm.document_id = d.id
+            JOIN User u ON mg.sender_id = u.id
+            WHERE mg.groupe_id = :group_id
+              AND mg.timestamp > :last_timestamp
+            ORDER BY mg.timestamp ASC";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+        $stmt->bindParam(':last_timestamp', $lastTimestamp);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // -------------------- Student list in professor home ------------------------------------------ //
     public function getStudentsProf($professorId): array
     {
@@ -626,13 +823,12 @@ class Database
         try {
             // Préparation de la requête d'insertion
             $query = $pdo->prepare("INSERT INTO Note (sujet, appreciation, note, coeff, user_id)
-        VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
-
+    VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
 
             foreach ($notesData as $note) {
                 // Validation de la note (conversion en float)
                 $noteValue = $note['note'];
-                if ($noteValue === '' || !is_numeric($noteValue)) {
+                if ($noteValue === '' || !is_numeric($noteValue) || $noteValue < 0) {
                     continue; // Ignorer cette note si elle est invalide
                 } else {
                     $noteValue = floatval($noteValue); // Convertir en float
@@ -640,7 +836,7 @@ class Database
 
                 // Validation de la coefficient (conversion en float)
                 $coeffValue = $note['coeff'];
-                if ($coeffValue === '' || !is_numeric($coeffValue)) {
+                if ($coeffValue === '' || !is_numeric($coeffValue) || $coeffValue < 0) {
                     continue; // Ignorer ce coefficient s'il est invalide
                 } else {
                     $coeffValue = floatval($coeffValue); // Convertir en float
@@ -657,6 +853,69 @@ class Database
             echo "Erreur : " . $e->getMessage();
         }
     }
+
+
+    public function updateNote($noteId, $userId, $sujet, $appreciation, $note, $coeff, $pdo): void
+    {
+        try {
+            $pdo->beginTransaction();
+            $stmt = $pdo->prepare("
+            UPDATE Note
+            SET sujet = :sujet, appreciation = :appreciation, note = :note, coeff = :coeff
+            WHERE id = :id AND user_id = :user_id
+        ");
+
+            $stmt->execute([
+                ':sujet' => $sujet,
+                ':appreciation' => $appreciation,
+                ':note' => $note,
+                ':coeff' => $coeff,
+                ':id' => $noteId,
+                ':user_id' => $userId
+            ]);
+
+            if ($stmt->rowCount() === 0) {
+                throw new Exception("Aucune ligne modifiée. L'ID de la note est peut-être incorrect ou l'utilisateur n'a pas la permission.");
+            }
+
+            $pdo->commit();
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            throw new Exception("Erreur lors de la mise à jour de la note : " . $e->getMessage(), 0, $e);
+        }
+    }
+
+
+
+
+    public function deleteNote($noteId, $userId, $pdo): void
+    {
+        try {
+            // Commence une transaction
+            $pdo->beginTransaction();
+
+            // Préparer la requête pour supprimer la note
+            $stmt = $pdo->prepare("DELETE FROM Note WHERE id = :id AND user_id = :user_id");
+
+            // Exécuter la requête avec les paramètres
+            $stmt->execute([
+                ':id' => $noteId,
+                ':user_id' => $userId
+            ]);
+
+            // Valider la transaction
+            $pdo->commit();
+        } catch (PDOException $e) {
+            // Annuler la transaction en cas d'erreur
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
+
+
+
+
+    // ------------------------------------------------------------------------------------------------------- //
 
     public function getProfessor(): array
     {
@@ -776,7 +1035,7 @@ class Database
     }
 
     public function getNotes($userId): array {
-        $sql = "SELECT Note.sujet, Note.appreciation, Note.note, Note.coeff
+        $sql = "SELECT Note.id, Note.sujet, Note.appreciation, Note.note, Note.coeff
                 FROM Note
                 WHERE Note.user_id = :user_id";
 
@@ -787,6 +1046,7 @@ class Database
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             require_once "Note.php";
             $notes[] = new Note(
+                $row['id'] ?? '',
                 $row['sujet'] ?? '',
                 $row['appreciation'] ?? '',
                 $row['note'] ??'',
@@ -905,10 +1165,28 @@ class Database
         return (bool) $stmt->fetchColumn();
     }
 
+    public function getStages($userId): array
+    {
+        $query = "SELECT User.account_creation, User.id
+                    FROM User
+                    Join Groupe g on User.id = g.user_id
+                    WHERE g.user_id = :user_id and User.role = 1";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([':user_id' => $userId]);
+        $stages = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $stages[] = [substr($row['account_creation'], 0, 4), $row['id']];
+        }
+        return $stages;
+    }
 
+    //---------------- Secretariat send a message to everyone --------------------------------- //
+    public function getAllValidUsers()
+    {
+        $conn = $this->getConnection();
+        $query = "SELECT * FROM User WHERE status_user = 1";
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
-
-?>
-
-
-

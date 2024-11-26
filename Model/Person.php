@@ -5,7 +5,7 @@ class Person
     // Définition des propriétés privées de la classe
     private string $nom;        // Nom de l'utilisateur
     private string $prenom;     // Prénom de l'utilisateur
-    private int $telephone;     // Numéro de téléphone de l'utilisateur
+    private ?int $telephone;     // Numéro de téléphone de l'utilisateur ? pour accepter null
     private string $role;       // Rôle de l'utilisateur (par exemple, étudiant, tuteur)
     private string $activite;   // Activité professionnelle ou académique de l'utilisateur
     private int $id;            // Identifiant unique de l'utilisateur
@@ -17,7 +17,12 @@ class Person
     {
         $this->nom = $nom;
         $this->prenom = $prenom;
-        $this->telephone = $telephone;
+        // Check if tel is an int and not void
+        if (!empty($telephone) && is_numeric($telephone)) {
+            $this->telephone = (int)$telephone;
+        } else {
+            $this->telephone = null; // we can set 0 if null is not valid
+        }
         $this->role = $role;
         $this->activite = $activite;
         $this->email = $email;
@@ -56,7 +61,7 @@ class Person
     }
 
     // Méthode pour obtenir le numéro de téléphone de l'utilisateur
-    public function getTelephone(): int
+    public function getTelephone(): ?int
     {
         return $this->telephone;
     }
@@ -65,12 +70,6 @@ class Person
     public function getEmail(): string
     {
         return $this->email;
-    }
-
-    // Méthode pour obtenir l'identifiant unique de l'utilisateur
-    public function getUserId(): int
-    {
-        return $this->id;
     }
 
 }

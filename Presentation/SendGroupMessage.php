@@ -3,6 +3,9 @@ session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";
 
+// Set the timezone
+date_default_timezone_set('Europe/Paris');
+
 // Set response content type
 header('Content-Type: application/json; charset=utf-8');
 
@@ -19,19 +22,20 @@ if (!$person instanceof Person) {
 }
 
 $senderId = $person->getUserId();
+$senderName = htmlspecialchars($person->getPrenom() . ' ' . $person->getNom());
 
 // Check request method
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $database = Database::getInstance();
 
     // Get form data
-    $receiverId = $_POST['receiver_id'] ?? null;
+    $groupId = $_POST['group_id'] ?? null;
     $message = $_POST['message'] ?? '';
     $filePath = '';
 
-    // Validate receiver ID
-    if (!$receiverId) {
-        echo json_encode(['status' => 'error', 'message' => 'Receiver ID not specified.']);
+    // Validate group ID
+    if (!$groupId) {
+        echo json_encode(['status' => 'error', 'message' => 'Group ID not specified.']);
         exit();
     }
 
@@ -88,15 +92,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Send the message to the database
-    $isMessageSent = $database->sendMessage($senderId, $receiverId, $message, $filePath);
+    $isMessageSent = $database->sendGroupMessage($groupId, $senderId, $message, $filePath);
 
     if ($isMessageSent) {
         $response = [
-            'status'    => 'success',
-            'message'   => htmlspecialchars($message),
-            'file_path' => $filePath ? htmlspecialchars(str_replace("../", "/", $filePath)) : null,
-            'timestamp' => date('c'), // ISO 8601 format
-            'message_id' => $database->getLastMessageId(),
+            'status'          => 'success',
+            'message'         => htmlspecialchars($message),
+            'file_path'       => $filePath ? htmlspecialchars(str_replace("../", "/", $filePath)) : null,
+            'timestamp'       => date('c'), // ISO 8601 format
+            'sender_id'       => $senderId,
+            'sender_name'     => $senderName,
+            'current_user_id' => $senderId,
         ];
         echo json_encode($response);
     } else {

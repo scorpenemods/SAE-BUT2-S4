@@ -17,7 +17,7 @@ if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']); // Récupère l'objet Person stocké en session
     if ($person instanceof Person) { // Vérifie que l'objet est bien une instance de Person
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom()); // Définit le nom de l'utilisateur en utilisant son prénom et son nom
-        $senderId = $person->getUserId(); // Récupère l'ID de l'utilisateur pour les requêtes de base de données
+        $senderId = $person->getId(); // Récupère l'ID de l'utilisateur pour les requêtes de base de données
     }
 } else {
     // Redirige l'utilisateur vers la page de déconnexion s'il n'est pas connecté
@@ -47,6 +47,14 @@ $messages = $database->getMessages($senderId, $receiverId);
 // Récupération des notes de l'utilisateur depuis la base de données
 $notes = $database->getNotes($senderId);
 
+// Récupération des différents stages de l'utilisateur depuis la base de données
+$stages = $database->getStages($senderId);
+
+if (isset($_POST['go'])) {
+    $infos = $database->getUserById($_POST['go']);
+    $notes = $database->getNotes($infos['id']);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -60,13 +68,11 @@ $notes = $database->getNotes($senderId);
     <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="/View/Principal/Principal.js"></script>
     <script src="/View/Principal/Notif.js"></script>
-    <style>
-        /* Mode sombre dynamiquement */
-        body.dark-mode {
-            background-color: #121212;
-            color: white;
-        }
-    </style>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include EmojiOneArea -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -139,8 +145,18 @@ $notes = $database->getNotes($senderId);
         </div>
     </div>
 </header>
+<div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
+<div class="sidebar" id="sidebar">
+    <form method="post" action="#" class="students">
+        <?php foreach ($stages as $stage): ?>
+            <div class="student">
+                <button type="submit" value="<?php echo $stage[1];?>" name="go"><?php echo "Stage de l'année : $stage[0]";?></button>
+            </div>
+        <?php endforeach; ?>
+    </form>
+</div>
 
-<section class="Menus">
+<section class="Menus" id="Menus">
     <nav>
         <span onclick="window.location.href='Student.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : '0'; ?>">Accueil</span>
         <span onclick="window.location.href='Student.php?section=6'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '1'; ?>">Missions de stage</span>
@@ -178,8 +194,11 @@ $notes = $database->getNotes($senderId);
                         <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
                     </div>
                     <h3>Contacts</h3>
+                    <!-- Bouton pour contacter le secrétariat -->
+                    <button id="contact-secretariat-btn" class="contact-secretariat-btn">Contacter le secrétariat</button>
                     <ul id="contacts-list">
                         <?php include_once("ContactList.php");?>
+                        <?php include_once("GroupContactList.php");?>
                     </ul>
                 </div>
 
@@ -200,13 +219,14 @@ $notes = $database->getNotes($senderId);
                     </div>
 
                     <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                            <!-- Champ caché pour le destinataire -->
-                            <input type="hidden" name="receiver_id" id="receiver_id" value=""> <!-- Ce champ sera mis à jour dynamiquement -->
-                            <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="button" onclick="sendMessage(event)">Envoyer</button>
+                            <!-- Hidden fields for receiver_id and group_id -->
+                            <input type="hidden" name="receiver_id" id="receiver_id" value="">
+                            <input type="hidden" name="group_id" id="group_id" value="">
+                            <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
+                            <button type="submit">Envoyer</button>
                         </form>
                     </div>
                 </div>
@@ -227,6 +247,8 @@ $notes = $database->getNotes($senderId);
 
         <!-- Livret de suivi Content -->
         <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
+            <!-- Affichage du livret de suivi -->
+
             <?php include_once("LivretSuivi.php");?>
         </div>
 
@@ -262,7 +284,7 @@ $notes = $database->getNotes($senderId);
                             foreach ($notes as $note) {
                                 array_push($add,$note->getNote()*$note->getCoeff());
                                 array_push($coeff, $note->getCoeff());
-                            } echo "<td>" . "Moyenne : " . array_sum($add)/array_sum($coeff) . "</td>";
+                            } echo "<td>" . "Moyenne : " . round(array_sum($add)/array_sum($coeff),2) . "</td>";
                     }
                     else {
                         echo '<p class="noNotes"> Aucune note disponible ! </p>';
@@ -277,6 +299,89 @@ $notes = $database->getNotes($senderId);
 <footer>
     <?php include_once '../View/Footer.php'; ?>
 </footer>
+
+<!-- Fenêtre modale pour contacter le secrétariat -->
+<div id="contact-secretariat-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Envoyer un message au secrétariat</h3>
+        <form id="contactSecretariatForm" enctype="multipart/form-data" method="POST" action="ContactSecretariat.php">
+            <div class="form-group">
+                <label for="subject">Sujet :</label>
+                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="Sujet de votre message">
+            </div>
+            <div class="form-group">
+                <label for="message">Message :</label>
+                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
+            </div>
+            <div class="form-group position-relative">
+                <label for="file" class="form-label">Joindre un fichier :</label>
+                <input type="file" class="form-control-file animated-file-input" id="file" name="file">
+                <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné" style="display: none;">✖️</button>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block animated-button">Envoyer au secrétariat</button>
+        </form>
+    </div>
+</div>
+
 <script src="/View/Principal/deleteMessage.js"></script>
+<script src="/View/Principal/GroupMessenger.js"></script>
+<script>
+    // Obtenir la modale
+    var modal = document.getElementById("contact-secretariat-modal");
+
+    // Obtenir le bouton qui ouvre la modale
+    var btn = document.getElementById("contact-secretariat-btn");
+
+    // Obtenir l'élément <span> qui ferme la modale
+    var span = document.getElementsByClassName("close")[0];
+
+    // Quand l'utilisateur clique sur le bouton, ouvrir la modale
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // Quand l'utilisateur clique sur <span> (x), fermer la modale
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Quand l'utilisateur clique en dehors de la modale, fermer la modale
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Animation du gradient sur le champ de saisie
+    document.querySelectorAll('.form-control.animated-input').forEach(element => {
+        element.addEventListener('focus', () => {
+            element.classList.add('gradient-border');
+        });
+
+        element.addEventListener('blur', () => {
+            element.classList.remove('gradient-border');
+        });
+    });
+
+    // Gestion du bouton d'annulation du fichier
+    document.getElementById('file').addEventListener('change', function() {
+        if (this.files.length > 0) {
+            // Afficher le bouton d'annulation
+            document.getElementById('resetFileBtn').style.display = 'block';
+        } else {
+            document.getElementById('resetFileBtn').style.display = 'none';
+        }
+    });
+
+    document.getElementById('resetFileBtn').addEventListener('click', function() {
+        const fileInput = document.getElementById('file');
+        fileInput.value = ''; // Réinitialise le champ de fichier
+        this.style.display = 'none'; // Cache le bouton d'annulation
+    });
+</script>
 </body>
 </html>
+
+
+

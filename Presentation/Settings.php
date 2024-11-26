@@ -22,17 +22,12 @@ if ($userRole == 1) {
     $homePage = 'Professor.php';
 } elseif ($userRole == 3) {
     $homePage = 'MaitreStage.php';
-} elseif ($userRole == 4) {
+} elseif ($userRole == 4 or $userRole == 5) {
     $homePage = 'Secretariat.php';
 }
 
-// Si un paramètre de section est passé dans l'URL, mettez à jour la session
-if (isset($_GET['section'])) {
-    $_SESSION['active_section'] = $_GET['section'];
-}
-
 // Définissez une section par défaut si aucune section n'est sélectionnée
-$activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : 'account-info';
+$activeSection = isset($_GET['section']) ? $_GET['section'] : 'account-info';
 
 // Liste des sections autorisées pour éviter les erreurs
 $allowedSections = ['account-info', 'preferences'];

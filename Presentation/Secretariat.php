@@ -133,6 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Fetch all groups with their members
+$groupsWithMembers = $database->getAllGroupsWithMembers();
 ?>
 
 
@@ -147,8 +149,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Lien vers le script JavaScript principal -->
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
+    <link rel="stylesheet" href="../View/Principal/Modals.css">
     <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="/View/Principal/Notif.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include EmojiOneArea -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
+
+    <!-- Test styles from bootstrap | delete or adjust  -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
 <header class="navbar">
@@ -292,6 +306,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Section Gestion des utilisateurs -->
         <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
             <div class="user-management">
+                <!-- Section pour déposer un fichier CSV -->
+                <div class="csv-upload" style="padding-top: 25px">
+                    <h2>Importer des utilisateurs via CSV</h2>
+                    <form action="Batch.php" method="post" enctype="multipart/form-data">
+                        <label for="csvFile">Sélectionner un fichier CSV:</label>
+                        <input type="file" name="csv_file" id="csvFile" accept=".csv" required>
+                        <button type="submit">📂 Importer le CSV</button>
+                    </form>
+
+                    <p>Le fichier CSV doit contenir les colonnes suivantes : Nom, Prénom, Email, Rôle, Activité, Téléphone.</p>
+                </div>
+
                 <!-- Section pour les demandes d'utilisateur en attente d'approbation -->
                 <div class="pending-requests">
                     <h2>Demandes en attente</h2>
@@ -367,17 +393,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     ?>
                 </div>
-                <!-- Section pour déposer un fichier CSV -->
-                <div class="csv-upload">
-                    <h2>Importer des utilisateurs via CSV</h2>
-                    <form action="Batch.php" method="post" enctype="multipart/form-data">
-                        <label for="csvFile">Sélectionner un fichier CSV:</label>
-                        <input type="file" name="csv_file" id="csvFile" accept=".csv" required>
-                        <button type="submit">📂 Importer le CSV</button>
-                    </form>
 
-                    <p>Le fichier CSV doit contenir les colonnes suivantes : Nom, Prénom, Email, Rôle, Activité, Téléphone.</p>
-                </div>
             </div>
         </div>
         <!-- Section Rapports -->
@@ -392,122 +408,110 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
+        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?> animate__animated animate__fadeIn" id="content-5">
             <!-- Messenger Contents -->
             <div class="messenger">
-                <div class="contacts">
-                    <div class="search-bar">
-                        <label for="search-input"></label>
-                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
-                    </div>
-                    <h3>Contacts</h3>
-                    <ul id="contacts-list">
-                        <?php
-                        $roleMapping = [
-                            1 => "Etudiant",
-                            2 => "Professeur",
-                            3 => "Maitre de stage"
-                        ];
-
-                        // Récupérer les contacts associés à l'utilisateur connecté
-                        $userId = $person->getUserId();
-                        $contacts = $database->getGroupContacts($userId);
-
-                        // Sort contacts by role
-                        usort($contacts, fn($a, $b) => $a['role'] <=> $b['role']);
-
-                        // Group contacts by role
-                        $groupedContacts = [];
-                        foreach ($contacts as $contact) {
-                            $roleName = $roleMapping[$contact['role']] ?? "Unknown Role";
-                            $groupedContacts[$roleName][] = $contact;
-                        }
-
-                        // Display contacts grouped by role
-                        foreach ($groupedContacts as $roleName => $contactsGroup) {
-                            echo "<label><strong>$roleName :</strong></label>";
-                            foreach ($contactsGroup as $contact) {
-                                echo '<li data-contact-id="' . $contact['id'] . '" onclick="openChat(' . $contact['id'] . ', \'' . htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']) . '\')">';
-                                echo htmlspecialchars($contact['prenom'] . ' ' . $contact['nom']);
-                                echo '</li>';
-                            }
-                        }
-                        ?>
-                    </ul>
-                </div>
-
-                <!-- Right click for delete -->
-                <div id="context-menu" class="context-menu">
-                    <ul>
-                        <li id="copy-text">Copy</li>
-                        <li id="delete-message">Delete</li>
-                    </ul>
-                </div>
-
-                <div class="chat-window">
-                    <div class="chat-header">
-                        <h3 id="chat-header-title">Chat avec Contact 1</h3>
-                    </div>
-                    <div class="chat-body" id="chat-body">
-                        <!-- JS messages dynamic -->
-                    </div>
-                    <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
-                            <input type="file" id="file-input" name="file" style="display:none">
-                            <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                            <input type="hidden" name="receiver_id" value="<?php echo $receiverId; ?>"> <!-- Recipient ID -->
-                            <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="button" onclick="sendMessage(event)">Envoyer</button>
-                        </form>
-                    </div>
+                <div class="container mt-5">
+                    <h2 class="text-center mb-4 animate__animated animate__bounceIn">Envoyer un message à tous les utilisateurs</h2>
+                    <form id="broadcastMessageForm" enctype="multipart/form-data" method="POST" action="SendMessageToAll.php" class="animate__animated animate__fadeInUp">
+                        <div class="form-group">
+                            <label for="message" class="form-label">Message :</label>
+                            <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
+                        </div>
+                        <div class="form-group position-relative">
+                            <label for="file" class="form-label">Joindre un fichier :</label>
+                            <input type="file" class="form-control-file animated-file-input" id="file" name="file">
+                            <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné">✖️</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block animated-button">Envoyer à tous les utilisateurs</button>
+                    </form>
                 </div>
             </div>
         </div>
 
         <!-- Section Groupes -->
         <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">
-            <!-- Code pour le widget de création de groupes -->
+            <!-- List of existing groups -->
+            <div class="group-list">
+                <h3>Groupes existants</h3>
+                <?php if (!empty($groupsWithMembers)): ?>
+                    <ul class="group-list-ul">
+                        <?php foreach ($groupsWithMembers as $group): ?>
+                            <li class="group-item">
+                                <div class="group-header">
+                                    <strong><?php echo htmlspecialchars($group['group_name']); ?></strong>
+                                    <!-- Buttons to modify or delete the group -->
+                                    <div class="group-actions">
+                                        <button onclick="openEditGroupModal(<?php echo $group['group_id']; ?>)">Modifier</button>
+                                        <button onclick="deleteGroup(<?php echo $group['group_id']; ?>)">Supprimer</button>
+                                    </div>
+                                </div>
+                                <ul class="member-list">
+                                    <?php foreach ($group['members'] as $member): ?>
+                                        <li><?php echo htmlspecialchars($member['first_name'] . ' ' . $member['last_name']); ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p>Aucun groupe n'a été créé pour le moment.</p>
+                <?php endif; ?>
+            </div>
 
             <!-- Bouton pour ouvrir la fenêtre modale de création de groupe -->
             <button class="open-create-group-modal">Créer un nouveau groupe</button>
 
-            <!-- Fenêtre modale pour créer un nouveau groupe -->
-            <div id="createGroupModal" class="modal">
-                <div class="modal-content">
-                    <h2>Créer un nouveau groupe</h2>
+        </div>
+    </div>
+</section>
 
-                    <!-- Formulaire pour la création du groupe -->
-                    <form id="createGroupForm" method="POST" action="#">
-                        <!-- Sélection de l'étudiant -->
-                        <label for="student-select">Étudiant :</label>
-                        <select id="student-select" name="student_id" required>
-                            <option value="">Sélectionnez un étudiant</option>
-                            <?php foreach ($students as $student): ?>
-                                <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
-                            <?php endforeach; ?>
-                        </select>
+<footer class="PiedDePage">
+    <!-- Pied de page avec logo et liens -->
+    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
+    <a href="Redirection.php">Informations</a>
+    <a href="Redirection.php">À propos</a>
+</footer>
 
-                        <!-- Sélection du professeur -->
-                        <label for="professor-select">Professeur :</label>
-                        <select id="professor-select" name="professor_id" required>
-                            <option value="">Sélectionnez un professeur</option>
-                            <?php foreach ($professors as $professor): ?>
-                                <option value="<?php echo $professor->getUserId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
-                            <?php endforeach; ?>
-                        </select>
+<!-- Fenêtre modale pour créer un nouveau groupe -->
+<div id="createGroupModal" class="modal">
+    <div class="modal-content">
+        <h2>Créer un nouveau groupe</h2>
 
-                        <!-- Sélection du maître de stage -->
-                        <label for="maitre-select">Maître de stage :</label>
-                        <select id="maitre-select" name="maitre_id" required>
-                            <option value="">Sélectionnez un maître de stage</option>
-                            <?php foreach ($maitres as $maitre): ?>
-                                <option value="<?php echo $maitre->getUserId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
-                            <?php endforeach; ?>
-                        </select>
+        <!-- Form for creating the group -->
+        <form id="createGroupForm" method="POST" action="#">
+            <!-- Hidden input to identify the form -->
+            <input type="hidden" name="create_group" value="1">
 
-                        <!-- Bouton pour soumettre le formulaire et créer le groupe -->
-                        <button type="submit" class="submit-group-button">Créer le groupe</button>
-                    </form>
+            <!-- Selection of students -->
+            <label for="student-select">Étudiant(s):</label>
+            <select id="student-select" name="student_ids[]" multiple required>
+                <?php foreach ($students as $student): ?>
+                    <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <!-- Selection of professor -->
+            <label for="professor-select">Professeur :</label>
+            <select id="professor-select" name="professor_id" required>
+                <option value="">Sélectionnez un professeur</option>
+                <?php foreach ($professors as $professor): ?>
+                    <option value="<?php echo $professor->getUserId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <!-- Selection of internship supervisor -->
+            <label for="maitre-select">Maître de stage :</label>
+            <select id="maitre-select" name="maitre_id" required>
+                <option value="">Sélectionnez un maître de stage</option>
+                <?php foreach ($maitres as $maitre): ?>
+                    <option value="<?php echo $maitre->getUserId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <!-- Button to submit the form and create the group -->
+            <button type="submit" class="submit-group-button">Créer le groupe</button>
+        </form>
 
                     <!-- Zone pour afficher le message de résultat -->
                     <div id="resultMessage"></div>
@@ -525,10 +529,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </section>
 
+<!-- ------------------------------ ! Modal windows out of the page section ! -------------------------------------------------------------------  -->
+
+<!-- Modal for editing a group -->
+<div id="editGroupModal" class="modal">
+    <div class="modal-content">
+        <h2>Modifier le groupe</h2>
+        <form id="editGroupForm" method="POST" action="#">
+            <!-- Hidden fields -->
+            <input type="hidden" name="edit_group" value="1">
+            <input type="hidden" name="group_id" id="edit-group-id">
+            <!-- Fields for selecting new members -->
+            <label for="edit-student-select">Étudiant(s):</label>
+            <select id="edit-student-select" name="student_ids[]" multiple required>
+                <?php foreach ($students as $student): ?>
+                    <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="edit-professor-select">Professeur :</label>
+            <select id="edit-professor-select" name="professor_id" required>
+                <option value="">Sélectionnez un professeur</option>
+                <?php foreach ($professors as $professor): ?>
+                    <option value="<?php echo $professor->getUserId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="edit-maitre-select">Maître de stage :</label>
+            <select id="edit-maitre-select" name="maitre_id" required>
+                <option value="">Sélectionnez un maître de stage</option>
+                <?php foreach ($maitres as $maitre): ?>
+                    <option value="<?php echo $maitre->getUserId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <button type="submit" class="submit-group-button">Enregistrer les modifications</button>
+        </form>
+        <div id="editResultMessage"></div>
+        <!-- Button to close the modal window -->
+        <span class="close-modal">&times;</span>
+    </div>
+</div>
 
 <!-- Script JavaScript pour la gestion des utilisateurs -->
 <script src="../View/Principal/userManagement.js"></script>
 <script src="../View/Principal/GroupCreation.js"></script>
+<script src="/View/Principal/GroupMessenger.js"></script>
+<script>
+    // Ajouter une classe d'animation
+    document.querySelectorAll('.form-control, .form-control-file').forEach(element => {
+        element.addEventListener('focus', () => {
+            element.classList.add('animated-border');
+        });
+
+        element.addEventListener('blur', () => {
+            element.classList.remove('animated-border');
+        });
+    });
+
+    // Animation de validation du fichier lors de la sélection
+    document.getElementById('file').addEventListener('change', function() {
+        if (this.files.length > 0) {
+            // Afficher le bouton d'annulation
+            document.getElementById('resetFileBtn').style.display = 'block';
+        } else {
+            document.getElementById('resetFileBtn').style.display = 'none';
+        }
+    });
+
+    // Fonction pour réinitialiser le champ de fichier lorsque le bouton d'annulation est cliqué
+    document.getElementById('resetFileBtn').addEventListener('click', function() {
+        const fileInput = document.getElementById('file');
+        fileInput.value = ''; // Réinitialise le champ de fichier
+        this.style.display = 'none'; // Cache le bouton d'annulation
+    });
+
+    // Animation lors de la saisie du texte
+    const messageInput = document.getElementById('message');
+    messageInput.addEventListener('input', () => {
+        messageInput.classList.add('typing-animation');
+        clearTimeout(messageInput.typingTimer);
+        messageInput.typingTimer = setTimeout(() => {
+            messageInput.classList.remove('typing-animation');
+        }, 500);
+    });
+</script>
 </body>
 </html>
 

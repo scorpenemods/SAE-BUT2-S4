@@ -73,6 +73,11 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <link rel="stylesheet" href="/View/css/Footer.css">
 
     <script src="/View/Principal/Notif.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include EmojiOneArea -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>"> <!-- Ajout de la classe 'dark-mode' si activée -->
 
@@ -168,6 +173,8 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
         <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">Missions de stage</div>
         <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">Contenu Gestion Stagiaires</div>
         <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : 'Contenu'; ?>" id="content-3">
+            <!-- Affichage du livret de suivi -->
+
             <?php include_once("LivretSuivi.php");?>
 
 
@@ -177,53 +184,50 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
         <!-- Contenu de la Messagerie -->
         <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : 'Contenu'; ?>" id="content-5">
             <div class="messenger">
-                <!-- Barre de recherche de contacts -->
                 <div class="contacts">
                     <div class="search-bar">
-                        <label for="search-input"></label>
-                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                        <input type="text" id="search-input" placeholder="Search contacts..." onkeyup="searchContacts()">
                     </div>
                     <h3>Contacts</h3>
+                    <!-- Bouton pour contacter le secrétariat -->
+                    <button id="contact-secretariat-btn" class="contact-secretariat-btn">Contacter le secrétariat</button>
                     <ul id="contacts-list">
                         <?php include_once("ContactList.php");?>
-
+                        <?php include_once("GroupContactList.php");?>
                     </ul>
                 </div>
 
-                <!-- Menu contextuel pour copier ou supprimer un message -->
+                <!-- Context menu for message actions -->
                 <div id="context-menu" class="context-menu">
                     <ul>
-                        <li id="copy-text">Copier</li>
-                        <li id="delete-message">Supprimer</li>
+                        <li id="copy-text">Copy</li>
+                        <li id="delete-message">Delete</li>
                     </ul>
                 </div>
 
-                <!-- Fenêtre de chat -->
                 <div class="chat-window">
                     <div class="chat-header">
-                        <h3 id="chat-header-title">Chat avec Contact </h3>
+                        <h3 id="chat-header-title">Select a chat to start messaging.</h3>
                     </div>
-
                     <div class="chat-body" id="chat-body">
-                        <!-- Les messages seront chargés dynamiquement via JavaScript -->
+                        <!-- Messages will be loaded here dynamically via JavaScript -->
                     </div>
-
-                    <!-- Zone de saisie pour envoyer un nouveau message -->
                     <div class="chat-footer">
-                        <form id="messageForm" enctype="multipart/form-data" method="POST" action="SendMessage.php">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST">
                             <input type="file" id="file-input" name="file" style="display:none">
                             <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                            <!-- Champ caché pour le destinataire -->
-                            <input type="hidden" name="receiver_id" id="receiver_id" value=""> <!-- Ce champ sera mis à jour dynamiquement -->
-                            <label for="message-input"></label><input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="button" onclick="sendMessage(event)">Envoyer</button>
+                            <!-- Hidden fields for receiver_id and group_id -->
+                            <input type="hidden" name="receiver_id" id="receiver_id" value="">
+                            <input type="hidden" name="group_id" id="group_id" value="">
+                            <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
+                            <button type="submit">Envoyer</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>"</div>
+        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>">
         <h2 id="student-name"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></h2>
         <div class="notes-container">
             <table class="notes-table">
@@ -278,7 +282,94 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
         </a>
     </div>
 </section>
+
+<!-- Fenêtre modale pour contacter le secrétariat -->
+<div id="contact-secretariat-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Envoyer un message au secrétariat</h3>
+        <form id="contactSecretariatForm" enctype="multipart/form-data" method="POST" action="ContactSecretariat.php">
+            <div class="form-group">
+                <label for="subject">Sujet :</label>
+                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="Sujet de votre message">
+            </div>
+            <div class="form-group">
+                <label for="message">Message :</label>
+                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
+            </div>
+            <div class="form-group position-relative">
+                <label for="file" class="form-label">Joindre un fichier :</label>
+                <input type="file" class="form-control-file animated-file-input" id="file" name="file">
+                <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné" style="display: none;">✖️</button>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block animated-button">Envoyer au secrétariat</button>
+        </form>
+    </div>
+</div>
+
+<!-- Pied de page -->
+<footer class="PiedDePage">
+    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
+    <a href="Redirection.php">Informations</a>
+    <a href="Redirection.php">À propos</a>
+</footer>
+
 <script src="../View/Principal/deleteMessage.js"></script>
+<script src="/View/Principal/GroupMessenger.js"></script>
+<script>
+    // Obtenir la modale
+    var modal = document.getElementById("contact-secretariat-modal");
+
+    // Obtenir le bouton qui ouvre la modale
+    var btn = document.getElementById("contact-secretariat-btn");
+
+    // Obtenir l'élément <span> qui ferme la modale
+    var span = document.getElementsByClassName("close")[0];
+
+    // Quand l'utilisateur clique sur le bouton, ouvrir la modale
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // Quand l'utilisateur clique sur <span> (x), fermer la modale
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Quand l'utilisateur clique en dehors de la modale, fermer la modale
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Animation du gradient sur le champ de saisie
+    document.querySelectorAll('.form-control.animated-input').forEach(element => {
+        element.addEventListener('focus', () => {
+            element.classList.add('gradient-border');
+        });
+
+        element.addEventListener('blur', () => {
+            element.classList.remove('gradient-border');
+        });
+    });
+
+    // Gestion du bouton d'annulation du fichier
+    document.getElementById('file').addEventListener('change', function() {
+        if (this.files.length > 0) {
+            // Afficher le bouton d'annulation
+            document.getElementById('resetFileBtn').style.display = 'block';
+        } else {
+            document.getElementById('resetFileBtn').style.display = 'none';
+        }
+    });
+
+    document.getElementById('resetFileBtn').addEventListener('click', function() {
+        const fileInput = document.getElementById('file');
+        fileInput.value = ''; // Réinitialise le champ de fichier
+        this.style.display = 'none'; // Cache le bouton d'annulation
+    });
+</script>
 </body>
 <footer>
     <?php include "../View/Footer.php"; ?>
