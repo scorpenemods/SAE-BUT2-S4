@@ -145,7 +145,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                                     echo "<button class='apply-button-edit' id='edit-button'>Modifier</button>";
                                 }
                             echo "</form>";
-                            echo "<form action='../../Presentation/Offer/Company/Hide.php' method='post' id='hide-form'>";
+                            echo "<form action='../Presentation/Offer/Company/Hide.php' method='post' id='hide-form'>";
                             echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
                             echo "<input type='hidden' name='Secretariat' value='" . htmlspecialchars($_SESSION['Secretariat'], ENT_QUOTES, 'UTF-8') . "'>";
                             echo "<input type='hidden' name='id' value='" . htmlspecialchars($offer->getId(), ENT_QUOTES, 'UTF-8') . "'>";

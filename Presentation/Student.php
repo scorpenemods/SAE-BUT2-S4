@@ -216,7 +216,7 @@ $notes = $database->getNotes($senderId);
         <!-- Offres Content -->
         <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
             Contenu Offres
-            <a href="../View/Offer/List.php?type=all">
+            <a href="../View/List.php?type=all">
                 <button type="button">Voir les offres</button>
             </a>
         </div>

@@ -4,9 +4,7 @@
         <div class="footer-content">
             <div class="footer-row">
                 <div class="logo-container">
-                    <img src="../Resources/iut.jpg" alt="IUT Logo" width="120" height="60" />
-                </div>
-
+                    <img src="../Resources/iut.jpg" alt="Logo" class="logo">
                 <nav class="nav-footer">
                     <a href="/informations">Informations</a>
                     <a href="/a-propos">À propos</a>

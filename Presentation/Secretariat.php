@@ -519,7 +519,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Offres Content -->
     <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
         Contenu Offres
-        <a href="../View/Offer/List.php?type=all">
+        <a href="../View/List.php?type=all">
             <button type="button">Voir les offres</button>
         </a>
     </div>
@@ -563,5 +563,5 @@ $tutors = $database -> getTutor();
     </div>
 </div>
 <footer>
-    <?php include_once '../View/Footer.php'; ?>
+    <?php include '../View/Footer.php'; ?>
 </footer>
