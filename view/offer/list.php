@@ -8,7 +8,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 $_SESSION['user'] = 1;
-$_SESSION['company_id'] = 2;
+$_SESSION['company_id'] = null;
 $_SESSION['secretariat'] = false;
 
 $user_id = $_SESSION['user'] ?? 0;
@@ -21,15 +21,15 @@ $currentURL = $_SERVER["REQUEST_URI"];
 /**
  * setPageId
  * Sets the pageId query parameter in the given URL to the given value
- * @param $url
- * @param $newPageId
+ * @param string $url
+ * @param int $pageId
  * @return string
  */
-function setPageId($url, $newPageId): string {
+function setPageId(string $url, int $pageId): string {
     $parsedUrl = parse_url($url);
     parse_str($parsedUrl['query'] ?? '', $queryParams);
 
-    $queryParams['pageId'] = $newPageId;
+    $queryParams['pageId'] = $pageId;
     $newQueryString = http_build_query($queryParams);
 
     return (isset($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '') . ($parsedUrl['host'] ?? '') . ($parsedUrl['path'] ?? '') . (!empty($newQueryString) ? '?' . $newQueryString : '');
@@ -180,7 +180,6 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                         <input type="text" id="maxi" name="maxSalary" placeholder="Sans préférences">
                     </div>
 
-
                     <div class="filter-section">
                         <h3><i class="fas fa-map-marker-alt"></i> Localisation</h3>
                         <label for="address">Adresse</label>
@@ -195,7 +194,6 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                             <label><input type="radio" name="duration" value="3"> Plus de 6 mois</label>
                         </div>
                     </div>
-
 
                     <div class="filter-section">
                         <h3><i class="fas fa-industry"></i> Secteur</h3>
@@ -272,43 +270,29 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                     calendar: urlParams.get('calendar')
                 };
 
-                let valid = false;
-                for (const key in filters) {
-                    if (filters[key] === '' || filters[key] === undefined) {
-                        filters[key] = null;
-                    } else {
-                        valid = true;
-                    }
-                }
+                $.ajax({
+                    url: '/presenter/offer/createAlert.php',
+                    type: 'POST',
+                    data: {
+                        duration: filters.duration,
+                        address: filters.address,
+                        study_level: filters.diploma,
+                        begin_date: filters.calendar,
+                        salary: filters.minSalary
+                    },
+                    success: function(response) {
+                        const result = JSON.parse(response);
 
-                if (valid !== true) {
-                    sendNotification("failure", "Erreur", "Veuillez renseigner un ou plusieurs filtres afin de créer une demande de notification", 5000)
-                    return;
-                } else {
-                    $.ajax({
-                        url: '/presenter/offer/createAlert.php',
-                        type: 'POST',
-                        data: {
-                            duration: filters.duration,
-                            address: filters.address,
-                            study_level: filters.diploma,
-                            begin_date: filters.calendar,
-                            salary: filters.minSalary
-                        },
-                        success: function(response) {
-                            const result = JSON.parse(response);
-
-                            if (result.status === "success") {
-                                sendNotification("success", "Succès", "Notification créée avec succès !");
-                            } else {
-                                sendNotification("failure", "Erreur", result.message || "Une erreur est survenue.");
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            sendNotification("failure", "Erreur", "Une erreur réseau est survenue lors de la création de la notification.");
+                        if (result.status === "success") {
+                            sendNotification("success", "Succès", "Notification créée avec succès!");
+                        } else {
+                            sendNotification("failure", "Erreur", result.message || "Une erreur est survenue.");
                         }
-                    });
-                }
+                    },
+                    error: function(xhr, status, error) {
+                        sendNotification("failure", "Erreur", "Une erreur réseau est survenue lors de la création de la notification.");
+                    }
+                });
             });
 
             function heartUpdate(id) {
