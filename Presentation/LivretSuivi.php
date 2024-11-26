@@ -218,3 +218,6 @@ $id = $etu->getUserId() ;
 
 
 </body>
+<footer>
+    <?php include dirname(__FILE__) . '/../Footer.php'; ?>
+</footer>

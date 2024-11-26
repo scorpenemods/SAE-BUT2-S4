@@ -476,7 +476,7 @@ function showContent(x) {
 
 
 
-// ---------------------------------- Add secretariat ----------------------------------//
+// ---------------------------------- Add Secretariat ----------------------------------//
 
 function showForm(){
     document.getElementById("showButton").style.display = "none";

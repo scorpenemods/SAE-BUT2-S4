@@ -65,6 +65,7 @@ if (isset($_POST['go'])) {
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="/View/Principal/Principal.css">
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="/View/Principal/Principal.js"></script>
     <script src="/View/Principal/Notif.js"></script>
     <!-- Include jQuery -->
@@ -233,7 +234,13 @@ if (isset($_POST['go'])) {
         </div>
 
         <!-- Offres Content -->
-        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">Contenu Offres</div>
+        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
+            Contenu Offres
+            <a href="../View/List.php?type=all">
+                <button type="button">Voir les offres</button>
+            </a>
+        </div>
+
 
         <!-- Documents Content -->
         <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">Contenu Documents</div>
@@ -289,10 +296,8 @@ if (isset($_POST['go'])) {
     </div>
 </section>
 
-<footer class="PiedDePage">
-    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
-    <a href="Redirection.php">Informations</a>
-    <a href="Redirection.php">À propos</a>
+<footer>
+    <?php include_once '../View/Footer.php'; ?>
 </footer>
 
 <!-- Fenêtre modale pour contacter le secrétariat -->

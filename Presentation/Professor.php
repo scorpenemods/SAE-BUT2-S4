@@ -187,6 +187,7 @@ $notes = $database->getNotes($userId);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage - Professeur</title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <script src="/View/Principal/Notif.js"></script>
@@ -267,7 +268,11 @@ $notes = $database->getNotes($userId);
         <span onclick="widget(4)" class="widget-button">Documents</span>
         <span onclick="widget(5)" class="widget-button">Messagerie</span>
         <span onclick="widget(6)" class="widget-button">Notes</span>
+        <span onclick="widget(7)" class="widget-button">Offres</span>
+
     </nav>
+
+
     <div class="Contenus">
         <div class="<?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">
             <h2>Bienvenue sur la plateforme pour Professeurs!</h2><br>
@@ -381,6 +386,13 @@ $notes = $database->getNotes($userId);
             </form>
             <div id="validationMessage" class="validation-message"></div>
         </div>
+
+    <!-- Offres Content -->
+    <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
+        Contenu Offres
+        <a href="../View/List.php?type=all">
+            <button type="button">Voir les offres</button>
+        </a>
     </div>
 </section>
 
@@ -408,10 +420,8 @@ $notes = $database->getNotes($userId);
     </div>
 </div>
 
-<footer class="PiedDePage">
-    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
-    <a href="Redirection.php">Informations</a>
-    <a href="Redirection.php">À propos</a>
+<footer>
+    <?php include_once '../View/Footer.php'; ?>
 </footer>
 <script src="../View/Principal/deleteMessage.js"></script>
 <script src="/View/Principal/GroupMessenger.js"></script>

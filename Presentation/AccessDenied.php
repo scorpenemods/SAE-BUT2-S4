@@ -24,4 +24,5 @@
     <a href="../Index.php">Connectez-vous avec un autre compte</a> <!-- Permet à l'utilisateur de se reconnecter avec un autre compte -->
 </div> <!-- Fin du conteneur centré -->
 </body>
+
 </html>

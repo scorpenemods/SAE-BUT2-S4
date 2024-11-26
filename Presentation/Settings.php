@@ -44,6 +44,7 @@ if (!in_array($activeSection, $allowedSections)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings Le Petit Stage</title>
     <link rel="stylesheet" href="../View/Settings/Settings.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
     <script type="text/javascript" src="../View/Settings/Settings.js"></script>
 </head>
 <body>
@@ -100,8 +101,6 @@ if (!in_array($activeSection, $allowedSections)) {
 </body>
 
 <footer class="PiedDePage">
-    <img src="../Resources/Logo_UPHF.png" alt="Logo uphf" width="10%">
-    <a href="Redirection.php">Informations</a>
-    <a href="Redirection.php">A propos</a>
+    <?php include_once "../View/Footer.php" ?>
 </footer>
 </html>

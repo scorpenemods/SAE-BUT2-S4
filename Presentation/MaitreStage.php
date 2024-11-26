@@ -70,6 +70,8 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
+
     <script src="/View/Principal/Notif.js"></script>
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -156,6 +158,8 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
         <span onclick="widget(4)" class="widget-button">Documents</span>
         <span onclick="widget(5)" class="widget-button">Messagerie</span>
         <span onclick="widget(6)" class="widget-button">Notes</span>
+        <span onclick="widget(7)" class="widget-button">Offres</span>
+
     </nav>
 
     <div class="Contenus">
@@ -270,6 +274,12 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
             <button id="cancelBtn" onclick="cancelNotes()">Annuler</button>
         </div>
     </div>
+    <!-- Offres Content -->
+    <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
+        Contenu Offres
+        <a href="../View/List.php?type=all">
+            <button type="button">Voir les offres</button>
+        </a>
     </div>
 </section>
 
@@ -361,4 +371,9 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     });
 </script>
 </body>
+<footer>
+    <?php include "../View/Footer.php"; ?>
+</footer>
+
+
 </html>

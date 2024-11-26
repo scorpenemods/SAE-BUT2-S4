@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 
 const DB_HOST = 'db.liruz.fr';

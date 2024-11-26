@@ -150,6 +150,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <link rel="stylesheet" href="../View/Principal/Modals.css">
+    <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="/View/Principal/Notif.js"></script>
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -226,6 +227,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
         <span onclick="window.location.href='Secretariat.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Documents</span>
         <span onclick="window.location.href='Secretariat.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5">Messagerie</span>
         <span onclick="window.location.href='Secretariat.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>" id="content-6">Groupes</span>
+        <span onclick="window.location.href='Secretariat.php?section=7'" class="widget-button <?php echo $activeSection == '7' ? 'Current' : ''; ?>" id="content-7">Offres</span>
 
     </nav>
     <div class="Contenus">
@@ -511,12 +513,22 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <button type="submit" class="submit-group-button">Créer le groupe</button>
         </form>
 
-        <!-- Area to display the result message -->
-        <div id="resultMessage"></div>
-        <!-- Button to close the modal window -->
-        <span class="close-modal">&times;</span>
+                    <!-- Zone pour afficher le message de résultat -->
+                    <div id="resultMessage"></div>
+                    <!-- Bouton pour fermer la fenêtre modale -->
+                    <span class="close-modal">&times;</span>
+                </div>
+            </div>
+        </div>
+    <!-- Offres Content -->
+    <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
+        Contenu Offres
+        <a href="../View/List.php?type=all">
+            <button type="button">Voir les offres</button>
+        </a>
     </div>
-</div>
+</section>
+
 <!-- ------------------------------ ! Modal windows out of the page section ! -------------------------------------------------------------------  -->
 
 <!-- Modal for editing a group -->
@@ -604,3 +616,37 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
 </script>
 </body>
 </html>
+
+<?php
+// Récupère les profs
+$professors = $database -> getProfessor();
+
+// Récupère les profs
+$tutors = $database -> getTutor();
+?>
+<div id="popup-box" class="popup">
+    <div class="content">
+        <h1>Changer les groupes</h1>
+        <br>
+        <div class="lists">
+            <select name="professeurResp">
+                <option value="">Aucun</option>
+                <?php foreach ($professors as $professor): ?>
+                    <option><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+            <select name="Tuteur">
+                <option value="">Aucun</option>
+                <?php foreach ($tutors as $tutor): ?>
+                    <option><?php echo htmlspecialchars($tutor->getPrenom()) . ' ' . htmlspecialchars($tutor->getNom()); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <br>
+        <a href="#" class="popupvalide"><button>Valider</button></a>
+        <a href="#" class="cross">&times;</a>
+    </div>
+</div>
+<footer>
+    <?php include '../View/Footer.php'; ?>
+</footer>
