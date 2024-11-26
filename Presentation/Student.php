@@ -17,7 +17,7 @@ if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']); // Récupère l'objet Person stocké en session
     if ($person instanceof Person) { // Vérifie que l'objet est bien une instance de Person
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom()); // Définit le nom de l'utilisateur en utilisant son prénom et son nom
-        $senderId = $person->getUserId(); // Récupère l'ID de l'utilisateur pour les requêtes de base de données
+        $senderId = $person->getId(); // Récupère l'ID de l'utilisateur pour les requêtes de base de données
     }
 } else {
     // Redirige l'utilisateur vers la page de déconnexion s'il n'est pas connecté
@@ -49,6 +49,11 @@ $notes = $database->getNotes($senderId);
 
 // Récupération des différents stages de l'utilisateur depuis la base de données
 $stages = $database->getStages($senderId);
+
+if (isset($_POST['go'])) {
+    $infos = $database->getUserById($_POST['go']);
+    $notes = $database->getNotes($infos['id']);
+}
 
 ?>
 
@@ -145,9 +150,6 @@ $stages = $database->getStages($senderId);
         <?php foreach ($stages as $stage): ?>
             <div class="student">
                 <button type="submit" value="<?php echo $stage[1];?>" name="go"><?php echo "Stage de l'année : $stage[0]";?></button>
-                <?php if(isset($_POST['go'])){
-                    $notes = $database->getNotes($_POST['go']);
-                }?>
             </div>
         <?php endforeach; ?>
     </form>
