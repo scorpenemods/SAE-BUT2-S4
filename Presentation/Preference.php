@@ -6,7 +6,7 @@ require_once '../Model/Person.php';
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
-        $userId = $person->getUserId();
+        $userId = $person->getId();
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
     }
 } else {

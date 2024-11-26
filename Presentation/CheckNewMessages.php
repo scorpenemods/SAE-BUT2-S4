@@ -8,7 +8,7 @@ header('Content-Type: application/json; charset=utf-8');
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
-        $userId = $person->getUserId();
+        $userId = $person->getId();
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Session invalide.']);
         exit();

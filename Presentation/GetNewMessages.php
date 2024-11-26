@@ -18,7 +18,7 @@ if (!$person instanceof Person) {
     exit();
 }
 
-$userId = $person->getUserId();
+$userId = $person->getId();
 
 // Check if required parameters are set
 if (!isset($_GET['contact_id']) || !isset($_GET['last_timestamp'])) {

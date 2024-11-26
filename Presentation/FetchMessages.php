@@ -12,7 +12,7 @@ if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
-        $senderId = $person->getUserId(); // Получаем ID пользователя для отправки сообщений
+        $senderId = $person->getId(); // Получаем ID пользователя для отправки сообщений
     }
 } else {
     header("Location: Logout.php");

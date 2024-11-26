@@ -7,7 +7,7 @@ $roleMapping = [
 ];
 
 // Récupérer les contacts associés à l'utilisateur connecté
-$userId = $person->getUserId();
+$userId = $person->getId();
 $contacts = $database->getGroupContacts($userId);
 
 // Sort contacts by role

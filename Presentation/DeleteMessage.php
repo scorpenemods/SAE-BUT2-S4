@@ -7,7 +7,7 @@ session_start();
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
-        $currentUserId = $person->getUserId();
+        $currentUserId = $person->getId();
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Invalid user session.']);
         exit();

@@ -1,6 +1,6 @@
 <?php
 global $person, $database;
-$userId = $person->getUserId();
+$userId = $person->getId();
 
 // Get the groups the user is part of
 $groups = $database->getUserGroups($userId);

@@ -18,7 +18,7 @@ if (!$person instanceof Person) {
     exit();
 }
 
-$senderId = $person->getUserId();
+$senderId = $person->getId();
 
 // Check request method
 if ($_SERVER["REQUEST_METHOD"] === "POST") {

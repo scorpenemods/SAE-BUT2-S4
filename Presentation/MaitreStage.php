@@ -20,7 +20,7 @@ if (isset($_SESSION['user'])) {
     if ($person instanceof Person) {
         // Récupère le prénom et le nom de l'utilisateur en protégeant contre les attaques XSS (Cross-Site Scripting)
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
-        $senderId = $person->getUserId(); // Récupération de l'ID de l'utilisateur connecté
+        $senderId = $person->getId(); // Récupération de l'ID de l'utilisateur connecté
     }
 } else {
     // Redirection vers la page de déconnexion si l'utilisateur n'est pas trouvé dans la session
@@ -47,7 +47,7 @@ $receiverId = $_POST['receiver_id'] ?? 1;
 $students = $database->getStudentsMaitreDeStage($senderId);
 
 // Récupération des préférences de l'utilisateur à partir de la base de données
-$preferences = $database->getUserPreferences($person->getUserId());
+$preferences = $database->getUserPreferences($person->getId());
 
 // Vérification si le mode sombre est activé dans les préférences de l'utilisateur
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;

@@ -11,7 +11,7 @@ $nameetu = $_SESSION['user_name'];
 
 $db = (Database::getInstance());
 
-$id = $etu->getUserId() ;
+$id = $etu->getId() ;
 
 
 

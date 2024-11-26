@@ -45,7 +45,7 @@ if (isset($_GET['section'])) {
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
 
 // Récupérer les préférences de l'utilisateur
-$preferences = $database->getUserPreferences($person->getUserId());
+$preferences = $database->getUserPreferences($person->getId());
 
 // Vérifier si le mode sombre est activé dans les préférences
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
@@ -487,7 +487,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <label for="student-select">Étudiant(s):</label>
             <select id="student-select" name="student_ids[]" multiple required>
                 <?php foreach ($students as $student): ?>
-                    <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                    <option value="<?php echo $student->getId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -496,7 +496,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <select id="professor-select" name="professor_id" required>
                 <option value="">Sélectionnez un professeur</option>
                 <?php foreach ($professors as $professor): ?>
-                    <option value="<?php echo $professor->getUserId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                    <option value="<?php echo $professor->getId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -505,7 +505,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <select id="maitre-select" name="maitre_id" required>
                 <option value="">Sélectionnez un maître de stage</option>
                 <?php foreach ($maitres as $maitre): ?>
-                    <option value="<?php echo $maitre->getUserId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                    <option value="<?php echo $maitre->getId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -543,7 +543,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <label for="edit-student-select">Étudiant(s):</label>
             <select id="edit-student-select" name="student_ids[]" multiple required>
                 <?php foreach ($students as $student): ?>
-                    <option value="<?php echo $student->getUserId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                    <option value="<?php echo $student->getId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -551,7 +551,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <select id="edit-professor-select" name="professor_id" required>
                 <option value="">Sélectionnez un professeur</option>
                 <?php foreach ($professors as $professor): ?>
-                    <option value="<?php echo $professor->getUserId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                    <option value="<?php echo $professor->getId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -559,7 +559,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <select id="edit-maitre-select" name="maitre_id" required>
                 <option value="">Sélectionnez un maître de stage</option>
                 <?php foreach ($maitres as $maitre): ?>
-                    <option value="<?php echo $maitre->getUserId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                    <option value="<?php echo $maitre->getId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 

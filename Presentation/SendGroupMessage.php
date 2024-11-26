@@ -21,7 +21,7 @@ if (!$person instanceof Person) {
     exit();
 }
 
-$senderId = $person->getUserId();
+$senderId = $person->getId();
 $senderName = htmlspecialchars($person->getPrenom() . ' ' . $person->getNom());
 
 // Check request method

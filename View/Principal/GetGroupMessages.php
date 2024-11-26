@@ -17,7 +17,7 @@ if (!$person instanceof Person) {
     exit();
 }
 
-$userId = $person->getUserId();
+$userId = $person->getId();
 
 if (isset($_GET['group_id'])) {
     $groupId = $_GET['group_id'];

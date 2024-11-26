@@ -9,7 +9,7 @@ header('Content-Type: text/html; charset=utf-8');
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
-        $userId = $person->getUserId();
+        $userId = $person->getId();
     } else {
         echo "Invalid session.";
         exit();

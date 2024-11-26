@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $user['id']
             );
 
-            $_SESSION['user_id'] = $person->getUserId();
+            $_SESSION['user_id'] = $person->getId();
             $_SESSION['user'] = serialize($person);
             $_SESSION['user_role'] = $person->getRole();
             $_SESSION['user_name'] = $person->getPrenom() . ' ' . $person->getNom();

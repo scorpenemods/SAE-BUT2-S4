@@ -17,7 +17,7 @@ if (!$person instanceof Person) {
     exit();
 }
 
-$userId = $person->getUserId();
+$userId = $person->getId();
 $userRole = $person->getRole();
 
 // Проверка роли пользователя (например, роль 5 для секретариата)
