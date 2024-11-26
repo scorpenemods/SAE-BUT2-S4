@@ -312,7 +312,7 @@ $stages = $database->getStages($senderId);
                             foreach ($notes as $note) {
                                 array_push($add,$note->getNote()*$note->getCoeff());
                                 array_push($coeff, $note->getCoeff());
-                            } echo "<td>" . "Moyenne : " . array_sum($add)/array_sum($coeff) . "</td>";
+                            } echo "<td>" . "Moyenne : " . round(array_sum($add)/array_sum($coeff),2) . "</td>";
                     }
                     else {
                         echo '<p class="noNotes"> Aucune note disponible ! </p>';
