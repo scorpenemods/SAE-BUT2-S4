@@ -68,9 +68,11 @@ $id = $etu->getId() ;
         <span class="vignette" onclick="showContent(0)">1ère rencontre</span><br>
         <span class="vignette" onclick="showContent(1)">2ème rencontre</span><br>
         <span class="vignette" onclick="showContent(2)">3ème rencontre</span><br>
-        <span class="vignette" onclick="showContent(3)">Dépôt du mémoire ou rapport</span><br>
-    </aside>
 
+        <span class="vignette" onclick="showContent(100)">Dépôt du mémoire ou rapport</span><br>
+
+        <button id="addMeetingBtn">+ Ajouter une rencontre</button>
+    </aside>
 
     <!-- Affichage des informations des participants : -->
 
@@ -203,7 +205,7 @@ $id = $etu->getId() ;
         </div>
 
         <!-- Bilan -->
-        <div class="content-section" id="3">
+        <div class="content-section" id="100">
             <div class="livret-header">
                 <h3>Bilan du stage</h3>
             </div>

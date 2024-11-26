@@ -30,7 +30,7 @@ class Person
 
     }
     //getter pour l'id
-    public function getId(): int{
+    public function getUserId(): int{
         return $this->id;
     }
 
@@ -45,8 +45,6 @@ class Person
     {
         return $this->prenom;
     }
-
-
 
     // Méthode pour obtenir le rôle de l'utilisateur
     public function getRole(): string

@@ -68,7 +68,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage - Maitre de Stage</title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
-    <script src="../View/Principal/Principal.js"></script>
+    <script src="../View/Principal/Principal.js" defer></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <link rel="stylesheet" href="/View/css/Footer.css">
 
