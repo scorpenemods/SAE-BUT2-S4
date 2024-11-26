@@ -89,16 +89,16 @@ main {
 .search-bar button:hover {
     background-color: #9ED871;
 }
-.company-listings {
+.Company-listings {
     display: grid;
     grid-template-columns: repeat(2, minmax(300px, 1fr));
     gap: 2rem;
 }
-.company-link {
+.Company-link {
     text-decoration: None;
     color: inherit;
 }
-.company-card {
+.Company-card {
     background-color: var(--card-color);
     border-radius: 8px;
     overflow: hidden;
@@ -106,7 +106,7 @@ main {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     position: relative; /* Ensure the icon is positioned relative to the card */
 }
-.company-card .heart {
+.Company-card .heart {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -116,23 +116,23 @@ main {
     background-color: transparent;
     border: none;
 }
-.company-card .fa-heart {
+.Company-card .fa-heart {
     color: #F9564F;
 }
-.company-card .fa-heart:hover {
+.Company-card .fa-heart:hover {
     color: #ff6b6b;
 }
-.company-card:hover {
+.Company-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
-.company-header {
+.Company-header {
     position: relative;
     height: 100px;
     background-color: #4e94ab;
     overflow: hidden;
 }
-.company-header img {
+.Company-header img {
     width: 70px;
     height: 70px;
     object-fit: cover;
@@ -149,26 +149,26 @@ main {
     margin-left: 100px;
     color: white;
 }
-.company {
+.Company {
     margin-top: 0;
     margin-left: 100px;
     color: #f1f1f1;
 }
-.company-info {
+.Company-info {
     padding: 0.5rem 1.5rem 1.5rem;
 }
-.company-info h3 {
+.Company-info h3 {
     margin-top: 0;
     color: var(--primary-color);
 }
-.company-info p {
+.Company-info p {
     margin-bottom: 0.5rem;
     line-height: 1.6;
 }
-.company-info a {
+.Company-info a {
     text-decoration: none;
 }
-.company-meta {
+.Company-meta {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
@@ -292,7 +292,7 @@ main {
         width: 100%;
         margin-bottom: 1rem;
     }
-    .company-listings {
+    .Company-listings {
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     }
     .filter-panel {
@@ -327,10 +327,10 @@ main {
     }
 }
 @media (max-width: 480px) {
-    .company-listings {
+    .Company-listings {
         grid-template-columns: 1fr;
     }
-    .company-card {
+    .Company-card {
         margin: 5px 0;
     }
     .filter-panel {

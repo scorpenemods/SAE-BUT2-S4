@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require dirname(__FILE__) . '/../../Model/Company.php';
+require dirname(__FILE__) . '/../Model/Company.php';
 global $tags;
 
 if (isset($_SESSION['Secretariat']) || isset($_SESSION['company_id'])) {
@@ -26,7 +26,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../Header.php'; ?>
+        <?php include 'Header.php'; ?>
         <main class="container-principal">
             <h1>Proposer une offre de stage</h1>
             <form action="../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
@@ -92,7 +92,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                         <button type="button" id="tagsDropdownBtn" class="tags-dropdown-btn" onclick="toggleDropdown()">Sélectionner les catégories</button>
                         <div id="tagsDropdown" class="tags-dropdown-content">
                             <?php
-                            include dirname(__FILE__) . '/../../Model/Offer.php';
+                            include dirname(__FILE__) . '/../Model/Offer.php';
                             $tags = Offer::getAllTags();
                             foreach ($tags as $tag) {
                                 echo "<label><input type='checkbox' name='tag" . $tag . "' value='" . $tag . "'> " . $tag . "</label>";

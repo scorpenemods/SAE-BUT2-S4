@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-require dirname(__FILE__) . '/../../Model/PendingOffer.php';
-require dirname(__FILE__) . '/../../Model/Company.php';
-require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
+require dirname(__FILE__) . '/../Model/PendingOffer.php';
+require dirname(__FILE__) . '/../Model/Company.php';
+require dirname(__FILE__) . '/../Presentation/Offer/Filter.php';
 
 
 if (isset($_SERVER["HTTP_REFERER"])) {
@@ -108,7 +108,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
     <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<?php include dirname(__FILE__) . '/../Header.php'; ?>
+<?php include dirname(__FILE__) . '/Header.php'; ?>
 <main>
     <div class='offer-card' style='margin-bottom: 10px'>
         <div class='offer-header'>
@@ -137,7 +137,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                         echo "<div class='apply-button-container'>";
                             echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
                             echo "<button class='apply-button-edit' id='apply-button' onclick='openModalWithMessage()'>Postuler</button>";
-                            echo "<form action='/Company/Edit.php' method='get' id='edit-form'>";
+                            echo "<form action='Edit.php' method='get' id='edit-form'>";
                                 echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
                                 if ($isAlreadyPending) {
                                     echo "<button class='apply-button-edit' id='edit-button'>Modification en attente de validation</button>";
@@ -229,7 +229,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
             echo "</div>";
     } ?>
 </main>
-<?php include dirname(__FILE__) . '/../Footer.php'; ?>
+<?php include'Footer.php'; ?>
 <script type="text/javascript">
     document.querySelectorAll('.Offer-header').forEach(element => {
         element.style.backgroundImage = `url(<?php echo $offer->getImage(); ?>)`;

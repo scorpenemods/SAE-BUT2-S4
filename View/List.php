@@ -25,11 +25,11 @@ if (isset($_SESSION['user'])) {
     $user_id = $_SESSION['user'];
 }
 
-require dirname(__FILE__) . '/../../Model/Company.php';
-require dirname(__FILE__) . '/../../Model/PendingOffer.php';
-require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
+require dirname(__FILE__) . '/../Model/Company.php';
+require dirname(__FILE__) . '/../Model/PendingOffer.php';
+require dirname(__FILE__) . '/../Presentation/Offer/Filter.php';
 
-require dirname(__FILE__) . '/../../Presentation/Utils.php';
+require dirname(__FILE__) . '/../Presentation/Utils.php';
 
 $pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT);
 if ($pageId == null) {
@@ -109,7 +109,7 @@ if ($type == null) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../Header.php'; ?>
+        <?php include dirname(__FILE__) . '/Header.php'; ?>
         <div class="blur-overlay" id="blurOverlay"></div>
         <main>
             <form method="GET">
@@ -136,10 +136,10 @@ if ($type == null) {
                     <a href="List.php">Nouvelles offres</i></a>
                 </div>
                 <div id="updated">
-                    <a href="List.phpated">Offres mises à jour</i></a>
+                    <a href="List.php">Offres mises à jour</i></a>
                 </div>
                 <div id="inactive">
-                    <a href="List.phpctive">Offres inactives</i></a>
+                    <a href="List.php">Offres inactives</i></a>
                 </div>
                 <div id="create" style="text-align: center">
                     <a href="Create.php">Créer une offre</i></a>
@@ -148,7 +148,7 @@ if ($type == null) {
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
-                    echo "<a class='Company-link' href='../Offer/Detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
+                    echo "<a class='Company-link' href='Detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
                         echo "<div class='Company-card'>";
                             echo "<div class='Company-header'>";
                                 if ($type == 'all') {
@@ -252,7 +252,7 @@ if ($type == null) {
                 </form>
             </div>
         </div>
-        <?php include '../Footer.php'; ?>
+        <?php include 'Footer.php'; ?>
         <script>
             // Filter panel functionality
             const filterPanel = document.getElementById('filterPanel');

@@ -2,21 +2,21 @@
 session_start();
 global $tags;
 
-require dirname(__FILE__) . '/../../../Model/Offer.php';
-require dirname(__FILE__) . '/../../../Model/Company.php';
+require dirname(__FILE__) . '/../Model/Offer.php';
+require dirname(__FILE__) . '/../Model/Company.php';
 
 // Check if user has a Company
 if (isset($_SESSION['Secretariat']) || (isset($_SESSION['company_id']) && isset($_GET['id']))) {
     $company_id = $_SESSION['company_id'];
     $offer = Offer::getById($_GET['id']);
     if ($company_id!= null && !Offer::isCompanyOffer($_GET['id'], $company_id)) {
-        header("Location: ../../Offer/List.php");
+        header("Location: List.php");
         die();
     } else {
         $company_id = $offer->getCompanyId();
     }
 } else {
-    header("Location: ../../Offer/List.php");
+    header("Location: List.php");
     die();
 }
 
@@ -34,7 +34,7 @@ if (isset($_SESSION['Secretariat']) || (isset($_SESSION['company_id']) && isset(
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../../Header.php'; ?>
+        <?php include "Header.php"; ?>
         <main class="container-principal">
             <h1>Modifier une offre de stage</h1>
             <form action="../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
@@ -115,7 +115,7 @@ if (isset($_SESSION['Secretariat']) || (isset($_SESSION['company_id']) && isset(
                 <button type="submit">Publier l'offre</button>
             </form>
         </main>
-        <?php include dirname(__FILE__) . '/../../Footer.php'; ?>
+        <?php include_once "Footer.php"; ?>
         <script>
             const dropdownBtn = document.getElementById('tagsDropdownBtn');
             const dropdown = document.getElementById("tagsDropdown");
