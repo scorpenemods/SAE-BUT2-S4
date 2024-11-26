@@ -41,7 +41,7 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
     <link rel="stylesheet" href="../../css/footer.css">
 </head>
 <body>
-<?php include '../../header.php' ?>
+<?php include dirname(__FILE__).'/../../header.php' ?>
 <main>
     <div class="spacer">
         <div class="card">
@@ -82,7 +82,7 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
         </div>
     </div>
 </main>
-<?php include '../../footer.php'; ?>
+<?php include dirname(__FILE__).'/../../footer.php'; ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     function getFile(id_user, id_offer, type_str) {

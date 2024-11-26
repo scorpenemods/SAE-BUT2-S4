@@ -9,16 +9,18 @@ $returnUrl = $_SERVER["HTTP_REFERER"] ?? "/view/offer/list.php";
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
+$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? "all";
 if (!$offerId) {
     header("Location: " . $returnUrl);
     die();
 }
 
 $company_id = $_SESSION['company_id'] ?? 0;
-if ($company_id != 0 && !Offer::isCompanyOffer($offerId, $company_id)) {
-    header("Location: ../offer/list.php");
-    die();
+if ($company_id != 0 && Offer::isCompanyOffer($offerId, $company_id)) {
+    //header("Location: ../offer/list.php");
+    //die();
+    echo $company_id;
+    echo !Offer::isCompanyOffer($offerId, $company_id);
 }
 
 $secretariat_group = $_SESSION['secretariat'] ?? false;

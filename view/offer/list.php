@@ -108,11 +108,11 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             <div class="pagination button-group" style="text-align: center">
                 <?php
                 if ($secretariat_group) {
-                    echo '<div id="all"><a href="/view/offer/list.php?type=all">Tous les offres</i></a> </div>';
                     echo '<div id="new"> <a href="/view/offer/list.php?type=new">Nouvelles offres</i></a> </div>';
                 }
 
                 if ($secretariat_group || $company_id != 0) {
+                    echo '<div id="all"><a href="/view/offer/list.php?type=all">Tous les offres</i></a> </div>';
                     echo '<div id="updated"> <a href="/view/offer/list.php?type=updated">Offres mises à jour</i></a> </div>';
                     echo '<div id="inactive"> <a href="/view/offer/list.php?type=inactive">Offres inactives</i></a> </div>';
                 }
@@ -122,6 +122,9 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
+                    if ($company_id != 0 && !($company_id == $offer->getCompany()->getId())) {
+                        continue;
+                    }
                     echo "<a class='company-link' href='/view/offer/detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
                         echo "<div class='company-card'>";
                             echo "<div class='company-header'>";
