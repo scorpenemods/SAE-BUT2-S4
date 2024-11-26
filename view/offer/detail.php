@@ -22,7 +22,6 @@ if ($company_id != 0 && Offer::isCompanyOffer($offerId, $company_id)) {
     echo $company_id;
     echo !Offer::isCompanyOffer($offerId, $company_id);
 }
-
 $secretariat_group = $_SESSION['secretariat'] ?? false;
 
 switch ($type) {
