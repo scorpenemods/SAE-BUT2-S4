@@ -238,43 +238,6 @@ $stages = $database->getStages($senderId);
 
         <!-- Livret de suivi Content -->
         <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
-            <!-- Affichage des participants -->
-
-            <div class="livret-header" style="margin-bottom: 10px">
-                <h2 style="text-align: center">Participants</h2>
-            </div><br>
-            <div style="display: flex; gap: 10%; justify-content: center;">
-                <div class="participants">
-                    <h3>Etudiant :</h3><br>
-                    <p>Nom prénom : <label><?php echo $userName; ?></label></p>
-                    <p>Formation : <label><?php echo htmlspecialchars($person->getActivite()); ?></label></p>
-                    <p>Email : <label><?php echo htmlspecialchars($person->getEmail()); ?></label></p>
-                    <?php if ($person->getTelephone() != 0){?>
-                        <p>Téléphone : <label><?php echo htmlspecialchars($person->getTelephone()); ?></label></p>
-                    <?php }?>
-                </div>
-
-                <div class="participants">
-                    <h3>Professeur :</h3><br>
-                    <p>Nom prénom : <label><?php echo '(Professeur)'; ?></label></p>
-                    <p>Spécialité : <label><?php echo '(Spécialité)' ?></label></p>
-                    <p>Email : <label><?php echo '(professeur@email.com)' ?></label></p>
-                    <?php if (0==0){?>
-                        <p>Téléphone : <label><?php echo '(téléphone)' ?></label></p>
-                    <?php }?>
-                </div>
-
-                <div class="participants">
-                    <h3>Maitre de stage :</h3><br>
-                    <p>Nom prénom : <label><?php echo '(MdS)'; ?></label></p>
-                    <p>Spécialité : <label><?php echo '(Spécialité)' ?></label></p>
-                    <p>Email : <label><?php echo '(mds@email.com)' ?></label></p>
-                    <?php if (0==0){?>
-                        <p>Téléphone : <label><?php echo '(téléphone)' ?></label></p>
-                    <?php }?>
-                </div>
-            </div><br>
-
             <!-- Affichage du livret de suivi -->
 
             <?php include_once("LivretSuivi.php");?>
