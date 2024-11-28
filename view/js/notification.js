@@ -1,7 +1,4 @@
-
-
 function sendNotification(type, title, description, duration = 5000) {
-    // check if container exists
     let container = document.getElementById("notification-container")
     if (!container) {
         container = document.createElement('div');

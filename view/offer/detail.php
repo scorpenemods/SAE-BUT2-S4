@@ -9,18 +9,19 @@ $returnUrl = $_SERVER["HTTP_REFERER"] ?? "/view/offer/list.php";
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
+$type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? "all";
 if (!$offerId) {
     header("Location: " . $returnUrl);
     die();
 }
 
 $company_id = $_SESSION['company_id'] ?? 0;
-if ($company_id != 0 && !Offer::isCompanyOffer($offerId, $company_id)) {
-    header("Location: ../offer/list.php");
-    die();
+if ($company_id != 0 && Offer::isCompanyOffer($offerId, $company_id)) {
+    //header("Location: ../offer/list.php");
+    //die();
+    echo $company_id;
+    echo !Offer::isCompanyOffer($offerId, $company_id);
 }
-
 $secretariat_group = $_SESSION['secretariat'] ?? false;
 
 switch ($type) {
@@ -110,7 +111,10 @@ function renderForm($action, $id, $buttonText, $typeForm, array $hiddenFields = 
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <link rel="stylesheet" href="/view/css/apply.css">
+        <link rel="stylesheet" href="../css/notification.css">
+        <script src="../js/notification.js" crossorigin="anonymous"></script>
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body>
         <?php include dirname(__FILE__) . '/../header.php'; ?>
@@ -218,13 +222,13 @@ function renderForm($action, $id, $buttonText, $typeForm, array $hiddenFields = 
                         echo "<div class='modal-content'>";
                             echo "<span class='close' onclick='closeModal()'>&times;</span>";
                             echo "<h2>Déposez votre candidature pour cette offre :</h2><br>";
-                            echo "<form action='/presenter/offer/apply.php' method='POST' enctype='multipart/form-data'>";
+                            echo "<form id='apply-form'>";
                                 echo "<label for='cv'>Déposez votre CV :</label>";
                                 echo "<input type='file' class='file-upload' id='cv' name='cv' accept='.pdf' required><br>";
                                 echo "<label for='motivation'>Déposez votre lettre de motivation :</label>";
                                 echo "<input type='file' class='file-upload' id='motivation' name='motivation' accept='.pdf' required>";
-                                echo "<p id='modal-message'></p>";
                                 echo "<input type='hidden' name='offre' value='" . $offer->getId() . "'>";
+                                echo "<br>";
                                 echo "<button type='submit'>Valider la candidature</button>";
                             echo "</form>";
                         echo "</div>";
@@ -239,19 +243,41 @@ function renderForm($action, $id, $buttonText, $typeForm, array $hiddenFields = 
                 element.style.backgroundImage = `url(<?php echo $offer->getImage(); ?>)`;
             });
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const status = urlParams.get('status');
-
-            function openModal(message) {
+            function openModal() {
                 document.getElementById("applyModal").style.display = "block";
-                document.getElementById("modal-message").textContent = message;
             }
 
             function closeModal() {
                 document.getElementById("applyModal").style.display = "none";
             }
 
-            if (status) openModal(status === 'success' && "Votre candidature a bien été enregistrée !" || "Vous avez déjà postulé pour cette offre.");
+            const form = document.getElementById('apply-form');
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                $.ajax({
+                    url: '/presenter/offer/apply.php',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        const result = JSON.parse(response);
+                        if (result.status === "success") {
+                            sendNotification("success", "Succès", "Votre candidature a bien été enregistrée !");
+                            closeModal();
+                        } else if (result.status === "already_applied") {
+                            sendNotification("warning", "Attention", "Vous avez déjà postulé pour cette offre !");
+                        } else {
+                            sendNotification("failure", "Erreur", result.message || "Une erreur est survenue.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        sendNotification("failure", "Erreur", "Une erreur réseau est survenue lors de la candidature.");
+                    }
+                });
+            });
 
             window.onclick = function (event) {
                 let modal = document.getElementById("applyModal");
