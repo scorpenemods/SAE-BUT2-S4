@@ -8,7 +8,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 $_SESSION['user'] = 1;
-$_SESSION['company_id'] = null;
+$_SESSION['company_id'] = 2;
 $_SESSION['secretariat'] = false;
 
 $user_id = $_SESSION['user'] ?? 0;
@@ -78,7 +78,6 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
         <meta name="description" content="Le Petit Stage - Offres">
         <title>Le Petit Stage - Advanced</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="/view/css/list.css">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">
         <link rel="stylesheet" href="/view/css/list.css">

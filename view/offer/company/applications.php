@@ -41,6 +41,8 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
     <link rel="stylesheet" href="../../css/footer.css">
     <link rel="stylesheet" href="../../css/notification.css">
     <script src="../../js/notification.js"></script>
+    <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
     <?php include '../../header.php' ?>
@@ -48,7 +50,7 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
         <div class="spacer">
             <div class="card">
                 <h2>Liste des Candidatures pour <?php echo Applications::getOfferName($offerId);?></h2>
-                <div id="liste-candidats"></div>
+                <div id="liste-candidats">
                 <?php
                     if ($applications) {
                         foreach($applications as $apply){
@@ -81,6 +83,7 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
                         echo "No applications found";
                     }
                 ?>
+                </div>
             </div>
         </div>
     </main>
@@ -117,9 +120,9 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
                 },
                 error: function(xhr, _status, _error) {
                     if (xhr.status === 404) {
-                        sendNotification("Erreur", "Erreur", "Le fichier demandé n'existe pas");
+                        sendNotification("failure", "Erreur", "Le fichier demandé n'existe pas");
                     } else {
-                        sendNotification("Erreur", "Erreur", "Une erreur est survenue lors du téléchargement du fichier");
+                        sendNotification("warning", "Erreur", "Une erreur est survenue lors du téléchargement du fichier");
                     }
                 }
             });
