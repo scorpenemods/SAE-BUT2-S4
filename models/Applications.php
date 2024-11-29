@@ -1,12 +1,35 @@
 <?php
 require dirname(__FILE__)."/../presenter/database.php";
 
+
+/**
+ * Class to manage all applications for each offer
+ */
 class Applications {
+    /**
+     * @var int
+     */
     private int $id_user;
+    /**
+     * @var int
+     */
     private int $id_offer;
+    /**
+     * @var string
+     */
     private string $created_at;
+    /**
+     * @var string
+     */
     private string $status;
 
+    /**
+     * Constructor of Applications
+     * @param int $id_user
+     * @param int $id_offer
+     * @param string $created_at
+     * @param string $status
+     */
     public function __construct(int $id_user, int $id_offer, string $created_at, string $status) {
         $this->id_user = $id_user;
         $this->id_offer = $id_offer;
@@ -14,26 +37,48 @@ class Applications {
         $this->status = $status;
     }
 
+    /**
+     * getIdUser
+     * get ID of the user who apply
+     * @return int
+     */
     public function getIdUser(): int {
         return $this->id_user;
     }
 
+    /**
+     * getIdOffer
+     * get ID of an Offer
+     * @return int
+     */
     public function getIdOffer(): int {
         return $this->id_offer;
     }
 
+    /**
+     * getCreatedAt
+     * get the date of creation of an Application
+     * @return string
+     */
     public function getCreatedAt(): string {
         return $this->created_at;
     }
 
+    /**
+     * getStatus
+     * getStatus of an apply
+     * @return string
+     */
     public function getStatus(): string {
         return $this->status;
     }
 
-    public function getFavorite(): bool {
-        return $this->favorite;
-    }
-
+    /**
+     * getUsername
+     * Get Username of the user apply
+     * @param int $id_user
+     * @return string|null
+     */
     public static function getUsername(int $id_user): ?string {
         global $db;
 
@@ -54,6 +99,12 @@ class Applications {
         return $result["username"];
     }
 
+    /**
+     * getOfferName
+     * Get name of an offer with is ID
+     * @param int $id_offer
+     * @return string|null
+     */
     public static function getOfferName(int $id_offer): ?string {
         global $db;
 
@@ -74,6 +125,13 @@ class Applications {
         return $result["title"];
     }
 
+    /**
+     * getAllForOffer
+     * Get All applications for an Offer
+     * @param int $id_offer
+     * @param string $status
+     * @return array|null
+     */
     public static function getAllForOffer(int $id_offer, string $status): ?array {
         global $db;
 
@@ -99,18 +157,12 @@ class Applications {
         return $applications;
     }
 
-    public static function setFavorite(int $id_offer): ?bool {
-        global $db;
-        $stmt = $db->prepare("UPDATE applications SET favorite = NOT favorite WHERE idOffer = :id;");
-        $stmt->bindParam(":id", $id_offer);
-        $stmt->execute();
-
-        if ($db->errorCode() != 0) {
-            return null;
-        }
-        return true;
-    }
-
+    /**
+     * validate
+     * Validate an Application
+     * @param int $id_offer
+     * @return bool|null
+     */
     public static function validate(int $id_offer): ?bool {
         global $db;
         $stmt = $db->prepare("UPDATE applications SET status = 'Accepted' WHERE idOffer = :id;");
@@ -124,6 +176,12 @@ class Applications {
         return true;
     }
 
+    /**
+     * refuse
+     * Refuse an Application
+     * @param int $id_offer
+     * @return bool|null
+     */
     public static function refuse(int $id_offer): ?bool {
         global $db;
         $stmt = $db->prepare("UPDATE applications SET status = 'Rejected' WHERE idOffer = :id;");
