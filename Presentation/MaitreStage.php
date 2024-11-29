@@ -308,10 +308,8 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
 </div>
 
 <!-- Pied de page -->
-<footer class="PiedDePage">
-    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
-    <a href="Redirection.php">Informations</a>
-    <a href="Redirection.php">À propos</a>
+<footer>
+    <?php include "../View/Footer.php"; ?>
 </footer>
 
 <script src="../View/Principal/deleteMessage.js"></script>
@@ -371,9 +369,4 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     });
 </script>
 </body>
-<footer>
-    <?php include "../View/Footer.php"; ?>
-</footer>
-
-
 </html>

@@ -11,15 +11,8 @@ $db = (Database::getInstance());
 
 $id = $etu->getId() ;
 
-
-
-
-
 ?>
-
 <body>
-
-
 <!-- Affichage des participants -->
 
 <div class="livret-header" style="margin-bottom: 10px">
@@ -186,7 +179,4 @@ $id = $etu->getId() ;
 
 
 </div>
-
-
-
 </body>
