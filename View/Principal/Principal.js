@@ -501,7 +501,7 @@ function addMeeting() {
     newContent.innerHTML = `
         <h3 style="padding: 10px; text-align: left">Formulaire</h3>
         <div class="livret-header">
-            <h3>${meetingCounter}ème rencontre</h3>
+            <h3>Rencontre intermédiaire ${meetingCounter}</h3>
         </div>
         <!-- Formulaire -->
         <p class="participants">Date de rencontre : <label style="color: red">*</label> <br>
