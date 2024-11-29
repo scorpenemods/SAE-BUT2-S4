@@ -455,4 +455,6 @@ $notes = $database->getNotes($userId);
     });
 </script>
 </body>
+
+
 </html>
