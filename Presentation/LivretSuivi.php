@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';
 
@@ -13,15 +11,8 @@ $db = (Database::getInstance());
 
 $id = $etu->getId() ;
 
-
-
-
-
 ?>
-
 <body>
-
-
 <!-- Affichage des participants -->
 
 <div class="livret-header" style="margin-bottom: 10px">
@@ -30,7 +21,7 @@ $id = $etu->getId() ;
 <div style="display: flex; gap: 10%; justify-content: center;">
     <div class="participants">
         <h3>Etudiant :</h3><br>
-        <p>Nom prénom : <label><?php echo $nameetu,$id; ?></label></p>
+        <p>Nom prénom : <label><?php echo $nameetu; ?></label></p>
         <p>Formation : <label><?php echo $etu->getActivite(); ?></label></p>
         <p>Email : <label><?php echo $etu->getEmail(); ?></label></p>
         <?php if ($etu->getTelephone() != null){?>
@@ -104,15 +95,6 @@ $id = $etu->getId() ;
 
                 <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea><br><br><br>
 
-
-                Apréciations du maitre de stage : <label style="color: red">*</label> <br>
-
-                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques sur l'étudiant en entreprise..." class="textareaLivret"></textarea><br><br><br>
-
-                Remarques de l'étudiant : <label style="color: red">*</label> <br>
-
-                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques durant votre stage..." class="textareaLivret"></textarea><br><br></p>
-
             <!-- Validation du formulaire -->
             <div class="validation">
                 <h3 style="padding: 10px">Validation du formulaire</h3>
@@ -144,15 +126,6 @@ $id = $etu->getId() ;
                 Remarques du professeur : <label style="color: red">*</label> <br>
 
                 <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea><br><br><br>
-
-
-                Apréciations du maitre de stage : <label style="color: red">*</label> <br>
-
-                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques sur l'étudiant en entreprise..." class="textareaLivret"></textarea><br><br><br>
-
-                Remarques de l'étudiant : <label style="color: red">*</label> <br>
-
-                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques durant votre stage..." class="textareaLivret"></textarea><br><br></p>
 
             <!-- Validation du formulaire -->
             <div class="validation">
@@ -186,16 +159,6 @@ $id = $etu->getId() ;
 
                 <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea><br><br><br>
 
-
-                Apréciations du maitre de stage : <label style="color: red">*</label> <br>
-
-                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques sur l'étudiant en entreprise..." class="textareaLivret"></textarea><br><br><br>
-
-                Remarques de l'étudiant : <label style="color: red">*</label> <br>
-
-                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques durant votre stage..." class="textareaLivret"></textarea><br><br></p>
-
-
             <!-- Validation du formulaire -->
             <div class="validation">
                 <h3 style="padding: 10px">Validation du formulaire</h3>
@@ -216,10 +179,4 @@ $id = $etu->getId() ;
 
 
 </div>
-
-
-
 </body>
-<footer>
-    <?php include dirname(__FILE__) . '/../Footer.php'; ?>
-</footer>
