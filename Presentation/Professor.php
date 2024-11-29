@@ -8,6 +8,8 @@ $database = (Database::getInstance());
 
 $userName = "Guest";
 $senderId = $_SESSION['user_id'] ?? null;
+
+$studentId = $_POST['student_id'] ?? null;
 // Vérification de la session utilisateur
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
@@ -36,7 +38,7 @@ if ($userRole != 2) {
 $students = $database->getStudentsProf($senderId);
 
 // Récupérer les préférences de l'utilisateur
-$preferences = $database->getUserPreferences($person->getUserId());
+$preferences = $database->getUserPreferences($person->getId());
 
 // Vérifier si le mode sombre est activé dans les préférences
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
@@ -55,7 +57,7 @@ $pdo = $database->getConnection();
 
 // Récupérer l'utilisateur connecté (vous avez déjà ce processus dans votre code)
 $person = unserialize($_SESSION['user']);
-$userId = $person->getUserId();
+$userId = $person->getId();
 
 
 // Permet d'ajouter les notes à la base de données
@@ -252,7 +254,8 @@ $notes = $database->getNotes($userId);
     </div>
     <div class="students">
         <?php foreach ($students as $student): ?>
-            <div class="student" onclick="selectStudent(this)">
+            <?php ($student->getId()); ?>
+            <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>" onclick="selectStudent(this)">
                 <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
             </div>
         <?php endforeach; ?>
@@ -336,9 +339,10 @@ $notes = $database->getNotes($userId);
             </div>
         </div>
         <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">
-            <h2 id="student-name"><?php echo $studentName; ?></h2>
-            <!-- Formulaire englobant l'ensemble du tableau de notes -->
+            <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
+            <h2 id="selected-student-name"><?php echo isset($studentName) && !empty($studentName) ? htmlspecialchars($studentName) : 'Sélectionnez un étudiant'; ?></h2>
             <form method="POST" action="Professor.php">
+                <input type="hidden" id="student-id" name="student_id" value="<?php echo $studentId; ?>">
                 <div class="notes-container">
                     <table id="notesTable" class="notes-table">
                         <thead>
@@ -352,39 +356,17 @@ $notes = $database->getNotes($userId);
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($notes as $note): ?>
-                            <tr id="row_<?= htmlspecialchars($note->getId()); ?>">
-                                <td><?= htmlspecialchars($note->getId()); ?></td>
-                                <td>
-                                    <textarea name="sujet_<?= htmlspecialchars($note->getId()); ?>" rows="1" disabled><?= htmlspecialchars($note->getSujet()); ?></textarea>
-                                </td>
-                                <td>
-                                    <textarea name="appreciations_<?= htmlspecialchars($note->getId()); ?>" rows="1" disabled><?= htmlspecialchars($note->getAppreciation()); ?></textarea>
-                                </td>
-                                <td>
-                                    <input type="number" name="note_<?= htmlspecialchars($note->getId()); ?>" value="<?= htmlspecialchars($note->getNote()); ?>" disabled>
-                                </td>
-                                <td>
-                                    <input type="number" name="coeff_<?= htmlspecialchars($note->getId()); ?>" value="<?= htmlspecialchars($note->getCoeff()); ?>" disabled>
-                                </td>
-                                <td>
-                                    <input type="hidden" name="note_id[]" value="<?= htmlspecialchars($note->getId()); ?>">
-                                    <button type="button" id="edit_<?= htmlspecialchars($note->getId()); ?>" name="saveNotes" class="mainbtn" onclick="editOrSave(<?= htmlspecialchars($note->getId()); ?>)">Modifier les notes</button>
-                                    <button type="button" name="delete_note" class="btn btn-danger" onclick="showConfirmation(<?= htmlspecialchars($note->getId()); ?>, event)">Supprimer</button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
-
                 <div class="notes-buttons">
-                    <button type="button" id="addNoteButton" class="mainbtn" onclick="addNoteRow()" <?php echo !$hasStudents ? 'disabled' : ''; ?>>Ajouter une note</button>
-                    <button type="submit" name="submit_notes" class="mainbtn" onclick="validateNotes()" id="validateBtn">Valider les notes</button>
-                    <button type="button" class="mainbtn" onclick="cancelNotes()" id="cancelBtn">Annuler</button>
+                    <button type="button" id="addNoteButton" class="mainbtn" onclick="addNoteRow()" disabled>Ajouter une note</button>
+                    <button type="submit" name="submit_notes" class="mainbtn" onclick="validateNotes()" id="validateBtn" disabled>Valider les notes</button>
+                    <button type="button" class="mainbtn" onclick="cancelNotes()" id="cancelBtn" disabled>Annuler</button>
                 </div>
             </form>
             <div id="validationMessage" class="validation-message"></div>
+            <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
         </div>
 
     <!-- Offres Content -->

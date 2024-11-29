@@ -479,29 +479,23 @@ let showcontent = 3;
 
 function addMeeting() {
     const aside = document.querySelector(".livretbar");
-    const depositSpan = aside.querySelector('span[onclick="showContent(100)"]'); // Target the "Dépôt" span
+    const contentContainer = document.querySelector(".content-livret");
 
-    // Nouvelle rencontre
     const newMeeting = document.createElement("span");
     newMeeting.className = "vignette";
-    newMeeting.textContent = `Rencontre intermédiaire ${meetingCounter}`;
+    newMeeting.textContent = `Autre rencontre ${meetingCounter}`;
     newMeeting.setAttribute("onclick", `showContent(${showcontent})`);
 
-    // Ajoute le bouton avant le dépôt
-    aside.insertBefore(newMeeting, depositSpan);
+    const button = document.getElementById("addMeetingBtn");
+    aside.insertBefore(newMeeting, button);
 
-    const lineBreak = document.createElement("br");
-    aside.insertBefore(lineBreak, depositSpan);
-
-    // Créer la section
-    const contentContainer = document.querySelector(".content-livret");
     const newContent = document.createElement("div");
     newContent.className = "content-section";
     newContent.id = showcontent;
     newContent.innerHTML = `
         <h3 style="padding: 10px; text-align: left">Formulaire</h3>
         <div class="livret-header">
-            <h3>Rencontre intermédiaire ${meetingCounter}</h3>
+            <h3>${meetingCounter}ème rencontre</h3>
         </div>
         <!-- Formulaire -->
         <p class="participants">Date de rencontre : <label style="color: red">*</label> <br>
@@ -515,6 +509,12 @@ function addMeeting() {
             
             Remarques du professeur : <label style="color: red">*</label> <br>
             <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea><br><br><br>
+            
+            Appréciations du maitre de stage : <label style="color: red">*</label> <br>
+            <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques sur l'étudiant en entreprise..." class="textareaLivret"></textarea><br><br><br>
+            
+            Remarques de l'étudiant : <label style="color: red">*</label> <br>
+            <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques durant votre stage..." class="textareaLivret"></textarea><br><br></p>
 
         <!-- Validation du formulaire -->
         <div class="validation">
@@ -529,9 +529,7 @@ function addMeeting() {
     meetingCounter++;
     showcontent++;
 }
-
 document.getElementById("addMeetingBtn").addEventListener("click", addMeeting);
-
 
 
 // ---------------------------------- Add Secretariat ----------------------------------//
