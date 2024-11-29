@@ -13,7 +13,7 @@ if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
-        $userId = $person->getUserId(); // ID de l'utilisateur connecté
+        $userId = $person->getId(); // ID de l'utilisateur connecté
         $userRole = $person->getRole(); // Rôle de l'utilisateur
     } else {
         header("Location: Logout.php");
@@ -36,7 +36,7 @@ if ($userRole != 2) {
 $students = $database->getStudentsProf($senderId);
 
 // Récupérer les préférences de l'utilisateur
-$preferences = $database->getUserPreferences($person->getUserId());
+$preferences = $database->getUserPreferences($person->getId());
 
 // Vérifier si le mode sombre est activé dans les préférences
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
@@ -55,7 +55,7 @@ $pdo = $database->getConnection();
 
 // Récupérer l'utilisateur connecté (vous avez déjà ce processus dans votre code)
 $person = unserialize($_SESSION['user']);
-$userId = $person->getUserId();
+$userId = $person->getId();
 
 
 // Permet d'ajouter les notes à la base de données
