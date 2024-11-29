@@ -17,16 +17,19 @@ if (ini_get("session.use_cookies")) {
 // Détruit complètement la session côté serveur
 session_destroy();
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8"> <!-- Définit l'encodage des caractères en UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Déconnexion</title> <!-- Titre de la page affiché dans l'onglet du navigateur -->
-    <link rel="stylesheet" href="../View/Logout/Logout.css"> <!-- Lien vers la feuille de style CSS spécifique pour cette page -->
-    <link rel="stylesheet" href="../rebase/Modely/DefaultStyles/styles.css"> <!-- Lien vers la feuille de style par défaut -->
+    <link rel="stylesheet" href="/View/Logout/Logout.css"> <!-- Feuille de style spécifique pour cette page -->
+    <link rel="stylesheet" href="/View/Principal/Principal.css">
+    <link rel="stylesheet" href="/View/css/Footer.css"> <!-- Feuille de style du pied de page -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/> <!-- Animate.css pour les animations -->
 </head>
 <body>
+<div class="wrapper">
 <!-- Barre de navigation avec logo et nom de l'application -->
 <nav class="navbar">
     <div class="navbar-left">
@@ -36,30 +39,24 @@ session_destroy();
 </nav>
 
 <!-- Section contenant le message de déconnexion -->
-<article class="carré">
+<article class="logout-container animate__animated animate__fadeIn">
     <h1>Déconnexion effectuée</h1> <!-- Titre principal -->
     <h3>Vous avez été déconnecté avec succès.</h3> <!-- Message de confirmation de déconnexion -->
 
-    <!-- Lien vers la page d'accueil -->
-    <p class="textCenter">
-        <a href="../Index.php">Retour à l'accueil</a> <br>
+    <!-- Lien vers la page d'accueil avec un bouton stylisé -->
+    <p class="text-center">
+        <a href="../Index.php" class="home-button">Retour à l'accueil</a>
     </p>
 
     <!-- Information pour fermer la page pour des raisons de sécurité -->
-    <p>
+    <p class="security-note">
         Si vous ne souhaitez pas revenir à l'accueil, pour des raisons de sécurité, veuillez fermer cette page.
     </p>
 </article>
-
+</div>
 <!-- Pied de page avec logo et liens -->
 <footer>
-    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%"> <!-- Logo UPHF -->
-    <a href="Redirection.php">Informations</a> <!-- Lien vers les informations -->
-    <a href="Redirection.php">A propos</a> <!-- Lien vers la page "À propos" -->
+    <?php include dirname(__FILE__) . '/../View/Footer.php'; ?>
 </footer>
-
 </body>
-<footer>
-    <?php include dirname(__FILE__) . '/../Footer.php'; ?>
-</footer>
 </html>

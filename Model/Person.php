@@ -46,8 +46,6 @@ class Person
         return $this->prenom;
     }
 
-
-
     // Méthode pour obtenir le rôle de l'utilisateur
     public function getRole(): string
     {

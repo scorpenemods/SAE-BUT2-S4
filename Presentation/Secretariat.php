@@ -235,6 +235,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
         <div class="Contenu <?php echo $activeSection == '0' ? 'Visible' : ''; ?>" id="content-0">
             <h2>Bienvenue sur la plateforme Secrétariat!</h2><br>
             <p>Gérez les utilisateurs, consultez les documents et accédez aux rapports des stages.</p><br>
+
         </div>
 
 
@@ -461,17 +462,20 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
 
             <!-- Bouton pour ouvrir la fenêtre modale de création de groupe -->
             <button class="open-create-group-modal">Créer un nouveau groupe</button>
-
         </div>
+
+        <!-- Offres Content -->
+        <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
+            Contenu Offres
+            <a href="../View/List.php?type=all">
+                <button type="button">Voir les offres</button>
+            </a>
+        </div>
+
     </div>
 </section>
 
-<footer class="PiedDePage">
-    <!-- Pied de page avec logo et liens -->
-    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="10%">
-    <a href="Redirection.php">Informations</a>
-    <a href="Redirection.php">À propos</a>
-</footer>
+<!-- ------------------------------ ! Modal windows out of the page section ! -------------------------------------------------------------------  -->
 
 <!-- Fenêtre modale pour créer un nouveau groupe -->
 <div id="createGroupModal" class="modal">
@@ -513,23 +517,14 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <button type="submit" class="submit-group-button">Créer le groupe</button>
         </form>
 
-                    <!-- Zone pour afficher le message de résultat -->
-                    <div id="resultMessage"></div>
-                    <!-- Bouton pour fermer la fenêtre modale -->
-                    <span class="close-modal">&times;</span>
-                </div>
-            </div>
-        </div>
-    <!-- Offres Content -->
-    <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
-        Contenu Offres
-        <a href="../View/List.php?type=all">
-            <button type="button">Voir les offres</button>
-        </a>
-    </div>
-</section>
+        <!-- Zone pour afficher le message de résultat -->
+        <div id="resultMessage"></div>
+        <!-- Bouton pour fermer la fenêtre modale -->
+        <span class="close-modal">&times;</span>
 
-<!-- ------------------------------ ! Modal windows out of the page section ! -------------------------------------------------------------------  -->
+    </div>
+</div>
+
 
 <!-- Modal for editing a group -->
 <div id="editGroupModal" class="modal">
@@ -575,6 +570,9 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
 <script src="../View/Principal/userManagement.js"></script>
 <script src="../View/Principal/GroupCreation.js"></script>
 <script src="/View/Principal/GroupMessenger.js"></script>
+<footer>
+    <?php include '../View/Footer.php'; ?>
+</footer>
 <script>
     // Ajouter une classe d'animation
     document.querySelectorAll('.form-control, .form-control-file').forEach(element => {
@@ -617,36 +615,3 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
 </body>
 </html>
 
-<?php
-// Récupère les profs
-$professors = $database -> getProfessor();
-
-// Récupère les profs
-$tutors = $database -> getTutor();
-?>
-<div id="popup-box" class="popup">
-    <div class="content">
-        <h1>Changer les groupes</h1>
-        <br>
-        <div class="lists">
-            <select name="professeurResp">
-                <option value="">Aucun</option>
-                <?php foreach ($professors as $professor): ?>
-                    <option><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
-                <?php endforeach; ?>
-            </select>
-            <select name="Tuteur">
-                <option value="">Aucun</option>
-                <?php foreach ($tutors as $tutor): ?>
-                    <option><?php echo htmlspecialchars($tutor->getPrenom()) . ' ' . htmlspecialchars($tutor->getNom()); ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <br>
-        <a href="#" class="popupvalide"><button>Valider</button></a>
-        <a href="#" class="cross">&times;</a>
-    </div>
-</div>
-<footer>
-    <?php include '../View/Footer.php'; ?>
-</footer>

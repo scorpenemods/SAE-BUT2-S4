@@ -13,7 +13,7 @@ if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {
         $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
-        $userId = $person->getUserId(); // ID de l'utilisateur connecté
+        $userId = $person->getId(); // ID de l'utilisateur connecté
         $userRole = $person->getRole(); // Rôle de l'utilisateur
     } else {
         header("Location: Logout.php");
@@ -36,7 +36,7 @@ if ($userRole != 2) {
 $students = $database->getStudentsProf($senderId);
 
 // Récupérer les préférences de l'utilisateur
-$preferences = $database->getUserPreferences($person->getUserId());
+$preferences = $database->getUserPreferences($person->getId());
 
 // Vérifier si le mode sombre est activé dans les préférences
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
@@ -55,7 +55,7 @@ $pdo = $database->getConnection();
 
 // Récupérer l'utilisateur connecté (vous avez déjà ce processus dans votre code)
 $person = unserialize($_SESSION['user']);
-$userId = $person->getUserId();
+$userId = $person->getId();
 
 
 // Permet d'ajouter les notes à la base de données
@@ -156,13 +156,6 @@ if (isset($_POST['saveNote'])) {
     }
 }
 
-
-
-
-
-
-
-
 if (!empty($students)) {
     $student = $students[0];
 } else {
@@ -188,7 +181,7 @@ $notes = $database->getNotes($userId);
     <title>Le Petit Stage - Professeur</title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <link rel="stylesheet" href="/View/css/Footer.css">
-    <script src="../View/Principal/Principal.js"></script>
+    <script src="../View/Principal/Principal.js" defer></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <script src="/View/Principal/Notif.js"></script>
     <!-- Include jQuery -->
@@ -200,34 +193,33 @@ $notes = $database->getNotes($userId);
 
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
 <header class="navbar">
-
-
-
     <div class="navbar-left">
         <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
         <span class="app-name">Le Petit Stage - Professeur</span>
     </div>
     <div class="navbar-right">
-
-        <div id="notification-icon" onclick="toggleNotificationPopup()">
-            <img id="notification-icon-img" src="../Resources/Notif.png" alt="Notifications">
-            <span id="notification-count" style="display: none;"></span>
+        <div class="navbar-item" id="notification-icon" onclick="toggleNotificationPopup()">
+            <img id="notification-icon-img" src="../Resources/Notif.png" alt="Notifications" class="icon">
+            <span id="notification-count" class="notification-count">3</span>
         </div>
 
         <!-- Notification Popup -->
         <div id="notification-popup" class="notification-popup">
             <div class="notification-popup-header">
                 <h3>Notifications</h3>
-                <button onclick="closeNotificationPopup()">X</button>
+                <button class="close-btn" onclick="closeNotificationPopup()">×</button>
             </div>
             <div class="notification-popup-content">
                 <ul id="notification-list">
-                    <!-- Notifications will be loaded here via JavaScript -->
+                    <!-- Notifications seront chargées ici via JavaScript -->
                 </ul>
             </div>
         </div>
 
-        <p><?php echo $userName; ?></p>
+        <div class="navbar-item user-info">
+            <p><?php echo $userName; ?></p>
+        </div>
+
         <label class="switch">
             <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
             <span class="slider round">
@@ -235,12 +227,14 @@ $notes = $database->getNotes($userId);
                 <span class="switch-sticker switch-sticker-right">🇬🇧</span>
             </span>
         </label>
-        <button class="mainbtn" onclick="toggleMenu()">
-            <img src="../Resources/Param.png" alt="Settings">
+
+        <button class="mainbtn settings-btn" onclick="toggleMenu()">
+            <img src="../Resources/Param.png" alt="Settings" class="icon">
         </button>
+
         <div class="hide-list" id="settingsMenu">
             <a href="Settings.php">Information</a>
-            <a href="Logout.php">Deconnexion</a>
+            <a href="Logout.php">Déconnexion</a>
         </div>
     </div>
 </header>

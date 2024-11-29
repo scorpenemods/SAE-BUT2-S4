@@ -474,6 +474,64 @@ function showContent(x) {
     document.getElementById(`${x}`).classList.add('active');
 }
 
+let meetingCounter = 1;
+let showcontent = 3;
+
+function addMeeting() {
+    const aside = document.querySelector(".livretbar");
+    const depositSpan = aside.querySelector('span[onclick="showContent(100)"]'); // Target the "Dépôt" span
+
+    // Nouvelle rencontre
+    const newMeeting = document.createElement("span");
+    newMeeting.className = "vignette";
+    newMeeting.textContent = `Rencontre intermédiaire ${meetingCounter}`;
+    newMeeting.setAttribute("onclick", `showContent(${showcontent})`);
+
+    // Ajoute le bouton avant le dépôt
+    aside.insertBefore(newMeeting, depositSpan);
+
+    const lineBreak = document.createElement("br");
+    aside.insertBefore(lineBreak, depositSpan);
+
+    // Créer la section
+    const contentContainer = document.querySelector(".content-livret");
+    const newContent = document.createElement("div");
+    newContent.className = "content-section";
+    newContent.id = showcontent;
+    newContent.innerHTML = `
+        <h3 style="padding: 10px; text-align: left">Formulaire</h3>
+        <div class="livret-header">
+            <h3>Rencontre intermédiaire ${meetingCounter}</h3>
+        </div>
+        <!-- Formulaire -->
+        <p class="participants">Date de rencontre : <label style="color: red">*</label> <br>
+            <input type="date" name="meeting"/> <br><br><br>
+            
+            Lieu de la rencontre : <label style="color: red">*</label> <br>
+            <input type="radio"><label> En entreprise</label> <br>
+            <input type="radio"><label> Par téléphone</label> <br>
+            <input type="radio"><label> En visio</label> <br>
+            <input type="radio"><label> Autre</label> <input type="text"> <br><br><br>
+            
+            Remarques du professeur : <label style="color: red">*</label> <br>
+            <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea><br><br><br>
+
+        <!-- Validation du formulaire -->
+        <div class="validation">
+            <h3 style="padding: 10px">Validation du formulaire</h3>
+        </div>
+
+        <button>Valider modifications</button>
+    `;
+
+    contentContainer.appendChild(newContent);
+
+    meetingCounter++;
+    showcontent++;
+}
+
+document.getElementById("addMeetingBtn").addEventListener("click", addMeeting);
+
 
 
 // ---------------------------------- Add Secretariat ----------------------------------//

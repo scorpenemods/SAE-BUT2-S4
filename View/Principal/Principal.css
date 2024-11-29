@@ -13,7 +13,7 @@ body {
     flex-direction: column;
     height: 100vh;
     background: var(--background-gradient);
-    animation: lightGradientAnimation 15s ease infinite;
+    /*animation: lightGradientAnimation 15s ease infinite;*/
     background-size: 200% 200%;
     transition: background 1s ease, color 1s ease;
     color: var(--text-color);
@@ -241,6 +241,7 @@ header .hide-list {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
 }
 
 .chat-header {
@@ -430,7 +431,7 @@ ul li.contact-active {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 20px;
+    padding-left: 10px;
     border-left: 1px solid #ddd;
     background-color: white;
 }
@@ -743,6 +744,7 @@ body.dark-mode .sidebar {
     border-bottom: 1px solid #34495e;
     text-align: center;
     transition: background-color 0.3s;
+
 }
 
 .content-livret{
