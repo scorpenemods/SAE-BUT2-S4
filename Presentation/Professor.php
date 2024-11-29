@@ -61,7 +61,7 @@ $userId = $person->getId();
 
 
 // Permet d'ajouter les notes à la base de données
-if (isset($_POST['submit_notes'])) {
+if (isset($_POST['submit_notes']) && ($_POST['student_id'])) {
     if (isset($_POST['sujet'], $_POST['appreciations'], $_POST['note'], $_POST['coeff'])) {
         $allFieldsFilled = true;
         $notesData = [];
@@ -81,7 +81,7 @@ if (isset($_POST['submit_notes'])) {
 
         if ($allFieldsFilled) {
             try {
-                $database->addNotes($userId, $notesData, $pdo);
+                $database->addNotes($studentId, $notesData, $pdo);
                 header("Location: Professor.php");
                 exit();
             } catch (PDOException $e) {

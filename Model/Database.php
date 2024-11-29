@@ -818,7 +818,7 @@ class Database
     }
     // -------------------- Add Note in Database ------------------------------------------ //
 
-    function addNotes($userId, $notesData, $pdo): void
+    function addNotes($studentId, $notesData, $pdo): void
     {
         try {
             // Préparation de la requête d'insertion
@@ -848,7 +848,7 @@ class Database
                     ':appreciation' => $note['appreciation'],
                     ':note' => $noteValue,
                     ':coeff' => $coeffValue,
-                    ':user_id' => $userId  // user_id est bien l'ID de l'étudiant ici
+                    ':user_id' => $studentId  // user_id est bien l'ID de l'étudiant ici
                 ]);
             }
         } catch (PDOException $e) {

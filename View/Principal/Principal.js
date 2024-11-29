@@ -713,59 +713,57 @@ function validateNotes() {
     if (valid) {
         validationMessage.textContent = 'Notes validées avec succès !';
         validationMessage.style.color = 'green';
-        addNotesToDatabase();  // Appeler la fonction pour envoyer les notes validées au backend
+
+        // Préparer et envoyer les données au backend
+        const form = document.getElementById('notesForm');
+        const formData = new FormData(form);
+
+        // Ajoutez explicitement l'ID de l'étudiant au FormData si nécessaire
+        const studentId = document.getElementById('student-id').value;
+        formData.append('student_id', studentId);
+
+        fetch('Professor.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur de la requête réseau');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Les notes ont été ajoutées avec succès.');
+
+                    // Désactiver les champs nouvellement ajoutés
+                    const newNoteRows = document.querySelectorAll('.new-note-row');
+                    newNoteRows.forEach(row => {
+                        row.classList.remove('new-note-row');
+                        row.querySelectorAll('textarea, input').forEach(element => {
+                            element.setAttribute('disabled', 'true');
+                            element.style.backgroundColor = '#d3d3d3';
+                        });
+                    });
+
+                    // Désactiver les boutons Valider et Annuler après l'ajout
+                    document.getElementById('validateBtn').setAttribute('disabled', 'true');
+                    document.getElementById('cancelBtn').setAttribute('disabled', 'true');
+                    document.getElementById('addNoteButton').removeAttribute('disabled');
+                } else {
+                    alert('Erreur lors de l\'ajout des notes : ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de l\'ajout des notes :', error);
+                alert('Une erreur est survenue lors de l\'ajout des notes.');
+            });
     } else {
         validationMessage.textContent = 'Veuillez remplir tous les champs avec des notes valides entre 0 et 20.';
         validationMessage.style.color = 'red';
     }
 }
 
-
-// Ajouter les notes à la base de données
-function addNotesToDatabase() {
-    const form = document.getElementById('notesForm');
-    const formData = new FormData(form);
-
-    // Ajoutez explicitement l'ID de l'étudiant au FormData si nécessaire
-    const studentId = document.getElementById('student-id').value;
-    formData.append('student_id', studentId);
-
-    fetch('Professor.php', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erreur de la requête réseau');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                alert('Les notes ont été ajoutées avec succès.');
-                // Désactiver les champs nouvellement ajoutés
-                const newNoteRows = document.querySelectorAll('.new-note-row');
-                newNoteRows.forEach(row => {
-                    row.classList.remove('new-note-row');
-                    row.querySelectorAll('textarea, input').forEach(element => {
-                        element.setAttribute('disabled', 'true');
-                        element.style.backgroundColor = '#d3d3d3';
-                    });
-                });
-
-                // Désactiver les boutons Valider et Annuler après l'ajout
-                document.getElementById('validateBtn').setAttribute('disabled', 'true');
-                document.getElementById('cancelBtn').setAttribute('disabled', 'true');
-                document.getElementById('addNoteButton').removeAttribute('disabled');
-            } else {
-                alert('Erreur lors de l\'ajout des notes : ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Erreur lors de l\'ajout des notes :', error);
-            alert('Une erreur est survenue lors de l\'ajout des notes.');
-        });
-}
 
 function addNoteRow() {
     const table = document.getElementById('notesTable').getElementsByTagName('tbody')[0];
