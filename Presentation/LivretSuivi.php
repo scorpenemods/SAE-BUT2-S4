@@ -28,7 +28,7 @@ $id = $etu->getId() ;
 <div style="display: flex; gap: 10%; justify-content: center;">
     <div class="participants">
         <h3>Etudiant :</h3><br>
-        <p>Nom prénom : <label><?php echo $nameetu,$id; ?></label></p>
+        <p>Nom prénom : <label><?php echo $nameetu; ?></label></p>
         <p>Formation : <label><?php echo $etu->getActivite(); ?></label></p>
         <p>Email : <label><?php echo $etu->getEmail(); ?></label></p>
         <?php if ($etu->getTelephone() != null){?>
