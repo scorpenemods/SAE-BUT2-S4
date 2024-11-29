@@ -3,28 +3,16 @@ require dirname(__FILE__)."/../presenter/database.php";
 
 
 /**
- * Class to manage all applications for each offer
+ * Applications
+ * Represent an apply for an offer
  */
 class Applications {
-    /**
-     * @var int
-     */
     private int $id_user;
-    /**
-     * @var int
-     */
     private int $id_offer;
-    /**
-     * @var string
-     */
     private string $created_at;
-    /**
-     * @var string
-     */
     private string $status;
 
     /**
-     * Constructor of Applications
      * @param int $id_user
      * @param int $id_offer
      * @param string $created_at
