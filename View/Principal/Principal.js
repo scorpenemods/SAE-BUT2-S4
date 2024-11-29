@@ -773,6 +773,9 @@ function addNoteRow() {
     if (rowCount >= 4) {
         const validationMessage = document.getElementById('validationMessage');
         validationMessage.textContent = 'Vous ne pouvez pas ajouter plus de 4 notes.';
+        setTimeout(() => {
+            validationMessage.textContent = '';
+        }, 3000);
         validationMessage.style.color = 'red';
         return;
     }
