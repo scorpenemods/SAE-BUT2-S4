@@ -571,30 +571,54 @@ function searchStudents() {
 }
 
 function selectStudent(element) {
+    console.log("Élément sélectionné : ", element);
 
+    // Supprimer la classe 'selected' de tous les étudiants
     const students = document.querySelectorAll('.student');
     students.forEach(student => {
         student.classList.remove('selected');
     });
+
+    // Ajouter la classe 'selected' à l'étudiant cliqué
     element.classList.add('selected');
+
+    // Récupérer l'ID de l'étudiant
     const studentId = element.getAttribute('data-student-id');
-    const studentName = element.textContent.trim();
-    openChat(studentId, studentName);
-
-    const studentNameElement = document.getElementById('student-name');
-    studentNameElement.textContent = studentName;
-}
-document.addEventListener('click', function(event) {
-    const sidebar = document.getElementById('sidebar');
-    const toggleButton = document.getElementById('sidebar-toggle');
-
-    if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
-        sidebar.classList.remove('visible');
-        toggleButton.classList.remove('active');
+    if (!studentId) {
+        console.error("L'ID de l'étudiant n'a pas pu être récupéré. Vérifiez la présence de l'attribut 'data-student-id'.");
+        return;
     }
+
+    // Mise à jour de l'ID dans l'input caché du formulaire
+    document.getElementById('student-id').value = studentId;
+
+    // Mettre à jour le nom de l'étudiant affiché
+    const studentNameElement = document.getElementById('selected-student-name');
+    if (studentNameElement) {
+        studentNameElement.textContent = element.textContent.trim();
+    } else {
+        console.error("Impossible de trouver l'élément avec l'ID 'selected-student-name'");
+    }
+
+    // Charger les notes de l'étudiant sélectionné
+    fetchNotesForStudent(studentId);
+
+    // Activer les boutons de gestion des notes
+    document.getElementById('addNoteButton').removeAttribute('disabled');
+    document.getElementById('validateBtn').removeAttribute('disabled');
+    document.getElementById('cancelBtn').removeAttribute('disabled');
+}
+
+
+
+document.querySelectorAll('.student').forEach(student => {
+    student.addEventListener('click', function() {
+        selectStudent(student);
+    });
 });
 
-//
+
+
 
 // -----------------------------------------------------------------------//
 // send a message only by clicking the button
@@ -614,21 +638,30 @@ window.onbeforeunload = function() {
 };
 
 // -----------------------------------Notes--------------------------------------------------//
-function enableNotes() {
-    // Sélectionner les champs input et textarea de la table des notes
-    const inputs = document.querySelectorAll('.notes-table input');
-    const textareas = document.querySelectorAll('.notes-table textarea');
+function enableNotes(noteId) {
+    const row = document.getElementById(`row_${noteId}`);
+    if (!row) {
+        console.error(`L'élément avec l'ID row_${noteId} est introuvable`);
+        return;
+    }
 
-    // Enlever l'attribut 'disabled' de chaque input et textarea
-    inputs.forEach(input => input.removeAttribute('disabled'));
-    textareas.forEach(textarea => textarea.removeAttribute('disabled'));
+    const inputs = row.querySelectorAll('input[type="number"]');
+    const textareas = row.querySelectorAll('textarea');
 
+    // Activer les champs de la ligne spécifique pour modification
+    inputs.forEach(input => {
+        input.disabled = false;
+        input.style.backgroundColor = "#ffffff";
+    });
+    textareas.forEach(textarea => {
+        textarea.disabled = false;
+        textarea.style.backgroundColor = "#ffffff";
+    });
+
+    // Désactiver le bouton de validation global
     document.getElementById('validateBtn').setAttribute('disabled', 'true');
     document.getElementById('cancelBtn').removeAttribute('disabled');
-
 }
-document.getElementById('editNotesButton').addEventListener('click', enableNotes);
-
 
 
 // Permet aux zones de texte de s'agrandir selon la taille du texte inséré
@@ -636,43 +669,29 @@ function autoExpand(element) {
     element.style.height = 'inherit';
     element.style.height = `${element.scrollHeight}px`;
 }
+document.querySelectorAll('.notes-table textarea').forEach(textarea => {
+    textarea.addEventListener('input', function() {
+        autoExpand(this);
+    });
+});
 
 function cancelNotes() {
-    const inputs = document.querySelectorAll('.notes-table input');
-    const textareas = document.querySelectorAll('.notes-table textarea');
-    inputs.forEach(input => input.setAttribute('disabled', ''));
-    textareas.forEach(textarea => textarea.setAttribute('disabled', ''));
-
-    document.getElementById('validateBtn').setAttribute('disabled', '');
-    document.getElementById('cancelBtn').setAttribute('disabled', '');
-
     const newNoteRows = document.querySelectorAll('.new-note-row');
     newNoteRows.forEach(row => row.remove());
 
-    // Récupérer les données à partir de Professor.php pour réinitialiser les valeurs
-    fetch('Professor.php')
-        .then(response => response.json())
-        .then(data => {
-            const tableBody = document.querySelector('#notesTable tbody');
-            tableBody.innerHTML = '';
+    // Désactiver les boutons Valider et Annuler
+    document.getElementById('validateBtn').setAttribute('disabled', 'true');
+    document.getElementById('cancelBtn').setAttribute('disabled', 'true');
 
-            data.notes.forEach((note, index) => {
-                const newRow = tableBody.insertRow();
-                newRow.innerHTML = `
-                    <td><textarea name="sujet[]" disabled>${note.sujet}</textarea></td>
-                    <td><textarea name="appreciations[]" disabled>${note.appreciation}</textarea></td>
-                    <td><input type="number" name="note[]" value="${note.note}" disabled></td>
-                    <td><input type="number" name="coeff[]" value="${note.coeff}" disabled></td>
-                    <td><input type="radio" name="selectedNote" value="${index}"></td>
-                `;
-            });
-        });
+    const validationMessage = document.getElementById('validationMessage');
+    validationMessage.textContent = '';
 }
 
 function validateNotes() {
     const inputs = document.querySelectorAll('.notes-table input[name="note[]"], .notes-table input[name="coeff[]"]');
     let valid = true;
 
+    // Validation des champs de notes et coefficients
     inputs.forEach(input => {
         const value = input.value.trim();
         if (value !== '') {
@@ -684,7 +703,8 @@ function validateNotes() {
                 input.style.borderColor = '';
             }
         } else {
-            input.style.borderColor = '';
+            valid = false; // Si un champ est vide, marquer la validation comme fausse
+            input.style.borderColor = 'red';
         }
     });
 
@@ -693,62 +713,100 @@ function validateNotes() {
     if (valid) {
         validationMessage.textContent = 'Notes validées avec succès !';
         validationMessage.style.color = 'green';
+        addNotesToDatabase();  // Appeler la fonction pour envoyer les notes validées au backend
     } else {
         validationMessage.textContent = 'Veuillez remplir tous les champs avec des notes valides entre 0 et 20.';
         validationMessage.style.color = 'red';
     }
-
-    return valid;
 }
-document.getElementById('messageForm').addEventListener('submit', function(event) {
-    event.preventDefault();
 
-    const formData = new FormData(this);
+
+// Ajouter les notes à la base de données
+function addNotesToDatabase() {
+    const form = document.getElementById('notesForm');
+    const formData = new FormData(form);
+
+    // Ajoutez explicitement l'ID de l'étudiant au FormData si nécessaire
+    const studentId = document.getElementById('student-id').value;
+    formData.append('student_id', studentId);
+
     fetch('Professor.php', {
         method: 'POST',
         body: formData
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur de la requête réseau');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
-                alert('Notes added successfully!');
+                alert('Les notes ont été ajoutées avec succès.');
+                // Désactiver les champs nouvellement ajoutés
+                const newNoteRows = document.querySelectorAll('.new-note-row');
+                newNoteRows.forEach(row => {
+                    row.classList.remove('new-note-row');
+                    row.querySelectorAll('textarea, input').forEach(element => {
+                        element.setAttribute('disabled', 'true');
+                        element.style.backgroundColor = '#d3d3d3';
+                    });
+                });
+
+                // Désactiver les boutons Valider et Annuler après l'ajout
+                document.getElementById('validateBtn').setAttribute('disabled', 'true');
+                document.getElementById('cancelBtn').setAttribute('disabled', 'true');
+                document.getElementById('addNoteButton').removeAttribute('disabled');
             } else {
-                alert('Error: ' + data.message);
+                alert('Erreur lors de l\'ajout des notes : ' + data.message);
             }
         })
         .catch(error => {
-            alert('An error occurred: ' + error.message);
+            console.error('Erreur lors de l\'ajout des notes :', error);
+            alert('Une erreur est survenue lors de l\'ajout des notes.');
         });
-});
+}
 
 function addNoteRow() {
     const table = document.getElementById('notesTable').getElementsByTagName('tbody')[0];
     const rowCount = table.rows.length;
-    const validationMessage = document.getElementById('validationMessage');
 
+    // Limiter le nombre de lignes de notes à un maximum de 4
     if (rowCount >= 4) {
+        const validationMessage = document.getElementById('validationMessage');
         validationMessage.textContent = 'Vous ne pouvez pas ajouter plus de 4 notes.';
         validationMessage.style.color = 'red';
         return;
     }
 
-    validationMessage.textContent = '';
-
     const newRow = table.insertRow();
     const newId = `new-${rowCount + 1}`;
-    newRow.setAttribute('data-id', newId);
+    newRow.classList.add('new-note-row');
 
-    const idCell = newRow.insertCell(0);
-    const sujetCell = newRow.insertCell(1);
-    const appreciationCell = newRow.insertCell(2);
-    const noteCell = newRow.insertCell(3);
-    const coeffCell = newRow.insertCell(4);
+    newRow.innerHTML = `
+        <td>${newId}</td>
+        <td><textarea name="sujet[]" rows="1"></textarea></td>
+        <td><textarea name="appreciations[]" rows="1"></textarea></td>
+        <td><input type="number" name="note[]" required></td>
+        <td><input type="number" name="coeff[]" required></td>
+        <td><button type="button" onclick="deleteNoteRow(this)">Supprimer</button></td>
+    `;
 
-    idCell.textContent = newId;
-    sujetCell.innerHTML = '<textarea name="sujet[]" rows=""></textarea>';
-    appreciationCell.innerHTML = '<textarea name="appreciations[]" rows="0"></textarea>';
-    noteCell.innerHTML = '<input type="number" name="note[]" required>';
-    coeffCell.innerHTML = '<input type="number" name="coeff[]" required>';
+    // Activer les boutons Valider et Annuler
+    document.getElementById('validateBtn').removeAttribute('disabled');
+    document.getElementById('cancelBtn').removeAttribute('disabled');
+}
+
+function deleteNoteRow(button) {
+    const row = button.parentElement.parentElement;
+    row.remove();
+
+    // Si aucune nouvelle note n'est présente, désactiver les boutons
+    const newNoteRows = document.querySelectorAll('.new-note-row');
+    if (newNoteRows.length === 0) {
+        document.getElementById('validateBtn').setAttribute('disabled', 'true');
+        document.getElementById('cancelBtn').setAttribute('disabled', 'true');
+    }
 }
 
 function showConfirmation(noteId, event) {
@@ -780,29 +838,41 @@ function showConfirmation(noteId, event) {
     const confirmDelete = document.getElementById('confirmDelete');
     const cancelDelete = document.getElementById('cancelDelete');
 
+    // Remove previous event listeners if present
     confirmDelete.onclick = null;
     cancelDelete.onclick = null;
 
     confirmDelete.onclick = function () {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'Professor.php';
+        const form = new FormData();
+        form.append('note_id', noteId);
+        form.append('delete_note', '1');
 
-        const noteIdInput = document.createElement('input');
-        noteIdInput.type = 'hidden';
-        noteIdInput.name = 'note_id';
-        noteIdInput.value = noteId;
-
-        const deleteInput = document.createElement('input');
-        deleteInput.type = 'hidden';
-        deleteInput.name = 'delete_note';
-        deleteInput.value = '1';
-
-        form.appendChild(noteIdInput);
-        form.appendChild(deleteInput);
-        document.body.appendChild(form);
-
-        form.submit();
+        fetch('GetNotes.php', {
+            method: 'POST',
+            body: form
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur de la requête réseau');
+                }
+                return response.text();
+            })
+            .then(data => {
+                // Remove the row from the table if deletion is successful
+                if (data.includes("success")) {
+                    const row = document.querySelector(`#row_${noteId}`);
+                    if (row) {
+                        row.remove();
+                    }
+                    popup.style.display = 'none';
+                } else {
+                    alert('Erreur lors de la suppression de la note : ' + data);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la suppression de la note :', error);
+                alert('Une erreur est survenue lors de la suppression de la note.');
+            });
     };
 
     cancelDelete.onclick = function () {
@@ -877,10 +947,10 @@ function updateConfirmation(noteId) {
         const formData = new FormData();
         formData.append('saveNote', true);
         formData.append('note_id', noteId);
-        formData.append('sujet', row.querySelector('textarea[name^="sujet_"]').value);
-        formData.append('appreciations', row.querySelector('textarea[name^="appreciations_"]').value);
-        formData.append('note', row.querySelector('input[name^="note_"]').value);
-        formData.append('coeff', row.querySelector('input[name^="coeff_"]').value);
+        formData.append('sujet', row.querySelector('textarea[name^="sujet"]').value);
+        formData.append('appreciations', row.querySelector('textarea[name^="appreciations"]').value);
+        formData.append('note', row.querySelector('input[name^="note"]').value);
+        formData.append('coeff', row.querySelector('input[name^="coeff"]').value);
 
         fetch('Professor.php', {
             method: 'POST',
@@ -907,6 +977,57 @@ function updateConfirmation(noteId) {
         popup.style.display = 'none';
     };
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Code à exécuter après le chargement complet du DOM
+    document.querySelectorAll('[id^="edit_"]').forEach(button => {
+        button.addEventListener('click', function() {
+            const noteId = this.id.split('_')[1];
+            editOrSave(noteId);
+        });
+    });
+});
+
+
+
+function fetchNotesForStudent(studentId) {
+    fetch(`GetNotes.php?student_id=${studentId}`)
+        .then(response => response.text())
+        .then(data => {
+            // Mettre à jour le contenu du tableau des notes
+            const notesTableBody = document.querySelector('#notesTable tbody');
+            if (notesTableBody) {
+                notesTableBody.innerHTML = data;
+            } else {
+                console.error("Impossible de trouver le corps de la table des notes.");
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération des notes :', error);
+        });
+    console.log("ID de l'étudiant pour les notes: ", studentId);
+}
+
+
+//Afficher un étudiant dans Note par défaut
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Vérifie si l'on est sur la section des notes au chargement
+    const activeSection = "<?php echo $activeSection; ?>";
+    if (activeSection === '6') {  // '6' correspond à l'onglet "Notes"
+        const firstStudentElement = document.querySelector('.student');
+        if (firstStudentElement) {
+            setTimeout(() => {
+                selectStudent(firstStudentElement); // Sélectionne automatiquement le premier étudiant
+            }, 300); // Utilisation de setTimeout pour s'assurer que l'élément est bien disponible
+        }
+    }
+});
+
+
+
+
+
 
 
 

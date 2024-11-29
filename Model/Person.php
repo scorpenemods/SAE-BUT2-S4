@@ -30,7 +30,7 @@ class Person
 
     }
     //getter pour l'id
-    public function getUserId(): int{
+    public function getId(): int{
         return $this->id;
     }
 

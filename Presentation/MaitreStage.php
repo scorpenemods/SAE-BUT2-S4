@@ -7,10 +7,18 @@ require "../Model/Database.php";
 require "../Model/Person.php";
 
 // Initialisation de la connexion à la base de données
-$database = (Database::getInstance());
+$database = Database::getInstance();
+$pdo = $database->getConnection();
 
 // Initialisation du nom de l'utilisateur par défaut (Guest) si non connecté
 $userName = "Guest";
+$senderId = $_SESSION['user_id'] ?? null;
+$studentId = $_POST['student_id'] ?? null;
+
+$person = unserialize($_SESSION['user']);
+$userId = $person->getId();
+$students = $database->getStudentsProf($senderId);
+
 
 // Vérification si les informations de l'utilisateur existent dans la session
 if (isset($_SESSION['user'])) {
@@ -58,6 +66,96 @@ if (isset($_GET['section'])) {
 // Définit la section active par défaut (Accueil) si aucune n'est spécifiée
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
 
+if (isset($_POST['submit_notes'])) {
+    if (isset($_POST['sujet'], $_POST['appreciations'], $_POST['note'], $_POST['coeff'])) {
+        $allFieldsFilled = true;
+        $notesData = [];
+
+        foreach ($_POST['sujet'] as $index => $sujet) {
+            if (empty($_POST['sujet'][$index]) || empty($_POST['appreciations'][$index]) || empty($_POST['note'][$index]) || empty($_POST['coeff'][$index])) {
+                $allFieldsFilled = false;
+                break;
+            }
+            $notesData[] = [
+                'sujet' => $_POST['sujet'][$index],
+                'appreciation' => $_POST['appreciations'][$index],
+                'note' => $_POST['note'][$index],
+                'coeff' => $_POST['coeff'][$index],
+            ];
+        }
+
+        if ($allFieldsFilled) {
+            try {
+                $database->addNotes($studentId, $notesData, $pdo);
+                header("Location: MaitreStage.php");
+                exit();
+            } catch (PDOException $e) {
+                echo "Erreur lors de l'ajout des notes : " . $e->getMessage();
+            }
+        } else {
+            echo "Veuillez remplir tous les champs.";
+        }
+    } else {
+        echo "Erreur lors de la soumission du formulaire. Veuillez réessayer.";
+    }
+}
+
+if (isset($_POST['saveNote'])) {
+    if (isset($_POST['note_id'], $_POST['sujet'], $_POST['appreciations'], $_POST['note'], $_POST['coeff'])) {
+        $noteId = $_POST['note_id'];
+        $sujet = $_POST['sujet'];
+        $appreciation = $_POST['appreciations'];
+        $note = $_POST['note'];
+        $coeff = $_POST['coeff'];
+
+        // Vérifier que les valeurs sont correctes avant de continuer
+        if (!empty($sujet) && !empty($appreciation) && is_numeric($note) && is_numeric($coeff)) {
+            try {
+                $result = $database->updateNote(
+                    $noteId,
+                    $userId,
+                    $sujet,
+                    $appreciation,
+                    $note,
+                    $coeff,
+                    $pdo
+                );
+
+                if ($result) {
+                    echo "success";
+                } else {
+                    echo "Aucune ligne modifiée. Vérifiez l'ID ou les permissions.";
+                }
+                exit();
+            } catch (PDOException $e) {
+                echo "Erreur lors de la mise à jour des notes : " . $e->getMessage();
+                exit();
+            }
+        } else {
+            echo "Veuillez remplir tous les champs correctement.";
+            exit();
+        }
+    } else {
+        echo "Erreur lors de la soumission du formulaire. Veuillez réessayer.";
+        exit();
+    }
+}
+
+
+
+if (!empty($students)) {
+    $student = $students[0];
+    $studentId = htmlspecialchars($student->getId());
+    $studentName = htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom());
+} else {
+    $student = null;
+    $studentId = null;
+    $studentName = "Vous n'avez pas d'étudiants";
+}
+
+$hasStudents = !empty($students);
+
+$notes = $database->getNotes($userId);
 
 ?>
 
@@ -133,7 +231,6 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
         </div>
     </div>
 </header>
-
 <div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
 <div class="sidebar" id="sidebar">
     <div class="search">
@@ -141,11 +238,14 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     </div>
     <div class="students">
         <?php foreach ($students as $student): ?>
-            <div class="student" onclick="selectStudent(this)">
+            <?php ($student->getId()); ?>
+            <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>" onclick="selectStudent(this)">
                 <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
             </div>
         <?php endforeach; ?>
+
     </div>
+
 </div>
 
 <!-- Section contenant les différents menus -->
@@ -227,51 +327,37 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
             </div>
         </div>
 
-        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>">
-        <h2 id="student-name"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></h2>
-        <div class="notes-container">
-            <table class="notes-table">
-                <thead>
-                <tr>
-                    <th>Sujet</th>
-                    <th>Appréciations</th>
-                    <th>Note /20</th>
-                    <th>Coefficient</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
-                    <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
-                    <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                    <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
-                </tr>
-                <tr>
-                    <td><textarea name="sujet[]" placeholder="Sujet" disabled oninput="autoExpand(this)" ></textarea></td>
-                    <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled></textarea></td>
-                    <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                    <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
-                </tr>
-                <tr>
-                    <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
-                    <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
-                    <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                    <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
-                </tr>
-                <tr>
-                    <td><textarea name="sujet[]" placeholder="Sujet" oninput="autoExpand(this)" disabled></textarea></td>
-                    <td><textarea name="appreciations[]" placeholder="Appréciations" oninput="autoExpand(this)" disabled ></textarea></td>
-                    <td><input type="number" name="note[]" placeholder="Note" disabled></td>
-                    <td><input type="number" name="coeff[]" placeholder="Coefficient" disabled </td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">
+            <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
+            <h2 id="selected-student-name"><?php echo isset($studentName) && !empty($studentName) ? htmlspecialchars($studentName) : 'Sélectionnez un étudiant'; ?></h2>
+            <form method="POST" action="MaitreStage.php">
+                <input type="hidden" id="student-id" name="student_id" value="<?php echo $studentId; ?>">
+                <div class="notes-container">
+                    <table id="notesTable" class="notes-table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Sujet</th>
+                            <th>Appréciations</th>
+                            <th>Note /20</th>
+                            <th>Coefficient</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Boutons pour la gestion des notes -->
+                <div class="notes-buttons">
+                    <button type="button" id="addNoteButton" class="mainbtn" onclick="addNoteRow()" disabled>Ajouter une note</button>
+                    <button type="submit" name="submit_notes" class="mainbtn" onclick="validateNotes()" id="validateBtn" disabled>Valider les notes</button>
+                    <button type="button" class="mainbtn" onclick="cancelNotes()" id="cancelBtn" disabled>Annuler</button>
+                </div>
+            </form>
             <div id="validationMessage" class="validation-message"></div>
-        </div>
-        <div class="notes-buttons">
-            <button class="mainbtn" onclick="enableNotes()">Ajouter les notes</button>
-            <button class="mainbtn" onclick="validateNotes()" disabled id="validateBtn">Valider les notes</button>
-            <button id="cancelBtn" onclick="cancelNotes()">Annuler</button>
+            <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
         </div>
     </div>
     <!-- Offres Content -->

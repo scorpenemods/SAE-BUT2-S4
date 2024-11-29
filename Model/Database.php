@@ -755,7 +755,7 @@ class Database
     // -------------------- Student list in professor home ------------------------------------------ //
     public function getStudentsProf($professorId): array
     {
-        $query = "SELECT User.nom, User.prenom
+        $query = "SELECT User.id, User.nom, User.prenom
                     FROM User
                     JOIN Groupe ON User.id = Groupe.user_id
                     JOIN Convention ON Groupe.conv_id = Convention.id
@@ -787,7 +787,7 @@ class Database
 
     public function getStudentsMaitreDeStage($maitreStageId): array
     {
-        $query = "SELECT User.nom, User.prenom
+        $query = "SELECT  User.id ,User.nom, User.prenom
                     FROM User
                         JOIN Groupe ON User.id = Groupe.user_id
                         JOIN Convention ON Groupe.conv_id = Convention.id
@@ -818,7 +818,7 @@ class Database
     }
     // -------------------- Add Note in Database ------------------------------------------ //
 
-    function addNotes($userId, $notesData, $pdo)
+    function addNotes($userId, $notesData, $pdo): void
     {
         try {
             // Préparation de la requête d'insertion
@@ -834,19 +834,21 @@ class Database
                     $noteValue = floatval($noteValue); // Convertir en float
                 }
 
-                // Validation de la coefficient (conversion en float)
+                // Validation du coefficient (conversion en float)
                 $coeffValue = $note['coeff'];
                 if ($coeffValue === '' || !is_numeric($coeffValue) || $coeffValue < 0) {
                     continue; // Ignorer ce coefficient s'il est invalide
                 } else {
                     $coeffValue = floatval($coeffValue); // Convertir en float
                 }
+
+                // Exécution de la requête avec les paramètres
                 $query->execute([
                     ':sujet' => $note['sujet'],
                     ':appreciation' => $note['appreciation'],
                     ':note' => $noteValue,
                     ':coeff' => $coeffValue,
-                    ':user_id' => $userId
+                    ':user_id' => $userId  // user_id est bien l'ID de l'étudiant ici
                 ]);
             }
         } catch (PDOException $e) {
@@ -855,7 +857,8 @@ class Database
     }
 
 
-    public function updateNote($noteId, $userId, $sujet, $appreciation, $note, $coeff, $pdo): void
+
+    public function updateNote($noteId, $userId, $sujet, $appreciation, $note, $coeff, $pdo)
     {
         try {
             $pdo->beginTransaction();
@@ -888,29 +891,42 @@ class Database
 
 
 
-    public function deleteNote($noteId, $userId, $pdo): void
+    public function deleteNote($noteId, $studentId, $pdo): void
     {
         try {
-            // Commence une transaction
-            $pdo->beginTransaction();
-
             // Préparer la requête pour supprimer la note
             $stmt = $pdo->prepare("DELETE FROM Note WHERE id = :id AND user_id = :user_id");
 
             // Exécuter la requête avec les paramètres
             $stmt->execute([
                 ':id' => $noteId,
-                ':user_id' => $userId
+                ':user_id' => $studentId  // Utiliser l'ID de l'étudiant
             ]);
 
-            // Valider la transaction
-            $pdo->commit();
+            // Vérification du nombre de lignes affectées
+            if ($stmt->rowCount() > 0) {
+                echo "Note supprimée avec succès";
+            } else {
+                echo "Aucune note trouvée avec cet ID et cet utilisateur. Annulation de la suppression.";
+            }
         } catch (PDOException $e) {
-            // Annuler la transaction en cas d'erreur
-            $pdo->rollBack();
+            echo "Erreur lors de la suppression de la note : " . $e->getMessage();
             throw $e;
         }
     }
+
+
+
+    public function getStudentNotes($studentId): array
+    {
+        $query = "SELECT * FROM Note WHERE user_id = :student_id";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':student_id', $studentId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
 
 
 
