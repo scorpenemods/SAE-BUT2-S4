@@ -18,7 +18,8 @@ if (!$person instanceof Person) {
     exit();
 }
 
-$senderId = $person->getId();
+$userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+$senderId = $person->getId(); // ID de l'utilisateur connecté
 
 // Check request method
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -89,6 +90,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Send the message to the database
     $isMessageSent = $database->sendMessage($senderId, $receiverId, $message, $filePath);
+
+    $notificationContent = "Vous avez reçu un nouveau message de $userName";
+    $database->addNotification($receiverId, $notificationContent, "new_message");
 
     if ($isMessageSent) {
         $response = [
