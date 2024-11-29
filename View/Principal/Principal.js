@@ -782,7 +782,7 @@ function addNoteRow() {
     newRow.classList.add('new-note-row');
 
     newRow.innerHTML = `
-        <td>${newId}</td>
+      
         <td><textarea name="sujet[]" rows="1"></textarea></td>
         <td><textarea name="appreciations[]" rows="1"></textarea></td>
         <td><input type="number" name="note[]" required></td>

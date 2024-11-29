@@ -41,7 +41,7 @@ if (isset($_GET['student_id'])) {
     foreach ($notes as $note) {
         echo "<tr id='row_{$note['id']}'>";
         echo "<form method='post' action='GetNotes.php' onsubmit='event.preventDefault(); return false;'>";
-        echo "<td>{$note['id']}</td>";
+        echo "<td hidden='hidden'>{$note['id']}</td>";
         echo "<td><textarea name='sujet' disabled>{$note['sujet']}</textarea></td>";
         echo "<td><textarea name='appreciations' disabled>{$note['appreciation']}</textarea></td>";
         echo "<td><input type='number' name='note' value='{$note['note']}' disabled></td>";
