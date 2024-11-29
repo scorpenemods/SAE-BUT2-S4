@@ -336,7 +336,6 @@ $notes = $database->getNotes($userId);
                     <table id="notesTable" class="notes-table">
                         <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Sujet</th>
                             <th>Appréciations</th>
                             <th>Note /20</th>
