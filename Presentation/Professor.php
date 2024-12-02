@@ -158,13 +158,6 @@ if (isset($_POST['saveNote'])) {
     }
 }
 
-
-
-
-
-
-
-
 if (!empty($students)) {
     $student = $students[0];
 } else {
@@ -193,6 +186,7 @@ $notes = $database->getNotes($userId);
     <script src="../View/Principal/Principal.js" defer></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <script src="/View/Principal/Notif.js"></script>
+    <script src="/View/Principal/Note.js"></script>
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include EmojiOneArea -->
@@ -341,7 +335,7 @@ $notes = $database->getNotes($userId);
         <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">
             <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
             <h2 id="selected-student-name"><?php echo isset($studentName) && !empty($studentName) ? htmlspecialchars($studentName) : 'Sélectionnez un étudiant'; ?></h2>
-            <form method="POST" action="Professor.php">
+            <form method="GET" action="Professor.php">
                 <input type="hidden" id="student-id" name="student_id" value="<?php echo $studentId; ?>">
                 <div class="notes-container">
                     <table id="notesTable" class="notes-table">
