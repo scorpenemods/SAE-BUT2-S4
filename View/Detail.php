@@ -19,17 +19,25 @@ if (!$offerId) {
 }
 
 // Verification de qui est l'utilisateur
-
 $groupeSecretariat = false;
-if (isset($_SESSION['Secretariat'])) {
-    $groupeSecretariat = $_SESSION['Secretariat'];
-}
+$_SESSION['Secretariat'] = false;
+
+
 if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
-    if ($company_id != 0 && !Offer::isCompanyOffer($offerId, $company_id)) {
-        header("Location: ../Offer/List.php");
-        die();
-    }
+}
+else{
+    $company_id = 0;
+    $_SESSION["company_id"] = $company_id;
+}
+
+if ($_SESSION["user_role"]==4 || $_SESSION["user_role"]==5) {
+    $groupeSecretariat = true;
+    $_SESSION['Secretariat'] = true;
+}
+
+if (isset($_SESSION['user'])) {
+    $user_id = $_SESSION['user'];
 }
 
 

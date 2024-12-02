@@ -4,7 +4,7 @@ session_start();
 
 // Verification de qui est l'utilisateur
 $groupeSecretariat = false;
-$_SESSION["Secretariat"] = false;
+$_SESSION['Secretariat'] = false;
 
 
 if (isset($_SESSION['company_id'])) {
@@ -16,9 +16,9 @@ else{
 }
 
 
-if ($_SESSION["user_role"]==4||$_SESSION["user_role"]==5) {
+if ($_SESSION["user_role"]==4 || $_SESSION["user_role"]==5) {
     $groupeSecretariat = true;
-    $_SESSION["Secretariat"] = true;
+    $_SESSION['Secretariat'] = true;
 }
 
 if (isset($_SESSION['user'])) {

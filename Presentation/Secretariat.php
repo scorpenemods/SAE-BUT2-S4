@@ -316,7 +316,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
                         <button type="submit">📂 Importer le CSV</button>
                     </form>
 
-                    <p>Le fichier CSV doit contenir les colonnes suivantes : Nom, Prénom, Email, Rôle, Activité, Téléphone.</p>
+                    <p>Télécharger un fichier CSV vide : <a href="../Model/Generer_CSV.php">📥 Télécharger le modèle</a> </p>
                 </div>
 
                 <!-- Section pour les demandes d'utilisateur en attente d'approbation -->
