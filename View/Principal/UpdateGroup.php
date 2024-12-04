@@ -20,8 +20,8 @@ if (!$person instanceof Person) {
 $userId = $person->getId();
 $userRole = $person->getRole();
 
-// Проверка роли пользователя (например, роль 5 для секретариата)
-if ($userRole != 5) { // Измените на соответствующую роль
+// Check user's role
+if ($userRole != 4 && $userRole != 5) {
     echo json_encode(['success' => false, 'message' => 'Accès refusé.']);
     exit();
 }
@@ -48,6 +48,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Обновление участников группы
     $result = $database->updateGroupMembers($groupId, $memberIds);
+
+    // Insert log entry
+    $logQuery = "INSERT INTO Logs (user_id, type, description, date) VALUES (:user_id, 'ACTION', :description, NOW())";
+    $stmtLog = $database->getConnection()->prepare($logQuery);
+    $stmtLog->bindParam(':user_id', $_SESSION['user_id']);
+    $description = "Updated group: ID {$groupId}";
+    $stmtLog->bindParam(':description', $description);
+    $stmtLog->execute();
 
     if ($result) {
         echo json_encode(['success' => true, 'message' => 'Groupe mis à jour avec succès.']);

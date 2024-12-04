@@ -51,9 +51,9 @@ $preferences = $database->getUserPreferences($person->getId());
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
 
 // Creation des groupes recup les utilisateurs
-$students = $database->getAllStudents() ?? [];
-$professors = $database->getProfessor() ?? [];
-$maitres = $database->getTutor() ?? [];
+$students = $database->getAllStudents(true) ?? [];
+$professors = $database->getProfessor(true) ?? [];
+$maitres = $database->getTutor(true) ?? [];
 
 
 //------------------------------- Création de compte secrétaire -------------------------------//
@@ -221,6 +221,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
         <span onclick="window.location.href='Secretariat.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>" id="content-0">Accueil</span>
         <?php if ($userRole == 5) { ?>
         <span onclick="window.location.href='Secretariat.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1">Gestion Secrétariat</span>
+        <span onclick="window.location.href='Secretariat.php?section=8'" class="widget-button <?php echo $activeSection == '8' ? 'Current' : ''; ?>" id="content-8">Logs</span>
         <?php } ?>
         <span onclick="window.location.href='Secretariat.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Gestion Utilisateurs</span>
         <span onclick="window.location.href='Secretariat.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Rapports</span>
@@ -303,6 +304,36 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             </div>
         </div>
 
+        <!-- Logs Section -->
+        <div class="Contenu <?php echo $activeSection == '8' ? 'Visible' : ''; ?>" id="content-8">
+            <h2>Journal des activités</h2>
+            <div class="logs-container">
+                <?php
+                // Fetch logs from the database
+                $conn = $database->getConnection();
+                $logsQuery = "SELECT Logs.*, User.nom, User.prenom FROM Logs JOIN User ON Logs.user_id = User.id ORDER BY Logs.date DESC";
+                $stmt = $conn->prepare($logsQuery);
+                $stmt->execute();
+                $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                if (!empty($logs)) {
+                    echo '<ul class="timeline">';
+                    foreach ($logs as $log) {
+                        echo '<li class="timeline-item">';
+                        echo '<div class="timeline-content">';
+                        echo '<h3 class="timeline-title">' . htmlspecialchars($log['prenom'] . ' ' . $log['nom']) . '</h3>';
+                        echo '<p class="timeline-description">' . htmlspecialchars($log['description']) . '</p>';
+                        echo '<span class="timeline-date">' . htmlspecialchars(date("d/m/Y H:i", strtotime($log['date']))) . '</span>';
+                        echo '</div>';
+                        echo '</li>';
+                    }
+                    echo '</ul>';
+                } else {
+                    echo '<p>Aucune activité enregistrée.</p>';
+                }
+                ?>
+            </div>
+        </div>
 
         <!-- Section Gestion des utilisateurs -->
         <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">

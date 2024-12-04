@@ -8,7 +8,7 @@ require '../vendor/autoload.php';
 require "../Model/Email.php"; // Inclusion de la classe Email
 
 // Vérification du rôle de l'utilisateur pour autoriser ou refuser l'accès
-if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
+if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] != 4 && $_SESSION['user_role'] != 5)) {
     // Si l'utilisateur n'a pas le rôle approprié, accès refusé
     header('location: AccessDenied.php');
     exit();
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userId = $_POST['user_id'];
 
         // Création d'une instance de la base de données
-        $db =(Database::getInstance());;
+        $db = Database::getInstance();
         // Récupération des informations utilisateur par son ID
         $user = $db->getUserById($userId);
 
@@ -31,6 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = new Email();
             $subject = 'Approbation du compte';
             $body = "Cher " . $user['prenom'] . ",\n\nVotre compte a été approuvé. Vous pouvez maintenant vous connecter au système.\n\nCordialement,\nL'équipe Le Petit Stage";
+
+            // Insert log entry
+            $logQuery = "INSERT INTO Logs (user_id, type, description, date) VALUES (:user_id, 'ACTION', :description, NOW())";
+            $stmtLog = $db->getConnection()->prepare($logQuery);
+            $stmtLog->bindParam(':user_id', $_SESSION['user_id']);
+            $description = "Approved user account: ID {$userId}";
+            $stmtLog->bindParam(':description', $description);
+            $stmtLog->execute();
 
             if ($email->sendEmail($user['email'], $user['prenom'] . ' ' . $user['nom'], $subject, $body)) {
                 echo 'success'; // Message de succès si l'email a bien été envoyé
@@ -46,4 +54,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo 'error';
     }
 }
-?>
+

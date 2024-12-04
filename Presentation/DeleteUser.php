@@ -36,6 +36,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $subject = 'Suppression de votre compte';
             $body = "Cher " . $user['prenom'] . ",\n\nVotre compte a été supprimé du système.\n\nCordialement,\nL'équipe Le Petit Stage";
 
+            // Insert log entry
+            $logQuery = "INSERT INTO Logs (user_id, type, description, date) VALUES (:user_id, 'ACTION', :description, NOW())";
+            $stmtLog = $db->getConnection()->prepare($logQuery);
+            $stmtLog->bindParam(':user_id', $_SESSION['user_id']);
+            $description = "Deleted user account: ID {$userId}";
+            $stmtLog->bindParam(':description', $description);
+            $stmtLog->execute();
+
             if ($email->sendEmail($user['email'], $user['prenom'] . ' ' . $user['nom'], $subject, $body)) {
                 echo 'success'; // Email envoyé avec succès
             } else {

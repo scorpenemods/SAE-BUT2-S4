@@ -6,7 +6,7 @@ require '../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
+if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] != 4 && $_SESSION['user_role'] != 5)) {
     // Si l'utilisateur n'a pas le rôle requis (ici 4), on bloque l'accès
     header('location: AccessDenied.php');
     exit();
@@ -43,6 +43,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail->Body = "Cher " . $user['prenom'] . ",\n\nNous regrettons de vous informer que votre demande de création de compte a été refusée.\n\nCordialement,\nL'équipe Le Petit Stage";
 
                 $mail->send();
+
+                // Insert log entry
+                $logQuery = "INSERT INTO Logs (user_id, type, description, date) VALUES (:user_id, 'ACTION', :description, NOW())";
+                $stmtLog = $db->getConnection()->prepare($logQuery);
+                $stmtLog->bindParam(':user_id', $_SESSION['user_id']);
+                $description = "Rejected user account: ID {$userId}";
+                $stmtLog->bindParam(':description', $description);
+                $stmtLog->execute();
+
                 echo 'success';
             } catch (Exception $e) {
                 // Логирование ошибки (не отображайте ошибки пользователю в продакшене)

@@ -550,10 +550,13 @@ class Database
 
 
     //========================     Gropes methods        ================================== //
-    public function getAllStudents(): array
+    public function getAllStudents($validatedOnly = false): array
     {
         $query = "SELECT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id FROM User
               WHERE User.role = 1";
+        if ($validatedOnly) {
+            $query .= " AND status_user = 1";
+        }
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
         $students = [];
@@ -949,10 +952,13 @@ class Database
 
     // ------------------------------------------------------------------------------------------------------- //
 
-    public function getProfessor(): array
+    public function getProfessor($validatedOnly = false): array
     {
         $query = "SELECT DISTINCT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id from User
                     where role = 2";
+        if ($validatedOnly) {
+            $query .= " AND status_user = 1";
+        }
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
         $professor = [];
@@ -970,10 +976,13 @@ class Database
         return $professor;
     }
 
-    public function getTutor(): array
+    public function getTutor($validatedOnly = false): array
     {
         $query = "SELECT DISTINCT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id from User
                     where role = 3";
+        if ($validatedOnly) {
+            $query .= " AND status_user = 1";
+        }
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
         $tutor = [];

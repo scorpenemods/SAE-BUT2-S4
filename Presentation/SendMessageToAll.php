@@ -105,6 +105,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         unlink($attachmentPath);
     }
 
+    // Insert log entry
+    $db = Database::getInstance();
+    $logQuery = "INSERT INTO Logs (user_id, type, description, date) VALUES (:user_id, 'ACTION', :description, NOW())";
+    $stmtLog = $db->getConnection()->prepare($logQuery);
+    $stmtLog->bindParam(':user_id', $_SESSION['user_id']);
+    $description = "Sent broadcast message to all users";
+    $stmtLog->bindParam(':description', $description);
+    $stmtLog->execute();
+
     // Redirection ou message de succès
     echo "<script>alert('Le message a été envoyé à tous les utilisateurs.'); window.location.href='Secretariat.php?section=5';</script>";
 } else {
