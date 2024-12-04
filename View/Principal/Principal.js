@@ -1,21 +1,23 @@
 // Code menu paramètre
 // Afficher
-function show(header){
+function show(header) {
     header.classList.toggle("show-list");
     header.classList.toggle("hide-list");
 }
+
 // Cacher
-function hide(header){
+function hide(header) {
     header.classList.toggle("hide-list");
     header.classList.toggle("show-list");
 }
+
 // Switcher entre les 2 en changeant la classe du body
 function toggleMenu() {
     var header = document.querySelector('div.hide-list');
-    try { (header.classList.contains("show-list"))
+    try {
+        (header.classList.contains("show-list"))
         show(header);
-    }
-    catch{
+    } catch {
         var header = document.querySelector('div.show-list');
         hide(header);
     }
@@ -45,7 +47,6 @@ function toggleTheme() {
 }
 
 
-
 // Code menus principaux
 function widget(x) {
     // Récupère la ligne ayant la classe "Visible" pour la supprimer et la remplacer par la classe "Contenu"
@@ -60,7 +61,7 @@ function widget(x) {
 
     var now = document.querySelector(".Current")
     now.classList.remove("Current");
-    let span =  document.querySelectorAll("section span");
+    let span = document.querySelectorAll("section span");
     span[x].classList.add("Current")
 }
 
@@ -267,10 +268,10 @@ window.currentChatContactId = null;
 window.currentGroupId = null;
 
 // Attach event listener to messageForm
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const messageForm = document.getElementById('messageForm');
 
-    messageForm.addEventListener('submit', function(event) {
+    messageForm.addEventListener('submit', function (event) {
         event.preventDefault();
         if (window.currentGroupId) {
             sendGroupMessage(event);
@@ -333,8 +334,9 @@ function showDefaultChatMessage() {
     chatBody.innerHTML = '<div class="default-message">Sélectionnez un chat pour commencer la conversation.</div>';
     document.getElementById('chat-header-title').innerText = 'Messagerie';
 }
+
 // Initialisation au chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const selectedContactId = localStorage.getItem('selectedContactId');
     const selectedContactName = localStorage.getItem('selectedContactName');
 
@@ -376,7 +378,6 @@ function updateNotifications(newMessages) {
 }
 
 
-
 // Vérifier les nouveaux messages toutes les 1 secondes
 setInterval(checkForNewMessages, 1000);
 
@@ -393,7 +394,7 @@ function checkForNewMessages() {
         .catch(error => console.error('Erreur réseau lors de la vérification des nouveaux messages:', error));
 }
 
-document.getElementById('notification-icon').addEventListener('click', function() {
+document.getElementById('notification-icon').addEventListener('click', function () {
     // Récupérer les nouveaux messages
     fetch('GetNewMessages.php')
         .then(response => response.json())
@@ -475,11 +476,11 @@ function showContent(x) {
 }
 
 let meetingCounter = 2;
-let showcontent = 1;
+let showcontent = 2;
 
 function addMeeting() {
     const aside = document.querySelector(".livretbar");
-    const depositSpan = aside.querySelector('span[onclick="showContent(100)"]');
+    const depositSpan = aside.querySelector('span[onclick="showContent(1)"]');
 
     // Create a new meeting button
     const newMeeting = document.createElement("span");
@@ -528,7 +529,7 @@ function addMeeting() {
 
                     <br><br>
 
-                    <button onclick="addForm('${formContainerId}')" type="button">+ Ajouter un formulaire</button>
+                    <button onclick="addField('${formContainerId}')" type="button">+ Ajouter un champ</button>
 
                 </form>
             </div>
@@ -552,39 +553,83 @@ function addMeeting() {
 
 
 // créer un formulaire dans une rencontre
-function addForm(containerId) {
-    const formWrapper = document.createElement('p');
+function addField(containerId) {
+    const fieldWrapper = document.createElement('p');
 
-    // contenu du form
-    formWrapper.innerHTML = `
-                Remarques du professeur : <label style="color: red">*</label> 
-                <button onclick="deleteForm(this)" type="button">Supprimer</button> <br>
-                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea>
-            `;
+    fieldWrapper.innerHTML = `
+        <select name="field_choice" id="field_choice">
+            <option value="">Sélectionnez le type du champ</option>
+            <option value="text">Text libre</option>
+            <option value="qcm">QCM</option>
+        </select>
+        <button onclick="handleFieldSelection(this, '${containerId}')" type="button">Sélectionner</button> 
+        <a onclick="deleteField(this)"> Annuler </a> <br><br>
+    `;
 
-    const formContainer = document.getElementById(containerId);
-    const addButton = formContainer.querySelector(`button[onclick="addForm('${containerId}')"]`);
-    formContainer.insertBefore(formWrapper, addButton);
+    const fieldContainer = document.getElementById(containerId);
+    const addButton = fieldContainer.querySelector(`button[onclick="addField('${containerId}')"]`);
+    fieldContainer.insertBefore(fieldWrapper, addButton);
+}
+
+function handleFieldSelection(button, containerId) {
+    const selectElement = button.previousElementSibling;
+    const selectedType = selectElement.value;
+
+    if (!selectedType) {
+        alert("Veuillez sélectionner un type !");
+        return;
+    }
+
+    // Ajoute le contenu en fonction du type choisi
+    addFieldContent(containerId, selectedType);
+    // Une fois ajouté, supprime le champ de sélection
+    const fieldWrapper = button.parentElement;
+    fieldWrapper.remove();
+}
+
+function addFieldContent(containerId, type) {
+    const fieldWrapper = document.createElement('p');
+
+    if (type === 'qcm') {
+        fieldWrapper.innerHTML = `
+            Lieu de la rencontre :
+            <button onclick="deleteField(this)" type="button">Supprimer</button> <br>
+
+            <input type="radio" id="Entreprise" name="Lieu"><label> En entreprise</label> <br>
+            <input type="radio" id="Tél" name="Lieu"><label> Par téléphone</label> <br>
+            <input type="radio" id="Visio" name="Lieu"><label> En visio</label> <br>
+            <input type="radio" id="Autre" name="Lieu"><label> Autre</label> <input type="text"><br> <br><br>
+        `;
+    } else if (type === 'text') {
+        fieldWrapper.innerHTML = `
+            Remarques du professeur :
+            <button onclick="deleteField(this)" type="button">Supprimer</button> <br>
+            <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea> <br><br>
+        `;
+    }
+
+    const fieldContainer = document.getElementById(containerId);
+    const addButton = fieldContainer.querySelector(`button[onclick="addField('${containerId}')"]`);
+    fieldContainer.insertBefore(fieldWrapper, addButton);
 }
 
 
 //Supprime le formulaire
-function deleteForm(button) {
+function deleteField(button) {
     button.parentElement.remove();
 }
 
 function deleteMeeting() {
+
     if (meetingCounter <= 2) {
-        // Prevent deleting below the initial number of meetings
         alert("Vous ne pouvez pas supprimer cette rencontre");
         return;
     }
 
-    // Decrement counters first
     meetingCounter--;
     showcontent--;
 
-    // Remove the last meeting button and line break
+    // enlève le dernier bouton de rencontre
     const aside = document.querySelector(".livretbar");
     const lastMeetingButton = aside.querySelector(`.vignette[onclick="showContent(${showcontent})"]`);
     const lastLineBreak = lastMeetingButton.nextElementSibling; // Assuming line break follows the button
@@ -596,15 +641,13 @@ function deleteMeeting() {
         aside.removeChild(lastLineBreak);
     }
 
-    // Remove the last content section
+    // Enlève le contenu de la rencontre
     const contentContainer = document.querySelector(".content-livret");
     const lastContent = document.getElementById(showcontent);
     if (lastContent) {
         contentContainer.removeChild(lastContent);
     }
 }
-
-
 
 
 function fetchStudentInfo(userId) {
@@ -626,11 +669,9 @@ function fetchStudentInfo(userId) {
 }
 
 
-
-
 // ---------------------------------- Add Secretariat ----------------------------------//
 
-function showForm(){
+function showForm() {
     document.getElementById("showButton").style.display = "none";
     document.getElementById("secretariatCreation").style.display = "block";
 }
@@ -643,7 +684,7 @@ function hideForm() {
 }
 
 // ---------------------------------- Student list -------------------------------------//
-function sidebar(){
+function sidebar() {
     const sidebar = document.getElementById('sidebar');
     const menu = document.getElementById('Menus');
     const arrow = document.getElementById('sidebar-toggle');
@@ -707,19 +748,16 @@ function selectStudent(element) {
 }
 
 
-
 document.querySelectorAll('.student').forEach(student => {
-    student.addEventListener('click', function() {
+    student.addEventListener('click', function () {
         selectStudent(student);
     });
 });
 
 
-
-
 // -----------------------------------------------------------------------//
 // send a message only by clicking the button
-document.getElementById('message-input').addEventListener('keydown', function(event) {
+document.getElementById('message-input').addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
         event.preventDefault();
     }
@@ -728,7 +766,7 @@ document.getElementById('message-input').addEventListener('keydown', function(ev
 
 // ---------------------------------- Close the session -------------------------------------//
 
-window.onbeforeunload = function() {
+window.onbeforeunload = function () {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", "Logout.php", false);  // Use a synchronous request to end the session
     xhr.send(null);
