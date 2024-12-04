@@ -1552,5 +1552,48 @@ section.Menus div.Contenus div.Contenu p.noNotes{
     position: relative;
 }
 
+/* ----------------- Style des participant du livret de suivi -------------------- */
+
+ .participant-container {
+     display: flex;
+     flex-direction: column;
+     gap: 20px;
+     width: 60%;
+     margin: auto;
+     border: 1px solid #ddd;
+     padding: 20px;
+     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+     border-radius: 8px;
+     background-color: #f9f9f9;
+ }
+
+/* Style pour chaque participant (étudiant, professeur, maître de stage) */
+.participant-info {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+
+.participant-info h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    color: #333;
+}
+
+.participant-info p {
+    margin: 5px 0;
+    font-size: 1em;
+    color: #555;
+}
+
+.participant-info p strong {
+    color: #333;
+}
+
+
+
+
 
 

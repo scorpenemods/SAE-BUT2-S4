@@ -474,62 +474,158 @@ function showContent(x) {
     document.getElementById(`${x}`).classList.add('active');
 }
 
-let meetingCounter = 1;
-let showcontent = 3;
+let meetingCounter = 2;
+let showcontent = 1;
 
 function addMeeting() {
     const aside = document.querySelector(".livretbar");
-    const depositSpan = aside.querySelector('span[onclick="showContent(100)"]'); // Target the "Dépôt" span
+    const depositSpan = aside.querySelector('span[onclick="showContent(100)"]');
 
-    // Nouvelle rencontre
+    // Create a new meeting button
     const newMeeting = document.createElement("span");
     newMeeting.className = "vignette";
-    newMeeting.textContent = `Rencontre intermédiaire ${meetingCounter}`;
+    newMeeting.textContent = `${meetingCounter}ème rencontre`;
     newMeeting.setAttribute("onclick", `showContent(${showcontent})`);
 
-    // Ajoute le bouton avant le dépôt
+    // Insert the new meeting button before the deposit span
     aside.insertBefore(newMeeting, depositSpan);
 
     const lineBreak = document.createElement("br");
     aside.insertBefore(lineBreak, depositSpan);
 
-    // Créer la section
+    // Create the new content section for the meeting
     const contentContainer = document.querySelector(".content-livret");
     const newContent = document.createElement("div");
     newContent.className = "content-section";
     newContent.id = showcontent;
+    const formContainerId = `formContainer-${showcontent}`;
+
     newContent.innerHTML = `
-        <h3 style="padding: 10px; text-align: left">Formulaire</h3>
+        <h3 style="padding: 10px">Formulaires</h3>
         <div class="livret-header">
-            <h3>Rencontre intermédiaire ${meetingCounter}</h3>
+            <h3>${meetingCounter}ère rencontre</h3>
         </div>
+
         <!-- Formulaire -->
-        <p class="participants">Date de rencontre : <label style="color: red">*</label> <br>
-            <input type="date" name="meeting"/> <br><br><br>
-            
-            Lieu de la rencontre : <label style="color: red">*</label> <br>
-            <input type="radio"><label> En entreprise</label> <br>
-            <input type="radio"><label> Par téléphone</label> <br>
-            <input type="radio"><label> En visio</label> <br>
-            <input type="radio"><label> Autre</label> <input type="text"> <br><br><br>
-            
-            Remarques du professeur : <label style="color: red">*</label> <br>
-            <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea><br><br><br>
+            <div class="participants">
+                <form method="post" id="${formContainerId}">
+                    <p>
+                    Date de rencontre : <label style="color: red">*</label> <br>
 
-        <!-- Validation du formulaire -->
-        <div class="validation">
-            <h3 style="padding: 10px">Validation du formulaire</h3>
-        </div>
+                    <input type="date" name="meeting"/>
+                    </p>
 
-        <button>Valider modifications</button>
+                    <br><br>
+
+                    <p>
+                    Lieu de la rencontre : <label style="color: red">*</label> <br>
+
+                    <input type="radio" id="Entreprise" name="Lieu"><label> En entreprise</label> <br>
+                    <input type="radio" id="Tél" name="Lieu"><label> Par téléphone</label> <br>
+                    <input type="radio" id="Visio" name="Lieu"><label> En visio</label> <br>
+                    <input type="radio" id="Autre" name="Lieu"><label> Autre</label> <input type="text">
+                    </p>
+
+                    <br><br>
+
+                    <button onclick="addForm('${formContainerId}')" type="button">+ Ajouter un formulaire</button>
+
+                </form>
+            </div>
+            <div style="display: flex; ">
+                <!-- Validation du formulaire -->
+                <div class="validation">
+                    <h3 style="padding: 10px">Validation du formulaire</h3>
+
+                    <button>Valider modifications</button>
+                </div>
+
+            </div>
     `;
 
     contentContainer.appendChild(newContent);
 
     meetingCounter++;
     showcontent++;
+
 }
-document.getElementById("addMeetingBtn").addEventListener("click", addMeeting);
+
+
+// créer un formulaire dans une rencontre
+function addForm(containerId) {
+    const formWrapper = document.createElement('p');
+
+    // contenu du form
+    formWrapper.innerHTML = `
+                Remarques du professeur : <label style="color: red">*</label> 
+                <button onclick="deleteForm(this)" type="button">Supprimer</button> <br>
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea>
+            `;
+
+    const formContainer = document.getElementById(containerId);
+    const addButton = formContainer.querySelector(`button[onclick="addForm('${containerId}')"]`);
+    formContainer.insertBefore(formWrapper, addButton);
+}
+
+
+//Supprime le formulaire
+function deleteForm(button) {
+    button.parentElement.remove();
+}
+
+function deleteMeeting() {
+    if (meetingCounter <= 2) {
+        // Prevent deleting below the initial number of meetings
+        alert("Vous ne pouvez pas supprimer cette rencontre");
+        return;
+    }
+
+    // Decrement counters first
+    meetingCounter--;
+    showcontent--;
+
+    // Remove the last meeting button and line break
+    const aside = document.querySelector(".livretbar");
+    const lastMeetingButton = aside.querySelector(`.vignette[onclick="showContent(${showcontent})"]`);
+    const lastLineBreak = lastMeetingButton.nextElementSibling; // Assuming line break follows the button
+
+    if (lastMeetingButton) {
+        aside.removeChild(lastMeetingButton);
+    }
+    if (lastLineBreak && lastLineBreak.tagName === "BR") {
+        aside.removeChild(lastLineBreak);
+    }
+
+    // Remove the last content section
+    const contentContainer = document.querySelector(".content-livret");
+    const lastContent = document.getElementById(showcontent);
+    if (lastContent) {
+        contentContainer.removeChild(lastContent);
+    }
+}
+
+
+
+
+function fetchStudentInfo(userId) {
+    fetch(`livretSuiviParticipant.php?user_id=${userId}`)
+        .then(response => response.text())
+        .then(data => {
+            // Mettre à jour le contenu de la section d'information de l'étudiant avec les données reçues
+            const studentDetails = document.querySelector('#student-details');
+            if (studentDetails) {
+                studentDetails.innerHTML = data;
+            } else {
+                console.error("Impossible de trouver la section des détails de l'étudiant.");
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération des informations de l\'étudiant :', error);
+        });
+    console.log("ID de l'étudiant pour le livret de suivi : ", userId);
+}
+
+
 
 
 // ---------------------------------- Add Secretariat ----------------------------------//
@@ -602,6 +698,7 @@ function selectStudent(element) {
 
     // Charger les notes de l'étudiant sélectionné
     fetchNotesForStudent(studentId);
+    fetchStudentInfo(studentId);
 
     // Activer les boutons de gestion des notes
     document.getElementById('addNoteButton').removeAttribute('disabled');
