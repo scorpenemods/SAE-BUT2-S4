@@ -17,39 +17,9 @@ $id = $etu->getId() ;
 
 <div class="livret-header" style="margin-bottom: 10px">
     <h2 style="text-align: center">Participants</h2>
-</div><br>
-<div style="display: flex; gap: 10%; justify-content: center;">
-    <div class="participants">
-        <h3>Etudiant :</h3><br>
-        <p>Nom prénom : <label><?php echo $nameetu; ?></label></p>
-        <p>Formation : <label><?php echo $etu->getActivite(); ?></label></p>
-        <p>Email : <label><?php echo $etu->getEmail(); ?></label></p>
-        <?php if ($etu->getTelephone() != null){?>
-            <p>Téléphone : <?php echo $etu->getTelephone(); ?></label></p>
-        <?php }?>
-    </div>
+</div>
 
-    <div class="participants">
-        <h3>Professeur :</h3><br>
-        <p>Nom prénom : <label><?php echo '(Professeur)'; ?></label></p>
-        <p>Spécialité : <label><?php echo '(Spécialité)' ?></label></p>
-        <p>Email : <label><?php echo '(professeur@email.com)' ?></label></p>
-        <?php if (0==0){?>
-            <p>Téléphone : <label><?php echo '(téléphone)' ?></label></p>
-        <?php }?>
-    </div>
-
-    <div class="participants">
-        <h3>Maitre de stage :</h3><br>
-        <p>Nom prénom : <label><?php echo '(MdS)'; ?></label></p>
-        <p>Spécialité : <label><?php echo '(Spécialité)' ?></label></p>
-        <p>Email : <label><?php echo '(mds@email.com)' ?></label></p>
-        <?php if (0==0){?>
-            <p>Téléphone : <label><?php echo '(téléphone)' ?></label></p>
-        <?php }?>
-    </div>
-</div><br>
-
+<?php  include_once ("LivretSuiviParticipant.php")?>
 
 <!-- Création des différentes rencontres / dépôts : -->
 
@@ -112,7 +82,36 @@ $id = $etu->getId() ;
                     <button>Valider modifications</button>
                 </div>
 
+        <!-- Rencontre 3 -->
+        <div class="content-section" id="2">
+            <h3 style="padding: 10px; text-align: left">Formulaire</h3>
+            <div class="livret-header">
+                <h3>3ème rencontre</h3>
             </div>
+            <!-- Formulaire -->
+            <p class="participants">Date de rencontre : <label style="color: red">*</label> <br>
+
+                <input type="date" name="meeting"/> <br><br><br>
+
+
+                Lieu de la rencontre : <label style="color: red">*</label> <br>
+
+                <input type="radio"><label> En entreprise</label> <br>
+                <input type="radio"><label> Par téléphone</label> <br>
+                <input type="radio"><label> En visio</label> <br>
+                <input type="radio"><label> Autre</label> <input type="text"> <br><br><br>
+
+
+                Remarques du professeur : <label style="color: red">*</label> <br>
+
+                <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea><br><br><br>
+
+            <!-- Validation du formulaire -->
+            <div class="validation">
+                <h3 style="padding: 10px">Validation du formulaire</h3>
+            </div>
+
+                <button>Valider modifications</button>
         </div>
 
         <!-- Bilan -->

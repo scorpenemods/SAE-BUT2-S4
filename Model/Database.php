@@ -5,7 +5,10 @@ class Database
 {
     private static ?Database $instance = null;
     private ?PDO $connection;
-    private function __construct(){}
+
+    private function __construct()
+    {
+    }
 
     public static function getInstance(): Database
     {
@@ -106,7 +109,6 @@ class Database
     }
 
 
-
     // Getting user information
     public function getPersonByUsername($email)
     {
@@ -141,7 +143,8 @@ class Database
 
     // ----------------------- Messenger realisation ------------------------------------------ //
 
-    public function sendMessage($senderId, $receiverId, $message, $filePath = null) {
+    public function sendMessage($senderId, $receiverId, $message, $filePath = null)
+    {
         try {
             $this->connection->beginTransaction();
 
@@ -189,7 +192,8 @@ class Database
     }
 
 
-    public function getMessages($senderId, $receiverId) {
+    public function getMessages($senderId, $receiverId)
+    {
         $sql = "SELECT Message.*, Document.filepath FROM Message
             LEFT JOIN Document_Message ON Message.id = Document_Message.message_id
             LEFT JOIN Document ON Document_Message.document_id = Document.id
@@ -211,7 +215,8 @@ class Database
     }
 
 
-    public function deleteMessage($messageId) {
+    public function deleteMessage($messageId)
+    {
         $sql = "DELETE FROM Message WHERE id = :message_id";
         try {
             $stmt = $this->connection->prepare($sql);
@@ -223,7 +228,8 @@ class Database
         }
     }
 
-    public function getMessageById($messageId) {
+    public function getMessageById($messageId)
+    {
         try {
             $stmt = $this->connection->prepare("SELECT * FROM Message WHERE id = :id");
             $stmt->bindParam(':id', $messageId, PDO::PARAM_INT);
@@ -237,7 +243,8 @@ class Database
     // ====== Messagerie Contacts ======= //
 
     // Récupérer les contacts du même groupe que l'utilisateur
-    public function getGroupContacts($userId) {
+    public function getGroupContacts($userId)
+    {
         $query = "
             SELECT DISTINCT User.id, User.nom, User.prenom, User.role
             FROM User
@@ -255,7 +262,8 @@ class Database
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getMessagesBetweenUsers($userId1, $userId2) {
+    public function getMessagesBetweenUsers($userId1, $userId2)
+    {
         $stmt = $this->connection->prepare("
         SELECT m.*, d.filepath, CONVERT_TZ(m.timestamp, '+00:00', '+02:00') as timestamp_local
         FROM Message m
@@ -337,9 +345,11 @@ class Database
         }
     }
 
-    public function getLastMessageId() {
+    public function getLastMessageId()
+    {
         return $this->connection->lastInsertId();
     }
+
     // ------------------------- Forgot password functions --------------- //
 
     public function getUserByEmail($email)
@@ -355,7 +365,8 @@ class Database
         }
     }
 
-    public function storeEmailVerificationCode($userId, $code, $expires_at) {
+    public function storeEmailVerificationCode($userId, $code, $expires_at)
+    {
         try {
             // Start transaction
             $this->connection->beginTransaction();
@@ -384,8 +395,6 @@ class Database
             return false;
         }
     }
-
-
 
 
     public function getPasswordResetRequest($email, $verification_code)
@@ -438,7 +447,8 @@ class Database
 
     // -------------------- Email verification ------------------------------------------
 
-    public function getVerificationCode($userId) {
+    public function getVerificationCode($userId)
+    {
         $sql = "SELECT * FROM Verification_Code WHERE user_id = :user_id AND expires_at > :current_time";
         try {
             $stmt = $this->connection->prepare($sql);
@@ -458,7 +468,8 @@ class Database
     }
 
 
-    public function isEmailValidated($userId) {
+    public function isEmailValidated($userId)
+    {
         $query = "SELECT valid_email FROM User WHERE id = :id";
         $stmt = $this->connection->prepare($query);
         $stmt->bindValue(':id', $userId);
@@ -468,16 +479,19 @@ class Database
     }
 
     //-------------- Update user status if email has been validated ------------------------- //
-    public function updateEmailValidationStatus($userId, $status) {
+    public function updateEmailValidationStatus($userId, $status)
+    {
         $sql = "UPDATE User SET valid_email = :status WHERE id = :user_id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':status', $status, PDO::PARAM_INT);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
     // -------------------------------------------------------------------------------------- //
 
-    public function getUserIdByEmail($email) {
+    public function getUserIdByEmail($email)
+    {
         $query = "SELECT id FROM User WHERE email = :email";
         $stmt = $this->connection->prepare($query);
         $stmt->bindValue(':email', $email);
@@ -522,7 +536,8 @@ class Database
         }
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->connection;
     }
 
@@ -557,7 +572,8 @@ class Database
     }
 
     //Get the groups a user belongs to.
-    public function getUserGroups($userId) {
+    public function getUserGroups($userId)
+    {
         $sql = "SELECT DISTINCT Groupe.conv_id AS id, Convention.convention
                 FROM Groupe
                 JOIN Convention ON Groupe.conv_id = Convention.id
@@ -569,7 +585,8 @@ class Database
     }
 
     // get a message from a group
-    public function getGroupMessages($groupId) {
+    public function getGroupMessages($groupId)
+    {
         $sql = "SELECT MessageGroupe.*, Document.filepath, User.prenom, User.nom
             FROM MessageGroupe
             LEFT JOIN Document_Message ON MessageGroupe.id = Document_Message.message_id
@@ -584,7 +601,8 @@ class Database
     }
 
     // message to a group
-    public function sendGroupMessage($groupId, $senderId, $message, $filePath = null) {
+    public function sendGroupMessage($groupId, $senderId, $message, $filePath = null)
+    {
         try {
             $this->connection->beginTransaction();
 
@@ -632,7 +650,8 @@ class Database
     }
 
     // get all groups with their members
-    public function getAllGroupsWithMembers() {
+    public function getAllGroupsWithMembers()
+    {
         $sql = "SELECT c.id AS group_id, c.convention AS group_name, u.id AS user_id, u.nom AS last_name, u.prenom AS first_name
                 FROM Groupe g
                 JOIN Convention c ON g.conv_id = c.id
@@ -661,7 +680,8 @@ class Database
         return $groups;
     }
 
-    public function deleteGroup($groupId) {
+    public function deleteGroup($groupId)
+    {
         try {
             $this->connection->beginTransaction();
 
@@ -701,7 +721,8 @@ class Database
         }
     }
 
-    public function updateGroupMembers($groupId, $memberIds) {
+    public function updateGroupMembers($groupId, $memberIds)
+    {
         try {
             $this->connection->beginTransaction();
 
@@ -725,7 +746,8 @@ class Database
         }
     }
 
-    public function getGroupMembers($groupId) {
+    public function getGroupMembers($groupId)
+    {
         $sql = "SELECT user_id FROM Groupe WHERE conv_id = :group_id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
@@ -736,7 +758,8 @@ class Database
         }
     }
 
-    public function getGroupMessagesSince($groupId, $lastTimestamp) {
+    public function getGroupMessagesSince($groupId, $lastTimestamp)
+    {
         $sql = "SELECT mg.*, d.filepath, u.prenom, u.nom
             FROM MessageGroupe mg
             LEFT JOIN Document_Message dm ON mg.id = dm.message_id
@@ -816,6 +839,7 @@ class Database
         }
         return $students;
     }
+
     // -------------------- Add Note in Database ------------------------------------------ //
 
     function addNotes($studentId, $notesData, $pdo): void
@@ -857,7 +881,6 @@ class Database
     }
 
 
-
     public function updateNote($noteId, $userId, $sujet, $appreciation, $note, $coeff, $pdo)
     {
         try {
@@ -889,8 +912,6 @@ class Database
     }
 
 
-
-
     public function deleteNote($noteId, $studentId, $pdo): void
     {
         try {
@@ -916,7 +937,6 @@ class Database
     }
 
 
-
     public function getStudentNotes($studentId): array
     {
         $query = "SELECT * FROM Note WHERE user_id = :student_id";
@@ -925,10 +945,6 @@ class Database
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-
-
-
 
 
     // ------------------------------------------------------------------------------------------------------- //
@@ -1050,7 +1066,8 @@ class Database
         }
     }
 
-    public function getNotes($userId): array {
+    public function getNotes($userId): array
+    {
         $sql = "SELECT Note.id, Note.sujet, Note.appreciation, Note.note, Note.coeff
                 FROM Note
                 WHERE Note.user_id = :user_id";
@@ -1065,7 +1082,7 @@ class Database
                 $row['id'] ?? '',
                 $row['sujet'] ?? '',
                 $row['appreciation'] ?? '',
-                $row['note'] ??'',
+                $row['note'] ?? '',
                 $row['coeff'] ?? ''
             );
         }
@@ -1079,7 +1096,7 @@ class Database
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([':user_id' => $userId]);
-            return (int) $stmt->fetchColumn();
+            return (int)$stmt->fetchColumn();
         } catch (PDOException $e) {
             error_log("Error fetching unread notifications count: " . $e->getMessage());
             return 0;
@@ -1145,7 +1162,7 @@ class Database
         $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([':user_id' => $userId]);
-        return (int) $stmt->fetchColumn();
+        return (int)$stmt->fetchColumn();
     }
 
     public function deleteOldNotifications($userId, $numberToDelete)
@@ -1178,7 +1195,7 @@ class Database
         $sql = "SELECT COUNT(*) FROM User WHERE email = :email";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([':email' => $email]);
-        return (bool) $stmt->fetchColumn();
+        return (bool)$stmt->fetchColumn();
     }
 
     public function getStages($userId): array
@@ -1205,4 +1222,127 @@ class Database
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    //---------------------- Livret de suvi --------------------------------- //
+
+    public function getStudentInfo($userId): array
+    {
+        $sql = "
+    SELECT 
+        u.id AS etudiant_id,
+        u.nom AS etudiant_nom,
+        u.prenom AS etudiant_prenom,
+        u.email AS etudiant_email,
+        u.telephone AS etudiant_phone,
+        u.activite AS etudiant_activity
+    FROM Groupe g
+    INNER JOIN User u ON g.user_id = u.id
+    WHERE u.role = 1
+    AND g.conv_id IN (
+        SELECT g1.conv_id
+        FROM Groupe g1
+        WHERE g1.user_id = :user_id
+    );
+    ";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$data) {
+            return ['error' => 'Aucune information trouvée pour l\'étudiant'];
+        }
+
+        return [
+            'id' => $data['etudiant_id'],
+            'nom' => $data['etudiant_nom'],
+            'prenom' => $data['etudiant_prenom'],
+            'email' => $data['etudiant_email'],
+            'telephone' => $data['etudiant_phone'],
+            'activite' => $data['etudiant_activity'],
+        ];
+    }
+
+
+    public function getProfessorInfo($userId) {
+        $sql = "
+        SELECT 
+            u.id AS professeur_id,
+            u.nom AS nom,
+            u.prenom AS prenom,
+            u.email AS email,
+            u.telephone AS telephone
+        FROM Groupe g
+        LEFT JOIN User u ON g.conv_id = g.conv_id AND u.role = 2
+        WHERE g.conv_id IN (
+            SELECT g1.conv_id
+            FROM Groupe g1
+            WHERE g1.user_id = :user_id
+        );
+    ";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+
+
+
+    public function getMentorInfo($userId): array
+    {
+        $sql = "
+    SELECT 
+        u.id AS maitre_stage_id,
+        u.nom AS maitre_stage_nom,
+        u.prenom AS maitre_stage_prenom,
+        u.email AS maitre_stage_email,
+        u.telephone AS maitre_stage_phone
+    FROM Groupe g
+    LEFT JOIN User u ON g.user_id = u.id
+    WHERE u.role = 3
+    AND g.conv_id IN (
+        SELECT g1.conv_id
+        FROM Groupe g1
+        WHERE g1.user_id = :user_id
+    );
+    ";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$data || empty($data['maitre_stage_id'])) {
+            return ['error' => 'Aucune information trouvée pour le maître de stage'];
+        }
+
+        return [
+            'id' => $data['maitre_stage_id'],
+            'nom' => $data['maitre_stage_nom'],
+            'prenom' => $data['maitre_stage_prenom'],
+            'email' => $data['maitre_stage_email'],
+            'telephone' => $data['maitre_stage_phone'],
+        ];
+    }
+
+
+
+
+
+
+    public function getFollowBookByUser($userId): array
+    {
+        $studentInfo = $this->getStudentInfo($userId);
+        $professorInfo = $this->getProfessorInfo($userId);
+        $mentorInfo = $this->getMentorInfo($userId);
+
+        return [
+            'etudiant' => $studentInfo,
+            'professeur' => $professorInfo,
+            'maitre_stage' => $mentorInfo,
+        ];
+    }
+
 }
