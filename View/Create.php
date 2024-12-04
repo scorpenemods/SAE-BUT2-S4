@@ -4,9 +4,9 @@ session_start();
 require dirname(__FILE__) . '/../Model/Company.php';
 global $tags;
 
-if (isset($_SESSION['Secretariat']) || isset($_SESSION['company_id'])) {
+if (isset($_SESSION['secretariat']) || isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
-    $groupeSecretariat = $_SESSION['Secretariat'];
+    $groupesecretariat = $_SESSION['secretariat'];
 }
 
 if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
@@ -32,7 +32,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
             <form action="../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
                 <?php if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                     echo "<div class='form-group'>";
-                    // Si l'utilisateur est un Secretariat, il avoir un menu déroulant avec les companies
+                    // Si l'utilisateur est un secretariat, il avoir un menu déroulant avec les companies
                     echo "<label for='company_id'>Choisissez une entreprise :</label>";
                     echo "<select name='company_id' id='company_id'>";
                     foreach ($companies as $company) {

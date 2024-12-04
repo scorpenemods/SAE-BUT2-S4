@@ -91,6 +91,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
 if ($type == null) {
     $type = 'all';
 }
+const BASE_URL = '/SAE-BUT2-1.1/';
 ?>
 
 <!DOCTYPE html>
@@ -101,9 +102,9 @@ if ($type == null) {
         <meta name="description" content="Le Petit Stage - Offres">
         <title>Le Petit Stage - Advanced</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/List.css">
-        <link rel="stylesheet" href="css/Header.css">
-        <link rel="stylesheet" href="css/Footer.css">
+        <link rel="stylesheet" href="<?php echo BASE_URL; ?>View/css/List.css">
+        <link rel="stylesheet" href="<?php echo BASE_URL; ?>View/css/Header.css">
+        <link rel="stylesheet" href="<?php echo BASE_URL; ?>View/css/Footer.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>

@@ -167,8 +167,8 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                                 }
                             echo "</form>";
                     }
-                    renderForm('../../Presentation/Offer/secretariat/Deny.php', $offer->getId(), "Refuser", "deny-form", ['id' => $offer->getId()]);
-                    renderForm('../../Presentation/Offer/secretariat/Validate.php', $offer->getId(), "Valider", "validate-form", ['id' => $offer->getId()], "validate-form");
+                    renderForm('../Presentation/Deny.php', $offer->getId(), "Refuser", "deny-form", ['id' => $offer->getId()]);
+                    renderForm('../Presentation/Validate.php', $offer->getId(), "Valider", "validate-form", ['id' => $offer->getId()], "validate-form");
                     ?>
                     </div>
                 </div>

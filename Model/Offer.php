@@ -298,10 +298,9 @@ class Offer {
     public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $website) {
         global $db;
 
+
         //Insert the Offer in the offers table
-        $stmt = $db->getConnection()->prepare("INSERT INTO Offer (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
-                    email, phone, website) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,
-                    :email, :phone, :website)");
+        $stmt = $db->getConnection()->prepare("INSERT INTO Offer (company_id, title, description, job , duration, salary, address,  study_level, begin_date,email, phone, website) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,:email, :phone, :website)");
         $stmt->bindParam(":company_id", $company_id);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":description", $description);
