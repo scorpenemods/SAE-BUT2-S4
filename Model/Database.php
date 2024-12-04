@@ -1354,4 +1354,16 @@ class Database
         ];
     }
 
+    public function setEndStage($userId): void
+    {
+        $sql = "UPDATE Groupe AS g
+                SET g.onStage = 0
+                WHERE g.conv_id = (
+                    SELECT @test = conv_id
+                    FROM Groupe
+                    WHERE user_id = :user_id);";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 }

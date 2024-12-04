@@ -276,7 +276,11 @@ $notes = $database->getNotes($userId);
             <p>Gérez les étudiants, suivez leur progression et communiquez facilement avec eux.</p><br>
         </div>
         <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">Contenu des missions de stage</div>
-        <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">Contenu Gestion Étudiants</div>
+        <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">
+
+            <?php include_once("StudentManagment.php") ?>
+
+        </div>
         <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : 'Contenu'; ?>" id="content-3">
             <!-- Affichage du livret de suivi -->
             <?php include_once("LivretSuivi.php");?>
