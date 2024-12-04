@@ -4,7 +4,7 @@ session_start();
 
 // Verification de qui est l'utilisateur
 $groupeSecretariat = false;
-$_SESSION['Secretariat'] = false;
+$_SESSION['secretariat'] = false;
 
 
 if (isset($_SESSION['company_id'])) {
@@ -18,7 +18,7 @@ else{
 
 if ($_SESSION["user_role"]==4 || $_SESSION["user_role"]==5) {
     $groupeSecretariat = true;
-    $_SESSION['Secretariat'] = true;
+    $_SESSION['secretariat'] = true;
 }
 
 if (isset($_SESSION['user'])) {
@@ -37,7 +37,6 @@ if ($pageId == null) {
 }
 
 $curURL = $_SERVER["REQUEST_URI"];
-
 function setPageId($url, $newPageId): string {
     $parsedUrl = parse_url($url);
 
@@ -130,16 +129,16 @@ if ($type == null) {
             </form>
             <div class="pagination button-group" style="text-align: center">
                 <div id="all">
-                    <a href="List.php">Toutes les offres</i></a>
+                    <a href="List.php?type=all">Toutes les offres</i></a>
                 </div>
                 <div id="new">
-                    <a href="List.php">Nouvelles offres</i></a>
+                    <a href="List.php?type=new">Nouvelles offres</i></a>
                 </div>
                 <div id="updated">
-                    <a href="List.php">Offres mises à jour</i></a>
+                    <a href="List.php?type=updated">Offres mises à jour</i></a>
                 </div>
                 <div id="inactive">
-                    <a href="List.php">Offres inactives</i></a>
+                    <a href="List.php?type=inactive">Offres inactives</i></a>
                 </div>
                 <div id="create" style="text-align: center">
                     <a href="Create.php">Créer une offre</i></a>
@@ -295,16 +294,17 @@ if ($type == null) {
             createNotificationBtn.addEventListener('click', () => {
                 alert('Fonctionnalité de création de demande de notification à implémenter');
             });
-
             const groupeSecretariat = <?php echo json_encode($groupeSecretariat); ?>;
             const companyId = <?php echo json_encode($company_id); ?>;
             if (groupeSecretariat) {
+                <?php echo 'ALED';?>
                 document.getElementById('all').style.display = "block";
                 document.getElementById('new').style.display = "block";
                 document.getElementById('updated').style.display = "block";
                 document.getElementById('create').style.display = "block";
                 document.getElementById('inactive').style.display = "block";
             } else {
+                <?php echo 'ALED2';?>
                 document.getElementById('all').style.display = "none";
                 document.getElementById('new').style.display = "none";
                 document.getElementById('updated').style.display = "none";
@@ -313,8 +313,10 @@ if ($type == null) {
             }
 
             if (companyId !== 0) {
+                <?php echo 'ALED3';?>
                 document.getElementById('all').style.display = "block";
                 document.getElementById('inactive').style.display = "block";
+                document.getElementById('create').style.display = "block";
             }
 
             function heartUpdate(id) {

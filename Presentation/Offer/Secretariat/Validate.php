@@ -18,4 +18,4 @@ if (isset($_SESSION['Secretariat']) && isset($_POST['id']) && isset($_SERVER["HT
         }
     }
 }
-header("Location: ../../../View/Offer/List.php?type=all");
+header("Location: ../../../View/List.php");

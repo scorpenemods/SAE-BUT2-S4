@@ -19,8 +19,8 @@ if (!$offerId) {
 }
 
 // Verification de qui est l'utilisateur
-$groupeSecretariat = false;
-$_SESSION['Secretariat'] = false;
+$groupesecretariat = false;
+$_SESSION['secretariat'] = false;
 
 
 if (isset($_SESSION['company_id'])) {
@@ -31,16 +31,15 @@ else{
     $_SESSION["company_id"] = $company_id;
 }
 
+
 if ($_SESSION["user_role"]==4 || $_SESSION["user_role"]==5) {
-    $groupeSecretariat = true;
-    $_SESSION['Secretariat'] = true;
+    $groupesecretariat = true;
+    $_SESSION['secretariat'] = true;
 }
 
 if (isset($_SESSION['user'])) {
     $user_id = $_SESSION['user'];
 }
-
-
 switch ($type) {
     case 'updated':
         $offer = PendingOffer::getByOfferId($offerId);
@@ -155,7 +154,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                             echo "</form>";
                             echo "<form action='../Presentation/Offer/Company/Hide.php' method='post' id='hide-form'>";
                             echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-                            echo "<input type='hidden' name='Secretariat' value='" . htmlspecialchars($_SESSION['Secretariat'], ENT_QUOTES, 'UTF-8') . "'>";
+                            echo "<input type='hidden' name='secretariat' value='" . htmlspecialchars($_SESSION['secretariat'], ENT_QUOTES, 'UTF-8') . "'>";
                             echo "<input type='hidden' name='id' value='" . htmlspecialchars($offer->getId(), ENT_QUOTES, 'UTF-8') . "'>";
 
 
@@ -168,8 +167,8 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                                 }
                             echo "</form>";
                     }
-                    renderForm('../../Presentation/Offer/Secretariat/Deny.php', $offer->getId(), "Refuser", "deny-form", ['id' => $offer->getId()]);
-                    renderForm('../../Presentation/Offer/Secretariat/Validate.php', $offer->getId(), "Valider", "validate-form", ['id' => $offer->getId()], "validate-form");
+                    renderForm('../../Presentation/Offer/secretariat/Deny.php', $offer->getId(), "Refuser", "deny-form", ['id' => $offer->getId()]);
+                    renderForm('../../Presentation/Offer/secretariat/Validate.php', $offer->getId(), "Valider", "validate-form", ['id' => $offer->getId()], "validate-form");
                     ?>
                     </div>
                 </div>
@@ -245,7 +244,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
 
     //Get variables from php
     const companyId = <?php echo json_encode($company_id); ?>;
-    const secretariat = <?php echo json_encode($groupeSecretariat); ?>;
+    const secretariat = <?php echo json_encode($groupesecretariat); ?>;
     const type = <?php echo json_encode($type); ?>;
     const isAlreadyPending = <?php echo json_encode($isAlreadyPending); ?>;
 

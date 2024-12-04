@@ -8,4 +8,4 @@ if (isset($_SESSION['Secretariat']) && isset($_POST['id']) && isset($_SERVER["HT
     $offer = PendingOffer::getById($_POST['id']);
     PendingOffer::setStatus($offer->getId(), "Rejected");
 }
-header("Location: ../../../View/Offer/List.php");
+header("Location: ../../../View/List.php    ");
