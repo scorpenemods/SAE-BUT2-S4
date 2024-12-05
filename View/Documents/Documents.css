@@ -124,3 +124,19 @@
 .delete-button:hover {
     background-color: #cc0000;
 }
+
+.download-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.download-button:hover {
+    background-color: #45a049;
+}

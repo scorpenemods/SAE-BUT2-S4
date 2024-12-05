@@ -1,5 +1,7 @@
 <?php
 
+$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
+
 // Générer un jeton CSRF si ce n'est pas déjà fait
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -14,7 +16,6 @@ if (!isset($_SESSION['user_id'])) {
 $db = Database::getInstance();
 $userId = $_SESSION['user_id']; // ID de l'étudiant connecté
 
-// Gérer le téléversement des fichiers
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
     if (!empty($_FILES['files'])) {
         foreach ($_FILES['files']['tmp_name'] as $index => $tmpName) {
@@ -23,17 +24,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
             $error = $_FILES['files']['error'][$index];
 
             if ($error === UPLOAD_ERR_OK) {
-                $uploadDir = '../uploads/';
+                // Vérifiez l'extension du fichier
+                $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION)); // Récupère l'extension
+                if (!in_array($extension, $allowedExtensions)) {
+                    echo "Le fichier $name n'est pas autorisé. Seules les images et les PDF sont acceptés.<br>";
+                    continue;
+                }
+
+                $uploadDir = '../../uploads/';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
                 $filePath = $uploadDir . uniqid() . '-' . basename($name);
+
                 if ($db->fileExists($name, $userId)) {
                     continue; // Ignore le fichier si déjà existant
                 }
                 if (move_uploaded_file($tmpName, $filePath)) {
                     // Ajouter le fichier dans la base de données
-                    $db->addFile($name, $filePath, $senderId ?? 0, $size);
+                    $db->addFile($name, $filePath, $userId, $size);
                 }
             }
         }
@@ -49,19 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
 // Récupérer les fichiers pour les afficher
 $files = $db->getFiles($userId);
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
-    <link rel="stylesheet" href="Documents.css">
-</head>
+
 <body>
 <form class="box" method="post" action="" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
     <div class="box__input">
-        <label id="file-label" for="file">Aucun fichier choisi</label>
         <input type="file" name="files[]" id="file" multiple>
         <button class="box__button" type="submit">Uploader</button>
     </div>
@@ -79,6 +80,10 @@ $files = $db->getFiles($userId);
                     <strong><?= htmlspecialchars($file['name']) ?></strong>
                     <p><?= round($file['size'] / 1024, 2) ?> KB</p>
                 </div>
+                <form method="get" action="../View/Documents/Download.php">
+                    <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
+                    <button type="submit" class="download-button">Télécharger</button>
+                </form>
                 <form method="post" action="" class="delete-form">
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                     <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
