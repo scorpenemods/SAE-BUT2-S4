@@ -287,8 +287,7 @@ $notes = $database->getNotes($userId);
             <?php include_once("LivretSuivi.php");?>
         </div>
         <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">
-            <?php include_once("../View/Documents/Documents.php");?>
-            <?php $uploadDir = '../uploads/'; ?>
+            <?php include_once("Documents/Documents.php");?>
             <script src="../View/Documents/Documents.js"></script>
         </div>
         <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : 'Contenu'; ?>" id="content-5">

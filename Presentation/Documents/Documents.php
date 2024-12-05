@@ -80,7 +80,7 @@ $files = $db->getFiles($userId);
                     <strong><?= htmlspecialchars($file['name']) ?></strong>
                     <p><?= round($file['size'] / 1024, 2) ?> KB</p>
                 </div>
-                <form method="get" action="../View/Documents/Download.php">
+                <form method="get" action="Documents/Download.php">
                     <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
                     <button type="submit" class="download-button">Télécharger</button>
                 </form>

@@ -435,8 +435,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
         </div>
         <!-- Section Documents -->
         <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
-            <?php include_once("../View/Documents/Documents.php");?>
-            <?php $uploadDir = '../uploads/'; ?>
+            <?php include_once("Documents/Documents.php");?>
             <script src="../View/Documents/Documents.js"></script>
         </div>
 

@@ -245,8 +245,7 @@ if (isset($_POST['go'])) {
 
         <!-- Documents Content -->
         <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
-            <?php include_once("../View/Documents/Documents.php");?>
-            <?php $uploadDir = '../uploads/'; ?>
+            <?php include_once("Documents/Documents.php");?>
             <script src="../View/Documents/Documents.js"></script>
         </div>
 
