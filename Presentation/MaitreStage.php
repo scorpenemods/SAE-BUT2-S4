@@ -169,7 +169,7 @@ $notes = $database->getNotes($userId);
     <script src="../View/Principal/Principal.js" defer></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <link rel="stylesheet" href="/View/css/Footer.css">
-
+    <link rel="stylesheet" href="../View/Documents/Documents.css">
     <script src="/View/Principal/Notif.js"></script>
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -279,7 +279,11 @@ $notes = $database->getNotes($userId);
 
 
         </div>
-        <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">Contenu Documents</div>
+        <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">
+            <?php include_once("../View/Documents/Documents.php");?>
+            <?php $uploadDir = '../uploads/'; ?>
+            <script src="../View/Documents/Documents.js"></script>
+        </div>
 
         <!-- Contenu de la Messagerie -->
         <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : 'Contenu'; ?>" id="content-5">

@@ -187,6 +187,7 @@ $notes = $database->getNotes($userId);
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <script src="/View/Principal/Notif.js"></script>
     <script src="/View/Principal/Note.js"></script>
+    <link rel="stylesheet" href="../View/Documents/Documents.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include EmojiOneArea -->
@@ -285,7 +286,11 @@ $notes = $database->getNotes($userId);
             <!-- Affichage du livret de suivi -->
             <?php include_once("LivretSuivi.php");?>
         </div>
-        <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">Contenu Documents</div>
+        <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">
+            <?php include_once("../View/Documents/Documents.php");?>
+            <?php $uploadDir = '../uploads/'; ?>
+            <script src="../View/Documents/Documents.js"></script>
+        </div>
         <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : 'Contenu'; ?>" id="content-5">
             <!-- Messagerie Content -->
             <div class="messenger">

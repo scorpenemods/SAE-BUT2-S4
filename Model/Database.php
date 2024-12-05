@@ -32,6 +32,46 @@ class Database
         }
     }
 
+    public function addFile(string $name, string $path, int $userId, int $size): bool {
+        $sql = "INSERT INTO File (name, path, user_id, size) VALUES (:name, :path, :user_id, :size)";
+        $stmt = $this->connection->prepare($sql);
+        return $stmt->execute([
+            ':name' => $name,
+            ':path' => $path,
+            ':user_id' => $userId,
+            ':size' => $size,
+        ]);
+    }
+
+    public function deleteFile(int $fileId): bool {
+        $sql = "SELECT path FROM File WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([':id' => $fileId]);
+        $file = $stmt->fetch();
+
+        if ($file && file_exists($file['path'])) {
+            unlink($file['path']); // Supprime le fichier du serveur
+        }
+
+        $sql = "DELETE FROM File WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        return $stmt->execute([':id' => $fileId]);
+    }
+
+    public function getFiles(int $studentId): array {
+        $sql = "SELECT * FROM File WHERE user_id = :studentId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([':studentId' => $studentId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function fileExists(string $name, int $userId): bool {
+        $sql = "SELECT COUNT(*) FROM File WHERE name = :name AND user_id = :userId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([':name' => $name, ':userId' => $userId]);
+        return $stmt->fetchColumn() > 0;
+    }
+
     // User login verification
     public function verifyLogin($email, $password): array
     {

@@ -152,6 +152,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
     <link rel="stylesheet" href="../View/Principal/Modals.css">
     <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="/View/Principal/Notif.js"></script>
+    <link rel="stylesheet" href="../View/Documents/Documents.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include EmojiOneArea -->
@@ -434,7 +435,9 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
         </div>
         <!-- Section Documents -->
         <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
-            Contenu Documents
+            <?php include_once("../View/Documents/Documents.php");?>
+            <?php $uploadDir = '../uploads/'; ?>
+            <script src="../View/Documents/Documents.js"></script>
         </div>
 
 
