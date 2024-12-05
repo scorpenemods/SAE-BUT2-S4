@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 // Générer un jeton CSRF si ce n'est pas déjà fait
 if (empty($_SESSION['csrf_token'])) {
