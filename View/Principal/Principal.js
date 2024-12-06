@@ -465,6 +465,7 @@ function hideNewMessageIndicator(contactId) {
 
 // ---------------------------------- Livret de suivi -----------------------------------//
 
+// Montre le contenu d'une rencontre
 function showContent(x) {
     // Hide all content sections
     document.querySelectorAll('.content-section').forEach((section) => {
@@ -478,6 +479,7 @@ function showContent(x) {
 let meetingCounter = 2;
 let showcontent = 2;
 
+// Ajoute une rencontre
 function addMeeting() {
     const aside = document.querySelector(".livretbar");
     const depositSpan = aside.querySelector('span[onclick="showContent(1)"]');
@@ -552,7 +554,7 @@ function addMeeting() {
 }
 
 
-// créer un formulaire dans une rencontre
+// créer un champ dans une rencontre
 function addField(containerId) {
     const fieldWrapper = document.createElement('p');
 
@@ -562,8 +564,8 @@ function addField(containerId) {
             <option value="text">Text libre</option>
             <option value="qcm">QCM</option>
         </select>
-        <button onclick="handleFieldSelection(this, '${containerId}')" type="button">Sélectionner</button> 
-        <a onclick="deleteField(this)"> Annuler </a> <br><br>
+        <button class="select-button" onclick="handleFieldSelection(this, '${containerId}')" type="button">Sélectionner</button> 
+        <a class="cancel-link" onclick="deleteField(this)"> Annuler </a>
     `;
 
     const fieldContainer = document.getElementById(containerId);
@@ -571,40 +573,109 @@ function addField(containerId) {
     fieldContainer.insertBefore(fieldWrapper, addButton);
 }
 
+//Permet de choisir un titre au nouveau champ
 function handleFieldSelection(button, containerId) {
+    const fieldWrapper = button.parentElement;
     const selectElement = button.previousElementSibling;
     const selectedType = selectElement.value;
 
     if (!selectedType) {
         alert("Veuillez sélectionner un type !");
         return;
+    } else {
+        const fieldText = document.createElement('form');
+        fieldText.method = 'post';
+        fieldText.innerHTML = `
+            <label for="userText">Titre :</label>
+            <input type="text" id="userText" name="userText" />
+            <button type="submit">Valider</button>
+            <a onclick="deleteField(this)"> Annuler </a>
+        `;
+
+        fieldText.addEventListener('submit', function(event) {
+            event.preventDefault(); // Empêche le comportement par défaut (rechargement de la page)
+
+            // Récupère la valeur de l'input
+            const title = fieldText.querySelector('input[name="userText"]').value;
+
+            // Ajoute le contenu en fonction du type choisi
+            addFieldContent(containerId, selectedType, title);
+
+            // Supprime le formulaire après validation
+            fieldText.remove();
+        });
+
+        // Ajoute le formulaire au DOM, dans le conteneur parent
+        fieldWrapper.appendChild(fieldText);
     }
 
-    // Ajoute le contenu en fonction du type choisi
-    addFieldContent(containerId, selectedType);
-    // Une fois ajouté, supprime le champ de sélection
-    const fieldWrapper = button.parentElement;
-    fieldWrapper.remove();
+    // Supprime uniquement les éléments précédents créés par addField
+    const elementsToRemove = fieldWrapper.querySelectorAll('select, .select-button, .cancel-link');
+    elementsToRemove.forEach(element => element.remove());
 }
 
-function addFieldContent(containerId, type) {
+// Créer le champ sélectionné par l'utilisateur (QCM ou text libre)
+function addFieldContent(containerId, type, title) {
     const fieldWrapper = document.createElement('p');
 
     if (type === 'qcm') {
         fieldWrapper.innerHTML = `
-            Lieu de la rencontre :
+            ${title} :
             <button onclick="deleteField(this)" type="button">Supprimer</button> <br>
-
-            <input type="radio" id="Entreprise" name="Lieu"><label> En entreprise</label> <br>
-            <input type="radio" id="Tél" name="Lieu"><label> Par téléphone</label> <br>
-            <input type="radio" id="Visio" name="Lieu"><label> En visio</label> <br>
-            <input type="radio" id="Autre" name="Lieu"><label> Autre</label> <input type="text"><br> <br><br>
+            <div class="radio-group">
+            </div>
+            <button type="button" class="add-option">+ Ajouter une réponse</button> <br><br>
         `;
+
+        // ajoute l'option de pouvoir ajouter une réponse
+        fieldWrapper.querySelector('.add-option').addEventListener('click', function() {
+            const radioGroup = fieldWrapper.querySelector('.radio-group');
+
+            // Create a temporary form for user input
+            const tempForm = document.createElement('div');
+            tempForm.classList.add('temp-form');
+            tempForm.innerHTML = `
+                <input type="text" placeholder="Nom de l'option" class="new-option-input">
+                <button type="button" class="confirm-option">Valider</button>
+                <a class="cancel-option">Annuler</a>
+            `;
+
+            // Ajoute le forme dans le DOM
+            fieldWrapper.appendChild(tempForm);
+
+            // Validation du bouton d'ajout de réponse
+            tempForm.querySelector('.confirm-option').addEventListener('click', function() {
+                const inputValue = tempForm.querySelector('.new-option-input').value.trim();
+                if (inputValue) {
+                    const newOption = document.createElement('div');
+                    newOption.innerHTML = `
+                        <input type="radio" name=${title}>
+                        <label>${inputValue}</label>
+                        <a class="delete-option" style="color: red"> - Supprimer </a> <br>
+                    `;
+
+                    // Ajoute un event pour supprimer la réponse
+                    newOption.querySelector('.delete-option').addEventListener('click', function() {
+                        newOption.remove();
+                    });
+
+                    radioGroup.appendChild(newOption);
+                    tempForm.remove();
+                } else {
+                    alert('Veuillez entrer un nom pour l\'option.');
+                }
+            });
+
+            // Ajoute l'option d'annuler la création d'une réponse
+            tempForm.querySelector('.cancel-option').addEventListener('click', function() {
+                tempForm.remove();
+            });
+        });
     } else if (type === 'text') {
         fieldWrapper.innerHTML = `
-            Remarques du professeur :
+            ${title} :
             <button onclick="deleteField(this)" type="button">Supprimer</button> <br>
-            <textarea name="remarque[]" placeholder="Veuillez entrer vos remarques lors de la rencontre..." class="textareaLivret"></textarea> <br><br>
+            <textarea name="remarque[]" class="textareaLivret"></textarea> <br><br>
         `;
     }
 
@@ -612,6 +683,7 @@ function addFieldContent(containerId, type) {
     const addButton = fieldContainer.querySelector(`button[onclick="addField('${containerId}')"]`);
     fieldContainer.insertBefore(fieldWrapper, addButton);
 }
+
 
 
 //Supprime le formulaire
