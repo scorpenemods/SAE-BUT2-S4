@@ -605,7 +605,7 @@ function handleFieldSelection(button, containerId) {
             fieldText.remove();
         });
 
-        // Ajoute le formulaire au DOM, dans le conteneur parent
+        // Ajoute le formulaire dans le conteneur parent
         fieldWrapper.appendChild(fieldText);
     }
 
@@ -621,10 +621,12 @@ function addFieldContent(containerId, type, title) {
     if (type === 'qcm') {
         fieldWrapper.innerHTML = `
             ${title} :
+            <button class="edit-qcm" style="display: none;">Modifier</button>
             <button onclick="deleteField(this)" type="button">Supprimer</button> <br>
             <div class="radio-group">
-            </div>
-            <button type="button" class="add-option">+ Ajouter une réponse</button> <br><br>
+            </div> <br class="last">
+            <button type="button" class="add-option">+ Ajouter une réponse</button>
+            <a class="save-qcm"> Enregistrer </a>
         `;
 
         // ajoute l'option de pouvoir ajouter une réponse
@@ -640,8 +642,9 @@ function addFieldContent(containerId, type, title) {
                 <a class="cancel-option">Annuler</a>
             `;
 
-            // Ajoute le forme dans le DOM
-            fieldWrapper.appendChild(tempForm);
+            // Ajoute le forme
+            const addOptionButton = fieldWrapper.querySelector('.add-option');
+            fieldWrapper.insertBefore(tempForm, addOptionButton);
 
             // Validation du bouton d'ajout de réponse
             tempForm.querySelector('.confirm-option').addEventListener('click', function() {
@@ -651,13 +654,16 @@ function addFieldContent(containerId, type, title) {
                     newOption.innerHTML = `
                         <input type="radio" name=${title}>
                         <label>${inputValue}</label>
-                        <a class="delete-option" style="color: red"> - Supprimer </a> <br>
+                        <a class="delete-option" style="color: red"> - Supprimer </a> <br> <br class="last">
                     `;
+
 
                     // Ajoute un event pour supprimer la réponse
                     newOption.querySelector('.delete-option').addEventListener('click', function() {
                         newOption.remove();
                     });
+
+                    fieldWrapper.querySelector('br[class="last"]').remove();
 
                     radioGroup.appendChild(newOption);
                     tempForm.remove();
@@ -669,6 +675,31 @@ function addFieldContent(containerId, type, title) {
             // Ajoute l'option d'annuler la création d'une réponse
             tempForm.querySelector('.cancel-option').addEventListener('click', function() {
                 tempForm.remove();
+            });
+
+            fieldWrapper.querySelector('.save-qcm').addEventListener('click', function () {
+                // Désactive les boutons d'ajout et de modification
+                fieldWrapper.querySelector('.add-option').style.display = 'none';
+                fieldWrapper.querySelector('.save-qcm').style.display = 'none';
+
+                // Supprime les liens "Supprimer" associés à chaque réponse
+                fieldWrapper.querySelectorAll('.delete-option').forEach(option => option.style.display = 'none');
+
+                // Bouton pour modifier
+                const editButton = fieldWrapper.querySelector('.edit-qcm');
+                editButton.style.display = 'inline-block';
+
+                // Réactiver la possibilité de modifier le qcm
+                editButton.addEventListener('click', function (event) {
+                    event.preventDefault()
+                    // Réactive les boutons de suppression et d'ajout
+                    fieldWrapper.querySelector('.add-option').style.display = 'inline-block';
+                    fieldWrapper.querySelector('.save-qcm').style.display = 'inline-block';
+                    fieldWrapper.querySelectorAll('.delete-option').forEach(option => option.style.display = 'inline-block');
+
+                    // Supprime le bouton "Modifier"
+                    editButton.style.display = 'none';
+                });
             });
         });
     } else if (type === 'text') {
@@ -684,6 +715,12 @@ function addFieldContent(containerId, type, title) {
     fieldContainer.insertBefore(fieldWrapper, addButton);
 }
 
+
+function validerModif(containerId, title){
+    const fieldWrapper = document.createElement('p');
+
+    fieldWrapper.checkVisibility();
+}
 
 
 //Supprime le formulaire
@@ -701,10 +738,10 @@ function deleteMeeting() {
     meetingCounter--;
     showcontent--;
 
-    // enlève le dernier bouton de rencontre
+    // enlève la dernière rencontre
     const aside = document.querySelector(".livretbar");
     const lastMeetingButton = aside.querySelector(`.vignette[onclick="showContent(${showcontent})"]`);
-    const lastLineBreak = lastMeetingButton.nextElementSibling; // Assuming line break follows the button
+    const lastLineBreak = lastMeetingButton.nextElementSibling;
 
     if (lastMeetingButton) {
         aside.removeChild(lastMeetingButton);
@@ -713,9 +750,10 @@ function deleteMeeting() {
         aside.removeChild(lastLineBreak);
     }
 
-    // Enlève le contenu de la rencontre
     const contentContainer = document.querySelector(".content-livret");
     const lastContent = document.getElementById(showcontent);
+
+    // Enlève le contenu de la dernière rencontre
     if (lastContent) {
         contentContainer.removeChild(lastContent);
     }
