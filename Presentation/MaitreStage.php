@@ -11,7 +11,6 @@ $database = Database::getInstance();
 $pdo = $database->getConnection();
 
 require_once "../Model/Config.php";
-$_SESSION['last_activity'] = time();
 
 if (isset($_SESSION['last_activity'])) {
     // Calculer le temps d'inactivité
@@ -26,7 +25,7 @@ if (isset($_SESSION['last_activity'])) {
     }
 }
 
-
+$_SESSION['last_activity'] = time();
 
 // Initialisation du nom de l'utilisateur par défaut (Guest) si non connecté
 $userName = "Guest";

@@ -10,9 +10,6 @@ require_once "../Model/Config.php";
 // Initialiser le nom d'utilisateur comme 'Guest' au cas où aucun utilisateur n'est connecté
 $userName = "Guest";
 
-// Mettre à jour l'heure de la dernière activité
-$_SESSION['last_activity'] = time();
-
 if (isset($_SESSION['last_activity'])) {
     // Calculer le temps d'inactivité
     $inactive_time = time() - $_SESSION['last_activity'];
@@ -25,6 +22,8 @@ if (isset($_SESSION['last_activity'])) {
         header("Location: Logout.php");
     }
 }
+
+$_SESSION['last_activity'] = time();
 
 // Vérifie que l'utilisateur est connecté en regardant si une session utilisateur est active
 if (isset($_SESSION['user'])) {

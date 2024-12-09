@@ -4,7 +4,7 @@ require_once '../Model/Database.php'; // Classe pour gérer la connexion à la b
 require_once '../Model/Person.php';
 
 require_once "../Model/Config.php";
-$_SESSION['last_activity'] = time();
+
 
 if (isset($_SESSION['last_activity'])) {
     // Calculer le temps d'inactivité
@@ -18,6 +18,7 @@ if (isset($_SESSION['last_activity'])) {
         header("Location: Logout.php");
     }
 }
+$_SESSION['last_activity'] = time();
 
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);

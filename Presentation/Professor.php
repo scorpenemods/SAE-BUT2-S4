@@ -7,7 +7,6 @@ require "../Model/Person.php";
 $database = (Database::getInstance());
 
 require_once "../Model/Config.php";
-$_SESSION['last_activity'] = time();
 
 if (isset($_SESSION['last_activity'])) {
     // Calculer le temps d'inactivité
@@ -21,6 +20,8 @@ if (isset($_SESSION['last_activity'])) {
         header("Location: Logout.php");
     }
 }
+
+$_SESSION['last_activity'] = time();
 
 $userName = "Guest";
 $senderId = $_SESSION['user_id'] ?? null;

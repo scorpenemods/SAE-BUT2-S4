@@ -14,7 +14,6 @@ $database = (Database::getInstance());
 $userName = "Guest";
 
 require_once "../Model/Config.php";
-$_SESSION['last_activity'] = time();
 
 if (isset($_SESSION['last_activity'])) {
     // Calculer le temps d'inactivité
@@ -28,6 +27,8 @@ if (isset($_SESSION['last_activity'])) {
         header("Location: Logout.php");
     }
 }
+
+$_SESSION['last_activity'] = time();
 
 // Vérifie si l'utilisateur est connecté et récupère ses données
 if (isset($_SESSION['user'])) {
