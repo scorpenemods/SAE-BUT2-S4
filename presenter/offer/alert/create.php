@@ -21,7 +21,6 @@ if ($duration == null && $address == null && $study_level == null && $salary == 
     exit;
 }
 
-
 try {
     $database = (Database::getInstance());
     $database->addAlert($userId, $duration, $address, $study_level, $salary, $begin_date);

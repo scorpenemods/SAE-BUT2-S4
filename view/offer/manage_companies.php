@@ -56,7 +56,7 @@ $companies = Company::getAll();
                     echo "<td>" . $company->getSize() . "</td>";
                     echo "<td>" . $company->getAddress() . "</td>";
                     echo "<td>" . $company->getSiren() . "</td>";
-                    echo "<td><button class='delete-btn' onclick='deleteCompany(".$company->getId().")'>Supprimer</button></td>";
+                    echo "<td><button class='delete-btn' onclick='deleteAlert(" .$company->getId().")'>Supprimer</button></td>";
                     echo "</tr>";
                 }
                 ?>

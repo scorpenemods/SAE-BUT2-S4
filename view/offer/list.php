@@ -121,6 +121,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 ?>
                 <div id="create" style="text-align: center"> <a href="create.php">Créer une offre</i></a> </div>
                 <div id="create_company" style="text-align: center"> <a href="./company/create.php">Créer une société</i></a> </div>
+                <div id="manage_alerts" style="text-align: center"> <a href="/view/offer/manage_alerts.php">Gérer les alertes</i></a> </div>
             </div>
             <div class="company-listings">
                 <?php

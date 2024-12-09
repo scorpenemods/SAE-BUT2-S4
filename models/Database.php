@@ -1159,6 +1159,21 @@ class Database
 
     }
 
+    /**
+     * @throws Exception
+     */
+    public function deleteAlert($id){
+
+        $query = 'delete from Alert where id = :id;';
+        $stmt = $this->getConnection()->prepare($query);
+        $stmt->bindParam(':id', $id);
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de la suppression : " . $e->getMessage());
+        }
+    }
+
 
     public function getAlert(): array
     {
@@ -1173,5 +1188,17 @@ class Database
         return $alerts;
     }
 
+    public function getAlertByUser($user_id): array
+    {
+        $stmt = $this->getConnection()->prepare('select * from Alert where user_id = :user_id;');
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $alerts = [];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $alerts[] = $row;
+        }
+        return $alerts;
+    }
 
 }
