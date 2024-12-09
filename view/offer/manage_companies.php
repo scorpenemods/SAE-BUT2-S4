@@ -36,7 +36,7 @@ $companies = Company::getAll();
     <body>
         <?php include dirname(__FILE__) . '/../header.php'; ?>
         <main>
-            <div class="container">
+            <div class="table">
                 <h1>Tableau des Compagnies</h1>
                 <table>
                     <thead>
