@@ -10,6 +10,24 @@ require "../Model/Person.php";
 $database = Database::getInstance();
 $pdo = $database->getConnection();
 
+require_once "../Model/Config.php";
+$_SESSION['last_activity'] = time();
+
+if (isset($_SESSION['last_activity'])) {
+    // Calculer le temps d'inactivité
+    $inactive_time = time() - $_SESSION['last_activity'];
+
+    // Si le temps d'inactivité dépasse le délai autorisé
+    if ($inactive_time > SESSION_TIMEOUT) {
+        // Détruire la session et rediriger vers la page de connexion
+        session_unset();
+        session_destroy();
+        header("Location: Logout.php");
+    }
+}
+
+
+
 // Initialisation du nom de l'utilisateur par défaut (Guest) si non connecté
 $userName = "Guest";
 $senderId = $_SESSION['user_id'] ?? null;

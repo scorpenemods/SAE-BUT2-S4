@@ -1,16 +1,30 @@
 <?php
+date_default_timezone_set('Europe/Paris');
 // Démarre la session au début du script pour gérer les informations utilisateur
 session_start();
-
 // Inclure les fichiers nécessaires pour les classes Database et Person
 require_once "../Model/Database.php";
 require_once "../Model/Person.php";
+require_once "../Model/Config.php";
 
 // Initialiser le nom d'utilisateur comme 'Guest' au cas où aucun utilisateur n'est connecté
 $userName = "Guest";
 
-// Définir le fuseau horaire sur Paris
-date_default_timezone_set('Europe/Paris');
+// Mettre à jour l'heure de la dernière activité
+$_SESSION['last_activity'] = time();
+
+if (isset($_SESSION['last_activity'])) {
+    // Calculer le temps d'inactivité
+    $inactive_time = time() - $_SESSION['last_activity'];
+
+    // Si le temps d'inactivité dépasse le délai autorisé
+    if ($inactive_time > SESSION_TIMEOUT) {
+        // Détruire la session et rediriger vers la page de connexion
+        session_unset();
+        session_destroy();
+        header("Location: Logout.php");
+    }
+}
 
 // Vérifie que l'utilisateur est connecté en regardant si une session utilisateur est active
 if (isset($_SESSION['user'])) {
