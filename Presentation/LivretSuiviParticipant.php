@@ -9,7 +9,7 @@ $database = Database::getInstance();
 
 <div class="participant-container">
     <!-- Section pour l'affichage des informations des participants (étudiant, professeur, maître de stage) -->
-    <div  style="display: flex; gap: 10%; justify-content: center;" id="student-details">
+    <div  style="display: flex; justify-content: center;" id="student-details">
         <?php
         if (isset($_GET['user_id'])) {
             $userId = intval($_GET['user_id']); // Assurez-vous que l'ID est un entier
@@ -22,12 +22,12 @@ $database = Database::getInstance();
             // Vérifier si des informations ont été trouvées pour l'étudiant
             if (!empty($studentInfo) && !isset($studentInfo['error'])) {
                 echo "<div class='participant-info student-info'>";
-                echo "<h3>Informations sur l'étudiant :</h3>";
+                echo "<h3>Etudiant :</h3>";
                 echo "<p><strong>Nom :</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
                 echo "<p><strong>Prénom :</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
                 echo "<p><strong>Email :</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
                 echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
-                echo "<p><strong>Activité :</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
+                echo "<p><strong>Formation :</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
                 echo "</div>";
             } else {
                 echo "<p>Aucune information trouvée pour l'étudiant.</p>";
@@ -36,11 +36,12 @@ $database = Database::getInstance();
             // Vérifier si des informations ont été trouvées pour le professeur
             if (!empty($professorInfo) && !isset($professorInfo['error'])) {
                 echo "<div class='participant-info professor-info'>";
-                echo "<h3>Informations sur le professeur :</h3>";
+                echo "<h3>Professeur tuteur :</h3>";
                 echo "<p><strong>Nom :</strong> " . htmlspecialchars($professorInfo['nom']) . "</p>";
                 echo "<p><strong>Prénom :</strong> " . htmlspecialchars($professorInfo['prenom']) . "</p>";
                 echo "<p><strong>Email :</strong> " . htmlspecialchars($professorInfo['email']) . "</p>";
                 echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($professorInfo['telephone']) . "</p>";
+                echo "<p><strong>Spécialité :</strong> " . htmlspecialchars($professorInfo['activite']) . "</p>";
                 echo "</div>";
             } else {
                 echo "<p>Aucune information sur le professeur n'a été trouvée.</p>";
@@ -49,11 +50,12 @@ $database = Database::getInstance();
             // Vérifier si des informations ont été trouvées pour le maître de stage
             if (!empty($mentorInfo) && !isset($mentorInfo['error'])) {
                 echo "<div class='participant-info mentor-info'>";
-                echo "<h3>Informations sur le maître de stage :</h3>";
+                echo "<h3>Maître de stage :</h3>";
                 echo "<p><strong>Nom :</strong> " . htmlspecialchars($mentorInfo['nom']) . "</p>";
                 echo "<p><strong>Prénom :</strong> " . htmlspecialchars($mentorInfo['prenom']) . "</p>";
                 echo "<p><strong>Email :</strong> " . htmlspecialchars($mentorInfo['email']) . "</p>";
                 echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($mentorInfo['telephone']) . "</p>";
+                echo "<p><strong>Activité professionnelle :</strong> " . htmlspecialchars($mentorInfo['activite']) . "</p>";
                 echo "</div>";
             } else {
                 echo "<p>Aucune information sur le maître de stage n'a été trouvée.</p>";

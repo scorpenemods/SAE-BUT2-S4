@@ -1558,7 +1558,6 @@ section.Menus div.Contenus div.Contenu p.noNotes{
      display: flex;
      flex-direction: column;
      gap: 20px;
-     width: 60%;
      margin: auto;
      border: 1px solid #ddd;
      padding: 20px;

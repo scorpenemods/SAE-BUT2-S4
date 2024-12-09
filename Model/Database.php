@@ -1320,7 +1320,8 @@ class Database
             u.nom AS nom,
             u.prenom AS prenom,
             u.email AS email,
-            u.telephone AS telephone
+            u.telephone AS telephone,
+            u.activite AS activite
         FROM Groupe g
         LEFT JOIN User u ON g.conv_id = g.conv_id AND u.role = 2
         WHERE g.conv_id IN (
@@ -1347,7 +1348,8 @@ class Database
         u.nom AS maitre_stage_nom,
         u.prenom AS maitre_stage_prenom,
         u.email AS maitre_stage_email,
-        u.telephone AS maitre_stage_phone
+        u.telephone AS maitre_stage_phone,
+        u.activite AS maitre_stage_activity
     FROM Groupe g
     LEFT JOIN User u ON g.user_id = u.id
     WHERE u.role = 3
@@ -1373,6 +1375,7 @@ class Database
             'prenom' => $data['maitre_stage_prenom'],
             'email' => $data['maitre_stage_email'],
             'telephone' => $data['maitre_stage_phone'],
+            'activite' => $data['maitre_stage_activity'],
         ];
     }
 
