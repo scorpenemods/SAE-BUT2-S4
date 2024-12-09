@@ -200,4 +200,18 @@ class Company {
             date("Y-m-d H:i:s")
         );
     }
+
+    public static function delete(int $id): ?bool {
+        global $db;
+        $sql = "DELETE FROM companies WHERE id = :id";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        if ($db->errorCode()) {
+            return false;
+        }
+
+        return true;
+    }
 }

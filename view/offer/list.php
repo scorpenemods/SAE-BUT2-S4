@@ -8,8 +8,8 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 $_SESSION['user'] = 1;
-$_SESSION['company_id'] = 2;
-$_SESSION['secretariat'] = false;
+$_SESSION['company_id'] = 0;
+$_SESSION['secretariat'] = true;
 
 $user_id = $_SESSION['user'] ?? 0;
 $company_id = $_SESSION['company_id'] ?? 0;
@@ -110,6 +110,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 <?php
                 if ($secretariat_group) {
                     echo '<div id="new"> <a href="/view/offer/list.php?type=new">Nouvelles offres</i></a> </div>';
+                    echo '<div id="manage"> <a href="/view/offer/manage_companies.php">Gestions des sociétés</i></a> </div>';
                 }
 
                 if ($secretariat_group || $company_id != 0) {
@@ -119,6 +120,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 }
                 ?>
                 <div id="create" style="text-align: center"> <a href="create.php">Créer une offre</i></a> </div>
+                <div id="create_company" style="text-align: center"> <a href="./company/create.php">Créer une société</i></a> </div>
             </div>
             <div class="company-listings">
                 <?php
