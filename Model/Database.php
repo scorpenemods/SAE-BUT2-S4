@@ -1323,7 +1323,8 @@ class Database
             u.nom AS nom,
             u.prenom AS prenom,
             u.email AS email,
-            u.telephone AS telephone
+            u.telephone AS telephone,
+            u.activite AS activite
         FROM Groupe g
         LEFT JOIN User u ON g.conv_id = g.conv_id AND u.role = 2
         WHERE g.conv_id IN (
