@@ -986,8 +986,11 @@ class Database
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':student_id', $studentId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Retourne un tableau associatif
     }
+
+
+
 
 
     // ------------------------------------------------------------------------------------------------------- //
@@ -1320,8 +1323,7 @@ class Database
             u.nom AS nom,
             u.prenom AS prenom,
             u.email AS email,
-            u.telephone AS telephone,
-            u.activite AS activite
+            u.telephone AS telephone
         FROM Groupe g
         LEFT JOIN User u ON g.conv_id = g.conv_id AND u.role = 2
         WHERE g.conv_id IN (

@@ -833,6 +833,8 @@ function searchStudents() {
     });
 }
 
+
+
 function selectStudent(element) {
     console.log("Élément sélectionné : ", element);
 
@@ -863,23 +865,43 @@ function selectStudent(element) {
         console.error("Impossible de trouver l'élément avec l'ID 'selected-student-name'");
     }
 
+
     // Charger les notes de l'étudiant sélectionné
-    fetchNotesForStudent(studentId);
     fetchStudentInfo(studentId);
     fetchStudentInfoManage(studentId);
+    fetchNotes(studentId);
 
-    // Activer les boutons de gestion des notes
-    document.getElementById('addNoteButton').removeAttribute('disabled');
-    document.getElementById('validateBtn').removeAttribute('disabled');
-    document.getElementById('cancelBtn').removeAttribute('disabled');
 }
 
 
-document.querySelectorAll('.student').forEach(student => {
-    student.addEventListener('click', function () {
-        selectStudent(student);
-    });
+document.getElementById('studentForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Empêche le rechargement de la page
+    const studentId = document.getElementById('student-id').value;
+
+    // Rechargez dynamiquement les données pour l'étudiant sélectionné
+    window.location.href = `?student_id=${studentId}`;
 });
+
+function fetchNotes(studentId) {
+    fetch(`GetNotes.php?student_id=${studentId}`)
+        .then(response => response.text())
+        .then(html => {
+            // Mettre à jour le tableau des notes
+            document.querySelector('.notes-container').innerHTML = html;
+
+            // Récupérer le nom de l'étudiant dans le tableau chargé
+            const nameElement = document.querySelector('.notes-container h2');
+            if (nameElement) {
+                document.getElementById('selected-student-name').textContent = nameElement.textContent.trim();
+                nameElement.remove(); // Supprimer le h2 chargé pour éviter les doublons
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération des notes :', error);
+        });
+}
+
+
 
 
 // -----------------------------------------------------------------------//
