@@ -8,8 +8,8 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 $_SESSION['user'] = 1;
-$_SESSION['company_id'] = 1;
-$_SESSION['secretariat'] = true;
+$_SESSION['company_id'] = 0;
+$_SESSION['secretariat'] = false;
 
 $user_id = $_SESSION['user'] ?? 0;
 $company_id = $_SESSION['company_id'] ?? 0;
@@ -118,10 +118,14 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                     echo '<div id="updated"> <a href="/view/offer/list.php?type=updated">Offres mises à jour</i></a> </div>';
                     echo '<div id="inactive"> <a href="/view/offer/list.php?type=inactive">Offres inactives</i></a> </div>';
                 }
+
+                if (!$secretariat_group && $company_id == 0) {
+                    echo '<div id="manage_alerts" style="text-align: center"> <a href="/view/offer/manage_alerts.php">Gérer les alertes</i></a> </div>';
+                    echo '<div id="manage_applications" style="text-align: center"> <a href="/view/offer/manage_application.php">Voir mes candidatures</a></div>';
+                }
                 ?>
                 <div id="create" style="text-align: center"> <a href="create.php">Créer une offre</i></a> </div>
                 <div id="create_company" style="text-align: center"> <a href="./company/create.php">Créer une société</i></a> </div>
-                <div id="manage_alerts" style="text-align: center"> <a href="/view/offer/manage_alerts.php">Gérer les alertes</i></a> </div>
             </div>
             <div class="company-listings">
                 <?php

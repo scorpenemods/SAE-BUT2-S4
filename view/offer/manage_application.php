@@ -11,7 +11,7 @@ $returnUrl = $_SERVER["HTTP_REFERER"] ?? $_SERVER["HTTP_ORIGIN"] . $_SERVER["REQ
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 $user = $_SESSION["user"] ?? null;
-if ($user == null) {
+if ($user == null && (!$_SESSION["secretariat"] || $_SESSION["company_id"] != 0)) {
     header("Location : ". $returnUrl);
     die();
 }
