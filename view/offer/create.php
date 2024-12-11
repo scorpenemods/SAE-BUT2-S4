@@ -99,6 +99,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                             }
                             ?>
                         </div>
+                        <div class="tagsList"></div>
                     </div>
                 </div>
 
@@ -123,9 +124,6 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
         </main>
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
         <script>
-            /*
-               Manage the visibility of the tags dropdown.
-             */
             const dropdownBtn = document.getElementById('tagsDropdownBtn');
             const dropdown = document.getElementById("tagsDropdown");
             const checkboxes = document.querySelectorAll('input[name="tags"]');
@@ -134,25 +132,35 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 dropdown.classList.toggle("show");
             }
 
-            /*
-                Close the dropdown when the user clicks outside of it.
-             */
             window.onclick = function(event) {
                 if (!event.target.matches('.tags-dropdown-btn') && !event.target.closest('.tags-dropdown-content')) {
                     if (dropdown.classList.contains('show')) {
                         dropdown.classList.remove('show');
+                        updateDropdownButtonText()
                     }
                 }
             }
 
-            function updateDropdownButtonText(categories) {
-                if (categories.length === 0) {
-                    dropdownBtn.textContent = 'Sélectionner les catégories';
-                } else if (categories.length <= 2) {
-                    dropdownBtn.textContent = categories.join(', ');
-                } else {
-                    dropdownBtn.textContent = `${categories.length} catégories sélectionnées`;
+            function updateDropdownButtonText() {
+                const categories = []
+                for (const category of dropdown.children) {
+                    const checked = category.querySelector('input').checked;
+
+                    if (checked) {
+                        categories.push(category.textContent.trim());
+                    }
                 }
+
+                const tagsList = document.querySelector('.tagsList');
+                tagsList.innerHTML = '';
+
+                categories.forEach(category => {
+                    const tag = document.createElement('span');
+                    tag.classList.add('tag');
+                    tag.textContent = category;
+
+                    tagsList.appendChild(tag);
+                });
             }
         </script>
     </body>

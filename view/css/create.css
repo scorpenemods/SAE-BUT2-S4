@@ -103,12 +103,14 @@ button:hover {
     border-radius: 6px;
     background-color: var(--input-background);
     text-align: left;
+    color: var(--text-color);
     cursor: pointer;
     font-size: 0.9rem;
     transition: all 0.3s ease;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 0.5rem;
 }
 .tags-dropdown-btn:hover {
     border-color: var(--input-focus);
@@ -145,6 +147,18 @@ button:hover {
 .tags-dropdown-content input[type="checkbox"] {
     margin-right: 8px;
     width: auto;
+}
+.tag {
+    background-color: #f1f1f1;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.tagsList {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 .show {
     display: block;
