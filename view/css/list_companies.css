@@ -2,14 +2,12 @@ body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
     margin: 0;
-    padding: 20px;
     background-color: #f4f4f4;
 }
-.container {
-    max-width: 800px;
+.container-table {
+    max-width: 1100px;
     margin: 0 auto;
     background-color: #fff;
-    padding: 20px;
     margin-top: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -28,6 +26,7 @@ th, td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
+    border-radius: 5px;
 }
 th {
     background-color: #f2f2f2;
@@ -47,4 +46,17 @@ tr:hover {
 }
 .delete-btn:hover {
     background-color: #ff3333;
+}
+
+.show-btn {
+    background-color: #3a6a79;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    text-decoration: none;
+}
+.show-btn:hover {
+    background-color: #2a5298;
 }

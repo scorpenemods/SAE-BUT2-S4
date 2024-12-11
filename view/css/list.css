@@ -441,15 +441,16 @@ input[type=number] {
     justify-content: center;
     flex-direction: row;
     gap: 10px;
-    padding-bottom: 20px;
-    padding-top: 20px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1800px) {
     .button-group {
         flex-direction: column;
         gap: 10px;
-        padding-bottom: 20px;
-        padding-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .button-group div {
+        margin-bottom: 15px;
     }
 }

@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-require dirname(__FILE__) . '/../../models/PendingOffer.php';
+require dirname(__FILE__) . '/../../models/Applications.php';
+require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
@@ -9,12 +10,13 @@ $returnUrl = $_SERVER["HTTP_REFERER"] ?? $_SERVER["HTTP_ORIGIN"] . $_SERVER["REQ
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 
-$secretariat_group = $_SESSION['secretariat'] ?? false;
-if (!$secretariat_group) {
-    header('Location : '. $returnUrl);
+$user = $_SESSION["user"] ?? null;
+if ($user == null) {
+    header("Location : ". $returnUrl);
+    die();
 }
 
-$companies = Company::getAll();
+$applications = Applications::getAllForUser($user);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -37,26 +39,35 @@ $companies = Company::getAll();
         <?php include dirname(__FILE__) . '/../header.php'; ?>
         <main>
             <div class="container-table">
-                <h1>Tableau des Compagnies</h1>
+                <h1>Tableau des candidature</h1>
                 <table>
                     <thead>
                     <tr>
-                        <th>Nom</th>
-                        <th>Employés</th>
-                        <th>Addresse</th>
-                        <th>Siren</th>
-                        <th>Action</th>
+                        <th>Titre</th>
+                        <th>Email</th>
+                        <th>Numéro</th>
+                        <th>Date de début</th>
+                        <th>Status</th>
+                        <th>Voir l'offre</th>
                     </tr>
                     </thead>
                     <tbody>
                         <?php
-                        foreach ($companies as $company) {
+                        foreach ($applications as $apply) {
+                            $offer = Offer::getById($apply->getIdOffer());
                             echo "<tr>";
-                            echo "<td>" . $company->getName() . "</td>";
-                            echo "<td>" . $company->getSize() . "</td>";
-                            echo "<td>" . $company->getAddress() . "</td>";
-                            echo "<td>" . $company->getSiren() . "</td>";
-                            echo "<td><button class='delete-btn' onclick='deleteCompany(".$company->getId().")'>Supprimer</button></td>";
+                            echo "<td>" . $offer->getTitle() . "</td>";
+                            echo "<td>" . $offer->getEmail() . "</td>";
+                            echo "<td>" . $offer->getPhone() . "</td>";
+                            echo "<td>" . $offer->getBeginDate() . "</td>";
+                            if ($apply->getStatus() == "Pending") {
+                                echo "<td style='background: orange; text-align: center'>" . $apply->getStatus() . "</td>";
+                            } else if ($apply->getStatus() == "Accepted") {
+                                echo "<td style='background: green; text-align: center'>" . $apply->getStatus() . "</td>";
+                            } else if ($apply->getStatus() == "Rejected") {
+                                echo "<td style='background: red; text-align: center'>" . $apply->getStatus() . "</td>";
+                            }
+                            echo "<td><a class='show-btn' href='/view/offer/detail.php?id=" . $offer->getId() . "'>Voir l'offre</a></td>";
                             echo "</tr>";
                         }
                         ?>
@@ -66,23 +77,8 @@ $companies = Company::getAll();
         </main>
         <?php include dirname(__FILE__) . '/../footer.php'; ?>
         <script type="text/javascript">
-            function deleteCompany (id) {
-                $.ajax({
-                    url: '../../presenter/offer/company/delete.php',
-                    type: 'POST',
-                    data: {
-                        company_id: id
-                    },
-                    success: function (data) {
-                        if (data.status === 'success') {
-                            $('#notification').showNotification('success', 'La société a bien été supprimée');
-                            sendNotification("success", "Succés", "La société a bien été supprimée");
-                            location.reload();
-                        } else {
-                            sendNotification("failure", "Erreur", "La société n'a pas pu être supprimée");
-                        }
-                    }
-                });
+            function goToPage(id) {
+                window.location.href('/detail.php?id=' + id);
             }
         </script>
     </body>

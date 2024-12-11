@@ -182,4 +182,30 @@ class Applications {
 
         return true;
     }
+
+    /**
+     *
+     */
+    public static function getAllForUser(int $id_user): ?array {
+        global $db;
+        $stmt = $db->prepare("SELECT * FROM applications WHERE idUser = :id");
+        $stmt->bindParam(":id", $id_user);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        $result = $stmt->fetchAll();
+        if (!$result) {
+            return null;
+        }
+
+        $applications = [];
+        foreach ($result as $row) {
+            $applications[] = new Applications($row["idUser"], $row["idOffer"], $row["created_at"], $row["status"]);
+        }
+
+        return $applications;
+    }
 }

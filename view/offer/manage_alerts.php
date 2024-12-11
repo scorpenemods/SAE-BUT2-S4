@@ -28,7 +28,7 @@ $alerts = $database->getAlertByUser($userId);
     <body>
         <?php include dirname(__FILE__) . '/../header.php'; ?>
         <main>
-            <div class="table">
+            <div class="container-table">
                 <h1>Tableau des alertes</h1>
                 <table>
                     <thead>

@@ -8,7 +8,7 @@ require dirname(__FILE__) . '/../../presenter/utils.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 $_SESSION['user'] = 1;
-$_SESSION['company_id'] = 0;
+$_SESSION['company_id'] = 1;
 $_SESSION['secretariat'] = true;
 
 $user_id = $_SESSION['user'] ?? 0;

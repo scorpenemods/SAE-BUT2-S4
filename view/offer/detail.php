@@ -19,7 +19,6 @@ $company_id = $_SESSION['company_id'] ?? 0;
 if ($company_id != 0 && Offer::isCompanyOffer($offerId, $company_id)) {
     //header("Location: ../offer/list.php");
     //die();
-    echo $company_id;
     echo !Offer::isCompanyOffer($offerId, $company_id);
 }
 $secretariat_group = $_SESSION['secretariat'] ?? false;
