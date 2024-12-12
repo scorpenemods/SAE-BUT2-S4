@@ -631,11 +631,6 @@ class Offer {
             $params[':minSalary'] = $filters['minSalary'];
         }
 
-        if (!empty($filters['maxSalary'])) {
-            $sql .= ' AND offers.salary <= :maxSalary';
-            $params[':maxSalary'] = $filters['maxSalary'];
-        }
-
         if (!empty($filters['address'])) {
             $sql .= ' AND offers.address LIKE :address';
             $params[':address'] = '%' . $filters['address'] . '%';
