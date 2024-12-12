@@ -6,14 +6,13 @@ require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
-$returnUrl = $_SERVER["HTTP_REFERER"] ?? $_SERVER["HTTP_ORIGIN"] . $_SERVER["REQUEST_URI"];
+//$returnUrl = $_SERVER["HTTP_REFERER"] ?? $_SERVER["HTTP_ORIGIN"] . $_SERVER["REQUEST_URI"];
 
 error_reporting(E_ALL ^ E_DEPRECATED);
-
 $user = $_SESSION["user"] ?? null;
-if ($user == null || $_SESSION["secretariat"] || $_SESSION["company_id"] != 0) {
-    header("Location : ". $returnUrl);
-    die();
+if ($user === null) {
+    header("Location: /view/offer/list.php");
+    exit();
 }
 
 $applications = Applications::getAllForUser($user);
