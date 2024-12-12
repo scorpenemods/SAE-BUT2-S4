@@ -470,7 +470,7 @@ class PendingOffer extends Offer {
      * @return string
      */
     public function getRealDuration(): string {
-        $duration = $this->getDuration();
+        $duration = $this->getDuration() * 7;
 
         $years = intdiv($duration, 365);
         $remainingDays = $duration % 365;
@@ -479,7 +479,6 @@ class PendingOffer extends Offer {
         $remainingDays = $remainingDays % 30;
 
         $weeks = intdiv($remainingDays, 7);
-        $days = $remainingDays % 7;
 
         $result = '';
 
@@ -491,9 +490,6 @@ class PendingOffer extends Offer {
         }
         if ($weeks > 0) {
             $result .= $weeks . ' semaine' . ($weeks > 1 ? 's' : '') . ', ';
-        }
-        if ($days > 0) {
-            $result .= $days . ' jour' . ($days > 1 ? 's' : '');
         }
 
         return rtrim($result, ', ');

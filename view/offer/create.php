@@ -67,7 +67,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="duration">Durée</label>
-                        <input type="text" id="duration" name="duration" placeholder="Ex: 30 jours" required>
+                        <input type="text" id="duration" name="duration" placeholder="Ex: 6 semaines" required>
                     </div>
                     <div class="form-group">
                         <label for="salary">Salaire</label>

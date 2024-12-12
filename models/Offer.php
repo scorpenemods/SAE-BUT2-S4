@@ -526,9 +526,6 @@ class Offer {
         if ($weeks > 0) {
             $result .= $weeks . ' semaine' . ($weeks > 1 ? 's' : '') . ', ';
         }
-        if ($days > 0) {
-            $result .= $days . ' jour' . ($days > 1 ? 's' : '');
-        }
 
         return rtrim($result, ', ');
     }
