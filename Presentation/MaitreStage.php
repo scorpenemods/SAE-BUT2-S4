@@ -268,16 +268,16 @@ $notes = $database->getNotes($userId);
 <!-- Section contenant les différents menus -->
 <section class="Menus" id="Menus">
     <nav>
-        <span onclick="widget(0)" class="widget-button Current">Accueil</span>
-        <span onclick="widget(1)" class="widget-button">Mission de stage</span>
-        <span onclick="widget(2)" class="widget-button">Gestion Stagiaire</span>
-        <span onclick="widget(3)" class="widget-button">Livret de Suivi</span>
-        <span onclick="widget(4)" class="widget-button">Documents</span>
-        <span onclick="widget(5)" class="widget-button">Messagerie</span>
-        <span onclick="widget(6)" class="widget-button">Notes</span>
-        <span onclick="widget(7)" class="widget-button">Offres</span>
-
+        <span onclick="window.location.href='MaitreStage.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>">Accueil</span>
+        <span onclick="window.location.href='MaitreStage.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>">Mission de stage</span>
+        <span onclick="window.location.href='MaitreStage.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>">Gestion Stagiaire</span>
+        <span onclick="window.location.href='MaitreStage.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>">Livret de Suivi</span>
+        <span onclick="window.location.href='MaitreStage.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>">Documents</span>
+        <span onclick="window.location.href='MaitreStage.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>">Messagerie</span>
+        <span onclick="window.location.href='MaitreStage.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>">Notes</span>
+        <span onclick="window.location.href='MaitreStage.php?section=7'" class="widget-button <?php echo $activeSection == '7' ? 'Current' : ''; ?>">Offres</span>
     </nav>
+
 
     <div class="Contenus">
         <!-- Contenu de l'Accueil -->
@@ -287,9 +287,9 @@ $notes = $database->getNotes($userId);
         </div>
 
         <!-- Contenu des autres sections -->
-        <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">Missions de stage</div>
-        <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">Contenu Gestion Stagiaires</div>
-        <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : 'Contenu'; ?>" id="content-3">
+        <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : ''; ?>" id="content-1">Missions de stage</div>
+        <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : ''; ?>" id="content-2">Contenu Gestion Stagiaires</div>
+        <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : ''; ?>" id="content-3">
             <!-- Affichage du livret de suivi -->
 
             <?php include_once("LivretSuivi.php");?>
@@ -302,7 +302,7 @@ $notes = $database->getNotes($userId);
         </div>
 
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : 'Contenu'; ?>" id="content-5">
+        <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : ''; ?>" id="content-5">
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
@@ -347,7 +347,7 @@ $notes = $database->getNotes($userId);
             </div>
         </div>
 
-        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">
+        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : ' '; ?>" id="content-6">
             <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
             <h2 id="selected-student-name"><?php echo isset($studentName) && !empty($studentName) ? htmlspecialchars($studentName) : 'Sélectionnez un étudiant'; ?></h2>
             <form method="POST" action="MaitreStage.php">
@@ -378,13 +378,14 @@ $notes = $database->getNotes($userId);
             <div id="validationMessage" class="validation-message"></div>
             <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
         </div>
-    </div>
-    <!-- Offres Content -->
-    <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
-        Contenu Offres
-        <a href="../View/List.php?type=all">
-            <button type="button">Voir les offres</button>
-        </a>
+
+        <!-- Offres Content -->
+        <div class="Contenu <?php echo ($activeSection == '7') ? 'Visible' : ' '; ?>" id="content-7">
+            Contenu Offres
+            <a href="../View/List.php?type=all">
+                <button type="button">Voir les offres</button>
+            </a>
+        </div>
     </div>
 </section>
 

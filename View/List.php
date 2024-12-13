@@ -298,23 +298,20 @@ const BASE_URL = '/SAE-BUT2-1.1/';
             const groupeSecretariat = <?php echo json_encode($groupeSecretariat); ?>;
             const companyId = <?php echo json_encode($company_id); ?>;
             if (groupeSecretariat) {
-                <?php echo 'ALED';?>
                 document.getElementById('all').style.display = "block";
                 document.getElementById('new').style.display = "block";
                 document.getElementById('updated').style.display = "block";
                 document.getElementById('create').style.display = "block";
                 document.getElementById('inactive').style.display = "block";
             } else {
-                <?php echo 'ALED2';?>
-                document.getElementById('all').style.display = "none";
+
+                document.getElementById('all').style.display = "block";
                 document.getElementById('new').style.display = "none";
                 document.getElementById('updated').style.display = "none";
                 document.getElementById('inactive').style.display = "none";
                 document.getElementById('create').style.display = "block";
             }
-
             if (companyId !== 0) {
-                <?php echo 'ALED3';?>
                 document.getElementById('all').style.display = "block";
                 document.getElementById('inactive').style.display = "block";
                 document.getElementById('create').style.display = "block";
@@ -322,7 +319,7 @@ const BASE_URL = '/SAE-BUT2-1.1/';
 
             function heartUpdate(id) {
                 $.ajax({
-                    url: '../Presenter/Offer/Favorite.php',
+                    url: '../Presentation/Offer/Favorite.php',
                     type: 'POST',
                     data: {id: id},
                     success: function(msg, status) {

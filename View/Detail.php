@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+include_once "../Model/Database.php";
 require dirname(__FILE__) . '/../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../Model/Company.php';
 require dirname(__FILE__) . '/../Presentation/Offer/Filter.php';
@@ -222,7 +222,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                 echo "<div class='modal-content'>";
                     echo "<span class='close' onclick='closeModal()'>&times;</span>";
                     echo "<h2>Déposez votre candidature pour cette offre :</h2><br>";
-                    echo "<form action='/Presentation/Offer/Apply.php' method='POST' enctype='multipart/form-data'>";
+                    echo "<form action='/Presentation/Apply.php' method='POST' enctype='multipart/form-data'>";
                         echo "<label for='cv'>Déposez votre CV :</label>";
                         echo "<input type='file' class='file-upload' id='cv' name='cv' accept='.pdf' required><br>";
                         echo "<label for='motivation'>Déposez votre lettre de motivation :</label>";
@@ -293,10 +293,14 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
         } else if (companyId !== 0) {
             toggleVisibility('edit-form', true);
             toggleVisibility('hide-form', true);
-        } else {
+        } else{
             toggleVisibility('apply-button', true);
         }
     } else {
+        toggleVisibility('apply-button', true);
+    }
+
+    if (<?php echo $_SESSION["user_role"]?>===0){
         toggleVisibility('apply-button', true);
     }
 
@@ -326,5 +330,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
         }
     }
 </script>
+
+
 </body>
 </html>
