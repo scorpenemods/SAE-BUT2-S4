@@ -6,16 +6,34 @@ require_once '../Model/Note.php';
 global $database;
 $database = Database::getInstance();
 
+$statusMessage = null;
+$statusColor = null;
 
-// Récupération de l'utilisateur connecté
+// Vérifiez si la méthode est POST pour traiter les données soumises
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $studentId = $_POST['student_id'] ?? null; // Remarque : vérifiez le nom correct du champ
+    $notesData = $_POST['notes'] ?? [];
 
-$person = isset($_SESSION['user']) ? unserialize($_SESSION['user']) : null;
-
-
-
-
-// Récupération de l'étudiant sélectionné via `student_id`
-$studentId = isset($_GET['student_id']) ? intval($_GET['student_id']) : null;
+    if (!$studentId || !is_array($notesData)) {
+        $statusMessage = "Erreur : Identifiant étudiant ou données des notes invalides.";
+        $statusColor = "red";
+    } else {
+        try {
+            $pdo = $database->getConnection();
+            $database->addNotes($studentId, $notesData, $pdo);
+            // Après le traitement, redirigez avec PRG
+            header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=success");
+            exit;
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            // Redirection en cas d'erreur
+            header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=error");
+            exit;
+        }
+    }
+}
+// Récupération des données pour l'affichage
+$studentId = $_GET['student_id'] ?? null;
 $studentName = "Sélectionnez un étudiant";
 $notes = [];
 
@@ -28,10 +46,23 @@ if ($studentId) {
         $studentName = "Étudiant introuvable";
     }
 }
+
+// Récupérez le message de statut s'il est défini
+$status = $_GET['status'] ?? null;
+if ($status === 'success') {
+    $statusMessage = "Les notes ont été enregistrées avec succès.";
+    $statusColor = "green";
+} elseif ($status === 'error') {
+    $statusMessage = "Erreur lors de l'enregistrement des notes. Veuillez réessayer.";
+    $statusColor = "red";
+}
 ?>
 
-<form method="GET" action="">
+
+
+<form id="noteForm" action="Professor.php" method="post">
     <input type="hidden" id="student-id" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
+
     <h2 id="selected-student-name"><?= $studentName; ?></h2>
     <div class="notes-container">
         <table id="notesTable" class="notes-table">
@@ -78,4 +109,8 @@ if ($studentId) {
         </table>
     </div>
 
+    <button type="button" id="addNote" class="mainbtn" onclick="addNoteRow()">Ajouter une note</button>
+    <button type="submit">Enregistrer toutes les notes</button>
+
 </form>
+<div id="validationMessage" class="validation-message"></div>

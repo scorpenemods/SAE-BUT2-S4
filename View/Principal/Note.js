@@ -27,7 +27,7 @@ function addNoteRow() {
     const table = document.getElementById('notesTable').getElementsByTagName('tbody')[0];
     const rowCount = table.rows.length;
 
-    // Limiter le nombre de lignes de notes à un maximum de 4
+    // Limiter à un maximum de 4 nouvelles lignes
     if (rowCount >= 4) {
         const validationMessage = document.getElementById('validationMessage');
         validationMessage.textContent = 'Vous ne pouvez pas ajouter plus de 4 notes.';
@@ -38,22 +38,23 @@ function addNoteRow() {
         return;
     }
 
+
     const newRow = table.insertRow();
     const newId = `new-${rowCount + 1}`;
-    newRow.classList.add('new-note-row');
 
-    newRow.innerHTML = `
-      
-        <td><textarea name="sujet[]" rows="1"></textarea></td>
-        <td><textarea name="appreciations[]" rows="1"></textarea></td>
-        <td><input type="number" name="note[]" required></td>
-        <td><input type="number" name="coeff[]" required></td>
-        <td><button type="button" onclick="deleteNoteRow(this)">Supprimer</button></td>
-    `;
+    const idCell = newRow.insertCell(0);
+    const sujetCell = newRow.insertCell(1);
+    const appreciationCell = newRow.insertCell(2);
+    const noteCell = newRow.insertCell(3);
+    const coeffCell = newRow.insertCell(4);
+    const actionCell = newRow.insertCell(5);
 
-    // Activer les boutons Valider et Annuler
-    document.getElementById('validateBtn').removeAttribute('disabled');
-    document.getElementById('cancelBtn').removeAttribute('disabled');
+    idCell.textContent = `new-${newId}`;
+    sujetCell.innerHTML = `<textarea name="notes[${newId}][sujet]" rows="1" required></textarea>`;
+    appreciationCell.innerHTML = `<textarea name="notes[${newId}][appreciation]" rows="1"></textarea>`;
+    noteCell.innerHTML = `<input type="number" name="notes[${newId}][note]" min="0" max="20" required>`;
+    coeffCell.innerHTML = `<input type="number" name="notes[${newId}][coeff]" min="0" required>`;
+    actionCell.innerHTML = `<button type="button" onclick="deleteNoteRow(this)">Supprimer</button>`;
 }
 
 

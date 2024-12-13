@@ -888,38 +888,45 @@ class Database
     function addNotes($studentId, $notesData, $pdo): void
     {
         try {
-            // Préparation de la requête d'insertion
-            $query = $pdo->prepare("INSERT INTO Note (sujet, appreciation, note, coeff, user_id)
-    VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
+            // Vérification des données en entrée
+            if (!is_array($notesData)) {
+                throw new Exception("Les données fournies à addNotes doivent être un tableau.");
+            }
 
             foreach ($notesData as $note) {
-                // Validation de la note (conversion en float)
-                $noteValue = $note['note'];
-                if ($noteValue === '' || !is_numeric($noteValue) || $noteValue < 0) {
-                    continue; // Ignorer cette note si elle est invalide
-                } else {
-                    $noteValue = floatval($noteValue); // Convertir en float
+                if (!isset($note['sujet'], $note['appreciation'], $note['note'], $note['coeff'])) {
+                    throw new Exception("Données manquantes dans une note : " . print_r($note, true));
                 }
 
-                // Validation du coefficient (conversion en float)
-                $coeffValue = $note['coeff'];
-                if ($coeffValue === '' || !is_numeric($coeffValue) || $coeffValue < 0) {
-                    continue; // Ignorer ce coefficient s'il est invalide
-                } else {
-                    $coeffValue = floatval($coeffValue); // Convertir en float
+                if (empty($note['sujet']) || $note['note'] < 0 || $note['note'] > 20 || $note['coeff'] <= 0) {
+                    throw new Exception("Données invalides dans une note : " . print_r($note, true));
                 }
+            }
 
-                // Exécution de la requête avec les paramètres
+            // Préparation de la requête d'insertion
+            $query = $pdo->prepare("INSERT INTO Note (sujet, appreciation, note, coeff, user_id)
+            VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
+
+            // Exécution pour chaque note
+            foreach ($notesData as $note) {
                 $query->execute([
                     ':sujet' => $note['sujet'],
                     ':appreciation' => $note['appreciation'],
-                    ':note' => $noteValue,
-                    ':coeff' => $coeffValue,
-                    ':user_id' => $studentId  // user_id est bien l'ID de l'étudiant ici
+                    ':note' => floatval($note['note']),
+                    ':coeff' => floatval($note['coeff']),
+                    ':user_id' => $studentId
                 ]);
             }
         } catch (PDOException $e) {
+            // Gérer les erreurs de la base de données
+            echo "Erreur lors de l'insertion des notes : " . $e->getMessage();
+            error_log($e->getMessage());
+            throw $e;
+        } catch (Exception $e) {
+            // Gérer les autres erreurs
             echo "Erreur : " . $e->getMessage();
+            error_log($e->getMessage());
+            throw $e;
         }
     }
 

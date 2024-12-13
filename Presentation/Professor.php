@@ -1,4 +1,5 @@
 <?php
+ob_start();
 global $database;
 session_start();
 require "../Model/Database.php";
@@ -159,8 +160,6 @@ $userId = $person->getId();
             </div>
         <?php endforeach; ?>
     </div>
-
-
 </div>
 
 <section class="Menus" id="Menus">
@@ -343,3 +342,6 @@ $userId = $person->getId();
 </script>
 </body>
 </html>
+<?php
+ob_end_flush();
+?>
