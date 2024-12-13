@@ -70,7 +70,7 @@ class Company {
             $result["name"],
             $result["size"],
             $result["address"],
-            $result["siren"],
+            $result["Siret"],
             $result["created_at"],
             $result["updated_at"]
         );
