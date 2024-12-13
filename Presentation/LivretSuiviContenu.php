@@ -3,7 +3,7 @@
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';
 ?>
-<div> <!-- Changer le style pour que les formulaires s'affichent à côté des rencontres  -->
+<!-- Changer le style pour que les formulaires s'affichent à côté des rencontres  -->
     <aside class="livretbar">
         <h3 style="text-decoration: underline;">Rencontres / dépôts</h3><br>
         <span class="vignette" onclick="showContent(0)">1ère rencontre</span><br>
@@ -75,4 +75,3 @@ require_once '../Model/Person.php';
             </div>
         </div>
     </div>
-</div>

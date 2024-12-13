@@ -59,17 +59,18 @@ $database = Database::getInstance();
                     echo "</div>";
                 } else {
                     echo "<div class='participant-container'>Aucune information sur le maître de stage n'a été trouvée.</div>";
-                }?>
-
-            </div><br>
+                }
+                ?>
+        </div><br>
+        <div>
             <!-- Création des différentes rencontres / dépôts : -->
             <?php include_once "LivretSuiviContenu.php"; ?>
-        <?php
+            <?php
 
             } else {
                 echo "<div class='participant-container'>Sélectionnez un étudiant pour voir les détails.</div>";
             }
             ?>
+        </div>
     </div>
-
 </div>
