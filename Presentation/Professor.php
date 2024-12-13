@@ -1,10 +1,28 @@
 <?php
+ob_start();
 global $database;
 session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";
 
 $database = (Database::getInstance());
+
+require_once "../Model/Config.php";
+
+if (isset($_SESSION['last_activity'])) {
+    // Calculer le temps d'inactivité
+    $inactive_time = time() - $_SESSION['last_activity'];
+
+    // Si le temps d'inactivité dépasse le délai autorisé
+    if ($inactive_time > SESSION_TIMEOUT) {
+        // Détruire la session et rediriger vers la page de connexion
+        session_unset();
+        session_destroy();
+        header("Location: Logout.php");
+    }
+}
+
+$_SESSION['last_activity'] = time();
 
 $userName = "Guest";
 $senderId = $_SESSION['user_id'] ?? null;
@@ -59,118 +77,6 @@ $pdo = $database->getConnection();
 $person = unserialize($_SESSION['user']);
 $userId = $person->getId();
 
-
-// Permet d'ajouter les notes à la base de données
-if (isset($_POST['submit_notes']) && ($_POST['student_id'])) {
-    if (isset($_POST['sujet'], $_POST['appreciations'], $_POST['note'], $_POST['coeff'])) {
-        $allFieldsFilled = true;
-        $notesData = [];
-
-        foreach ($_POST['sujet'] as $index => $sujet) {
-            if (empty($_POST['sujet'][$index]) || empty($_POST['appreciations'][$index]) || empty($_POST['note'][$index]) || empty($_POST['coeff'][$index])) {
-                $allFieldsFilled = false;
-                break;
-            }
-            $notesData[] = [
-                'sujet' => $_POST['sujet'][$index],
-                'appreciation' => $_POST['appreciations'][$index],
-                'note' => $_POST['note'][$index],
-                'coeff' => $_POST['coeff'][$index],
-            ];
-        }
-
-        if ($allFieldsFilled) {
-            try {
-                $database->addNotes($studentId, $notesData, $pdo);
-                header("Location: Professor.php");
-                exit();
-            } catch (PDOException $e) {
-                echo "Erreur lors de l'ajout des notes : " . $e->getMessage();
-            }
-        } else {
-            echo "Veuillez remplir tous les champs.";
-        }
-    } else {
-        echo "Erreur lors de la soumission du formulaire. Veuillez réessayer.";
-    }
-}
-
-
-// Permet de supprimer une note dans la base de données
-if (isset($_POST['delete_note'])) {
-    if (!empty($_POST['note_id'])) {
-        $noteId = intval($_POST['note_id']);
-
-        $database = Database::getInstance();
-        $pdo = $database->getConnection();
-
-        try {
-            $database->deleteNote($noteId, $userId, $pdo);
-            header("Location: Professor.php");
-            exit();
-        } catch (PDOException $e) {
-            echo "Erreur lors de la suppression de la note : " . $e->getMessage();
-        }
-    } else {
-        echo "ID de la note manquant.";
-    }
-}
-
-if (isset($_POST['saveNote'])) {
-    if (isset($_POST['note_id'], $_POST['sujet'], $_POST['appreciations'], $_POST['note'], $_POST['coeff'])) {
-        $noteId = $_POST['note_id'];
-        $sujet = $_POST['sujet'];
-        $appreciation = $_POST['appreciations'];
-        $note = $_POST['note'];
-        $coeff = $_POST['coeff'];
-
-        // Vérifier si aucun des champs n'est vide
-        if (!empty($sujet) && !empty($appreciation) && is_numeric($note) && is_numeric($coeff)) {
-            try {
-                // Mise à jour de la note en utilisant la méthode updateNote
-                $database->updateNote(
-                    $noteId,
-                    $userId,
-                    $sujet,
-                    $appreciation,
-                    $note,
-                    $coeff,
-                    $pdo
-                );
-
-                // Renvoyer une réponse de succès en texte simple
-                echo "success";
-                exit();
-            } catch (PDOException $e) {
-                // Renvoyer une réponse d'erreur en texte simple
-                echo "Erreur lors de la mise à jour des notes : " . $e->getMessage();
-                exit();
-            }
-        } else {
-            // Renvoyer une réponse d'erreur si les champs ne sont pas valides
-            echo "Veuillez remplir tous les champs correctement.";
-            exit();
-        }
-    } else {
-        // Renvoyer une réponse d'erreur si le formulaire est mal soumis
-        echo "Erreur lors de la soumission du formulaire. Veuillez réessayer.";
-        exit();
-    }
-}
-
-if (!empty($students)) {
-    $student = $students[0];
-} else {
-    $student = null;
-}
-if ($student !== null) {
-    $studentName = htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom());
-} else {
-    $studentName = "Vous n'avez pas d'étudiants";
-}
-
-$hasStudents = !empty($students);
-$notes = $database->getNotes($userId);
 
 ?>
 
@@ -249,7 +155,6 @@ $notes = $database->getNotes($userId);
     </div>
     <div class="students">
         <?php foreach ($students as $student): ?>
-            <?php ($student->getId()); ?>
             <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>" onclick="selectStudent(this)">
                 <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
             </div>
@@ -340,33 +245,7 @@ $notes = $database->getNotes($userId);
             </div>
         </div>
         <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">
-            <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
-            <h2 id="selected-student-name"><?php echo isset($studentName) && !empty($studentName) ? htmlspecialchars($studentName) : 'Sélectionnez un étudiant'; ?></h2>
-            <form method="GET" action="Professor.php">
-                <input type="hidden" id="student-id" name="student_id" value="<?php echo $studentId; ?>">
-                <div class="notes-container">
-                    <table id="notesTable" class="notes-table">
-                        <thead>
-                        <tr>
-                            <th>Sujet</th>
-                            <th>Appréciations</th>
-                            <th>Note /20</th>
-                            <th>Coefficient</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="notes-buttons">
-                    <button type="button" id="addNoteButton" class="mainbtn" onclick="addNoteRow()" disabled>Ajouter une note</button>
-                    <button type="submit" name="submit_notes" class="mainbtn" onclick="validateNotes()" id="validateBtn" disabled>Valider les notes</button>
-                    <button type="button" class="mainbtn" onclick="cancelNotes()" id="cancelBtn" disabled>Annuler</button>
-                </div>
-            </form>
-            <div id="validationMessage" class="validation-message"></div>
-            <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
+            <?php  include_once "GetNotes.php"?>
         </div>
 
     <!-- Offres Content -->
@@ -463,3 +342,6 @@ $notes = $database->getNotes($userId);
 </script>
 </body>
 </html>
+<?php
+ob_end_flush();
+?>

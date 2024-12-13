@@ -1,12 +1,12 @@
 <?php
 session_start();
 
-require dirname(__FILE__) . '/../../Model/Offer.php';
+include_once '../../Model/Offer.php';
 
 $http_referer = $_SERVER["HTTP_REFERER"];
-
-if (isset($_SESSION['user']) && isset($_POST['id'])) {
-    $user_id = $_SESSION['user'];
+echo $_SESSION["user_id"];
+if (isset($_SESSION['user_id']) && isset($_POST['id'])) {
+    $user_id = $_SESSION['user_id'];
     if (Offer::isFavorite($_POST['id'], $user_id)) {
         Offer::removeFavorite($_POST['id'], $user_id);
         die(json_encode(array("status" => "success")));

@@ -726,9 +726,8 @@ body.dark-mode .sidebar {
 
 /*-------------------------------- Livret de suivi -----------------------------------------------------------*/
 .livret-container {
-    display: flex;
-    width: 100%;
-    font-family: Arial, sans-serif;
+    clear: both;
+    margin-top: 20px;
 }
 
 .livretbar {
@@ -750,7 +749,6 @@ body.dark-mode .sidebar {
 .content-livret{
     margin-left: 1%;
     width: 100%;
-
 }
 
 .content-section {
@@ -1554,18 +1552,17 @@ section.Menus div.Contenus div.Contenu p.noNotes{
 
 /* ----------------- Style des participant du livret de suivi -------------------- */
 
- .participant-container {
-     display: flex;
-     flex-direction: column;
-     gap: 20px;
-     width: 60%;
-     margin: auto;
-     border: 1px solid #ddd;
-     padding: 20px;
-     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-     border-radius: 8px;
-     background-color: #f9f9f9;
- }
+.participant-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: auto;
+    border: 1px solid #ddd;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
 
 /* Style pour chaque participant (étudiant, professeur, maître de stage) */
 .participant-info {

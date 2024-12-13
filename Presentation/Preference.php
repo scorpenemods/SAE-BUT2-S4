@@ -3,6 +3,23 @@ session_start();
 require_once '../Model/Database.php'; // Classe pour gérer la connexion à la base de données
 require_once '../Model/Person.php';
 
+require_once "../Model/Config.php";
+
+
+if (isset($_SESSION['last_activity'])) {
+    // Calculer le temps d'inactivité
+    $inactive_time = time() - $_SESSION['last_activity'];
+
+    // Si le temps d'inactivité dépasse le délai autorisé
+    if ($inactive_time > SESSION_TIMEOUT) {
+        // Détruire la session et rediriger vers la page de connexion
+        session_unset();
+        session_destroy();
+        header("Location: Logout.php");
+    }
+}
+$_SESSION['last_activity'] = time();
+
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
     if ($person instanceof Person) {

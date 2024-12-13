@@ -888,38 +888,45 @@ class Database
     function addNotes($studentId, $notesData, $pdo): void
     {
         try {
-            // Préparation de la requête d'insertion
-            $query = $pdo->prepare("INSERT INTO Note (sujet, appreciation, note, coeff, user_id)
-    VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
+            // Vérification des données en entrée
+            if (!is_array($notesData)) {
+                throw new Exception("Les données fournies à addNotes doivent être un tableau.");
+            }
 
             foreach ($notesData as $note) {
-                // Validation de la note (conversion en float)
-                $noteValue = $note['note'];
-                if ($noteValue === '' || !is_numeric($noteValue) || $noteValue < 0) {
-                    continue; // Ignorer cette note si elle est invalide
-                } else {
-                    $noteValue = floatval($noteValue); // Convertir en float
+                if (!isset($note['sujet'], $note['appreciation'], $note['note'], $note['coeff'])) {
+                    throw new Exception("Données manquantes dans une note : " . print_r($note, true));
                 }
 
-                // Validation du coefficient (conversion en float)
-                $coeffValue = $note['coeff'];
-                if ($coeffValue === '' || !is_numeric($coeffValue) || $coeffValue < 0) {
-                    continue; // Ignorer ce coefficient s'il est invalide
-                } else {
-                    $coeffValue = floatval($coeffValue); // Convertir en float
+                if (empty($note['sujet']) || $note['note'] < 0 || $note['note'] > 20 || $note['coeff'] <= 0) {
+                    throw new Exception("Données invalides dans une note : " . print_r($note, true));
                 }
+            }
 
-                // Exécution de la requête avec les paramètres
+            // Préparation de la requête d'insertion
+            $query = $pdo->prepare("INSERT INTO Note (sujet, appreciation, note, coeff, user_id)
+            VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
+
+            // Exécution pour chaque note
+            foreach ($notesData as $note) {
                 $query->execute([
                     ':sujet' => $note['sujet'],
                     ':appreciation' => $note['appreciation'],
-                    ':note' => $noteValue,
-                    ':coeff' => $coeffValue,
-                    ':user_id' => $studentId  // user_id est bien l'ID de l'étudiant ici
+                    ':note' => floatval($note['note']),
+                    ':coeff' => floatval($note['coeff']),
+                    ':user_id' => $studentId
                 ]);
             }
         } catch (PDOException $e) {
+            // Gérer les erreurs de la base de données
+            echo "Erreur lors de l'insertion des notes : " . $e->getMessage();
+            error_log($e->getMessage());
+            throw $e;
+        } catch (Exception $e) {
+            // Gérer les autres erreurs
             echo "Erreur : " . $e->getMessage();
+            error_log($e->getMessage());
+            throw $e;
         }
     }
 
@@ -986,8 +993,11 @@ class Database
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':student_id', $studentId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Retourne un tableau associatif
     }
+
+
+
 
 
     // ------------------------------------------------------------------------------------------------------- //
@@ -1320,7 +1330,8 @@ class Database
             u.nom AS nom,
             u.prenom AS prenom,
             u.email AS email,
-            u.telephone AS telephone
+            u.telephone AS telephone,
+            u.activite AS activite
         FROM Groupe g
         LEFT JOIN User u ON g.conv_id = g.conv_id AND u.role = 2
         WHERE g.conv_id IN (
@@ -1347,7 +1358,8 @@ class Database
         u.nom AS maitre_stage_nom,
         u.prenom AS maitre_stage_prenom,
         u.email AS maitre_stage_email,
-        u.telephone AS maitre_stage_phone
+        u.telephone AS maitre_stage_phone,
+        u.activite AS maitre_stage_activity
     FROM Groupe g
     LEFT JOIN User u ON g.user_id = u.id
     WHERE u.role = 3
@@ -1373,6 +1385,7 @@ class Database
             'prenom' => $data['maitre_stage_prenom'],
             'email' => $data['maitre_stage_email'],
             'telephone' => $data['maitre_stage_phone'],
+            'activite' => $data['maitre_stage_activity'],
         ];
     }
 

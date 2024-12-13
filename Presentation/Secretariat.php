@@ -6,11 +6,29 @@ session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";
 
+
 // Création d'une nouvelle instance de la classe Database
 $database = (Database::getInstance());
 
 // Initialisation du nom d'utilisateur par défaut
 $userName = "Guest";
+
+require_once "../Model/Config.php";
+
+if (isset($_SESSION['last_activity'])) {
+    // Calculer le temps d'inactivité
+    $inactive_time = time() - $_SESSION['last_activity'];
+
+    // Si le temps d'inactivité dépasse le délai autorisé
+    if ($inactive_time > SESSION_TIMEOUT) {
+        // Détruire la session et rediriger vers la page de connexion
+        session_unset();
+        session_destroy();
+        header("Location: Logout.php");
+    }
+}
+
+$_SESSION['last_activity'] = time();
 
 // Vérifie si l'utilisateur est connecté et récupère ses données
 if (isset($_SESSION['user'])) {
