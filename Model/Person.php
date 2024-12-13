@@ -34,6 +34,10 @@ class Person
         return $this->id;
     }
 
+    public function __toString(): string{
+        return $this->nom.' '.$this->prenom.' '.$this->role.' '.$this->activite.' '.$this->telephone.' '.$this->email.' '.$this->id;
+    }
+
     // Méthode pour obtenir le nom de l'utilisateur
     public function getNom(): string
     {

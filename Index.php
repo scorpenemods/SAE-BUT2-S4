@@ -42,6 +42,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $user['id']
             );
 
+            $_SESSION['personne'] = $person;
+
             $_SESSION['user_id'] = $person->getId();
             $_SESSION['user'] = serialize($person);
             $_SESSION['user_role'] = $person->getRole();

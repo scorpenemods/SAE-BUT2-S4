@@ -1406,4 +1406,56 @@ class Database
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
     }
+
+    public function getCompanyById(){
+        $sql = "select * from company where id = :id;";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $this, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getCompanyByUserId(int $id): array {
+        $sql = "SELECT Company.id, Company.name, Company.size, Company.address, Company.Siret, 
+                   Company.postal_code, Company.phone_number, Company.city, Company.country, 
+                   Company.APE_code, Company.legal_status
+            FROM Company 
+            JOIN User_Company ON User_Company.company_id = Company.id 
+            WHERE User_Company.user_id = :id;";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        try {
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne
+
+            if ($result) {
+                return [
+                    'id' => $result['id'],
+                    'name' => $result['name'],
+                    'size' => $result['size'],
+                    'address' => $result['address'],
+                    'siret' => $result['Siret'],
+                    'postal_code' => $result['postal_code'],
+                    'phone_number' => $result['phone_number'],
+                    'city' => $result['city'],
+                    'country' => $result['country'],
+                    'APE_code' => $result['APE_code'],
+                    'legal_status' => $result['legal_status']
+                ];
+            }
+
+            // Si aucun résultat trouvé
+            return [];
+        } catch (PDOException $e) {
+            // Gestion des erreurs : journalisation, levée d'exception, ou retour d'une réponse vide
+            error_log("Database error: " . $e->getMessage());
+            return [];
+        }
+    }
+
+
+
+
 }

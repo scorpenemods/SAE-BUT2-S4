@@ -149,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="radio" name="choice" value="tutorcompany" id="tutorcompany" required />
             <label for="tutorcompany">Tuteur professionnel <span class="required">*</span></label>
 
+
             <input type="radio" name="choice" value="secretariat" id="secretariat" required />
             <label for="secretariat">Secrétariat <span class="required">*</span></label>
         </p>

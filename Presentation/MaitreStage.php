@@ -282,6 +282,7 @@ $notes = $database->getNotes($userId);
         <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">
             <?php include_once("Documents/Documents.php");?>
             <script src="../View/Documents/Documents.js"></script>
+            <a href="../View/Agreement/PreAgreementFormCompany.php">Accès au formulaire de pré-convention</a>
         </div>
 
         <!-- Contenu de la Messagerie -->
