@@ -931,7 +931,7 @@ class Database
     }
 
 
-    public function updateNote($noteId, $userId, $sujet, $appreciation, $note, $coeff, $pdo)
+    public function updateNote($noteId, $userId, $sujet, $appreciation, $note, $coeff, $pdo): void
     {
         try {
             $pdo->beginTransaction();

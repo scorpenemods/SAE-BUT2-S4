@@ -6,32 +6,53 @@ require_once '../Model/Note.php';
 global $database;
 $database = Database::getInstance();
 
-$statusMessage = null;
-$statusColor = null;
-
-// Vérifiez si la méthode est POST pour traiter les données soumises
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $studentId = $_POST['student_id'] ?? null; // Remarque : vérifiez le nom correct du champ
-    $notesData = $_POST['notes'] ?? [];
+    $action = $_POST['action'] ?? null; // Identifier l'action
+    $studentId = $_POST['student_id'] ?? null;
 
-    if (!$studentId || !is_array($notesData)) {
-        $statusMessage = "Erreur : Identifiant étudiant ou données des notes invalides.";
-        $statusColor = "red";
-    } else {
-        try {
-            $pdo = $database->getConnection();
-            $database->addNotes($studentId, $notesData, $pdo);
-            // Après le traitement, redirigez avec PRG
-            header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=success");
-            exit;
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-            // Redirection en cas d'erreur
-            header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=error");
-            exit;
+    if (!$studentId) {
+        header("Location: Professor.php?status=error");
+        exit;
+    }
+
+    try {
+        $pdo = $database->getConnection();
+
+        // Ajouter des notes
+        if ($action === 'add_notes') {
+            $notesData = $_POST['notes'] ?? [];
+
+            if (!empty($notesData)) {
+                $database->addNotes($studentId, $notesData, $pdo);
+            }
         }
+
+        // Mettre à jour les notes
+        if ($action === 'update_notes') {
+            $noteIds = $_POST['note_id'] ?? [];
+            foreach ($noteIds as $noteId) {
+                $sujet = $_POST["sujet_$noteId"] ?? null;
+                $appreciation = $_POST["appreciations_$noteId"] ?? null;
+                $note = $_POST["note_$noteId"] ?? null;
+                $coeff = $_POST["coeff_$noteId"] ?? null;
+
+                if ($sujet !== null && $note !== null && $coeff !== null) {
+                    $database->updateNote($noteId, $studentId, $sujet, $appreciation, $note, $coeff, $pdo);
+                }
+            }
+        }
+
+        // Redirection après succès
+        header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=success");
+        exit;
+    } catch (Exception $e) {
+        error_log($e->getMessage());
+        header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=error");
+        exit;
     }
 }
+
+
 // Récupération des données pour l'affichage
 $studentId = $_GET['student_id'] ?? null;
 $studentName = "Sélectionnez un étudiant";
@@ -47,15 +68,6 @@ if ($studentId) {
     }
 }
 
-// Récupérez le message de statut s'il est défini
-$status = $_GET['status'] ?? null;
-if ($status === 'success') {
-    $statusMessage = "Les notes ont été enregistrées avec succès.";
-    $statusColor = "green";
-} elseif ($status === 'error') {
-    $statusMessage = "Erreur lors de l'enregistrement des notes. Veuillez réessayer.";
-    $statusColor = "red";
-}
 ?>
 
 
@@ -95,8 +107,8 @@ if ($status === 'success') {
                         </td>
                         <td>
                             <input type="hidden" name="note_id[]" value="<?= htmlspecialchars($note->getId()); ?>">
-                            <button type="button" id="edit_<?= htmlspecialchars($note->getId()); ?>" name="saveNotes" class="mainbtn" onclick="editOrSave(<?= htmlspecialchars($note->getId()); ?>)">Modifier les notes</button>
-                            <button type="button" name="delete_note" class="btn btn-danger" onclick="showConfirmation(<?= htmlspecialchars($note->getId()); ?>, event)">Supprimer</button>
+                            <button type="button" id="edit_<?= htmlspecialchars($note->getId()); ?>" class="mainbtn" name="action" value="update_notes" onclick="editNote(this)">Modifier les notes</button
+                            <button type="button" name="delete_note" class="btn btn-danger" >Supprimer</button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -110,7 +122,8 @@ if ($status === 'success') {
     </div>
 
     <button type="button" id="addNote" class="mainbtn" onclick="addNoteRow()">Ajouter une note</button>
-    <button type="submit">Enregistrer toutes les notes</button>
+    <button type="submit" name="action" value="add_notes">Enregistrer toutes les notes</button>
+    <button type="submit" name="action" value="update_notes">Sauvegarder les modifications</button>
 
 </form>
 <div id="validationMessage" class="validation-message"></div>

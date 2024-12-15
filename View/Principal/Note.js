@@ -54,7 +54,7 @@ function addNoteRow() {
     appreciationCell.innerHTML = `<textarea name="notes[${newId}][appreciation]" rows="1"></textarea>`;
     noteCell.innerHTML = `<input type="number" name="notes[${newId}][note]" min="0" max="20" required>`;
     coeffCell.innerHTML = `<input type="number" name="notes[${newId}][coeff]" min="0" required>`;
-    actionCell.innerHTML = `<button type="button" onclick="deleteNoteRow(this)">Supprimer</button>`;
+    actionCell.innerHTML = `<button type="button" onclick="deleteNoteRow(this)">Annuler</button>`;
 }
 
 
@@ -83,5 +83,48 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+function editNote(button) {
+    const row = button.parentElement.parentElement;
+    const inputs = row.querySelectorAll('input, textarea');
+
+    if (button.textContent === 'Modifier les notes') {
+        // Activer les champs
+        inputs.forEach(input => {
+            input.removeAttribute('disabled');
+            input.style.backgroundColor = '#fff'; // Facultatif : Visuel pour les champs activés
+        });
+
+        // Mettre le bouton en mode "Enregistrer"
+        button.textContent = 'Enregistrer les notes';
+        button.setAttribute("onclick", "submitForm()");
+    } else {
+        // Désactiver les champs
+        inputs.forEach(input => {
+            input.setAttribute('disabled', 'true');
+            input.style.backgroundColor = '#f0f0f0'; // Facultatif : Visuel pour les champs désactivés
+        });
+
+        // Remettre le bouton en mode "Modifier"
+        button.textContent = 'Modifier les notes';
+        button.setAttribute("onclick", "editNote(this)");
+    }
+}
+
+
+document.getElementById('editBtn').forEach(button => {
+    button.addEventListener('click', editNote);
+});
+
+// Soumettre le formulaire
+function submitForm() {
+    const form = document.getElementById('noteForm');
+    form.submit();
+}
+
+
+
+
+
 
 
