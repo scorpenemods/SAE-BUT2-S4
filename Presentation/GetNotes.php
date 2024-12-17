@@ -41,6 +41,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
+        if ($action === 'delete_note') {
+            $noteId = $_POST['note_id'] ?? null;
+
+            if ($noteId !== null) {
+                // Appel à la fonction deleteNote
+                $database->deleteNote($noteId, $studentId, $pdo);
+
+                // Redirection après la suppression
+                header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=success");
+                exit;
+            } else {
+                // Si noteId est null, erreur
+                header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=error");
+                exit;
+            }
+        }
 
         // Redirection après succès
         header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=success");
@@ -108,7 +124,12 @@ if ($studentId) {
                         <td>
                             <input type="hidden" name="note_id[]" value="<?= htmlspecialchars($note->getId()); ?>">
                             <button type="button" id="edit_<?= htmlspecialchars($note->getId()); ?>" class="mainbtn" name="action" value="update_notes" onclick="editNote(this)">Modifier les notes</button
-                            <button type="button" name="delete_note" class="btn btn-danger" >Supprimer</button>
+                            <form action="" method="post" style="display:inline;">
+                                <input type="hidden" name="action" value="delete_note">
+                                <input type="hidden" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
+                                <input type="hidden" name="note_id" value="<?= htmlspecialchars($note->getId()); ?>">
+                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
