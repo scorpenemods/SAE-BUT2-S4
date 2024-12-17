@@ -496,6 +496,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
                                     <div class="group-actions">
                                         <button onclick="openEditGroupModal(<?php echo $group['group_id']; ?>)">Modifier</button>
                                         <button onclick="deleteGroup(<?php echo $group['group_id']; ?>)">Supprimer</button>
+                                        <button onclick="endStage(<?php echo $group['group_id']; ?>)">Terminer</button>
                                     </div>
                                 </div>
                                 <ul class="member-list">

@@ -102,6 +102,28 @@ function deleteGroup(groupId) {
     }
 }
 
+function endStage(groupId){
+    if (confirm('Êtes-vous sûr de vouloir terminer ce stage ?')) {
+        fetch('../View/Principal/endStage.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ group_id: groupId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Stage terminé avec succès.');
+                    window.location.reload();
+                } else {
+                    alert('Erreur lors de la finalisation du stage.');
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+    }
+}
+
 // Function to open the edit group modal
 function openEditGroupModal(groupId) {
     // Fetch group details and pre-fill the form
