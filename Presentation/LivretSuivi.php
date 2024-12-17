@@ -1,8 +1,12 @@
 <?php
 
+
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 <body>
 <!-- Affichage des participants -->
@@ -11,7 +15,7 @@ require_once '../Model/Person.php';
     <h2 style="text-align: center">Participants</h2>
 </div>
 
-<?php  include_once ("LivretSuiviParticipant.php")?>
+<?php include_once ("LivretSuiviParticipant.php")?>
 
 
 </body>

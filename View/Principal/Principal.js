@@ -504,9 +504,9 @@ function addMeeting() {
     const formContainerId = `formContainer-${showcontent}`;
 
     newContent.innerHTML = `
-        <h3 style="padding: 10px">Formulaires</h3>
+        <h3 style="padding: 10px">Formulaire</h3>
         <div class="livret-header">
-            <h3>${meetingCounter}ère rencontre</h3>
+            <h3>${meetingCounter}ème rencontre</h3>
         </div>
 
         <!-- Formulaire -->

@@ -1,12 +1,16 @@
 <?php
 require_once '../Model/Database.php'; // Inclure la connexion à la base de données
+require_once '../Model/Person.php';
 
 // Récupérer l'instance de la classe Database
 $database = Database::getInstance();
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 
-<div style="display: block; width: 100%;">
+<div style="width: 100%;">
     <div>
         <!-- Section pour l'affichage des informations des participants (étudiant, professeur, maître de stage) -->
         <div style="display: flex; justify-content: center;" id="student-details">
@@ -62,10 +66,9 @@ $database = Database::getInstance();
                 }
                 ?>
         </div><br>
-        <div>
+        <div class="livret-container">
             <!-- Création des différentes rencontres / dépôts : -->
-            <?php include_once "LivretSuiviContenu.php"; ?>
-            <?php
+            <?php include_once "LivretSuiviContenu.php";
 
             } else {
                 echo "<div class='participant-container'>Sélectionnez un étudiant pour voir les détails.</div>";
