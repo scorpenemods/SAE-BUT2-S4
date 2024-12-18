@@ -9,7 +9,7 @@ require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 $_SESSION['user'] = 1;
 $_SESSION['company_id'] = 0;
-$_SESSION['secretariat'] = false;
+$_SESSION['secretariat'] = true;
 
 $user_id = $_SESSION['user'] ?? 0;
 $company_id = $_SESSION['company_id'] ?? 0;
@@ -188,8 +188,18 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
 
                     <div class="filter-section">
                         <h3><i class="fas fa-map-marker-alt"></i> Localisation</h3>
+
                         <label for="address">Adresse</label>
-                        <input type="text" id="address" name="address" placeholder="Entrez une adresse">
+                        <div class="search-container">
+                            <input type="text" id="searchInput" class="search-input" placeholder="Entrez une adresse">
+                            <div id="dropdown" class="dropdown"></div>
+                        </div>
+                        <input type="hidden" id="latitude" name="latitude">
+                        <input type="hidden" id="longitude" name="longitude">
+
+                        <label for="distance">Distance</label>
+                        <input type="range" id="distance" name="distance" min="0" max="10000" step="1" value="0">
+                        <span id="distance-value">100</span>
                     </div>
 
                     <div class="filter-section">
@@ -326,6 +336,81 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                     event.preventDefault();
                 });
             });
+
+            const searchInput = document.getElementById('searchInput');
+            const dropdown = document.getElementById('dropdown');
+            const latitudeInput = document.getElementById('latitude');
+            const longitudeInput = document.getElementById('longitude');
+
+            let debounceTimer;
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+
+                debounceTimer = setTimeout(() => {
+                    const query = this.value.trim();
+                    if (query.length > 2) {
+                        fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=jsonv2&polygon_geojson=1`)
+                            .then(response => response.json())
+                            .then(data => {
+                                displayResults(data);
+                            })
+                            .catch(error => {
+                                console.error('Error fetching results:', error);
+                            });
+                    } else {
+                        dropdown.style.display = 'none';
+                    }
+                }, 1000);
+            });
+
+            function displayResults(results) {
+                dropdown.innerHTML = '';
+                if (results.length > 0) {
+                    results.forEach(result => {
+                        const item = document.createElement('div');
+                        item.className = 'dropdown-item';
+                        item.textContent = result.display_name;
+                        item.addEventListener('click', () => {
+                            searchInput.value = result.display_name;
+                            latitudeInput.value = result.lat;
+                            longitudeInput.value = result.lon;
+                            dropdown.style.display = 'none';
+                        });
+                        dropdown.appendChild(item);
+                    });
+                    dropdown.style.display = 'block';
+                } else {
+                    dropdown.style.display = 'none';
+                }
+            }
+
+            document.addEventListener('click', function(event) {
+                if (!dropdown.contains(event.target) && event.target !== searchInput) {
+                    dropdown.style.display = 'none';
+                }
+            });
+
+            searchInput.addEventListener('focus', function() {
+                if (dropdown.children.length > 0) {
+                    dropdown.style.display = 'block';
+                }
+            });
+
+            const rangeDistance = document.getElementById("distance")
+            const spanDistance = document.getElementById("distance-value")
+            rangeDistance.addEventListener('input', function() {
+                spanDistance.innerHTML = this.value
+
+                if (this.value <= 100) {
+                    this.step = 10
+                } else if (this.value <= 1000) {
+                    this.step = 100
+                } else if (this.value <= 10000) {
+                    this.step = 1000
+                }
+            })
+
         </script>
     </body>
 </html>
