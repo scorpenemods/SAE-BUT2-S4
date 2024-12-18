@@ -9,6 +9,9 @@
     --menu-background: #ffffff;
     --menu-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
+body {
+    font-family: 'Poppins', sans-serif;
+}
 header {
     background-color: var(--card-color);
     color: var(--text-color);
@@ -17,9 +20,7 @@ header {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    font-family: 'Poppins', sans-serif;
 }
-
 .logo {
     display: flex;
     align-items: center;

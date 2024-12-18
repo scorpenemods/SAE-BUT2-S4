@@ -5,7 +5,7 @@ require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
-$returnUrl = $_SERVER["HTTP_REFERER"] ?? $_SERVER["HTTP_ORIGIN"] . $_SERVER["REQUEST_URI"];
+$returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 
@@ -37,7 +37,7 @@ $companies = Company::getAll();
         <?php include dirname(__FILE__) . '/../header.php'; ?>
         <main>
             <div class="container-table">
-                <h1>Tableau des Compagnies</h1>
+                <h1>Liste des entreprises</h1>
                 <table>
                     <thead>
                     <tr>

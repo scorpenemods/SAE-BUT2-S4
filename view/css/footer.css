@@ -1,7 +1,13 @@
+html, body {
+    height: 100%;
+}
 footer {
     background-color: white;
     border-top: 1px solid #e5e7eb;
     padding: 2rem 0;
+
+    position: sticky;
+    top: 100vh;
 }
 .container {
     max-width: 1200px;

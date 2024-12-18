@@ -6,12 +6,12 @@ require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
-//$returnUrl = $_SERVER["HTTP_REFERER"] ?? $_SERVER["HTTP_ORIGIN"] . $_SERVER["REQUEST_URI"];
+$returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 $user = $_SESSION["user"] ?? null;
 if ($user === null) {
-    header("Location: /view/offer/list.php");
+    header("Location: " . $returnUrl);
     exit();
 }
 
@@ -38,35 +38,37 @@ $applications = Applications::getAllForUser($user);
         <?php include dirname(__FILE__) . '/../header.php'; ?>
         <main>
             <div class="container-table">
-                <h1>Tableau des candidature</h1>
+                <h1>Liste des candidature</h1>
                 <table>
                     <thead>
-                    <tr>
-                        <th>Titre</th>
-                        <th>Email</th>
-                        <th>Numéro</th>
-                        <th>Date de début</th>
-                        <th>Status</th>
-                        <th>Voir l'offre</th>
-                    </tr>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Email</th>
+                            <th>Numéro</th>
+                            <th>Date de début</th>
+                            <th>Statut</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <?php
                         foreach ($applications as $apply) {
                             $offer = Offer::getById($apply->getIdOffer());
                             echo "<tr>";
-                            echo "<td>" . $offer->getTitle() . "</td>";
-                            echo "<td>" . $offer->getEmail() . "</td>";
-                            echo "<td>" . $offer->getPhone() . "</td>";
+                            echo "<td><a href='/view/offer/detail.php?id=" . $offer->getId() . "'>" . $offer->getTitle() . "</a></td>";
+                            echo "<td><a href='mailto:" . $offer->getEmail() . "'>" . $offer->getEmail() . "</a></td>";
+                            echo "<td><a href='tel:" . $offer->getPhone() . "'>" . $offer->getPhone() . "</a></td>";
                             echo "<td>" . $offer->getBeginDate() . "</td>";
-                            if ($apply->getStatus() == "Pending") {
-                                echo "<td style='background: orange; text-align: center'>" . $apply->getStatus() . "</td>";
-                            } else if ($apply->getStatus() == "Accepted") {
-                                echo "<td style='background: green; text-align: center'>" . $apply->getStatus() . "</td>";
-                            } else if ($apply->getStatus() == "Rejected") {
-                                echo "<td style='background: red; text-align: center'>" . $apply->getStatus() . "</td>";
+                            switch ($apply->getStatus()) {
+                                case "Pending":
+                                    echo "<td style='background: orange; text-align: center'>" . "En attente" . "</td>";
+                                    break;
+                                case "Accepted":
+                                    echo "<td style='background: green; text-align: center'>" . "Accepté" . "</td>";
+                                    break;
+                                case "Rejected":
+                                    echo "<td style='background: red; text-align: center'>" . "Refusé" . "</td>";
+                                    break;
                             }
-                            echo "<td><a class='show-btn' href='/view/offer/detail.php?id=" . $offer->getId() . "'>Voir l'offre</a></td>";
                             echo "</tr>";
                         }
                         ?>
