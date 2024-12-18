@@ -10,6 +10,7 @@ $returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'h
 error_reporting(E_ALL ^ E_DEPRECATED);
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? "all";
+
 if (!$offerId) {
     header("Location: " . $returnUrl);
     die();
@@ -34,7 +35,11 @@ switch ($type) {
     default:
         $offer = Offer::getById($offerId);
         break;
+}
 
+if ($offer->getSupress() && !$secretariat_group) {
+    header("Location: ". $returnUrl);
+    die();
 }
 
 $isAlreadyPending = Offer::isAlreadyPending($offerId);
