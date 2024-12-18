@@ -93,7 +93,8 @@ $userRole = $person->getRole();
                     <tr class="trEdit">
                         <td class="tdEdit">Adaptation à l'entreprise</td>
                         <td class="tdEdit">
-                            <select class="selection" name="option1">
+                            <select class="selection" name="option1" onchange="removeDefaultOption(this)">
+                                <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
@@ -105,7 +106,8 @@ $userRole = $person->getRole();
                     <tr class="trEdit">
                         <td class="tdEdit">Ponctualité</td>
                         <td class="tdEdit">
-                            <select class="selection" name="option2">
+                            <select class="selection" name="option2" onchange="removeDefaultOption(this)">
+                                <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
@@ -117,7 +119,8 @@ $userRole = $person->getRole();
                     <tr class="trEdit">
                         <td class="tdEdit">Motivation pour le travail</td>
                         <td class="tdEdit">
-                            <select class="selection" name="option3">
+                            <select class="selection" name="option3" onchange="removeDefaultOption(this)">
+                                <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
@@ -129,7 +132,8 @@ $userRole = $person->getRole();
                     <tr class="trEdit">
                         <td class="tdEdit">Initiatives personnelles</td>
                         <td class="tdEdit">
-                            <select class="selection" name="option4">
+                            <select class="selection" name="option4" onchange="removeDefaultOption(this)">
+                                <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
@@ -141,7 +145,8 @@ $userRole = $person->getRole();
                     <tr class="trEdit">
                         <td class="tdEdit">Qualité du travail</td>
                         <td class="tdEdit">
-                            <select class="selection" name="option5">
+                            <select class="selection" name="option5" onchange="removeDefaultOption(this)">
+                                <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
@@ -153,7 +158,8 @@ $userRole = $person->getRole();
                     <tr class="trEdit">
                         <td class="tdEdit">Intérêt pour la découverte de l'entreprise</td>
                         <td class="tdEdit">
-                            <select class="selection" name="option6">
+                            <select class="selection" name="option6" onchange="removeDefaultOption(this)">
+                                <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
