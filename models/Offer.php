@@ -535,9 +535,6 @@ class Offer {
         if ($weeks > 0) {
             $result .= $weeks . ' semaine' . ($weeks > 1 ? 's' : '') . ', ';
         }
-        if ($days > 0) {
-            $result .= $days . ' jour' . ($days > 1 ? 's' : '');
-        }
 
         return rtrim($result, ', ');
     }
@@ -638,11 +635,6 @@ class Offer {
         if (!empty($filters['minSalary'])) {
             $sql .= ' AND offers.salary >= :minSalary';
             $params[':minSalary'] = $filters['minSalary'];
-        }
-
-        if (!empty($filters['maxSalary'])) {
-            $sql .= ' AND offers.salary <= :maxSalary';
-            $params[':maxSalary'] = $filters['maxSalary'];
         }
 
         if (!empty($filters['address'])) {

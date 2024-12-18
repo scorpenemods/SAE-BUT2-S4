@@ -46,7 +46,6 @@ $sort = filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING);
 $startDate = filter_input(INPUT_GET, 'startDate', FILTER_SANITIZE_STRING);
 $diploma = filter_input(INPUT_GET, 'diploma', FILTER_SANITIZE_STRING);
 $minSalary = filter_input(INPUT_GET, 'minSalary', FILTER_SANITIZE_STRING);
-$maxSalary = filter_input(INPUT_GET, 'maxSalary', FILTER_SANITIZE_STRING);
 $address = filter_input(INPUT_GET, 'address', FILTER_SANITIZE_STRING);
 $duration = filter_input(INPUT_GET, 'duration', FILTER_VALIDATE_INT);
 $sector = filter_input(INPUT_GET, 'sector', FILTER_SANITIZE_STRING);
@@ -58,7 +57,6 @@ if (isset($sort)) { $filters["sort"] = $sort; }
 if (isset($startDate)) { $filters["startDate"] = $startDate; }
 if (isset($diploma)) { $filters["diploma"] = $diploma; }
 if (isset($minSalary)) { $filters["minSalary"] = $minSalary; }
-if (isset($maxSalary)) { $filters["maxSalary"] = $maxSalary; }
 if (isset($address)) { $filters["address"] = $address; }
 if (isset($duration)) { $filters["duration"] = $duration; }
 if (isset($sector)) { $filters["sector"] = $sector; }
@@ -186,8 +184,6 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                         <h3><i class="fas fa-euro-sign"></i> Rémunération</h3>
                         <label for="mini">Salaire minimum</label>
                         <input type="text" id="mini" name="minSalary" placeholder="Sans préférences">
-                        <label for="maxi">Salaire maximum</label>
-                        <input type="text" id="maxi" name="maxSalary" placeholder="Sans préférences">
                     </div>
 
                     <div class="filter-section">
