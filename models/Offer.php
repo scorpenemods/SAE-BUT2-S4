@@ -24,6 +24,8 @@ class Offer {
     private string $created_at;
     private string $updated_at;
     private bool $supress;
+    private float $latitude;
+    private float $longitude;
 
     /**
      * __construct
@@ -47,7 +49,7 @@ class Offer {
      * @param string $updated_at
      * @param bool $supress
      */
-    protected function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $website, string $created_at, string $updated_at, bool $supress) {
+    protected function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $website, string $created_at, string $updated_at, bool $supress, float $latitude, float $longitude) {
         $this->id = $id;
         $this->company_id = $company_id;
         $this->company = $company;
@@ -66,6 +68,8 @@ class Offer {
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
         $this->supress = $supress;
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
     }
 
     /**
@@ -103,7 +107,9 @@ class Offer {
                 $row["website"],
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
                 date("Y-m-d H:i:s", strtotime($row["updated_at"])),
-                $row["supress"]
+                $row["supress"],
+                $row["latitude"],
+                $row["longitude"]
             );
         }
 
@@ -280,6 +286,29 @@ class Offer {
         return $tags;
     }
 
+    /**
+     * getLatitude
+     * Returns the latitude of the offer
+     * @return float
+     */
+    public function getLatitude(): float {
+        return $this->latitude;
+    }
+
+    /**
+     * getLongitude
+     * Returns the longitude of the offer
+     * @return float
+     */
+    public function getLongitude(): float {
+        return $this->longitude;
+    }
+
+    /**
+     * getSupress
+     * Returns if the offer is supressed
+     * @return bool
+     */
     public function getSupress(): bool {
         return $this->supress;
     }
@@ -409,7 +438,9 @@ class Offer {
             $result["website"],
             date("Y-m-d H:i:s", strtotime($result["created_at"])),
             date("Y-m-d H:i:s", strtotime($result["updated_at"])),
-            $result["supress"]
+            $result["supress"],
+            $result["latitude"],
+            $result["longitude"]
         );
     }
 
@@ -449,12 +480,12 @@ class Offer {
      * @param string $website
      * @return Offer|null
      */
-    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $website) {
+    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $website, float $latitude, float $longitude) {
         global $db;
 
         $stmt = $db->prepare("INSERT INTO offers (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
-                    email, phone, website) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,
-                    :email, :phone, :website)");
+                    email, phone, website, latitude, longitude) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,
+                    :email, :phone, :website, :latitude, :longitude)");
         $stmt->bindParam(":company_id", $company_id);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":description", $description);
@@ -467,6 +498,8 @@ class Offer {
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":phone", $phone);
         $stmt->bindParam(":website", $website);
+        $stmt->bindParam(":latitude", $latitude);
+        $stmt->bindParam(":longitude", $longitude);
         $stmt->execute();
 
         if ($db->errorCode() != 0) {
@@ -501,7 +534,9 @@ class Offer {
             $website,
             date("Y-m-d H:i:s"),
             date("Y-m-d H:i:s"),
-            FALSE
+            FALSE,
+            $latitude,
+            $longitude
         );
 
         return $offer;
@@ -733,7 +768,9 @@ class Offer {
                 $row["website"],
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
                 date("Y-m-d H:i:s", strtotime($row["updated_at"])),
-                $row["supress"]
+                $row["supress"],
+                $row["latitude"],
+                $row["longitude"]
             );
         }
 
