@@ -23,6 +23,7 @@ class Offer {
     private string $website;
     private string $created_at;
     private string $updated_at;
+    private bool $supress;
 
     /**
      * __construct
@@ -44,8 +45,9 @@ class Offer {
      * @param string $website
      * @param string $created_at
      * @param string $updated_at
+     * @param bool $supress
      */
-    protected function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $website, string $created_at, string $updated_at) {
+    protected function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $website, string $created_at, string $updated_at, bool $supress) {
         $this->id = $id;
         $this->company_id = $company_id;
         $this->company = $company;
@@ -63,6 +65,7 @@ class Offer {
         $this->website = $website;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
+        $this->supress = $supress;
     }
 
     /**
@@ -99,13 +102,13 @@ class Offer {
                 $row["phone"],
                 $row["website"],
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
-                date("Y-m-d H:i:s", strtotime($row["updated_at"]))
+                date("Y-m-d H:i:s", strtotime($row["updated_at"])),
+                $row["supress"]
             );
         }
 
         return $offers;
     }
-
 
     /**
      * getId
@@ -277,6 +280,10 @@ class Offer {
         return $tags;
     }
 
+    public function getSupress(): bool {
+        return $this->supress;
+    }
+
     /**
      * update
      * Updates the offer with the given id with the given data in the database
@@ -401,7 +408,8 @@ class Offer {
             $result["phone"],
             $result["website"],
             date("Y-m-d H:i:s", strtotime($result["created_at"])),
-            date("Y-m-d H:i:s", strtotime($result["updated_at"]))
+            date("Y-m-d H:i:s", strtotime($result["updated_at"])),
+            $result["supress"]
         );
     }
 
@@ -492,7 +500,8 @@ class Offer {
             $phone,
             $website,
             date("Y-m-d H:i:s"),
-            date("Y-m-d H:i:s")
+            date("Y-m-d H:i:s"),
+            FALSE
         );
 
         return $offer;
@@ -591,7 +600,7 @@ class Offer {
     public static function getFilteredOffers(int $n, array $filters): ?array {
         global $db;
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS offers.*, tag FROM offers LEFT JOIN tags_offers ON offers.id = tags_offers.offer_id LEFT JOIN tags ON tags.id = tags_offers.tag_id WHERE is_active AND begin_date >= CURDATE()";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS offers.*, tag FROM offers LEFT JOIN tags_offers ON offers.id = tags_offers.offer_id LEFT JOIN tags ON tags.id = tags_offers.tag_id WHERE is_active AND begin_date >= CURDATE() AND NOT supress";
         $params = [];
 
         if (!empty($filters['title'])) {
@@ -689,6 +698,9 @@ class Offer {
                     $offers = offer::getAllInactive();
                     return [$offers, ceil(count($offers) / 12)];
                 }
+            } else if ($filters['type'] == 'suppressed') {
+                $offers = offer::getSuppressed();
+                return [$offers, ceil(count($offers) / 12)];
             }
         }
 
@@ -728,7 +740,8 @@ class Offer {
                 $row["phone"],
                 $row["website"],
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
-                date("Y-m-d H:i:s", strtotime($row["updated_at"]))
+                date("Y-m-d H:i:s", strtotime($row["updated_at"])),
+                $row["supress"]
             );
         }
 
@@ -901,6 +914,34 @@ class Offer {
             return null;
         }
 
+        return self::instantiateRows($stmt);
+    }
+
+    /**
+     * suppress
+     * Suppress the offer with the given id
+     * @param int $id
+     * @return void
+     */
+    public static function suppress(int $id): void {
+        global $db;
+        $stmt = $db->prepare("UPDATE offers SET supress = 1 WHERE id = :id");
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+    }
+
+    /**
+     * getSuppressed
+     * Returns all the suppressed offers
+     * @return array|null
+     */
+    public static function getSuppressed(): ?array {
+        global $db;
+        $stmt = $db->prepare("SELECT * FROM offers WHERE supress = 1");
+        $stmt->execute();
+        if ($db->errorCode() != 0) {
+            return null;
+        }
         return self::instantiateRows($stmt);
     }
 }

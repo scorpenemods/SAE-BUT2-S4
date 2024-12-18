@@ -111,6 +111,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 if ($secretariat_group) {
                     echo '<div id="new"> <a href="/view/offer/list.php?type=new">Nouvelles offres</i></a> </div>';
                     echo '<div id="manage"> <a href="/view/offer/manage_companies.php">Gestions des sociétés</i></a> </div>';
+                    echo '<div id="suppressed"><a href="/view/offer/list.php?type=suppressed">Offres supprimés</i></a> </div>';
                 }
 
                 if ($secretariat_group || $company_id != 0) {

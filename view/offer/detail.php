@@ -5,11 +5,12 @@ require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
-$returnUrl = $_SERVER["HTTP_REFERER"] ?? $_SERVER["HTTP_ORIGIN"] . $_SERVER["REQUEST_URI"];
+$returnUrl = $_SERVER["HTTP_REFERER"] ?? $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? "all";
+
 if (!$offerId) {
     header("Location: " . $returnUrl);
     die();
@@ -34,7 +35,11 @@ switch ($type) {
     default:
         $offer = Offer::getById($offerId);
         break;
+}
 
+if ($offer->getSupress() && !$secretariat_group) {
+    header("Location: ". $returnUrl);
+    die();
 }
 
 $isAlreadyPending = Offer::isAlreadyPending($offerId);
@@ -164,7 +169,7 @@ function renderForm($action, $id, $buttonText, $typeForm, array $hiddenFields = 
                                         echo "</form>";
                                     }
                                 }
-
+                                if ($secretariat_group) renderForm('../../presenter/offer/secretariat/suppress.php', $offer->getId(), "Supprimer l'offre", "suppress-form", ['id' => $offer->getId()]);
                                 if ($secretariat_group && ($type == "new" || $type == "updated")) renderForm('../../presenter/offer/secretariat/deny.php', $offer->getId(), "Refuser", "deny-form", ['id' => $offer->getId()]);
                                 if ($secretariat_group && ($type == "new" || $type == "updated")) renderForm('../../presenter/offer/secretariat/validate.php', $offer->getId(), "Valider", "validate-form", ['id' => $offer->getId()], "validate-form");
                             ?>
