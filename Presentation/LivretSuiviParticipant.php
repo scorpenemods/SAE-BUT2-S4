@@ -66,6 +66,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 }
                 ?>
         </div><br>
+
         <div class="livret-container">
             <!-- Création des différentes rencontres / dépôts : -->
             <?php include_once "LivretSuiviContenu.php";

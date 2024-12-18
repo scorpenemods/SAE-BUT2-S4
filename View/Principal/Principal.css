@@ -824,6 +824,32 @@ tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
+input[type="text"] {
+    width: 100%;
+    border: none;
+    padding: 8px;
+    font-size: 14px;
+    background-color: transparent;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    background-color: #f9f9f9;
+}
+
+select {
+     width: 100%;
+     border: none;
+     padding: 8px;
+     background-color: transparent;
+    text-align: center;
+ }
+
+select:focus {
+    outline: none;
+    background-color: #f9f9f9;
+}
+
 /****************************  DARK MODE MESSAGES  *******************************************************/
 
 body.dark-mode .messenger {

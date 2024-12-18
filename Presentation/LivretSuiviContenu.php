@@ -52,7 +52,7 @@ $userRole = $person->getRole();
                     <input type="radio" id="Entreprise" name="Lieu"><label> En entreprise</label> <br>
                     <input type="radio" id="Tél" name="Lieu"><label> Par téléphone</label> <br>
                     <input type="radio" id="Visio" name="Lieu"><label> En visio</label> <br>
-                    <input type="radio" id="Autre" name="Lieu"><label> Autre</label> <input type="text">
+                    <input type="radio" id="Autre" name="Lieu"><label> Autre</label> <input type="text" name="Lieu">
                 </p>
 
                 <br><br>
@@ -80,47 +80,91 @@ $userRole = $person->getRole();
 
         <div class="participants">
             <h2>Tableau des Compétences Acquises</h2>
-            <table>
-                <thead>
-                <tr>
-                    <th>Compétence</th>
-                    <th>Niveau de Maîtrise</th>
-                    <th>Commentaires</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Adaptation à l'entreprise</td>
-                    <td>Avancé</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Ponctualité</td>
-                    <td>Intermédiaire</td>
-                    <td>Certains retards ne sont pas justifié.</td>
-                </tr>
-                <tr>
-                    <td>Motivation pour le travail</td>
-                    <td>Avancé</td>
-                    <td>Avance vite dans son travail mais a tendance à s'éparpiller</td>
-                </tr>
-                <tr>
-                    <td>Initiatives personnelles</td>
-                    <td>Confirmé</td>
-                    <td>Participation active aux réunions et projets</td>
-                </tr>
-                <tr>
-                    <td>Qualité du travail</td>
-                    <td>Expert</td>
-                    <td>Autonomie et rigueur dans le travail</td>
-                </tr>
-                <tr>
-                    <td>Intérêt pour la découverte de l'entreprise</td>
-                    <td>Débutant</td>
-                    <td>Manque d'engagement dans l'entreprise</td>
-                </tr>
-                </tbody>
-            </table><br>
+            <form method="post" id="formContainer-1">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Compétence</th>
+                        <th>Niveau de Maîtrise</th>
+                        <th>Commentaires</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Adaptation à l'entreprise</td>
+                        <td>
+                            <select name="option1">
+                                <option value="beginner">Débutant</option>
+                                <option value="mid">Intermédiaire</option>
+                                <option value="Advance">Avancé</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="table1"></td>
+                    </tr>
+                    <tr>
+                        <td>Ponctualité</td>
+                        <td>
+                            <select name="option2">
+                                <option value="beginner">Débutant</option>
+                                <option value="mid">Intermédiaire</option>
+                                <option value="Advance">Avancé</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="table2"></td>
+                    </tr>
+                    <tr>
+                        <td>Motivation pour le travail</td>
+                        <td>
+                            <select name="option3">
+                                <option value="beginner">Débutant</option>
+                                <option value="mid">Intermédiaire</option>
+                                <option value="Advance">Avancé</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="table3"></td>
+                    </tr>
+                    <tr>
+                        <td>Initiatives personnelles</td>
+                        <td>
+                            <select name="option4">
+                                <option value="beginner">Débutant</option>
+                                <option value="mid">Intermédiaire</option>
+                                <option value="Advance">Avancé</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="table4"></td>
+                    </tr>
+                    <tr>
+                        <td>Qualité du travail</td>
+                        <td>
+                            <select name="option5">
+                                <option value="beginner">Débutant</option>
+                                <option value="mid">Intermédiaire</option>
+                                <option value="Advance">Avancé</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="table5"></td>
+                    </tr>
+                    <tr>
+                        <td>Intérêt pour la découverte de l'entreprise</td>
+                        <td>
+                            <select name="option6">
+                                <option value="beginner">Débutant</option>
+                                <option value="mid">Intermédiaire</option>
+                                <option value="Advance">Avancé</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="table6"></td>
+                    </tr>
+                    </tbody>
+                </table><br>
+            </form>
 
 
 
