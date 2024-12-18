@@ -1,7 +1,9 @@
 <?php
 session_start();
 
+include dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
+
 global $tags;
 
 if (isset($_SESSION['secretariat']) || isset($_SESSION['company_id'])) {
@@ -92,8 +94,8 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                         <button type="button" id="tagsDropdownBtn" class="tags-dropdown-btn" onclick="toggleDropdown()">Sélectionner les catégories</button>
                         <div id="tagsDropdown" class="tags-dropdown-content">
                             <?php
-                            include dirname(__FILE__) . '/../../models/Offer.php';
                             $tags = Offer::getAllTags();
+
                             foreach ($tags as $tag) {
                                 echo "<label><input type='checkbox' name='tag_" . $tag . "' value='" . $tag . "'> " . $tag . "</label>";
                             }
