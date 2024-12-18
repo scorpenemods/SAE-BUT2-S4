@@ -38,7 +38,8 @@ switch ($type) {
 }
 
 if ($offer->getSupress() && !$secretariat_group) {
-    header("Location: ". $returnUrl);
+    //Make a 403 error
+    header("HTTP/1.1 403 Forbidden");
     die();
 }
 

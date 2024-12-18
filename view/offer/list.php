@@ -9,7 +9,7 @@ require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
 $_SESSION['user'] = 1;
 $_SESSION['company_id'] = 0;
-$_SESSION['secretariat'] = true;
+$_SESSION['secretariat'] = false;
 
 $user_id = $_SESSION['user'] ?? 0;
 $company_id = $_SESSION['company_id'] ?? 0;
