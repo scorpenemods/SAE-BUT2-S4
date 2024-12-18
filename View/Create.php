@@ -99,6 +99,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                             }
                             ?>
                         </div>
+                        <div class="tagsList"></div>
                     </div>
                 </div>
 
@@ -121,7 +122,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 <button type="submit">Publier l'offre</button>
             </form>
         </main>
-        <?php include dirname(__FILE__) . '/../Footer.php'; ?>
+        <?php include dirname(__FILE__) . '/Footer.php'; ?>
         <script>
             /*
                Manage the visibility of the tags dropdown.
@@ -141,6 +142,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 if (!event.target.matches('.tags-dropdown-btn') && !event.target.closest('.tags-dropdown-content')) {
                     if (dropdown.classList.contains('show')) {
                         dropdown.classList.remove('show');
+                        updateDropdownButtonText()
                     }
                 }
             }
@@ -153,6 +155,18 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 } else {
                     dropdownBtn.textContent = `${categories.length} catégories sélectionnées`;
                 }
+            }
+
+            const tagsList = document.querySelector('.tagsList');
+            tagsList.innerHTML = '';
+
+            categories.forEach(category => {
+                const tag = document.createElement('span');
+                tag.classList.add('tag');
+                tag.textContent = category;
+
+                tagsList.appendChild(tag);
+            });
             }
         </script>
     </body>

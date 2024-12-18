@@ -5,10 +5,7 @@ require dirname(__FILE__) . '/../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../Model/Company.php';
 require dirname(__FILE__) . '/../Presentation/Offer/Filter.php';
 
-
-if (isset($_SERVER["HTTP_REFERER"])) {
-    $returnUrl = $_SERVER["HTTP_REFERER"];
-}
+$returnUrl = $_SERVER["HTTP_REFERER"] ?? $_SERVER["HTTP_ORIGIN"] . $_SERVER["REQUEST_URI"];
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -19,7 +16,7 @@ if (!$offerId) {
 }
 
 // Verification de qui est l'utilisateur
-$groupesecretariat = false;
+$secretariat_group = false;
 $_SESSION['secretariat'] = false;
 
 
@@ -33,7 +30,7 @@ else{
 
 
 if ($_SESSION["user_role"]==4 || $_SESSION["user_role"]==5) {
-    $groupesecretariat = true;
+    $secretariat_group = true;
     $_SESSION['secretariat'] = true;
 }
 
@@ -57,12 +54,20 @@ switch ($type) {
 $isAlreadyPending = Offer::isAlreadyPending($offerId);
 
 function renderDetail($label, $iconClass, $oldValue, $newValue, $isLink = false, $linkPrefix = ''): void {
-    /*
-    * Renders a detail item with a label, an icon, and two values.
-    * If the values are different, it renders a link to the old value and a link to the new value.
-    * If the values are the same, it renders the new value as a link if $isLink is true, or as a plain text otherwise.
-    */
-    echo "<div class='detail-item'>";
+    /**
+     * renderDetail
+     * Renders a detail item with a label, an icon, and two values.
+     * If the values are different, it renders a link to the old value and a link to the new value.
+     * If the values are the same, it renders the new value as a link if $isLink is true, or as a plain text otherwise.
+     * @param $label
+     * @param $iconClass
+     * @param $oldValue
+     * @param $newValue
+     * @param bool $isLink
+     * @param string $linkPrefix
+     * @return void
+     */
+    echo "<div class='detail-item' label='$label'>";
     echo "<span>";
     echo "<i class='$iconClass'> </i>";
     if ($oldValue != $newValue) {
@@ -85,15 +90,23 @@ function renderDetail($label, $iconClass, $oldValue, $newValue, $isLink = false,
 }
 
 function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): void {
-    /*
-     * Renders a form with a hidden field for the Offer ID and a button with the given text.
+    /**
+     * renderForm
+     * Renders a form with a hidden field for the offer ID and a button with the given text.
      * The form's action is set to $action and its method is set to 'post'.
      * The hidden field is added to the form with the given name and value.
+     * @param $action
+     * @param $id
+     * @param $buttonText
+     * @param $typeForm
+     * @param array $hiddenFields
+     * @return void
      */
     echo "<form action='$action' method='post'>";
     foreach ($hiddenFields as $name => $value) {
         echo "<input type='hidden' name='$name' value='$value'>";
     }
+
     echo "<button class='apply-button-edit' id='$typeForm'>$buttonText</button>";
     echo "</form>";
 }
@@ -113,6 +126,9 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
     <link rel="stylesheet" href="/View/css/Footer.css">
     <link rel="stylesheet" href="/View/css/Apply.css">
     <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../js/notification.js" crossorigin="anonymous"></script>
+
 </head>
 <body>
 <?php include dirname(__FILE__) . '/Header.php'; ?>
@@ -140,66 +156,63 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                 ?>
                 </div>
                 <div class='apply-button-container'>
-                    <?php if ($type != 'updated') {
+                    <?php
+                    if ($type != 'updated') {
                         echo "<div class='apply-button-container'>";
-                            echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-                            echo "<button class='apply-button-edit' id='apply-button' onclick='openModalWithMessage()'>Postuler</button>";
+                        echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
+
+                        if (!$secretariat_group && $company_id == 0) {
+                            echo "<button class='apply-button-edit' id='apply-button' onclick='openModal()'>Postuler</button>";
+                        }
+
+                        if ($company_id !== 0 || $secretariat_group) {
+                            echo "<button class='apply-button-edit'><a href='./company/applications.php?id=".$offerId."'>Candidatures</a></button>";
                             echo "<form action='Edit.php' method='get' id='edit-form'>";
-                                echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-                                if ($isAlreadyPending) {
-                                    echo "<button class='apply-button-edit' id='edit-button'>Modification en attente de validation</button>";
-                                } else {
-                                    echo "<button class='apply-button-edit' id='edit-button'>Modifier</button>";
-                                }
+                            echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
+                            echo "<button class='apply-button-edit' id='edit-button'". ($isAlreadyPending ? "disabled=true> Modification en attente" : ">Modification") . "</button>";
                             echo "</form>";
+
                             echo "<form action='../Presentation/Offer/Company/Hide.php' method='post' id='hide-form'>";
                             echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-                            echo "<input type='hidden' name='secretariat' value='" . htmlspecialchars($_SESSION['secretariat'], ENT_QUOTES, 'UTF-8') . "'>";
-                            echo "<input type='hidden' name='id' value='" . htmlspecialchars($offer->getId(), ENT_QUOTES, 'UTF-8') . "'>";
-
-
-
-                                echo "<input type='hidden' name='id' value='" . $offer->getId() . "'>";
-                                if ($offer->getIsActive()) {
-                                    echo "<button class='apply-button-edit'>Cacher (Actif)</button>";
-                                } else {
-                                    echo "<button class='apply-button-edit'>Cacher (Inactif)</button>";
-                                }
+                            echo "<button class='apply-button-edit'>Cacher " . ($offer->getIsActive() ? "(Actif)" : "(Inactif)") . "</button>";
                             echo "</form>";
+                        }
                     }
-                    renderForm('../Presentation/Deny.php', $offer->getId(), "Refuser", "deny-form", ['id' => $offer->getId()]);
-                    renderForm('../Presentation/Validate.php', $offer->getId(), "Valider", "validate-form", ['id' => $offer->getId()], "validate-form");
+
+                    if ($secretariat_group && ($type == "new" || $type == "updated")) renderForm('../../presenter/offer/secretariat/deny.php', $offer->getId(), "Refuser", "deny-form", ['id' => $offer->getId()]);
+                    if ($secretariat_group && ($type == "new" || $type == "updated")) renderForm('../../presenter/offer/secretariat/validate.php', $offer->getId(), "Valider", "validate-form", ['id' => $offer->getId()], "validate-form");
                     ?>
                     </div>
                 </div>
             </div>
         </div>
         <div class='offer-content'>
-            <h3 class='company-name'><i class='fas fa-building'></i><?php
-                if ($type == 'updated') {
-                    echo $offer_old->getCompany()->getName();
-                    echo "</h3>";
-                    echo "<div class='Offer-details'>";
-                    renderDetail("Durée", "fas fa-clock", $offer_old->getRealDuration(), $offer->getRealDuration(), false);
-                    renderDetail("Téléphone", "fa-solid fa-phone", $offer_old->getPhone(), $offer->getPhone(), true, "tel:");
-                    renderDetail("Email", "fa-solid fa-envelope", $offer_old->getEmail(), $offer->getEmail(), true, "mailto:");
-                    renderDetail("Site web", "fa-solid fa-link", $offer_old->getDomain(), $offer->getDomain(), true, "https://");
-                    renderDetail("Adresse", "fas fa-map-marker-alt", $offer_old->getAddress(), $offer->getAddress(), true, "https://maps.google.com/?q=");
-                    renderDetail("Date de début", "fas fa-calendar", $offer_old->getBeginDate(), $offer->getBeginDate(), false);
-                    renderDetail("Niveau d'études", "fas fa-graduation-cap", $offer_old->getStudyLevel(), $offer->getStudyLevel(), false);
-                } else {
-                    echo $offer->getCompany()->getName();
-                    echo "</h3>";
-                    echo "<div class='Offer-details'>";
-                    renderDetail("Durée", "fas fa-clock", $offer->getRealDuration(), $offer->getRealDuration(), false);
-                    renderDetail("Téléphone", "fa-solid fa-phone", $offer->getPhone(), $offer->getPhone(), true, "tel:");
-                    renderDetail("Email", "fa-solid fa-envelope", $offer->getEmail(), $offer->getEmail(), true, "mailto:");
-                    renderDetail("Site web", "fa-solid fa-link", $offer->getDomain(), $offer->getDomain(), true, "https://");
-                    renderDetail("Adresse", "fas fa-map-marker-alt", $offer->getAddress(), $offer->getAddress(), true, "https://maps.google.com/?q=");
-                    renderDetail("Date de début", "fas fa-calendar", $offer->getBeginDate(), $offer->getBeginDate(), false);
-                    renderDetail("Niveau d'études", "fas fa-graduation-cap", $offer->getStudyLevel(), $offer->getStudyLevel(), false);
-                }
-                ?>
+            <h3 class='company-name'><i class='fas fa-building'></i>
+                <?php
+                        if ($type == 'updated') {
+                            echo $offer_old->getCompany()->getName();
+                            echo "</h3>";
+                            echo "<div class='offer-details'>";
+                            renderDetail("Durée", "fas fa-clock", $offer_old->getRealDuration(), $offer->getRealDuration(), false);
+                            renderDetail("Téléphone", "fa-solid fa-phone", $offer_old->getPhone(), $offer->getPhone(), true, "tel:");
+                            renderDetail("Email", "fa-solid fa-envelope", $offer_old->getEmail(), $offer->getEmail(), true, "mailto:");
+                            renderDetail("Site web", "fa-solid fa-link", $offer_old->getDomain(), $offer->getDomain(), true, "https://");
+                            renderDetail("Adresse", "fas fa-map-marker-alt", $offer_old->getAddress(), $offer->getAddress(), true, "https://maps.google.com/?q=");
+                            renderDetail("Date de début", "fas fa-calendar", $offer_old->getBeginDate(), $offer->getBeginDate(), false);
+                            renderDetail("Niveau d'études", "fas fa-graduation-cap", $offer_old->getStudyLevel(), $offer->getStudyLevel(), false);
+                        } else {
+                            echo $offer->getCompany()->getName();
+                            echo "</h3>";
+                            echo "<div class='offer-details'>";
+                            renderDetail("Durée", "fas fa-clock", $offer->getRealDuration(), $offer->getRealDuration(), false);
+                            renderDetail("Téléphone", "fa-solid fa-phone", $offer->getPhone(), $offer->getPhone(), true, "tel:");
+                            renderDetail("Email", "fa-solid fa-envelope", $offer->getEmail(), $offer->getEmail(), true, "mailto:");
+                            renderDetail("Site web", "fa-solid fa-link", $offer->getDomain(), $offer->getDomain(), true, "https://");
+                            renderDetail("Adresse", "fas fa-map-marker-alt", $offer->getAddress(), $offer->getAddress(), true, "https://maps.google.com/?q=");
+                            renderDetail("Date de début", "fas fa-calendar", $offer->getBeginDate(), $offer->getBeginDate(), false);
+                            renderDetail("Niveau d'études", "fas fa-graduation-cap", $offer->getStudyLevel(), $offer->getStudyLevel(), false);
+                        }
+                        ?>
                 </div>
             <div class='separator'></div>
             <div class='offer-description'>
@@ -229,6 +242,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                         echo "<input type='file' class='file-upload' id='motivation' name='motivation' accept='.pdf' required>";
                         echo "<p id='modal-message'></p>";
                         echo "<input type='hidden' name='offre' value='" . $offer->getId() . "'>";
+                        echo "<br>";
                         echo "<button type='submit'>Valider la candidature</button>";
                     echo "</form>";
                 echo "</div>";
@@ -242,89 +256,45 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
         element.style.backgroundImage = `url(<?php echo $offer->getImage(); ?>)`;
     });
 
-    //Get variables from php
-    const companyId = <?php echo json_encode($company_id); ?>;
-    const secretariat = <?php echo json_encode($groupesecretariat); ?>;
-    const type = <?php echo json_encode($type); ?>;
-    const isAlreadyPending = <?php echo json_encode($isAlreadyPending); ?>;
-
-
-    if (isAlreadyPending) {
-        //Make edit form disabled
-        document.getElementById('edit-button').disabled = true;
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
-
-
-    //Toggle visibility of elements with the given ID
-    function toggleVisibility(elementId, show) {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.classList.toggle('hidden', !show);
-        }
-    }
-
-    //Default visibility
-    toggleVisibility('apply-button', false);
-    toggleVisibility('edit-form', false);
-    toggleVisibility('hide-form', false);
-    toggleVisibility('deny-form', false);
-    toggleVisibility('validate-form', false);
-
-
-    //Show or hide elements based on the status of the Offer, the type of the Offer, and the user's role
-    if (status !== 'success') {
-        if (type === 'updated' && secretariat) {
-            toggleVisibility('deny-form', true);
-            toggleVisibility('validate-form', true);
-        } else if (type === 'inactive' && secretariat) {
-            toggleVisibility('hide-form', true);
-        } else if (type === 'inactive' && companyId !== 0) {
-            toggleVisibility('edit-form', true);
-            toggleVisibility('hide-form', true);
-        } else if (type === 'new' && secretariat) {
-            toggleVisibility('deny-form', true);
-            toggleVisibility('validate-form', true);
-        } else if (secretariat && type === 'all' || type == null) {
-            toggleVisibility('edit-form', true);
-            toggleVisibility('hide-form', true);
-        } else if (companyId !== 0) {
-            toggleVisibility('edit-form', true);
-            toggleVisibility('hide-form', true);
-        } else{
-            toggleVisibility('apply-button', true);
-        }
-    } else {
-        toggleVisibility('apply-button', true);
-    }
-
-    if (<?php echo $_SESSION["user_role"]?>===0){
-        toggleVisibility('apply-button', true);
-    }
-
-    // Fonction pour ouvrir la fenêtre modale avec un message personnalisé
-    function openModalWithMessage(message) {
+    function openModal() {
         document.getElementById("applyModal").style.display = "block";
-        document.getElementById("modal-message").textContent = message;
     }
 
-    // Vérifiez si un paramètre 'status' est passé dans l'URL
-    if (status === 'success') {
-        openModalWithMessage("Votre candidature a bien été enregistrée !");
-    } else if (status === 'already_applied') {
-        openModalWithMessage("Vous avez déjà postulé pour cette offre.");
-    }
-
-    // Fonction pour fermer la fenêtre modale
     function closeModal() {
         document.getElementById("applyModal").style.display = "none";
     }
 
-    // Fermer la fenêtre si l'utilisateur clique en dehors de la modale
+    const form = document.getElementById('apply-form');
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        $.ajax({
+            url: '/presenter/offer/apply.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                const result = JSON.parse(response);
+                if (result.status === "success") {
+                    sendNotification("success", "Succès", "Votre candidature a bien été enregistrée !");
+                    closeModal();
+                } else if (result.status === "already_applied") {
+                    sendNotification("warning", "Attention", "Vous avez déjà postulé pour cette offre !");
+                } else {
+                    sendNotification("failure", "Erreur", result.message || "Une erreur est survenue.");
+                }
+            },
+            error: function(xhr, status, error) {
+                sendNotification("failure", "Erreur", "Une erreur réseau est survenue lors de la candidature.");
+            }
+        });
+    });
+
     window.onclick = function (event) {
-        var modal = document.getElementById("applyModal");
+        let modal = document.getElementById("applyModal");
+
         if (event.target === modal) {
             modal.style.display = "none";
         }

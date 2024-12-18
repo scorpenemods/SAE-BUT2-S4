@@ -3,7 +3,7 @@ session_start();
 
 
 // Verification de qui est l'utilisateur
-$groupeSecretariat = false;
+$secretariat_group = false;
 $_SESSION['secretariat'] = false;
 
 
@@ -17,7 +17,7 @@ else{
 
 
 if ($_SESSION["user_role"]==4 || $_SESSION["user_role"]==5) {
-    $groupeSecretariat = true;
+    $secretariat_group = true;
     $_SESSION['secretariat'] = true;
 }
 
@@ -31,25 +31,21 @@ require dirname(__FILE__) . '/../Presentation/Offer/Filter.php';
 
 require dirname(__FILE__) . '/../Presentation/Utils.php';
 
-$pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT);
-if ($pageId == null) {
-    $pageId = 1;
-}
-
-$curURL = $_SERVER["REQUEST_URI"];
+$pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT) ?? 1;
+$currentURL = $_SERVER["REQUEST_URI"];
 function setPageId($url, $newPageId): string {
+    /**
+     * setPageId
+     * Sets the pageId query parameter in the given URL to the given value
+     * @param string $url
+     * @param int $pageId
+     * @return string
+     */
     $parsedUrl = parse_url($url);
-
     parse_str($parsedUrl['query'] ?? '', $queryParams);
-
     $queryParams['pageId'] = $newPageId;
-
     $newQueryString = http_build_query($queryParams);
-
-    return (isset($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '')
-            . ($parsedUrl['host'] ?? '')
-            . ($parsedUrl['path'] ?? '')
-            . (!empty($newQueryString) ? '?' . $newQueryString : '');
+    return (isset($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '') . ($parsedUrl['host'] ?? '') . ($parsedUrl['path'] ?? '') . (!empty($newQueryString) ? '?' . $newQueryString : '');
 }
 
 /*
@@ -58,13 +54,11 @@ function setPageId($url, $newPageId): string {
  */
 error_reporting(E_ALL ^ E_DEPRECATED);
 $filters = array();
-
 $title = filter_input(INPUT_GET, 'title');
 $sort = filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING);
 $startDate = filter_input(INPUT_GET, 'startDate', FILTER_SANITIZE_STRING);
 $diploma = filter_input(INPUT_GET, 'diploma', FILTER_SANITIZE_STRING);
 $minSalary = filter_input(INPUT_GET, 'minSalary', FILTER_SANITIZE_STRING);
-$maxSalary = filter_input(INPUT_GET, 'maxSalary', FILTER_SANITIZE_STRING);
 $address = filter_input(INPUT_GET, 'address', FILTER_SANITIZE_STRING);
 $duration = filter_input(INPUT_GET, 'duration', FILTER_VALIDATE_INT);
 $sector = filter_input(INPUT_GET, 'sector', FILTER_SANITIZE_STRING);
@@ -76,12 +70,11 @@ if (isset($sort)) { $filters["sort"] = $sort; }
 if (isset($startDate)) { $filters["startDate"] = $startDate; }
 if (isset($diploma)) { $filters["diploma"] = $diploma; }
 if (isset($minSalary)) { $filters["minSalary"] = $minSalary; }
-if (isset($maxSalary)) { $filters["maxSalary"] = $maxSalary; }
 if (isset($address)) { $filters["address"] = $address; }
 if (isset($duration)) { $filters["duration"] = $duration; }
 if (isset($sector)) { $filters["sector"] = $sector; }
 if (isset($keywords)) { $filters["keywords"] = $keywords; }
-if (isset($type) && ($groupeSecretariat || $company_id != 0)) { $filters["type"] = $type; }
+if (isset($type) && ($secretariat_group || $company_id != 0)) { $filters["type"] = $type; }
 if ($company_id != 0) { $filters["company_id"] = $company_id; }
 
 $filteredOffers = getPageOffers($pageId, $filters);
@@ -105,6 +98,7 @@ const BASE_URL = '/SAE-BUT2-1.1/';
         <link rel="stylesheet" href="<?php echo BASE_URL; ?>View/css/List.css">
         <link rel="stylesheet" href="<?php echo BASE_URL; ?>View/css/Header.css">
         <link rel="stylesheet" href="<?php echo BASE_URL; ?>View/css/Footer.css">
+        <link rel="stylesheet" href="css/Notification.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
@@ -129,25 +123,32 @@ const BASE_URL = '/SAE-BUT2-1.1/';
                 </div>
             </form>
             <div class="pagination button-group" style="text-align: center">
-                <div id="all">
-                    <a href="List.php?type=all">Toutes les offres</i></a>
-                </div>
-                <div id="new">
-                    <a href="List.php?type=new">Nouvelles offres</i></a>
-                </div>
-                <div id="updated">
-                    <a href="List.php?type=updated">Offres mises à jour</i></a>
-                </div>
-                <div id="inactive">
-                    <a href="List.php?type=inactive">Offres inactives</i></a>
-                </div>
-                <div id="create" style="text-align: center">
-                    <a href="Create.php">Créer une offre</i></a>
-                </div>
+                <?php
+                if ($secretariat_group) {
+                    echo '<div id="new"> <a href="List.php">Nouvelles offres</i></a> </div>';
+                    echo '<div id="manage"> <a href="Manage_Company.php">Gestions des sociétés</i></a> </div>';
+                }
+
+                if ($secretariat_group || $company_id != 0) {
+                    echo '<div id="all"><a href="List.php?type=all">Tous les offres</i></a> </div>';
+                    echo '<div id="updated"> <a href="List.php?type=updated">Offres mises à jour</i></a> </div>';
+                    echo '<div id="inactive"> <a href="List.php?type=inactive">Offres inactives</i></a> </div>';
+                }
+
+                if (!$secretariat_group && $company_id == 0) {
+                    echo '<div id="Manage_Alert" style="text-align: center"> <a href="Manage_Alert.php">Gérer les alertes</i></a> </div>';
+                    echo '<div id="manage_applications" style="text-align: center"> <a href="Manage_Application.php">Voir mes candidatures</a></div>';
+                }
+                ?>
+                <div id="create" style="text-align: center"> <a href="Create.php">Créer une offre</i></a> </div>
+                <div id="create_company" style="text-align: center"> <a href="CreateCompany.php">Créer une société</i></a> </div>
             </div>
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
+                    if ($company_id != 0 && !($company_id == $offer->getCompany()->getId())) {
+                        continue;
+                    }
                     echo "<a class='Company-link' href='Detail.php?id=" . $offer->getId() . '&type=' . $type . "'>";
                         echo "<div class='Company-card'>";
                             echo "<div class='Company-header'>";
@@ -171,11 +172,11 @@ const BASE_URL = '/SAE-BUT2-1.1/';
                 ?>
             </div>
             <div id="pagination" class="pagination">
-                <a href="<?php echo setPageId($curURL, 1); ?>" class="first-page"><i class="fas fa-angle-double-left"></i></a>
-                <a href="<?php echo setPageId($curURL, $pageId > 1 ? $pageId - 1 : $pageId); ?>" class="prev-page"><i class="fas fa-angle-left"></i></a>
+                <a href="<?php echo setPageId($currentURL, 1); ?>" class="first-page"><i class="fas fa-angle-double-left"></i></a>
+                <a href="<?php echo setPageId($currentURL, $pageId > 1 ? $pageId - 1 : $pageId); ?>" class="prev-page"><i class="fas fa-angle-left"></i></a>
                 <a disabled="true" href="#"><?php echo $pageId; ?> / <?php echo $totalPages; ?></a>
-                <a href="<?php echo setPageId($curURL, $pageId < $totalPages ? $pageId + 1 : $pageId); ?>" class="next-page"><i class="fas fa-angle-right"></i></a>
-                <a href="<?php echo setPageId($curURL, $totalPages); ?>" class="last-page"><i class="fas fa-angle-double-right"></i></a>
+                <a href="<?php echo setPageId($currentURL, $pageId < $totalPages ? $pageId + 1 : $pageId); ?>" class="next-page"><i class="fas fa-angle-right"></i></a>
+                <a href="<?php echo setPageId($currentURL, $totalPages); ?>" class="last-page"><i class="fas fa-angle-double-right"></i></a>
             </div>
         </main>
         <div class="filter-panel" id="filterPanel">
@@ -279,6 +280,11 @@ const BASE_URL = '/SAE-BUT2-1.1/';
             openFilterBtn.addEventListener('click', openFilterPanel);
             closeFilterBtn.addEventListener('click', closeFilterPanel);
             blurOverlay.addEventListener('click', closeFilterPanel);
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeFilterPanel();
+                }
+            });
 
 
 
@@ -292,37 +298,48 @@ const BASE_URL = '/SAE-BUT2-1.1/';
 
 
             const createNotificationBtn = document.getElementById('createNotification');
-            createNotificationBtn.addEventListener('click', () => {
-                alert('Fonctionnalité de création de demande de notification à implémenter');
-            });
-            const groupeSecretariat = <?php echo json_encode($groupeSecretariat); ?>;
-            const companyId = <?php echo json_encode($company_id); ?>;
-            if (groupeSecretariat) {
-                document.getElementById('all').style.display = "block";
-                document.getElementById('new').style.display = "block";
-                document.getElementById('updated').style.display = "block";
-                document.getElementById('create').style.display = "block";
-                document.getElementById('inactive').style.display = "block";
-            } else {
+            createNotificationBtn.addEventListener('click', (e) => {
+                e.preventDefault()
+                const urlParams = new URLSearchParams(window.location.search);
+                const filters = {
+                    minSalary: urlParams.get('minSalary'),
+                    address: urlParams.get('address'),
+                    diploma: urlParams.get('diploma'),
+                    duration: urlParams.get('duration'),
+                    calendar: urlParams.get('calendar')
+                };
 
-                document.getElementById('all').style.display = "block";
-                document.getElementById('new').style.display = "none";
-                document.getElementById('updated').style.display = "none";
-                document.getElementById('inactive').style.display = "none";
-                document.getElementById('create').style.display = "block";
-            }
-            if (companyId !== 0) {
-                document.getElementById('all').style.display = "block";
-                document.getElementById('inactive').style.display = "block";
-                document.getElementById('create').style.display = "block";
-            }
+                $.ajax({
+                    url: '/presenter/offer/createAlert.php',
+                    type: 'POST',
+                    data: {
+                        duration: filters.duration,
+                        address: filters.address,
+                        study_level: filters.diploma,
+                        begin_date: filters.calendar,
+                        salary: filters.minSalary
+                    },
+                    success: function(response) {
+                        const result = JSON.parse(response);
+
+                        if (result.status === "success") {
+                            sendNotification("success", "Succès", "Notification créée avec succès!");
+                        } else {
+                            sendNotification("failure", "Erreur", result.message || "Une erreur est survenue.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        sendNotification("failure", "Erreur", "Une erreur réseau est survenue lors de la création de la notification.");
+                    }
+                });
+            });
 
             function heartUpdate(id) {
                 $.ajax({
                     url: '../Presentation/Offer/Favorite.php',
                     type: 'POST',
                     data: {id: id},
-                    success: function(msg, status) {
+                    success: function(msg, status, jqXHR) {
                         if (status === "success") {
                             const heartIcon = document.getElementById('heart-icon-' + id);
                             if (heartIcon.classList.contains('fa-regular')) {
