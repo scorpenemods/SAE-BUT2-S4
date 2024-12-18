@@ -81,86 +81,86 @@ $userRole = $person->getRole();
         <div class="participants">
             <h2>Tableau des Compétences Acquises</h2>
             <form method="post" id="formContainer-1">
-                <table>
+                <table class="tableau">
                     <thead>
-                    <tr>
-                        <th>Compétence</th>
-                        <th>Niveau de Maîtrise</th>
-                        <th>Commentaires</th>
+                    <tr class="trEdit">
+                        <th class="thEdit">Compétence</th>
+                        <th class="thEdit">Niveau de Maîtrise</th>
+                        <th class="thEdit">Commentaires</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>Adaptation à l'entreprise</td>
-                        <td>
-                            <select name="option1">
+                    <tr class="trEdit">
+                        <td class="tdEdit">Adaptation à l'entreprise</td>
+                        <td class="tdEdit">
+                            <select class="selection" name="option1">
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td><input type="text" name="table1"></td>
+                        <td class="tdEdit"><input class="tableInput" type="text" name="table1"></td>
                     </tr>
-                    <tr>
-                        <td>Ponctualité</td>
-                        <td>
-                            <select name="option2">
+                    <tr class="trEdit">
+                        <td class="tdEdit">Ponctualité</td>
+                        <td class="tdEdit">
+                            <select class="selection" name="option2">
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td><input type="text" name="table2"></td>
+                        <td class="tdEdit"><input class="tableInput" type="text" name="table2"></td>
                     </tr>
-                    <tr>
-                        <td>Motivation pour le travail</td>
-                        <td>
-                            <select name="option3">
+                    <tr class="trEdit">
+                        <td class="tdEdit">Motivation pour le travail</td>
+                        <td class="tdEdit">
+                            <select class="selection" name="option3">
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td><input type="text" name="table3"></td>
+                        <td class="tdEdit"><input class="tableInput" type="text" name="table3"></td>
                     </tr>
-                    <tr>
-                        <td>Initiatives personnelles</td>
-                        <td>
-                            <select name="option4">
+                    <tr class="trEdit">
+                        <td class="tdEdit">Initiatives personnelles</td>
+                        <td class="tdEdit">
+                            <select class="selection" name="option4">
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td><input type="text" name="table4"></td>
+                        <td class="tdEdit"><input class="tableInput" type="text" name="table4"></td>
                     </tr>
-                    <tr>
-                        <td>Qualité du travail</td>
-                        <td>
-                            <select name="option5">
+                    <tr class="trEdit">
+                        <td class="tdEdit">Qualité du travail</td>
+                        <td class="tdEdit">
+                            <select class="selection" name="option5">
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td><input type="text" name="table5"></td>
+                        <td class="tdEdit"><input class="tableInput" type="text" name="table5"></td>
                     </tr>
-                    <tr>
-                        <td>Intérêt pour la découverte de l'entreprise</td>
-                        <td>
-                            <select name="option6">
+                    <tr class="trEdit">
+                        <td class="tdEdit">Intérêt pour la découverte de l'entreprise</td>
+                        <td class="tdEdit">
+                            <select class="selection" name="option6">
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
                                 <option value="Advance">Avancé</option>
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td><input type="text" name="table6"></td>
+                        <td class="tdEdit"><input class="tableInput" type="text" name="table6"></td>
                     </tr>
                     </tbody>
                 </table><br>
