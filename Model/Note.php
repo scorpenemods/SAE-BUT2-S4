@@ -4,14 +4,12 @@ class Note
 {
     private int $id;        // Identifiant de la note
     private string $sujet;        // Sujet de la note
-    private string $appreciation;     // Appréciation de la note
     private float $note;     // Note
     private float $coeff;       // Coefficient de la note
 
-    public function __construct($id, $sujet, $appreciation, $note, $coeff){
+    public function __construct($id, $sujet, $note, $coeff){
         $this->id = $id;
         $this->sujet = $sujet;
-        $this->appreciation = $appreciation;
         $this->note = $note;
         $this->coeff = $coeff;
     }
@@ -22,10 +20,6 @@ class Note
 
     public function getSujet(): string{
         return $this->sujet;
-    }
-
-    public function getAppreciation(): string{
-        return $this->appreciation;
     }
 
     public function getNote(): float{

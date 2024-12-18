@@ -883,7 +883,7 @@ class Database
         return $students;
     }
 
-    // -------------------- Add Note in Database ------------------------------------------ //
+    // --------------------  Note in Database ------------------------------------------ //
 
     function addNotes($studentId, $notesData, $pdo): void
     {
@@ -894,7 +894,7 @@ class Database
             }
 
             foreach ($notesData as $note) {
-                if (!isset($note['sujet'], $note['appreciation'], $note['note'], $note['coeff'])) {
+                if (!isset($note['sujet'], $note['note'], $note['coeff'])) {
                     throw new Exception("Données manquantes dans une note : " . print_r($note, true));
                 }
 
@@ -904,14 +904,13 @@ class Database
             }
 
             // Préparation de la requête d'insertion
-            $query = $pdo->prepare("INSERT INTO Note (sujet, appreciation, note, coeff, user_id)
-            VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
+            $query = $pdo->prepare("INSERT INTO Note (sujet, note, coeff, user_id)
+            VALUES (:sujet, :note, :coeff, :user_id)");
 
             // Exécution pour chaque note
             foreach ($notesData as $note) {
                 $query->execute([
                     ':sujet' => $note['sujet'],
-                    ':appreciation' => $note['appreciation'],
                     ':note' => floatval($note['note']),
                     ':coeff' => floatval($note['coeff']),
                     ':user_id' => $studentId
@@ -931,19 +930,18 @@ class Database
     }
 
 
-    public function updateNote($noteId, $userId, $sujet, $appreciation, $note, $coeff, $pdo): void
+    public function updateNote($noteId, $userId, $sujet, $note, $coeff, $pdo): void
     {
         try {
             $pdo->beginTransaction();
             $stmt = $pdo->prepare("
             UPDATE Note
-            SET sujet = :sujet, appreciation = :appreciation, note = :note, coeff = :coeff
+            SET sujet = :sujet, note = :note, coeff = :coeff
             WHERE id = :id AND user_id = :user_id
         ");
 
             $stmt->execute([
                 ':sujet' => $sujet,
-                ':appreciation' => $appreciation,
                 ':note' => $note,
                 ':coeff' => $coeff,
                 ':id' => $noteId,
@@ -995,6 +993,37 @@ class Database
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Retourne un tableau associatif
     }
+
+    public function getUnderNotes($studentId): array
+    {
+        $query = "SELECT
+                sn.sousNote_id AS SousNoteID,
+                sn.description AS Description,
+                sn.note AS SousNote,
+                n.id AS NoteID
+              FROM
+                Sous_Note sn
+                JOIN Note n ON sn.note_id = n.id
+              WHERE
+                n.user_id = ?";
+
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([$studentId]);
+
+        // Récupérer toutes les lignes sous forme de tableau associatif
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $underNotes = [];
+        foreach ($rows as $row) {
+            $underNotes[$row['NoteID']][] = new Sous_Note(
+                $row['SousNoteID'],
+                $row['Description'],
+                $row['SousNote']
+            );
+        }
+        return $underNotes;
+    }
+
 
 
 
@@ -1127,7 +1156,7 @@ class Database
 
     public function getNotes($userId): array
     {
-        $sql = "SELECT Note.id, Note.sujet, Note.appreciation, Note.note, Note.coeff
+        $sql = "SELECT Note.id, Note.sujet, Note.note, Note.coeff
                 FROM Note
                 WHERE Note.user_id = :user_id";
 
@@ -1140,7 +1169,6 @@ class Database
             $notes[] = new Note(
                 $row['id'] ?? '',
                 $row['sujet'] ?? '',
-                $row['appreciation'] ?? '',
                 $row['note'] ?? '',
                 $row['coeff'] ?? ''
             );
