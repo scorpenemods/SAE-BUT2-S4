@@ -559,8 +559,8 @@ function addField(containerId) {
     const fieldWrapper = document.createElement('p');
 
     fieldWrapper.innerHTML = `
-        <select name="field_choice" id="field_choice">
-            <option value="">Sélectionnez le type du champ</option>
+        <select name="field_choice" id="field_choice" onchange="removeDefaultOption(this)">
+            <option value="" selected>Sélectionnez le type du champ</option>
             <option value="text">Text libre</option>
             <option value="qcm">QCM</option>
         </select>
@@ -715,14 +715,6 @@ function addFieldContent(containerId, type, title) {
     fieldContainer.insertBefore(fieldWrapper, addButton);
 }
 
-
-function validerModif(containerId, title){
-    const fieldWrapper = document.createElement('p');
-
-    fieldWrapper.checkVisibility();
-}
-
-
 //Supprime le formulaire
 function deleteField(button) {
     button.parentElement.remove();
@@ -756,6 +748,15 @@ function deleteMeeting() {
     // Enlève le contenu de la dernière rencontre
     if (lastContent) {
         contentContainer.removeChild(lastContent);
+    }
+}
+
+function removeDefaultOption(selectElement) {
+    const defaultOption = selectElement.querySelector('option[value=""]');
+    if (selectElement.value !== "") {
+        defaultOption.style.display = "none";
+    } else {
+        defaultOption.style.display = "block";
     }
 }
 

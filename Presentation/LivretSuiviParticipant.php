@@ -69,7 +69,9 @@ if (session_status() === PHP_SESSION_NONE) {
 
         <div class="livret-container">
             <!-- Création des différentes rencontres / dépôts : -->
-            <?php include_once "LivretSuiviContenu.php";
+            <?php include_once "LivretSuiviContenu.php"; ?>
+            <script src="../View/Documents/Documents.js"></script>
+            <?php
 
             } else {
                 echo "<div class='participant-container'>Sélectionnez un étudiant pour voir les détails.</div>";
