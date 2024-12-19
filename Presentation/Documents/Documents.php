@@ -59,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
 $files = $db->getFiles($userId);
 ?>
 
-<body>
 <form class="box" method="post" action="" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
     <div class="box__input">
@@ -93,4 +92,3 @@ $files = $db->getFiles($userId);
         <?php endforeach; ?>
     </div>
 </div>
-</body>
