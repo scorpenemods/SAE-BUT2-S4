@@ -20,16 +20,16 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Le Petit Stage - Proposer une offre</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="/view/css/create.css">
-        <link rel="stylesheet" href="/view/css/header.css">
-        <link rel="stylesheet" href="/view/css/footer.css">
+        <link rel="stylesheet" href="css/Create.css">
+        <link rel="stylesheet" href="css/Header.css">
+        <link rel="stylesheet" href="css/Footer.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../../header.php'; ?>
+        <?php include "Header.php"; ?>
         <main class="container-principal">
             <h1>Créer une entreprise</h1>
-            <form action="../../../presenter/offer/company/create.php" method="post" enctype="multipart/form-data">
+            <form action="CreateCompany.php" method="post" enctype="multipart/form-data">
 
                 <div class="form-group">
                     <label for="title">Nom de l'entreprise</label>
@@ -54,7 +54,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 <button type="submit">Créer l'entreprise</button>
             </form>
         </main>
-        <?php include dirname(__FILE__) . '/../../footer.php'; ?>
+        <?php include 'Footer.php'; ?>
         <script>
             /*
                Manage the visibility of the tags dropdown.

@@ -129,17 +129,34 @@ if (isset($_SESSION['Secretariat']) || (isset($_SESSION['company_id']) && isset(
                 if (!event.target.matches('.tags-dropdown-btn') && !event.target.closest('.tags-dropdown-content')) {
                     if (dropdown.classList.contains('show')) {
                         dropdown.classList.remove('show');
+                        updateDropdownButtonText()
                     }
                 }
             }
 
-            function updateDropdownButtonText(categories) {
-                if (categories.length === 0) {
-                    dropdownBtn.textContent = 'Sélectionner les catégories';
-                } else if (categories.length <= 2) {
-                    dropdownBtn.textContent = categories.join(', ');
-                } else {
-                    dropdownBtn.textContent = `${categories.length} catégories sélectionnées`;
+            function updateDropdownButtonText() {
+                const categories = []
+                for (const category of dropdown.children) {
+                    const checked = category.querySelector('input').checked;
+
+                    if (checked) {
+                        categories.push(category.textContent.trim());
+                    }
+                }
+
+                const tagsList = document.querySelector('.tagsList');
+                tagsList.innerHTML = '';
+
+                categories.forEach(category => {
+                    const tag = document.createElement('span');
+                    tag.classList.add('tag');
+                    tag.textContent = category;
+
+                    tagsList.appendChild(tag);
+                });
+
+                window.onload = function() {
+                    updateDropdownButtonText()
                 }
             }
         </script>
