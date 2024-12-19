@@ -966,34 +966,36 @@ class Database
     }
 
 
-    public function updateNote($noteId, $studentId, $sujet, $note, $coeff, $pdo): void
+    public function updateNote($noteId, $studentId, $sujet, $coeff, $pdo): void
     {
         try {
             $pdo->beginTransaction();
             $stmt = $pdo->prepare("
             UPDATE Note
-            SET sujet = :sujet, note = :note, coeff = :coeff
+            SET sujet = :sujet, coeff = :coeff
             WHERE id = :id AND user_id = :user_id
         ");
 
             $stmt->execute([
                 ':sujet' => $sujet,
-                ':note' => $note,
                 ':coeff' => $coeff,
                 ':id' => $noteId,
                 ':user_id' => $studentId
             ]);
 
             if ($stmt->rowCount() === 0) {
-                throw new Exception("Aucune ligne modifiée. L'ID de la note est peut-être incorrect ou l'utilisateur n'a pas la permission.");
+                throw new Exception("Aucune ligne modifiée. ID incorrect ou permissions insuffisantes.");
             }
 
             $pdo->commit();
         } catch (PDOException $e) {
             $pdo->rollBack();
-            throw new Exception("Erreur lors de la mise à jour de la note : " . $e->getMessage(), 0, $e);
+            error_log("Erreur SQL : " . $e->getMessage());
+            throw new Exception("Erreur lors de la mise à jour : " . $e->getMessage(), 0, $e);
         }
     }
+
+
 
     function addUnderNotes(array $notesData, PDO $pdo): void
     {
@@ -1072,6 +1074,46 @@ class Database
             throw new Exception("Aucune sous-note supprimée. L'ID est peut-être incorrect.");
         }
     }
+
+    public function getMainNoteAverage($noteId, $pdo): float|int|null
+    {
+        // Récupérer toutes les sous-notes liées à cette note
+        $stmt = $pdo->prepare("SELECT note FROM Sous_Note WHERE note_id = :note_id");
+        $stmt->execute([':note_id' => $noteId]);
+        $sousNotes = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        // Si aucune sous-note n'est trouvée, retourner null
+        if (!$sousNotes || count($sousNotes) === 0) {
+            return null;
+        }
+
+        // Récupérer le coefficient principal de la note
+        $stmtCoeff = $pdo->prepare("SELECT coeff FROM Note WHERE id = :id");
+        $stmtCoeff->execute([':id' => $noteId]);
+        $coeff = $stmtCoeff->fetchColumn();
+
+        $totaleSumNote = 0;
+        $totaleSumCoeff = 0;
+
+        // Calcul de la somme pondérée des notes
+        foreach ($sousNotes as $note) {
+            $note = floatval($note);
+
+            $totaleSumNote += $note * $coeff;
+            $totaleSumCoeff += $coeff;
+        }
+
+        // Vérifier qu'il y a bien un coefficient total pour éviter une division par zéro
+        if ($totaleSumCoeff === 0) {
+            return null;
+        }
+
+        // Calculer la moyenne pondérée
+        return $totaleSumNote / $totaleSumCoeff;
+    }
+
+
+
 
 
 

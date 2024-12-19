@@ -83,96 +83,10 @@ if (isset($_GET['section'])) {
 // Définit la section active par défaut (Accueil) si aucune n'est spécifiée
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
 
-if (isset($_POST['submit_notes'])) {
-    if (isset($_POST['sujet'], $_POST['appreciations'], $_POST['note'], $_POST['coeff'])) {
-        $allFieldsFilled = true;
-        $notesData = [];
-
-        foreach ($_POST['sujet'] as $index => $sujet) {
-            if (empty($_POST['sujet'][$index]) || empty($_POST['appreciations'][$index]) || empty($_POST['note'][$index]) || empty($_POST['coeff'][$index])) {
-                $allFieldsFilled = false;
-                break;
-            }
-            $notesData[] = [
-                'sujet' => $_POST['sujet'][$index],
-                'appreciation' => $_POST['appreciations'][$index],
-                'note' => $_POST['note'][$index],
-                'coeff' => $_POST['coeff'][$index],
-            ];
-        }
-
-        if ($allFieldsFilled) {
-            try {
-                $database->addNotes($studentId, $notesData, $pdo);
-                header("Location: MaitreStage.php");
-                exit();
-            } catch (PDOException $e) {
-                echo "Erreur lors de l'ajout des notes : " . $e->getMessage();
-            }
-        } else {
-            echo "Veuillez remplir tous les champs.";
-        }
-    } else {
-        echo "Erreur lors de la soumission du formulaire. Veuillez réessayer.";
-    }
-}
-
-if (isset($_POST['saveNote'])) {
-    if (isset($_POST['note_id'], $_POST['sujet'], $_POST['appreciations'], $_POST['note'], $_POST['coeff'])) {
-        $noteId = $_POST['note_id'];
-        $sujet = $_POST['sujet'];
-        $appreciation = $_POST['appreciations'];
-        $note = $_POST['note'];
-        $coeff = $_POST['coeff'];
-
-        // Vérifier que les valeurs sont correctes avant de continuer
-        if (!empty($sujet) && !empty($appreciation) && is_numeric($note) && is_numeric($coeff)) {
-            try {
-                $result = $database->updateNote(
-                    $noteId,
-                    $userId,
-                    $sujet,
-                    $appreciation,
-                    $note,
-                    $coeff,
-                    $pdo
-                );
-
-                if ($result) {
-                    echo "success";
-                } else {
-                    echo "Aucune ligne modifiée. Vérifiez l'ID ou les permissions.";
-                }
-                exit();
-            } catch (PDOException $e) {
-                echo "Erreur lors de la mise à jour des notes : " . $e->getMessage();
-                exit();
-            }
-        } else {
-            echo "Veuillez remplir tous les champs correctement.";
-            exit();
-        }
-    } else {
-        echo "Erreur lors de la soumission du formulaire. Veuillez réessayer.";
-        exit();
-    }
-}
 
 
 
-if (!empty($students)) {
-    $student = $students[0];
-    $studentId = htmlspecialchars($student->getId());
-    $studentName = htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom());
-} else {
-    $student = null;
-    $studentId = null;
-    $studentName = "Vous n'avez pas d'étudiants";
-}
 
-$hasStudents = !empty($students);
-
-$notes = $database->getNotes($userId);
 
 ?>
 
@@ -348,44 +262,7 @@ $notes = $database->getNotes($userId);
         </div>
 
         <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : ' '; ?>" id="content-6">
-            <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
-            <h2 id="selected-student-name"><?php echo isset($studentName) && !empty($studentName) ? htmlspecialchars($studentName) : 'Sélectionnez un étudiant'; ?></h2>
-            <form method="POST" action="MaitreStage.php">
-                <input type="hidden" id="student-id" name="student_id" value="<?php echo $studentId; ?>">
-                <div class="notes-container">
-                    <table id="notesTable" class="notes-table">
-                        <thead>
-                        <tr>
-                            <th>Sujet</th>
-                            <th>Appréciations</th>
-                            <th>Note /20</th>
-                            <th>Coefficient</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Boutons pour la gestion des notes -->
-                <div class="notes-buttons">
-                    <button type="button" id="addNoteButton" class="mainbtn" onclick="addNoteRow()" disabled>Ajouter une note</button>
-                    <button type="submit" name="submit_notes" class="mainbtn" onclick="validateNotes()" id="validateBtn" disabled>Valider les notes</button>
-                    <button type="button" class="mainbtn" onclick="cancelNotes()" id="cancelBtn" disabled>Annuler</button>
-                </div>
-            </form>
-            <div id="validationMessage" class="validation-message"></div>
-            <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
-        </div>
-
-        <!-- Offres Content -->
-        <div class="Contenu <?php echo ($activeSection == '7') ? 'Visible' : ' '; ?>" id="content-7">
-            Contenu Offres
-            <a href="../View/List.php?type=all">
-                <button type="button">Voir les offres</button>
-            </a>
-        </div>
+            <?php include_once("GetNotes.php");?>
     </div>
 </section>
 

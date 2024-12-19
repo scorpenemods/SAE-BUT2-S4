@@ -133,38 +133,59 @@ function editNote(button) {
     const inputs = row.querySelectorAll('input, textarea');
 
     if (button.textContent.trim() === 'Modifier') {
-        // 1er clic : Activer les champs et changer le texte du bouton
+        // Activer les champs pour les rendre modifiables
         inputs.forEach(input => {
             input.removeAttribute('disabled');
             input.style.backgroundColor = '#fff';
         });
 
-        button.textContent = 'Enregistrer les notes';
+        const formData = new FormData(document.getElementById('noteForm'));
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
 
-        // Au prochain clic, on soumettra le formulaire principal
-        button.onclick = function() {
-            const form = document.getElementById('noteForm');
-            // formAction est déjà sur update_notes, pas besoin de le changer
-            form.submit();
+        // Changer le texte du bouton pour enregistrer
+        button.textContent = 'Enregistrer';
+        button.onclick = function (event) {
+            event.preventDefault();
+            document.getElementById('formAction').value = 'update_notes';
+            document.getElementById('noteForm').submit();
         };
     }
 }
 
 
+
+
+
+
 function saveChanges(button) {
-    // Définir l'action sur update_notes
+    const form = document.getElementById('noteForm'); // Récupère le formulaire principal
+    const row = button.closest('tr'); // Trouve la ligne en cours
+
+    // Active tous les champs désactivés dans la ligne pour qu'ils soient soumis
+    row.querySelectorAll('input, textarea').forEach(input => {
+        input.removeAttribute('disabled');
+    });
+
+    // Définir l'action pour mettre à jour les notes
     document.getElementById('formAction').value = 'update_notes';
 
-    // Soumettre le formulaire principal
-    submitForm();
+    form.submit(); // Soumet le formulaire principal
 }
+
 
 
 // Soumettre le formulaire
 function submitForm() {
-    const form = document.getElementById('noteForm');
-    form.submit();
+    const inputs = document.querySelectorAll('input:disabled, textarea:disabled');
+    inputs.forEach(input => {
+        input.removeAttribute('disabled'); // Activer temporairement les champs
+    });
+
+    document.getElementById('noteForm').submit(); // Soumettre le formulaire
 }
+
 
 // Fonction pour afficher/masquer le sous-tableau
 function showUnderTable(button, idUnderTable) {

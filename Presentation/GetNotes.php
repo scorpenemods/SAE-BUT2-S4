@@ -42,17 +42,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Mettre à jour les notes
         if ($action === 'update_notes') {
-            $noteIds = $_POST['note_id'] ?? [];
-            foreach ($noteIds as $noteId) {
-                $sujet = $_POST["sujet_$noteId"] ?? null;
-                $note = $_POST["note_$noteId"] ?? null;
-                $coeff = $_POST["coeff_$noteId"] ?? null;
 
-                if ($sujet !== null && $note !== null && $coeff !== null) {
-                    $database->updateNote($noteId, $studentId, $sujet,$note, $coeff, $pdo);
+            error_log("Updating notes for student ID: $studentId");
+            $noteIds = $_POST['note_id'] ?? []; // Récupère les IDs des notes
+            error_log("Updating notes for student ID: $studentId");
+            error_log("Note IDs: " . print_r($noteIds, true)); // Déboguer les IDs des notes reçues
+
+            foreach ($noteIds as $noteId) {
+                $sujet = $_POST["sujet_$noteId"] ?? null; // Récupère le sujet
+                $coeff = $_POST["coeff_$noteId"] ?? null; // Récupère le coefficient
+
+                error_log("Processing Note ID: $noteId");
+                error_log("Sujet: $sujet, Coefficient: $coeff"); // Vérifie les données reçues pour chaque note
+
+                // Vérifiez si les champs sont définis
+                if ($sujet !== null && $coeff !== null) {
+                    try {
+                        // Appel à la méthode de mise à jour de la note
+                        $database->updateNote($noteId, $studentId, $sujet, $coeff, $pdo);
+                        error_log("Note updated successfully for Note ID: $noteId");
+                    } catch (Exception $e) {
+                        error_log("Error updating Note ID: $noteId - " . $e->getMessage());
+                    }
+                } else {
+                    error_log("Skipped updating Note ID: $noteId due to missing data");
                 }
+                error_log("Données reçues : " . print_r($_POST, true));
+
             }
+
+            header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=success");
+            exit;
         }
+
+
+
         if ($action === 'delete_note') {
             $noteId = $_POST['note_id'] ?? null;
 
@@ -129,12 +153,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $studentId = $_GET['student_id'] ?? null;
 $studentName = "Sélectionnez un étudiant";
 $notes = [];
+$notesWithAverage = [];
 
 if ($studentId) {
     $student = $database->getUserById($studentId);
     if ($student) {
         $studentName = htmlspecialchars($student['prenom']) . ' ' . htmlspecialchars($student['nom']);
         $notes = $database->getNotes($studentId);
+
+        // Calculer la moyenne pour chaque note
+        $notesWithAverage = [];
+        foreach ($notes as $note) {
+            $noteId = $note->getId();
+            $pdo = $database->getConnection();
+            $moyenne = $database->getMainNoteAverage($noteId, $pdo);
+            $notesWithAverage[] = [
+                'note' => $note,
+                'moyenne' => $moyenne
+            ];
+        }
+
+
     } else {
         $studentName = "Étudiant introuvable";
     }
@@ -161,7 +200,7 @@ foreach ($underNotesData as $noteId => $sousNotes) {
 
 <form id="noteForm" action="Professor.php" method="post">
     <input type="hidden" id="student-id" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
-    <input type="hidden" id="formAction" name="action" value="update_notes">
+
 
     <h2 id="selected-student-name"><?= $studentName; ?></h2>
     <div class="notes-container">
@@ -176,11 +215,23 @@ foreach ($underNotesData as $noteId => $sousNotes) {
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($notes as $note) : ?>
+            <?php foreach ($notesWithAverage as $noteData) : ?>
+                <?php $note = $noteData['note']; ?>
+                <?php $moyenne = $noteData['moyenne']; ?>
                 <tr>
                     <td><?= htmlspecialchars($note->getId()); ?></td>
-                    <td><textarea name="sujet_<?= htmlspecialchars($note->getId()); ?>" rows="1" disabled><?= htmlspecialchars($note->getSujet()); ?></textarea></td>
-                    <td><input type="number" name="note_<?= htmlspecialchars($note->getId()); ?>" value="<?= htmlspecialchars($note->getNote()); ?>" disabled></td>
+                    <td>
+            <textarea name="sujet_<?= htmlspecialchars($note->getId()); ?>" rows="1" disabled>
+                <?= htmlspecialchars($note->getSujet()); ?>
+            </textarea>
+                    </td>
+                    <td>
+                        <?php if ($moyenne !== null): ?>
+                            <?= number_format($moyenne, 2); ?>
+                        <?php else: ?>
+                            Aucune sous-note
+                        <?php endif; ?>
+                    </td>
                     <td><input type="number" name="coeff_<?= htmlspecialchars($note->getId()); ?>" value="<?= htmlspecialchars($note->getCoeff()); ?>" disabled></td>
                     <td>
                         <form method="POST" action="Professor.php" style="display:inline;">
@@ -189,9 +240,19 @@ foreach ($underNotesData as $noteId => $sousNotes) {
                             <input type="hidden" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
                             <button type="submit">Supprimer</button>
                         </form>
-                        <button type="button" onclick="editNote(this)">Modifier</button>
                         <button type="button" onclick="showUnderTable(this, 'desc<?= $note->getId(); ?>')">Afficher Détails</button>
                     </td>
+                    <td>
+                        <form method="post" action="Professor.php" style="display: inline;">
+                            <input type="hidden" id="formAction" name="action" value="update_notes">
+                            <input type="hidden" name="note_id" value="<?= htmlspecialchars($note->getId()); ?>">
+                            <input type="hidden" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
+                            <button type="button" onclick="editNote(this)">Modifier</button>
+
+                        </form>
+
+                    </td>
+
                 </tr>
                 <input type="hidden" name="note_id[]" value="<?= htmlspecialchars($note->getId()); ?>">
 
