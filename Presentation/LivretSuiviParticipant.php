@@ -8,6 +8,9 @@ $database = Database::getInstance();
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+$person = unserialize($_SESSION['user']);
+$userRole = $person->getRole();
 ?>
 
 <div style="width: 100%;">
@@ -74,7 +77,11 @@ if (session_status() === PHP_SESSION_NONE) {
             <?php
 
             } else {
-                echo "<div class='participant-container'>Sélectionnez un étudiant pour voir les détails.</div>";
+                if ($userRole != 1) {
+                    echo "<div class='participant-container'>Sélectionnez un étudiant pour voir les détails.</div>";
+                } else{
+                    echo "<div class='participant-container'>Vous n'avez pas de livret de suivi ouvert pour le moment.</div>";
+                }
             }
             ?>
         </div>
