@@ -2,6 +2,7 @@
 require_once 'Database.php';
 
 $db = Database::getInstance()->getConnection();
+global $db;
 /**
  * Offer
  * Represents a Offer in the database
@@ -371,12 +372,12 @@ class Offer {
     public static function getById(int $id): ?Offer {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM Offer WHERE id = :id");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Offer WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
         $result = $stmt->fetch();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 
@@ -786,11 +787,11 @@ class Offer {
     public static function isAlreadyPending(int $id): ?bool {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :offer_id AND status = 'Pending'");
+        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :offer_id AND status = 'Pending'");
         $stmt->bindParam(":offer_id", $id);
         $stmt->execute();
 
-        if ($db->errorCode() != 0) {
+        if ($db->getConnection()->errorCode() != 0) {
             return null;
         }
 

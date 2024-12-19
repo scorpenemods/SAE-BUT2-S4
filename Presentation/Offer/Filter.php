@@ -9,7 +9,7 @@
  * @return array|null
  */
 function getPageOffers(int $n, array $filters): ?array {
-    $filteredOffers = Offer::getFilteredOffers($n, $filters);
+    $filteredOffers = Offer::getFilteredOffer($n, $filters);
 
     if (!$filteredOffers) {
         return null;
