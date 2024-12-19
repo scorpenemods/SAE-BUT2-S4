@@ -331,10 +331,10 @@ class Offer {
      * @param string $getWebsite
      * @return Offer|null
      */
-    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, string $getWebsite) {
+    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, string $getWebsite, float $latitude, float $longitude) {
         global $db;
 
-        $stmt = $db->prepare("UPDATE offers SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone, website = :website WHERE id = :id");
+        $stmt = $db->prepare("UPDATE offers SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone, website = :website, latitude = :latitude, longitude = :longitude WHERE id = :id");
         $stmt->bindParam(":title", $getTitle);
         $stmt->bindParam(":description", $getDescription);
         $stmt->bindParam(":job", $getJob);
@@ -347,6 +347,8 @@ class Offer {
         $stmt->bindParam(":id", $getId);
         $stmt->bindParam(":begin_date", $getBeginDate);
         $stmt->bindParam(":website", $getWebsite);
+        $stmt->bindParam(":latitude", $latitude);
+        $stmt->bindParam(":longitude", $longitude);
 
         $stmt->execute();
 
