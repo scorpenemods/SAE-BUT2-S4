@@ -1407,4 +1407,68 @@ class Database
         $stmt = $this->connection->prepare($sqlUpdate);
         $stmt->execute([':conv_id' => $convId]);
     }
+    /**
+     * @throws Exception
+     */
+    public function addAlert($userId, $duration, $address, $study_level, $salary, $begin_date){
+
+        $query = 'insert into Alert (user_id, duration, address, study_level, salary, begin_date) VALUES (:user_id, :duration, :address, :study_level, :salary, :begin_date);';
+        $stmt = $this->getConnection()->prepare($query);
+        $stmt->bindParam(':user_id', $userId);
+        $stmt->bindParam(':duration', $duration, is_null($duration) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':study_level', $study_level);
+        $stmt->bindParam(':salary', $salary, is_null($salary) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindParam(':begin_date', $begin_date);
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de l'insertion : " . $e->getMessage());
+        }
+
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function deleteAlert($id){
+
+        $query = 'delete from Alert where id = :id;';
+        $stmt = $this->getConnection()->prepare($query);
+        $stmt->bindParam(':id', $id);
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de la suppression : " . $e->getMessage());
+        }
+    }
+
+
+    public function getAlert(): array
+    {
+        $stmt = $this->getConnection()->prepare('select * from Alert;');
+        $stmt->execute();
+        $alerts = [];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $alerts[] = $row;
+        }
+
+        return $alerts;
+    }
+
+    public function getAlertByUser($user_id): array
+    {
+        $stmt = $this->getConnection()->prepare('select * from Alert where user_id = :user_id;');
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $alerts = [];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $alerts[] = $row;
+        }
+        return $alerts;
+    }
+
+
 }

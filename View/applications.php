@@ -1,5 +1,5 @@
 <?php
-require '../../../models/Applications.php';
+require '../../../models/Application.php';
 session_start();
 
 require dirname(__FILE__) . '/../../../models/Offer.php';
@@ -24,7 +24,7 @@ $groupeSecretariat = $_SESSION['secretariat'] ?? false;
 $company_id = $_SESSION['company_id'] ?? 0;
 
 if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $company_id))) {
-    $applications = Applications::getAllForOffer($offerId, $type);
+    $applications = Application::getAllForOffer($offerId, $type);
 } else {
     header("Location: ../../offer/list.php");
     die();
@@ -49,7 +49,7 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
     <main>
         <div class="spacer">
             <div class="card">
-                <h2>Liste des Candidatures pour <?php echo Applications::getOfferName($offerId);?></h2>
+                <h2>Liste des Candidatures pour <?php echo Application::getOfferName($offerId);?></h2>
                 <div id="liste-candidats">
                 <?php
                     if ($applications) {
@@ -57,7 +57,7 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
                             $id_user = $apply->getIdUser();
                             echo "<div class='candidat'>";
                             echo "<div class='info'>";
-                            echo "<h3 class='nom'>".Applications::getUsername($id_user)."</h3>";
+                            echo "<h3 class='nom'>".Application::getUsername($id_user)."</h3>";
                             echo "<ul class='fichiers'>";
                             //Todo
                             echo "<li class='fichier' onclick='getFile(\"" . $id_user . "\", \"" . $offerId . "\", \"cv\")'>📎 CV</li>";
@@ -67,11 +67,11 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
                             echo "<span class='date'>".$apply->getCreatedAt()."</span>";
                             if (!$groupeSecretariat) {
                                 echo "<div class='actions'>";
-                                    echo "<form action='../../../presenter/offer/applications/validate.php' method='post'>";
+                                    echo "<form action='../../../presenter/offer/applications/ValidateApplication.php' method='post'>";
                                         echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
                                         echo "<input class='button accept' type='submit' name='Valider' value='Valider'>";
                                     echo "</form>";
-                                    echo "<form action='../../../presenter/offer/applications/validate.php' method='post'>";
+                                    echo "<form action='../../../presenter/offer/applications/ValidateApplication.php' method='post'>";
                                         echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
                                         echo "<input class='button refuse' id='refuseButton' type='submit' name='Refuser' value='Refuser'>";
                                     echo "</form>";

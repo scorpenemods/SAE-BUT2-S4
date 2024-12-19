@@ -29,7 +29,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
         <?php include 'Header.php'; ?>
         <main class="container-principal">
             <h1>Proposer une offre de stage</h1>
-            <form action="../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
+            <form action="../Presentation/Offer/CreateOfferPresentation.php" method="post" enctype="multipart/form-data">
                 <?php if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                     echo "<div class='form-group'>";
                     // Si l'utilisateur est un secretariat, il avoir un menu déroulant avec les companies

@@ -180,7 +180,7 @@ function renderForm($action, $id, $buttonText, $typeForm, $hiddenFields = []): v
                     }
 
                     if ($secretariat_group && ($type == "new" || $type == "updated")) renderForm('../../presenter/offer/secretariat/deny.php', $offer->getId(), "Refuser", "deny-form", ['id' => $offer->getId()]);
-                    if ($secretariat_group && ($type == "new" || $type == "updated")) renderForm('../../presenter/offer/secretariat/validate.php', $offer->getId(), "Valider", "validate-form", ['id' => $offer->getId()], "validate-form");
+                    if ($secretariat_group && ($type == "new" || $type == "updated")) renderForm('../../presenter/offer/secretariat/ValidateApplication.php', $offer->getId(), "Valider", "validate-form", ['id' => $offer->getId()], "validate-form");
                     ?>
                     </div>
                 </div>

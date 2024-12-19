@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require dirname(__FILE__) . '/../../models/Applications.php';
+require dirname(__FILE__) . '/../../models/Application.php';
 require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
@@ -15,7 +15,7 @@ if ($user === null) {
     exit();
 }
 
-$applications = Applications::getAllForUser($user);
+$applications = Application::getAllForUser($user);
 ?>
 <!DOCTYPE html>
 <html lang="fr">

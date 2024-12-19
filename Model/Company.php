@@ -50,15 +50,23 @@ class Company {
         return $this->updated_at;
     }
 
-    //Get a Company by its id
+    /**
+     * getById
+     * Returns a company by its id
+     * @param int $id
+     * @return Company|null
+     */
     public static function getById(int $id): ?Company {
         global $db;
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Company WHERE id = :id");
+
+        $stmt = $db->prepare("SELECT * FROM companies WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
-        if ($db->getConnection()->errorCode() != 0) {
+
+        if ($db->errorCode() != 0) {
             return null;
         }
+
         $result = $stmt->fetch();
 
         if (!$result) {
@@ -70,13 +78,18 @@ class Company {
             $result["name"],
             $result["size"],
             $result["address"],
-            $result["Siret"],
+            $result["siren"],
             $result["created_at"],
             $result["updated_at"]
         );
     }
 
-    //Get all companies
+
+    /**
+     * getAll
+     * Returns all companies
+     * @return array|null
+     */
     public static function getAll(): ?array {
         global $db;
 
@@ -131,5 +144,18 @@ class Company {
             date("Y-m-d H:i:s"),
             date("Y-m-d H:i:s")
         );
+    }
+    public static function delete(int $id): ?bool {
+        global $db;
+        $sql = "DELETE FROM companies WHERE id = :id";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        if ($db->errorCode()) {
+            return false;
+        }
+
+        return true;
     }
 }
