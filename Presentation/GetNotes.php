@@ -2,6 +2,7 @@
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';
 require_once '../Model/Note.php';
+require_once '../Model/UnderNote.php';
 
 global $database;
 $database = Database::getInstance();
@@ -21,9 +22,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Ajouter des notes
         if ($action === 'add_notes') {
             $notesData = $_POST['notes'] ?? [];
+            $studentId = $_POST['student_id'] ?? null;
 
-            if (!empty($notesData)) {
-                $database->addNotes($studentId, $notesData, $pdo);
+            if ($studentId && !empty($notesData)) {
+                foreach ($notesData as $noteData) {
+                    $sujet = $noteData['sujet'] ?? null;
+                    $note = $noteData['note'] ?? null;
+                    $coeff = $noteData['coeff'] ?? null;
+
+                    $database->addNotes($studentId, $notesData, $pdo);
+                }
+                header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=success");
+                exit;
+            } else {
+                header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=error");
+                exit;
             }
         }
 
@@ -32,12 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $noteIds = $_POST['note_id'] ?? [];
             foreach ($noteIds as $noteId) {
                 $sujet = $_POST["sujet_$noteId"] ?? null;
-                $appreciation = $_POST["appreciations_$noteId"] ?? null;
                 $note = $_POST["note_$noteId"] ?? null;
                 $coeff = $_POST["coeff_$noteId"] ?? null;
 
                 if ($sujet !== null && $note !== null && $coeff !== null) {
-                    $database->updateNote($noteId, $studentId, $sujet, $appreciation, $note, $coeff, $pdo);
+                    $database->updateNote($noteId, $studentId, $sujet,$note, $coeff, $pdo);
                 }
             }
         }
@@ -57,6 +69,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
         }
+
+        if ($action === 'add_under_note') {
+            $noteId = $_POST['note_id'] ?? null;
+            $description = $_POST['description'] ?? null;
+            $underNoteValue = $_POST['under_note'] ?? null;
+            $studentId = $_POST['student_id'] ?? null;
+
+            if ($noteId && $description && $underNoteValue !== null && $studentId) {
+                // Construire un tableau de données conforme à addUnderNotes
+                $notesData = [[
+                    'description' => $description,
+                    'note_id' => $noteId,
+                    'note' => $underNoteValue
+                ]];
+
+                // Appel à la méthode addUnderNotes pour insérer la sous-note
+                $database->addUnderNotes($notesData, $pdo);
+
+                header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=success");
+                exit;
+            } else {
+                header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=error");
+                exit;
+            }
+        }
+
+        if ($action === 'delete_under_note') {
+            $underNoteId = $_POST['under_note_id'] ?? null;
+
+            if ($underNoteId !== null) {
+                // Appel à la fonction deleteUnderNote
+                $database->deleteUnderNote($underNoteId, $pdo);
+
+                // Redirection après la suppression
+                header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=success");
+                exit;
+            } else {
+                // Si underNoteId est null, erreur
+                header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=error");
+                exit;
+            }
+        }
+
+
 
         // Redirection après succès
         header("Location: Professor.php?student_id=" . urlencode($studentId) . "&status=success");
@@ -84,12 +140,28 @@ if ($studentId) {
     }
 }
 
+$underNotesData = $database->getUnderNotes($studentId); // Récupère les sous-notes groupées par NoteID
+$underNotes = [];
+
+// Transformer les données des sous-notes en objets Sous_Note
+foreach ($underNotesData as $noteId => $sousNotes) {
+    if (!is_array($sousNotes)) {
+        continue; // Vérifie que $sousNotes est un tableau
+    }
+    foreach ($sousNotes as $sousNote) {
+        // Vérifiez que $sousNote est bien un objet de type Sous_Note
+        if ($sousNote instanceof Sous_Note) {
+            $underNotes[$noteId][] = $sousNote;
+        }
+    }
+}
+
+
 ?>
-
-
 
 <form id="noteForm" action="Professor.php" method="post">
     <input type="hidden" id="student-id" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
+    <input type="hidden" id="formAction" name="action" value="update_notes">
 
     <h2 id="selected-student-name"><?= $studentName; ?></h2>
     <div class="notes-container">
@@ -98,53 +170,83 @@ if ($studentId) {
             <tr>
                 <th>ID</th>
                 <th>Sujet</th>
-                <th>Appréciations</th>
                 <th>Note /20</th>
                 <th>Coefficient</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            <?php if (!empty($notes)): ?>
-                <?php foreach ($notes as $note): ?>
-                    <tr id="row_<?= htmlspecialchars($note->getId()); ?>">
-                        <td><?= htmlspecialchars($note->getId()); ?></td>
-                        <td>
-                            <textarea name="sujet_<?= htmlspecialchars($note->getId()); ?>" rows="1" disabled><?= htmlspecialchars($note->getSujet()); ?></textarea>
-                        </td>
-                        <td>
-                            <textarea name="appreciations_<?= htmlspecialchars($note->getId()); ?>" rows="1" disabled><?= htmlspecialchars($note->getAppreciation()); ?></textarea>
-                        </td>
-                        <td>
-                            <input type="number" name="note_<?= htmlspecialchars($note->getId()); ?>" value="<?= htmlspecialchars($note->getNote()); ?>" disabled>
-                        </td>
-                        <td>
-                            <input type="number" name="coeff_<?= htmlspecialchars($note->getId()); ?>" value="<?= htmlspecialchars($note->getCoeff()); ?>" disabled>
-                        </td>
-                        <td>
-                            <input type="hidden" name="note_id[]" value="<?= htmlspecialchars($note->getId()); ?>">
-                            <button type="button" id="edit_<?= htmlspecialchars($note->getId()); ?>" class="mainbtn" name="action" value="update_notes" onclick="editNote(this)">Modifier les notes</button
-                            <form action="" method="post" style="display:inline;">
-                                <input type="hidden" name="action" value="delete_note">
-                                <input type="hidden" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
-                                <input type="hidden" name="note_id" value="<?= htmlspecialchars($note->getId()); ?>">
-                                <button type="submit" class="btn btn-danger">Supprimer</button>
-                            </form>
+            <?php foreach ($notes as $note) : ?>
+                <tr>
+                    <td><?= htmlspecialchars($note->getId()); ?></td>
+                    <td><textarea name="sujet_<?= htmlspecialchars($note->getId()); ?>" rows="1" disabled><?= htmlspecialchars($note->getSujet()); ?></textarea></td>
+                    <td><input type="number" name="note_<?= htmlspecialchars($note->getId()); ?>" value="<?= htmlspecialchars($note->getNote()); ?>" disabled></td>
+                    <td><input type="number" name="coeff_<?= htmlspecialchars($note->getId()); ?>" value="<?= htmlspecialchars($note->getCoeff()); ?>" disabled></td>
+                    <td>
+                        <form method="POST" action="Professor.php" style="display:inline;">
+                            <input type="hidden" name="action" value="delete_note">
+                            <input type="hidden" name="note_id" value="<?= htmlspecialchars($note->getId()); ?>">
+                            <input type="hidden" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
+                            <button type="submit">Supprimer</button>
+                        </form>
+                        <button type="button" onclick="editNote(this)">Modifier</button>
+                        <button type="button" onclick="showUnderTable(this, 'desc<?= $note->getId(); ?>')">Afficher Détails</button>
+                    </td>
+                </tr>
+                <input type="hidden" name="note_id[]" value="<?= htmlspecialchars($note->getId()); ?>">
+
+
+                <?php if (!empty($underNotes[$note->getId()]) || true) : ?>
+                    <tr id="desc<?= $note->getId(); ?>" class="idUnderTable" style="display: none;">
+                        <td colspan="5">
+                            <table width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Note</th>
+                                    <th>Actions</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php if (!empty($underNotes[$note->getId()])) : ?>
+                                    <?php foreach ($underNotes[$note->getId()] as $sousNote) : ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($sousNote->getDescription()); ?></td>
+                                            <td><?= htmlspecialchars($sousNote->getNote()); ?></td>
+                                            <td>
+                                                <form method="POST" action="Professor.php" style="display:inline;">
+                                                    <input type="hidden" name="action" value="delete_under_note">
+                                                    <input type="hidden" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
+                                                    <input type="hidden" name="under_note_id" value="<?= htmlspecialchars($sousNote->getId()); ?>">
+                                                    <button type="submit">Supprimer</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <tr>
+                                        <td colspan="3" style="text-align: center; color: gray;">
+                                            Aucune sous-note disponible
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                                </tbody>
+                            </table>
+                            <button type="button" data-note-id="<?= $note->getId(); ?>" onclick="addUnderNoteRow(this)">Ajouter une ligne</button>
                         </td>
                     </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="6">Aucune note disponible pour cet étudiant.</td>
-                </tr>
-            <?php endif; ?>
+                <?php endif; ?>
+
+
+            <?php endforeach; ?>
             </tbody>
         </table>
+        <?php if ($studentId) : ?>
+            <div style="margin-bottom: 10px;">
+                <button type="button" onclick="addNoteRow()">Ajouter une note</button>
+            </div>
+        <?php endif; ?>
     </div>
 
-    <button type="button" id="addNote" class="mainbtn" onclick="addNoteRow()">Ajouter une note</button>
-    <button type="submit" name="action" value="add_notes">Enregistrer toutes les notes</button>
-    <button type="submit" name="action" value="update_notes">Sauvegarder les modifications</button>
-
 </form>
-<div id="validationMessage" class="validation-message"></div>

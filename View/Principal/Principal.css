@@ -1738,6 +1738,18 @@ section.Menus div.Contenus div.Contenu p.noNotes{
     }
 }
 
+/* ----------------- Style du tableau des notes -------------------- */
+
+.idUnderTable {
+    display: none; /* Masquer les sous-tableaux par défaut */
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 8px;
+}
+
 
 
 

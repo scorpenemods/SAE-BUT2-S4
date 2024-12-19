@@ -966,7 +966,7 @@ class Database
     }
 
 
-    public function updateNote($noteId, $userId, $sujet, $note, $coeff, $pdo): void
+    public function updateNote($noteId, $studentId, $sujet, $note, $coeff, $pdo): void
     {
         try {
             $pdo->beginTransaction();
@@ -981,7 +981,7 @@ class Database
                 ':note' => $note,
                 ':coeff' => $coeff,
                 ':id' => $noteId,
-                ':user_id' => $userId
+                ':user_id' => $studentId
             ]);
 
             if ($stmt->rowCount() === 0) {
@@ -994,6 +994,50 @@ class Database
             throw new Exception("Erreur lors de la mise à jour de la note : " . $e->getMessage(), 0, $e);
         }
     }
+
+    function addUnderNotes(array $notesData, PDO $pdo): void
+    {
+        try {
+            // Vérification des données en entrée
+            if (!is_array($notesData)) {
+                throw new Exception("Les données fournies à addUnderNotes doivent être un tableau.");
+            }
+
+            // Vérification de chaque sous-note
+            foreach ($notesData as $note) {
+                if (!isset($note['description'], $note['note_id'], $note['note'])) {
+                    throw new Exception("Données manquantes dans une sous-note : " . print_r($note, true));
+                }
+
+                if (empty($note['description']) || !is_numeric($note['note']) || $note['note'] < 0 || $note['note'] > 20) {
+                    throw new Exception("Données invalides dans une sous-note : " . print_r($note, true));
+                }
+            }
+
+            // Préparation de la requête d'insertion
+            $query = $pdo->prepare("INSERT INTO Sous_Note (description, note_id, note) VALUES (:description, :note_id, :note_value)");
+
+            // Insertion de chaque sous-note
+            foreach ($notesData as $note) {
+                $query->execute([
+                    ':description' => $note['description'],
+                    ':note_id' => (int)$note['note_id'],
+                    ':note_value' => (int)$note['note']
+                ]);
+            }
+        } catch (PDOException $e) {
+            // Gérer les erreurs de la base de données
+            echo "Erreur lors de l'insertion des sous-notes : " . $e->getMessage();
+            error_log($e->getMessage());
+            throw $e;
+        } catch (Exception $e) {
+            // Gérer les autres erreurs
+            echo "Erreur : " . $e->getMessage();
+            error_log($e->getMessage());
+            throw $e;
+        }
+    }
+
 
 
     public function deleteNote($noteId, $studentId, $pdo): void
@@ -1019,6 +1063,16 @@ class Database
             throw $e;
         }
     }
+
+    public function deleteUnderNote($underNoteId, $pdo): void {
+        $stmt = $pdo->prepare("DELETE FROM Sous_Note WHERE sousNote_id = :id");
+        $stmt->execute([':id' => $underNoteId]);
+
+        if ($stmt->rowCount() === 0) {
+            throw new Exception("Aucune sous-note supprimée. L'ID est peut-être incorrect.");
+        }
+    }
+
 
 
     public function getStudentNotes($studentId): array
