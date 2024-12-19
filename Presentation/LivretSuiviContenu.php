@@ -3,12 +3,62 @@
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';
 
+$database = Database::getInstance();
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 $person = unserialize($_SESSION['user']);
 $userRole = $person->getRole();
+
+if (empty($_SESSION['livret_token'])) {
+    $_SESSION['livret_token'] = bin2hex(random_bytes(32));
+}
+
+$groupId = $database->getGroup($studentInfo['id'], $professorInfo['id'], $mentorInfo['id']);
+
+$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['livret_token']) && $_POST['livret_token'] === $_SESSION['livret_token']) {
+    if (!empty($_FILES['files'])) {
+        foreach ($_FILES['files']['tmp_name'] as $index => $tmpName) {
+            $name = $_FILES['files']['name'][$index];
+            $size = $_FILES['files']['size'][$index];
+            $error = $_FILES['files']['error'][$index];
+
+            if ($error === UPLOAD_ERR_OK) {
+                // Vérifiez l'extension du fichier
+                $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION)); // Récupère l'extension
+                if (!in_array($extension, $allowedExtensions)) {
+                    echo "Le fichier $name n'est pas autorisé. Seules les images et les PDF sont acceptés.<br>";
+                    continue;
+                }
+
+                $uploadDir = '../uploads/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                $filePath = $uploadDir . uniqid() . '-' . basename($name);
+
+                if ($database->fileExists($name, $studentInfo['id'])) {
+                    continue; // Ignore le fichier si déjà existant
+                }
+                if (move_uploaded_file($tmpName, $filePath)) {
+                    // Ajouter le fichier dans la base de données
+                    $database->addLivretFile($name, $filePath, $studentInfo['id'], $size, $groupId);
+                }
+            }
+        }
+    }
+
+    // Gérer la suppression des fichiers
+    if (!empty($_POST['fileId'])) {
+        $database->deleteFile((int)$_POST['fileId']);
+    }
+    header("Location: " . $_SERVER['PHP_SELF']);
+}
+
+$file = $database->getLivretFile($groupId);
 ?>
 <!-- Changer le style pour que les formulaires s'affichent à côté des rencontres  -->
 <aside class="livretbar">
@@ -175,14 +225,17 @@ $userRole = $person->getRole();
 
 
             <?php
-            $files = $database->getFiles($userId);
-            if ($userRole == 1){
+
+            echo '<pre>' . print_r($groupId, true) . '</pre>';
+            echo '<pre>' . print_r($file, true) . '</pre>';
+
+            if ($userRole == $userRole){
                 ?>
 
                 <h3 style="margin-bottom: 10px">Veuillez déposer votre rapport de stage ci-dessous :</h3>
 
                 <form class="box" method="post" action="" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                    <input type="hidden" name="livret_token" value="<?= $_SESSION['livret_token'] ?>">
                     <div class="box__input">
                         <input type="file" name="files[]" id="file" multiple>
                         <button class="box__button" type="submit">Uploader</button>
@@ -198,7 +251,34 @@ $userRole = $person->getRole();
                 <h2>Fichier(s) déposé(s) :</h2>
                 <div class="file-grid">
 
+                    <?php foreach ($file as $f):
+                    if (!empty($f)): ?>
+                        <div class="file-card">
+                            <div class="file-info">
+                                <strong><?= htmlspecialchars($f['name']) ?></strong>
+                                <p><?= round($f['size'] / 1024, 2) ?> KB</p>
+                            </div>
+                            <form method="get" action="Documents/Download.php">
+                                <input type="hidden" name="file" value="<?= htmlspecialchars($f['path']) ?>">
+                                <button type="submit" class="download-button">Télécharger</button>
+                            </form>
+                            <form method="post" action="" class="delete-form">
+                                <input type="hidden" name="livret_token" value="<?= $_SESSION['livret_token'] ?>">
+                                <input type="hidden" name="fileId" value="<?= $f['id'] ?>">
+                                <button type="submit" class="delete-button">Supprimer</button>
+                            </form>
+                        </div>
+                    <?php endif;
+                    endforeach;?>
                 </div>
+            </div>
+        </div>
+        <div style="display: flex; ">
+            <!-- Validation du formulaire -->
+            <div class="validation">
+                <h3 style="padding: 10px">Validation</h3>
+
+                <button>Finaliser le livret de suivi</button>
             </div>
         </div>
     </div>

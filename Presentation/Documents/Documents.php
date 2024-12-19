@@ -94,4 +94,3 @@ $files = $db->getFiles($userId);
     </div>
 </div>
 </body>
-</html>

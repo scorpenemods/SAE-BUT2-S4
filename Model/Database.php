@@ -43,6 +43,18 @@ class Database
         ]);
     }
 
+    public function addLivretFile(string $name, string $path, int $userId, int $size, int $groupId): bool {
+        $sql = "INSERT INTO File (name, path, user_id, size, conv_id) VALUES (:name, :path, :user_id, :size, :groupId)";
+        $stmt = $this->connection->prepare($sql);
+        return $stmt->execute([
+            ':name' => $name,
+            ':path' => $path,
+            ':user_id' => $userId,
+            ':size' => $size,
+            ':groupId' => $groupId,
+        ]);
+    }
+
     public function deleteFile(int $fileId): bool {
         $sql = "SELECT path FROM File WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
@@ -62,6 +74,13 @@ class Database
         $sql = "SELECT * FROM File WHERE user_id = :studentId";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([':studentId' => $studentId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getLivretFile(int $groupId): array {
+        $sql = "SELECT * FROM File WHERE conv_id = :groupId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([':groupId' => $groupId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -625,6 +644,23 @@ class Database
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    //Get the group where the 3 users belong to.
+    public function getGroup($studentId, $professorId, $mentorId)
+    {
+        $sql = "SELECT Groupe.conv_id
+                FROM Groupe
+                JOIN User ON Groupe.user_id = User.id
+                WHERE Groupe.user_id IN (:studentId, :professorId, :mentorId)
+                GROUP BY conv_id
+                HAVING COUNT(DISTINCT Groupe.user_id) = 3";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':studentId', $studentId, PDO::PARAM_INT);
+        $stmt->bindParam(':professorId', $professorId, PDO::PARAM_INT);
+        $stmt->bindParam(':mentorId', $mentorId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_COLUMN);
     }
 
     // get a message from a group
@@ -1436,7 +1472,7 @@ class Database
 
     public function getStudentInfo($userId) {
         $stmt = $this->connection->prepare("
-        SELECT u.nom, u.prenom, u.email, u.telephone, u.activite
+        SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.activite
         FROM User u
         WHERE u.id = :uid AND u.role = 1
         LIMIT 1
@@ -1452,7 +1488,7 @@ class Database
         if ($group && $group['conv_id'] !== null) {
             // Searching a professeur, connected with the same conv_id
             $stmt = $this->connection->prepare("
-            SELECT u.nom, u.prenom, u.email, u.telephone, u.activite
+            SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.activite
             FROM User u
             JOIN Groupe g ON g.user_id = u.id
             WHERE g.conv_id = :cid
@@ -1472,7 +1508,7 @@ class Database
         if ($group && $group['conv_id'] !== null) {
             // Searching a maître de stage, connected with the same conv_id
             $stmt = $this->connection->prepare("
-            SELECT u.nom, u.prenom, u.email, u.telephone, u.activite 
+            SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.activite 
             FROM User u
             JOIN Groupe g ON g.user_id = u.id
             WHERE g.conv_id = :cid
