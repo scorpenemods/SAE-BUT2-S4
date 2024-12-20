@@ -712,6 +712,13 @@ class Offer {
             $params[':company_id'] = $filters['company_id'];
         }
 
+        if (!empty($filters['latitude']) && !empty($filters['longitude']) && !empty($filters['distance'])) {
+            $sql .= ' AND (6371 * acos(cos(radians(:latitude)) * cos(radians(offers.latitude)) * cos(radians(offers.longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(offers.latitude)))) < :distance';
+            $params[':longitude'] = $filters['longitude'];
+            $params[':latitude'] = $filters['latitude'];
+            $params[':distance'] = $filters['distance'];
+        }
+
         if (!empty($filters['type'])) {
             if ($filters['type'] == 'new') {
                 $offers = pendingOffer::getAllNew();
