@@ -8,16 +8,16 @@ class Company {
     private string $name;
     private int $size;
     private string $address;
-    private string $siren;
+    private string $Siret;
     private string $created_at;
     private string $updated_at;
 
-    public function __construct(int $id, string $name, int $size, string $address, string $siren, string $created_at, string $updated_at) {
+    public function __construct(int $id, string $name, int $size, string $address, string $Siret, string $created_at, string $updated_at) {
         $this->id = $id;
         $this->name = $name;
         $this->size = $size;
         $this->address = $address;
-        $this->siren = $siren;
+        $this->Siret = $Siret;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
     }
@@ -38,8 +38,8 @@ class Company {
         return $this->address;
     }
 
-    public function getSiren(): string {
-        return $this->siren;
+    public function getSiret(): string {
+        return $this->Siret;
     }
 
     public function getCreatedAt(): string {
@@ -106,14 +106,14 @@ class Company {
     }
 
     //Create a new Company
-    public static function create(string $name, int $size, string $address, string $siren): ?Company {
+    public static function create(string $name, int $size, string $address, string $Siret): ?Company {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("INSERT INTO Company (name, size, address, siren) VALUES (:name, :size, :address, :siren)");
+        $stmt = $db->getConnection()->prepare("INSERT INTO Company (name, size, address, Siret) VALUES (:name, :size, :address, :Siret)");
         $stmt->bindParam(":name", $name);
         $stmt->bindParam(":size", $size);
         $stmt->bindParam(":address", $address);
-        $stmt->bindParam(":siren", $siren);
+        $stmt->bindParam(":Siret", $Siret);
         $stmt->execute();
 
         if ($db->getConnection()->errorCode() != 0) {
@@ -127,7 +127,7 @@ class Company {
             $name,
             $size,
             $address,
-            $siren,
+            $Siret,
             date("Y-m-d H:i:s"),
             date("Y-m-d H:i:s")
         );
