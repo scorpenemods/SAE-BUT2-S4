@@ -96,7 +96,7 @@ class Company {
                 $row["name"],
                 $row["size"],
                 $row["address"],
-                $row["siren"],
+                $row["Siret"],
                 $row["created_at"],
                 $row["updated_at"]
             );
