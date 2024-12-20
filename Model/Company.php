@@ -8,7 +8,7 @@ class Company {
     private string $name;
     private int $size;
     private string $address;
-    private string $Siret;
+    private string $Siret ;
     private string $created_at;
     private string $updated_at;
 
