@@ -121,7 +121,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 <button type="submit">Publier l'offre</button>
             </form>
         </main>
-        <?php include dirname(__FILE__) . '/../Footer.php'; ?>
+        <?php include  'Footer.php'; ?>
         <script>
             /*
                Manage the visibility of the tags dropdown.
