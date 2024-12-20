@@ -242,16 +242,7 @@ foreach ($underNotesData as $noteId => $sousNotes) {
                         </form>
                         <button type="button" onclick="showUnderTable(this, 'desc<?= $note->getId(); ?>')">Afficher Détails</button>
                     </td>
-                    <td>
-                        <form method="post" action="Professor.php" style="display: inline;">
-                            <input type="hidden" id="formAction" name="action" value="update_notes">
-                            <input type="hidden" name="note_id" value="<?= htmlspecialchars($note->getId()); ?>">
-                            <input type="hidden" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
-                            <button type="button" onclick="editNote(this)">Modifier</button>
 
-                        </form>
-
-                    </td>
 
                 </tr>
                 <input type="hidden" name="note_id[]" value="<?= htmlspecialchars($note->getId()); ?>">

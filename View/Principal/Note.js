@@ -90,7 +90,6 @@ function addNoteRow() {
             <input type="hidden" name="student_id" value="${studentId}">
             <td>${newId}</td>
             <td><textarea name="notes[${newId}][sujet]" rows="1" placeholder="Sujet" required></textarea></td>
-            <td><input type="number" name="notes[${newId}][note]" min="0" max="20" placeholder="Note" required></td>
             <td><input type="number" name="notes[${newId}][coeff]" min="0" placeholder="Coeff" required></td>
             <td>
                 <button type="submit" name="action" value="add_notes">Enregistrer la note</button>
