@@ -455,6 +455,20 @@ input[type=number] {
     }
 }
 
+#distance {
+    width: 100%;
+}
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+}
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+.loading {
+    margin-top: 10px;
+    color: #666;
+}
 .container {
     width: 100%;
     max-width: 400px;
@@ -482,18 +496,4 @@ input[type=number] {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: none;
     z-index: 1000;
-}
-#distance {
-    width: 100%;
-}
-.dropdown-item {
-    padding: 10px;
-    cursor: pointer;
-}
-.dropdown-item:hover {
-    background-color: #f0f0f0;
-}
-.loading {
-    margin-top: 10px;
-    color: #666;
 }

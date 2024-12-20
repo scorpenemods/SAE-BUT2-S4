@@ -53,7 +53,13 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
 
                 <div class="form-group">
                     <label for="address">Adresse</label>
-                    <input type="text" id="address" name="address" placeholder="Ex: 123 Rue de la Paix, 75000 Paris" required>
+                    <div class="search-container">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Entrez une adresse exemple : 123 Rue de la Paix, 75000 Paris" required>
+                        <div id="dropdown" class="dropdown2"></div>
+                    </div>
+                    <input type="hidden" id="latitude" name="latitude">
+                    <input type="hidden" id="longitude" name="longitude">
+
                 </div>
 
                 <div class="form-group">
@@ -164,6 +170,67 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                     tagsList.appendChild(tag);
                 });
             }
+
+
+            const searchInput = document.getElementById('searchInput');
+            const dropdown2 = document.getElementById('dropdown');
+            const latitudeInput = document.getElementById('latitude');
+            const longitudeInput = document.getElementById('longitude');
+
+            let debounceTimer;
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+
+                debounceTimer = setTimeout(() => {
+                    const query = this.value.trim();
+                    if (query.length > 2) {
+                        fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=jsonv2&polygon_geojson=1`)
+                            .then(response => response.json())
+                            .then(data => {
+                                displayResults(data);
+                            })
+                            .catch(error => {
+                                console.error('Error fetching results:', error);
+                            });
+                    } else {
+                        dropdown2.style.display = 'none';
+                    }
+                }, 1000);
+            });
+
+            function displayResults(results) {
+                dropdown2.innerHTML = '';
+                if (results.length > 0) {
+                    results.forEach(result => {
+                        const item = document.createElement('div');
+                        item.className = 'dropdown-item';
+                        item.textContent = result.display_name;
+                        item.addEventListener('click', () => {
+                            searchInput.value = result.display_name;
+                            latitudeInput.value = result.lat;
+                            longitudeInput.value = result.lon;
+                            dropdown2.style.display = 'none';
+                        });
+                        dropdown2.appendChild(item);
+                    });
+                    dropdown2.style.display = 'block';
+                } else {
+                    dropdown2.style.display = 'none';
+                }
+            }
+
+            document.addEventListener('click', function(event) {
+                if (!dropdown2.contains(event.target) && event.target !== searchInput) {
+                    dropdown2.style.display = 'none';
+                }
+            });
+
+            searchInput.addEventListener('focus', function() {
+                if (dropdown.children.length > 0) {
+                    dropdown.style.display = 'block';
+                }
+            });
         </script>
     </body>
 </html>

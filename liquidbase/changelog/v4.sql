@@ -19,4 +19,8 @@ ALTER TABLE offers
     ADD COLUMN longitude FLOAT;
 --rollback ALTER TABLE offers DROP COLUMN latitude, DROP COLUMN longitude;
 
-
+--changeset LiRuZ:26 labels:Modify-table
+--comment: Alter column address to varchar(1024)
+ALTER TABLE offers
+MODIFY COLUMN address VARCHAR(1024);
+--rollback ALTER TABLE offers MODIFY COLUMN address VARCHAR(255);
