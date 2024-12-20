@@ -51,6 +51,10 @@ $duration = filter_input(INPUT_GET, 'duration', FILTER_VALIDATE_INT);
 $sector = filter_input(INPUT_GET, 'sector', FILTER_SANITIZE_STRING);
 $keywords = filter_input(INPUT_GET, 'keywords', FILTER_SANITIZE_STRING);
 $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? 'all';
+$latitude = filter_input(INPUT_GET, 'latitude', FILTER_VALIDATE_INT);
+$longitude = filter_input(INPUT_GET, 'longitude', FILTER_VALIDATE_INT);
+$distance = filter_input(INPUT_GET, 'distance', FILTER_VALIDATE_INT);
+
 
 if (isset($title)) { $filters["title"] = $title; }
 if (isset($sort)) { $filters["sort"] = $sort; }
@@ -62,6 +66,9 @@ if (isset($duration)) { $filters["duration"] = $duration; }
 if (isset($sector)) { $filters["sector"] = $sector; }
 if (isset($keywords)) { $filters["keywords"] = $keywords; }
 if (isset($type) && ($secretariat_group || $company_id != 0)) { $filters["type"] = $type; }
+if (isset($latitude)) { $filters["latitude"] = $latitude; }
+if (isset($longitude)) { $filters["longitude"] = $longitude; }
+if (isset($distance)) { $filters["distance"] = $distance; }
 if ($company_id != 0) { $filters["company_id"] = $company_id; }
 
 $filteredOffers = getPageOffers($pageId, $filters);
