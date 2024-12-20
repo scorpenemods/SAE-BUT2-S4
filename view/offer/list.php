@@ -294,7 +294,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 };
 
                 $.ajax({
-                    url: '/presenter/offer/createAlert.php',
+                    url: '/presenter/offer/alert/create.php',
                     type: 'POST',
                     data: {
                         duration: filters.duration,
