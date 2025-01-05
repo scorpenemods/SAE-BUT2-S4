@@ -72,6 +72,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $database->closeConnection();
 }
+
+
+
+
+// TEST LANGAGE NOAH
+
+
+$lang = isset($_GET['lang']) ? $_GET['lang'] : 'fr';
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = __DIR__ . "/locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = __DIR__ . "/locales/fr.php";
+}
+// Charger les traductions
+$translations = include $langFile;
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -129,6 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .password-container i {
             color: #005c97;
         }
+
     </style>
 </head>
 <body>
@@ -137,17 +157,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Partie gauche avec logo et nom de l'application -->
     <div class="navbar-left">
         <img src="Resources/LPS 1.0.png" alt="Logo" class="logo"/>
-        <span class="app-name">Le Petit Stage</span>
+        <span class="app-name"><?= $translations['titre_appli'] ?></span>
     </div>
     <!-- Partie droite avec contrôles pour les préférences de l'utilisateur -->
     <div class="navbar-right">
-        <label class="switch">
-            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-            <span class="slider round">
-                <span class="switch-sticker">🇫🇷</span>
-                <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-            </span>
-        </label>
+        <?php
+        include 'Model/LanguageSelection.php';
+        ?>
         <label class="switch">
             <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
             <span class="slider round">
@@ -161,13 +177,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <article>
     <!-- Contenu principal avec une introduction et formulaire de connexion -->
     <div class="main-content">
-        <h1 class="main-heading">Vous êtes un étudiant en stage à UPHF?<br> Nous avons la solution!</h1>
+
+        <h1 class="main-heading"><?= $translations['welcome_message'] ?><br> <?= $translations['welcome_message2'] ?></h1>
         <p class="sub-text">
-            Une application innovante pour les étudiants, enseignants et personnel de l'UPHF. Gérez vos stages et restez connectés avec toutes les parties prenantes facilement et efficacement.
+            <?= $translations['description_index'] ?>
         </p>
         <!-- Formulaire de connexion -->
         <div class="login-container">
-            <h2>Connexion</h2>
+            <h2><?= $translations['connexion_index'] ?></h2>
             <?php if (!empty($errorMessage)): ?>
                 <div class="error-message">
                     <i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($errorMessage); ?>
@@ -175,32 +192,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php endif; ?>
             <form action="" method="POST">
                 <div class="form-group">
-                    <label for="email">Email :</label>
+                    <label for="email"><?= $translations['email_index'] ?></label>
                     <input type="text" id="email" name="email" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">Mot de passe :</label>
+                    <label for="password"><?= $translations['mdp_index'] ?></label>
                     <div class="password-container">
                         <input type="password" id="password" name="password" required>
                         <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
                     </div>
                 </div>
-                <button class="primary-button" type="submit">Se connecter</button>
+                <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
                 <p>Un problème pour se connecter ?</p>
-                <a href="Presentation/ForgotPasswordMail.php">Changer le mot de passe</a>
+                <a href="Presentation/ForgotPasswordMail.php"><?= $translations['changed_mdp_index'] ?></a>
             </form>
         </div>
         <!-- Liens pour les utilisateurs non connectés -->
         <div class="button-group">
             <p style="font-size: large"><b>ou</b></p>
-            <button class="secondary-button"><a class="login-link" href="Presentation/AccountCreation.php">S’enregistrer</a></button>
+            <button class="secondary-button"><a class="login-link" href="Presentation/AccountCreation.php"><?= $translations['register_button_index'] ?></a></button>
         </div>
     </div>
 </article>
 
 <!-- Уведомление -->
 <div class="notification" id="emailVerificationNotification">
-    Votre adresse email n'est pas validée. <a href="Presentation/EmailValidationNotice.php">Valider maintenant</a>
+    <?= $translations['validate_email_index'] ?> <a href="Presentation/EmailValidationNotice.php"><?= $translations['register_button_index_button'] ?></a>
     <button onclick="closeNotification()">&times;</button>
 </div>
 

@@ -68,6 +68,17 @@ if (isset($_POST['go'])) {
     $notes = $database->getNotes($infos['id']);
 }
 
+
+// TEST LANGAGE NOAH
+$lang = isset($_GET['lang']) ? $_GET['lang'] : 'fr';
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = __DIR__ . "/locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = __DIR__ . "/locales/fr.php";
+}
+// Charger les traductions
+$translations = include $langFile;
+
 ?>
 
 <!DOCTYPE html>
@@ -113,7 +124,7 @@ if (isset($_POST['go'])) {
 <header class="navbar">
     <div class="navbar-left">
         <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
-        <span class="app-name">Le Petit Stage</span>
+        <span class="app-name"><?= $translations['titre_appli'] ?></span>
     </div>
     <div class="navbar-right">
 
@@ -141,21 +152,17 @@ if (isset($_POST['go'])) {
             <p><?php echo $userName; ?></p>
         </button>
         <!-- Language Switch -->
-        <label class="switch">
-            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-            <span class="slider round">
-                <span class="switch-sticker">🇫🇷</span>
-                <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-            </span>
-        </label>
+        <?php
+        include '../Model/LanguageSelection.php';
+        ?>
 
         <button class="mainbtn" onclick="toggleMenu()">
             <img src="../Resources/Param.png" alt="Settings">
         </button>
 
         <div class="hide-list" id="settingsMenu">
-            <a href="Settings.php">Information</a>
-            <a href="Logout.php">Deconnexion</a>
+            <a href="Settings.php"><?= $translations['Information'] ?></a>
+            <a href="Logout.php"><?= $translations['Deconnexion_Logout'] ?></a>
         </div>
     </div>
 </header>
