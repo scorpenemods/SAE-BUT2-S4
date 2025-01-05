@@ -1,5 +1,5 @@
 <?php
-
+// Under-notes managment
 class Sous_Note
 {
     private int $id;
@@ -12,14 +12,26 @@ class Sous_Note
         $this->note = $note;
     }
 
+    /**
+     * Get the id
+     * @return int
+     */
     public function getId(): int{
         return $this->id;
     }
 
+    /**
+     * Get the Description
+     * @return string
+     */
     public function getDescription(): string{
         return $this->description;
     }
 
+    /**
+     * Get the note
+     * @return float
+     */
     public function getNote(): float{
         return $this->note;
     }

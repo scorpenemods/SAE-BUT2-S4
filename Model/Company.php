@@ -1,5 +1,4 @@
 <?php
-
 require_once "Database.php";
 $db = Database::getInstance();
 //Class to manage companies
@@ -22,35 +21,66 @@ class Company {
         $this->updated_at = $updated_at;
     }
 
+    /**
+     * Get the id of the company
+     * @return int
+     */
     public function getId(): int {
         return $this->id;
     }
 
+    /**
+     * Get the name of the company
+     * @return string
+     */
     public function getName(): string {
         return $this->name;
     }
 
+    /**
+     * Get the size of the company
+     * @return int
+     */
     public function getSize(): int {
         return $this->size;
     }
 
+    /**
+     * Get the address of the company
+     * @return string
+     */
     public function getAddress(): string {
         return $this->address;
     }
 
+    /**
+     * Get the siret of the company
+     * @return string
+     */
     public function getSiret(): string {
         return $this->Siret;
     }
 
+    /**
+     * Get the creation date of the company
+     * @return string
+     */
     public function getCreatedAt(): string {
         return $this->created_at;
     }
 
+    /**
+     * Get the modification date of the company
+     * @return string
+     */
     public function getUpdatedAt(): string {
         return $this->updated_at;
     }
 
-    //Get a Company by its id
+    /**
+     * Get a Company by his id
+     * @return Company
+     */
     public static function getById(int $id): ?Company {
         global $db;
         $stmt = $db->getConnection()->prepare("SELECT * FROM Company WHERE id = :id");
@@ -76,7 +106,10 @@ class Company {
         );
     }
 
-    //Get all companies
+    /**
+     * Get all companies
+     * @return array
+     */
     public static function getAll(): ?array {
         global $db;
 
@@ -105,7 +138,10 @@ class Company {
         return $companies;
     }
 
-    //Create a new Company
+    /**
+     * Create a new Company
+     * @return Company
+     */
     public static function create(string $name, int $size, string $address, string $Siret): ?Company {
         global $db;
 

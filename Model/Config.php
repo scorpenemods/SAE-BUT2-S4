@@ -1,5 +1,5 @@
-    <?php
-
+<?php
+// Configuration of the database connection
 
 const DB_HOST = 'db.liruz.fr';
 const DB_PORT = '3306';

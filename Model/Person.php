@@ -1,18 +1,26 @@
 <?php
-
+//Class to manage Person
 class Person
 {
-    // Définition des propriétés privées de la classe
-    private string $nom;        // Nom de l'utilisateur
-    private string $prenom;     // Prénom de l'utilisateur
-    private ?int $telephone;     // Numéro de téléphone de l'utilisateur ? pour accepter null
-    private string $role;       // Rôle de l'utilisateur (par exemple, étudiant, tuteur)
-    private string $activite;   // Activité professionnelle ou académique de l'utilisateur
-    private int $id;            // Identifiant unique de l'utilisateur
-    private string $email;      // Adresse e-mail de l'utilisateur
+    // Setting private properties of the class
+    private string $nom;        // first name of the user
+    private string $prenom;     // last name of the User
+    private ?int $telephone;     // phone number of the user , "?" if is null
+    private string $role;       // role of the user
+    private string $activite;   // Professional activity of the user
+    private int $id;            // Id of user
+    private string $email;      // Email address of the user
 
-
-    // Constructeur pour initialiser un objet de type Person avec les valeurs fournies
+    /**
+     * Constructor to initialize an object of type Person with the provided values
+     * @param $nom
+     * @param $prenom
+     * @param $telephone
+     * @param $role
+     * @param $activite
+     * @param $email
+     * @param $id
+     */
     public function __construct($nom, $prenom, $telephone, $role, $activite, $email, $id)
     {
         $this->nom = $nom;
@@ -29,42 +37,64 @@ class Person
         $this->id = $id;
 
     }
-    //getter pour l'id
+
+    /**
+     * Get the id
+     * @return int
+     */
     public function getId(): int{
         return $this->id;
     }
 
-    // Méthode pour obtenir le nom de l'utilisateur
+    /**
+     * Get the last name of user
+     * @return string
+     */
     public function getNom(): string
     {
         return $this->nom;
     }
 
-    // Méthode pour obtenir le prénom de l'utilisateur
+    /**
+     * Get the fist name of user
+     * @return string
+     */
     public function getPrenom(): string
     {
         return $this->prenom;
     }
 
-    // Méthode pour obtenir le rôle de l'utilisateur
+    /**
+     * Get the role of user
+     * @return string
+     */
     public function getRole(): string
     {
         return $this->role;
     }
 
-    // Méthode pour obtenir l'activité de l'utilisateur
+    /**
+     * Get the activity of user
+     * @return string
+     */
     public function getActivite(): string
     {
         return $this->activite;
     }
 
-    // Méthode pour obtenir le numéro de téléphone de l'utilisateur
+    /**
+     * Get the phone number of user
+     * @return int|null
+     */
     public function getTelephone(): ?int
     {
         return $this->telephone;
     }
 
-    // Méthode pour obtenir l'adresse e-mail de l'utilisateur
+    /**
+     * Get the Email address of user
+     * @return string
+     */
     public function getEmail(): string
     {
         return $this->email;

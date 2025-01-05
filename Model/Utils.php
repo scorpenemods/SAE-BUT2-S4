@@ -1,35 +1,36 @@
 <?php
-// Définit le fuseau horaire par défaut sur "Europe/Paris"
+// Initializing of timestamp format
+// Sets the default time zone to "Europe/Paris"
 date_default_timezone_set('Europe/Paris');
 
 /**
- * Formate un timestamp en une chaîne lisible, affichant "Today", "Yesterday" ou la date complète.
+ * Formats a timestamp into a readable string, displaying "Today", "Yesterday" or the full date.
  *
- * @param string $timestamp Le timestamp à formater (format reconnu par DateTime, par exemple "2024-04-25 14:30:00").
- * @return string La chaîne formatée représentant la date et l'heure.
+ * @param string $timestamp The timestamp to format (format recognized by DateTime, for example "2024-04-25 14:30:00").
+ * @return string The formatted string representing the date and time.
  */
 function formatTimestamp($timestamp): string
 {
-    // Crée un objet DateTime à partir du timestamp fourni
+    // Creates a DateTime object from the provided timestamp
     $date = new DateTime($timestamp);
 
-    // Crée un objet DateTime pour la date et l'heure actuelles
+    // Creates a DateTime object for the current date and time
     $now = new DateTime();
 
-    // Crée un objet DateTime pour la date d'hier
+    // Creates a DateTime object for yesterday's date
     $yesterday = new DateTime('yesterday');
 
-    // Compare uniquement les dates (sans l'heure) du message et de la date actuelle
+    // Compares only the dates (without time) of the message and the current date
     if ($date->format('Y-m-d') == $now->format('Y-m-d')) {
-        // Si le message a été envoyé aujourd'hui, retourne "Today" suivi de l'heure
+        // If the message was sent today, returns "Today" followed by the time
         return 'Today ' . $date->format('H:i');
     }
-    // Compare la date du message avec celle d'hier
+    // Compare the date of the message with yesterday
     elseif ($date->format('Y-m-d') == $yesterday->format('Y-m-d')) {
-        // Si le message a été envoyé hier, retourne "Yesterday" suivi de l'heure
+        // If the message was sent yesterday, returns "Yesterday" followed by the time
         return 'Yesterday ' . $date->format('H:i');
     } else {
-        // Sinon, retourne la date complète au format jour.mois.année heure:minutes
+        // Otherwise, returns the full date in day.month.year hour:minutes format
         return $date->format('d.m.Y H:i');
     }
 }

@@ -2,7 +2,7 @@
 
 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
 
-// Générer un jeton CSRF si ce n'est pas déjà fait
+// Generate a CSRF token if not already done
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -12,9 +12,9 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Initialiser la base de données
+// Initialize the database
 $db = Database::getInstance();
-$userId = $_SESSION['user_id']; // ID de l'étudiant connecté
+$userId = $_SESSION['user_id']; // ID of the connected student
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
     if (!empty($_FILES['files'])) {
@@ -24,8 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
             $error = $_FILES['files']['error'][$index];
 
             if ($error === UPLOAD_ERR_OK) {
-                // Vérifiez l'extension du fichier
-                $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION)); // Récupère l'extension
+                // Check the file extension
+                $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION)); // Get the extension
                 if (!in_array($extension, $allowedExtensions)) {
                     echo "Le fichier $name n'est pas autorisé. Seules les images et les PDF sont acceptés.<br>";
                     continue;
@@ -38,24 +38,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
                 $filePath = $uploadDir . uniqid() . '-' . basename($name);
 
                 if ($db->fileExists($name, $userId)) {
-                    continue; // Ignore le fichier si déjà existant
+                    continue; // Skip file if already existing
                 }
                 if (move_uploaded_file($tmpName, $filePath)) {
-                    // Ajouter le fichier dans la base de données
+                    // Add the file to the database
                     $db->addFile($name, $filePath, $userId, $size);
                 }
             }
         }
     }
 
-    // Gérer la suppression des fichiers
+    // Manage file deletion
     if (!empty($_POST['fileId'])) {
         $db->deleteFile((int)$_POST['fileId']);
     }
     header("Location: " . $_SERVER['PHP_SELF']);
 }
 
-// Récupérer les fichiers pour les afficher
+// Retrieve files to view them
 $files = $db->getFiles($userId);
 ?>
 

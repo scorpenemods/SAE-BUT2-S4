@@ -1,4 +1,5 @@
 <?php
+// English translation of the site
 return [
     'welcome_message' => 'Welcome to Le Petit Stage!',
     'welcome_message2' => 'We have the solution!',

@@ -1,4 +1,5 @@
 <?php
+// French translation of the site
 return [
     'titre_appli' => 'Le Petit Stage',
 
