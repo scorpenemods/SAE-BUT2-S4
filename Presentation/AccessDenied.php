@@ -1,28 +1,28 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-    <!-- Métadonnées pour le document -->
-    <meta charset="UTF-8"> <!-- Définit l'encodage des caractères à UTF-8 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Assure que la page est responsive sur les appareils mobiles -->
+    <!-- Metadata for the document -->
+    <meta charset="UTF-8"> <!-- Sets character encoding to UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures the page is responsive on mobile devices -->
 
-    <!-- Lien vers la feuille de style externe -->
-    <link rel="stylesheet" href="/rebase/Modely/DefaultStyles/styles.css"> <!-- Fichier CSS pour le style de la page -->
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="/rebase/Modely/DefaultStyles/styles.css"> <!-- CSS file for page styling -->
 
-    <!-- Titre de la page -->
-    <title>L'accès est refusé</title> <!-- Titre affiché dans l'onglet du navigateur -->
+    <!-- Page title -->
+    <title>Access Denied</title> <!-- Title displayed in the browser tab -->
 </head>
 <body>
-<!-- Conteneur centré pour le contenu de la page -->
+<!-- Centered container for the page content -->
 <div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
-    <!-- Titre principal de la page -->
-    <h1>L'accès à cette page est refusé</h1> <!-- Message principal indiquant que l'accès est refusé -->
+    <!-- Main title of the page -->
+    <h1>Access to this page is denied</h1> <!-- Main message indicating that access is denied -->
 
-    <!-- Message d'information -->
-    <p>Vous ne disposez pas des droits suffisants pour consulter cette page.</p> <!-- Explication du refus d'accès -->
+    <!-- Information message -->
+    <p>You do not have sufficient permissions to view this page.</p> <!-- Explanation for the access denial -->
 
-    <!-- Lien de redirection vers la page de connexion -->
-    <a href="../Index.php">Connectez-vous avec un autre compte</a> <!-- Permet à l'utilisateur de se reconnecter avec un autre compte -->
-</div> <!-- Fin du conteneur centré -->
+    <!-- Redirect link to the login page -->
+    <a href="../Index.php">Log in with another account</a> <!-- Allows the user to log in with another account -->
+</div> <!-- End of the centered container -->
 </body>
 
 </html>

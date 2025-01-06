@@ -95,6 +95,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<script>alert('Erreur lors de la création de l\'utilisateur.');</script>";
     }
 }
+
+// LANGAGE NOAH
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -109,18 +132,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="navbar-left">
         <!-- Logo de l'application -->
         <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
-        <span class="app-name">Le Petit Stage</span> <!-- Nom de l'application -->
+        <span class="app-name"><?= $translations['titre_appli'] ?></span> <!-- Nom de l'application -->
     </div>
 
     <div class="navbar-right">
-        <!-- Commutateur pour changer la langue -->
-        <label class="switch">
-            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-            <span class="slider round">
-                <span class="switch-sticker">🇫🇷</span> <!-- Sticker pour la langue française -->
-                <span class="switch-sticker switch-sticker-right">🇬🇧</span> <!-- Sticker pour la langue anglaise -->
-            </span>
-        </label>
+        <!-- Language Switch -->
+        <?php
+        include '../Model/LanguageSelection.php';
+        ?>
 
         <!-- Commutateur pour changer le thème (clair/sombre) -->
         <label class="switch">
@@ -134,98 +153,98 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </header>
 
 <div class="container">
-    <h1>Création du compte</h1>
+    <h1><?= $translations['create_account'] ?></h1>
 
     <!-- Formulaire pour la création de compte -->
     <form action="" method="post">
         <p>
             <!-- Options pour le type de compte à créer -->
             <input type="radio" name="choice" value="student" id="student" required />
-            <label for="student">Étudiant <span class="required">*</span></label>
+            <label for="student"><?= $translations['etu'] ?><span class="required">*</span></label>
 
             <input type="radio" name="choice" value="tutorprofessor" id="tutorprofessor" required />
-            <label for="tutorprofessor">Professeur référant <span class="required">*</span></label>
+            <label for="tutorprofessor"><?= $translations['prof_refe'] ?><span class="required">*</span></label>
 
             <input type="radio" name="choice" value="tutorcompany" id="tutorcompany" required />
-            <label for="tutorcompany">Tuteur professionnel <span class="required">*</span></label>
+            <label for="tutorcompany"><?= $translations['prof_pro'] ?><span class="required">*</span></label>
 
             <input type="radio" name="choice" value="secretariat" id="secretariat" required />
-            <label for="secretariat">Secrétariat <span class="required">*</span></label>
+            <label for="secretariat"><?= $translations['secre'] ?><span class="required">*</span></label>
         </p>
 
         <!-- Champ pour la fonction professionnelle/universitaire -->
         <p id="activity-field">
-            <label for="function">Activité professionnelle/universitaire <span class="required">*</span></label>
+            <label for="function"><?= $translations['acti'] ?><span class="required">*</span></label>
             <!-- Champ de saisie pour Tuteur professionnel et Secrétariat -->
             <input name="function" id="function-input" type="text" style="display: none;" />
             <!-- Liste déroulante pour Étudiant -->
             <select name="function_student" id="function-student" style="display: none;">
-                <option value="">Sélectionnez votre formation</option>
-                <option value="Informatique">Informatique</option>
-                <option value="Mesures Physiques">Mesures Physiques</option>
+                <option value=""><?= $translations['selection_formation'] ?></option>
+                <option value="Informatique"><?= $translations['info'] ?></option>
+                <option value="Mesures Physiques"><?= $translations['mesure_physique'] ?></option>
                 <!-- Ajoutez d'autres options si nécessaire -->
             </select>
             <!-- Liste déroulante pour Professeur référant -->
             <select name="function_professor" id="function-professor" style="display: none;">
-                <option value="">Sélectionnez votre spécialité</option>
-                <option value="Programmation Web">Programmation Web</option>
-                <option value="Programmation Java">Programmation Java</option>
-                <option value="Programmation Python">Programmation Python</option>
-                <option value="Professeur d'Anglais">Professeur d'Anglais</option>
-                <option value="SQL">SQL</option>
-                <option value="Mathématiques">Mathématiques</option>
+                <option value=""><?= $translations['selection_spe'] ?></option>
+                <option value="Programmation Web"><?= $translations['prog_web'] ?></option>
+                <option value="Programmation Java"><?= $translations['prog_java'] ?></option>
+                <option value="Programmation Python"><?= $translations['prog_python'] ?></option>
+                <option value="Professeur d'Anglais"><?= $translations['prof_anglais'] ?></option>
+                <option value="SQL"><?= $translations['sql'] ?></option>
+                <option value="Mathématiques"><?= $translations['math'] ?></option>
                 <!-- Ajoutez d'autres options si nécessaire -->
             </select>
         </p>
 
         <!-- Champ pour l'adresse e-mail -->
         <p>
-            <label for="email">E-mail : <span class="required">*</span></label>
+            <label for="email"><?= $translations['email'] ?><span class="required">*</span></label>
             <input name="email" id="email" type="email" required/>
         </p>
 
         <!-- Champ pour le nom de famille -->
         <p>
-            <label for="name">Nom : <span class="required">*</span></label>
+            <label for="name"><?= $translations['nom_register'] ?><span class="required">*</span></label>
             <input name="name" id="name" type="text" required/>
         </p>
 
         <!-- Champ pour le prénom -->
         <p>
-            <label for="firstname">Prénom : <span class="required">*</span></label>
+            <label for="firstname"><?= $translations['prenom_register'] ?><span class="required">*</span></label>
             <input name="firstname" id="firstname" type="text" required/>
         </p>
 
         <!-- Champ pour le numéro de téléphone -->
         <p>
-            <label for="phone">Téléphone :</label>
+            <label for="phone"><?= $translations['telephone_register'] ?></label>
             <input name="phone" id="phone" type="text"/>
         </p>
 
         <!-- Champ pour le mot de passe -->
         <p>
-            <label for="password">Mot de passe : <span class="required">*</span></label>
+            <label for="password"><?= $translations['mdp_register'] ?><span class="required">*</span></label>
             <input name="password" id="password" type="password" required/>
         </p>
 
         <!-- Champ pour confirmer le mot de passe -->
         <p>
-            <label for="confirm_password">Confirmer le mot de passe : <span class="required">*</span></label>
+            <label for="confirm_password"><?= $translations['confirmed_mdp_register'] ?><span class="required">*</span></label>
             <input name="confirm_password" id="confirm_password" type="password" required/>
         </p>
 
         <!-- Bouton de validation -->
-        <button type="submit">Valider</button>
+        <button type="submit"><?= $translations['validate'] ?></button>
 
-        <a href="../Index.php">Annuler</a>
+        <a href="../Index.php"><?= $translations['annuler'] ?></a>
     </form>
 </div>
 
 <!-- Pied de page avec logo et liens vers des pages d'informations -->
 <footer class="PiedDePage">
     <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="9%"> <!-- Logo UPHF -->
-    <a href="Redirection.php">Informations</a> <!-- Lien vers une page d'informations -->
-    <a href="Redirection.php">À propos</a> <!-- Lien vers une page "À propos" -->
+    <a href="Redirection.php"><?= $translations['information_settings'] ?></a> <!-- Lien vers une page d'informations -->
+    <a href="Redirection.php"><?= $translations['a_propos'] ?></a> <!-- Lien vers une page "À propos" -->
 </footer>
 
 <script>
