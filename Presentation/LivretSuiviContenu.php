@@ -17,54 +17,59 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-$group_Id = $database->getGroup($studentInfo['id'], $professorInfo['id'], $mentorInfo['id']);
+$groupId = $database->getGroup($studentInfo['id'], $professorInfo['id'], $mentorInfo['id']);
 
-$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
-    if (!empty($_FILES['livretFiles'])) {
-        foreach ($_FILES['livretFiles']['tmp_name'] as $index => $tmpName) {
-            $name = $_FILES['livretFiles']['name'][$index];
-            $size = $_FILES['livretFiles']['size'][$index];
-            $groupId = $group_Id;
-            $error = $_FILES['livretFiles']['error'][$index];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Configuration des paramètres d'upload
+    $allowedExtensions = ['pdf'];
+    $maxFileSize = 50 * 1024 * 1024; // 50 Mo en octets
 
-            if ($error === UPLOAD_ERR_OK) {
-                // Check file extension
-                $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-                if (!in_array($extension, $allowedExtensions)) {
-                    $response['error'] = "Le fichier $name n'est pas autorisé.";
-                    exit;
-                }
+    // Vérification que le fichier a été téléchargé
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        $file = $_FILES['file'];
 
-                // Handle upload
-                $uploadDir = '../livret_uploads/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-                $filePath = $uploadDir . uniqid() . '-' . basename($name);
+        // Extraction des informations du fichier
+        $fileName = $file['name'];
+        $fileSize = $file['size'];
+        $fileTmpPath = $file['tmp_name'];
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-                if ($database->fileExists($name, $studentInfo['id'])) {
-                    continue;
-                }
-
-                if (move_uploaded_file($tmpName, $filePath)) {
-                    // Add the file to the database
-                    if ($database->addLivretFile($name, $filePath, $studentInfo['id'], $size, $groupId)) {
-                    }
-                }
-            }
+        // Vérification de l'extension et de la taille
+        if (!in_array($fileExtension, $allowedExtensions)) {
+            die("Erreur : Seuls les fichiers .pdf sont autorisés.");
         }
-    }
 
-    // Handle deletion of files
-    if (!empty($_POST['livretFileId'])) {
-        $database->deleteFile((int)$_POST['livretFileId']);
-    }
+        if ($fileSize > $maxFileSize) {
+            die("Erreur : La taille du fichier dépasse la limite de 50 Mo.");
+        }
 
-    header("Location: " . $_SERVER['PHP_SELF']);
+        // Déplacement du fichier vers un répertoire permanent
+        $uploadDir = 'uploads/'; // Répertoire où stocker les fichiers (créez-le si nécessaire)
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $uniqueFileName = uniqid('file_', true) . '.' . $fileExtension;
+        $destinationPath = $uploadDir . $uniqueFileName;
+
+        if (move_uploaded_file($fileTmpPath, $destinationPath)) {
+            // Appel de la méthode addLivretFile
+            $result = $database->addLivretFile($fileName, $destinationPath, $studentInfo['id'], $fileSize, $groupId);
+
+            if ($result) {
+                echo "Fichier téléchargé et enregistré avec succès.";
+            } else {
+                echo "Erreur lors de l'enregistrement dans la base de données.";
+            }
+        } else {
+            echo "Erreur : Échec du déplacement du fichier.";
+        }
+    } else {
+        echo "Erreur : Aucun fichier téléchargé ou erreur lors de l'upload.";
+    }
 }
 
-$file = $database->getLivretFile($group_Id);
+$file = $database->getLivretFile($groupId);
 ?>
 <!-- Changer le style pour que les formulaires s'affichent à côté des rencontres  -->
 <aside class="livretbar">
@@ -226,26 +231,29 @@ $file = $database->getLivretFile($group_Id);
                     </tr>
                     </tbody>
                 </table><br>
+
+                <strong>Commentaires du professeur : </strong>
+                <textarea name="remarque[]" class="textareaLivret"></textarea> <br><br>
+
+                <strong>Commentaires du maitre de stage : </strong>
+                <textarea name="remarque[]" class="textareaLivret"></textarea> <br><br>
             </form>
 
 
 
             <?php
-
+            //Vérifie que seulement l'étudiant peut voir le dépôt de fichiers
             if ($userRole == $userRole){
                 ?>
 
                 <h3 style="margin-bottom: 10px">Veuillez déposer votre rapport de stage ci-dessous :</h3>
 
-                <form class="box" method="post" action="" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                <form class="box" method="post" enctype="multipart/form-data">
+                    <p><strong>Seuls les formats .pdf sont autorisés jusqu'à une taille maximale de 50 Mo. </strong></p><br>
                     <div class="box__input">
-                        <input type="file" name="livretFiles[]" id="file" multiple>
+                        <input type="file" name="file" id="fileUpload">
                         <button class="box__button" type="submit">Uploader</button>
                     </div>
-                    <div class="box__uploading">Envoi en cours...</div>
-                    <div class="box__success">Upload terminé !</div>
-                    <div class="box__error">Erreur : <span></span></div>
                 </form>
                 <?php
             }   ?>
@@ -253,7 +261,9 @@ $file = $database->getLivretFile($group_Id);
             <div class="file-list">
                 <h2>Fichier(s) déposé(s) :</h2>
                 <div class="file-grid">
-                    <?php foreach ($file as $f):
+                    <?php
+                    //Affiche les fichiers uploadés depuis le livret de suivi
+                    foreach ($file as $f):
                     if (!empty($f)): ?>
                         <div class="file-card">
                             <div class="file-info">

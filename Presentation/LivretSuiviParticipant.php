@@ -12,7 +12,6 @@ if (session_status() === PHP_SESSION_NONE) {
 $person = unserialize($_SESSION['user']);
 $userRole = $person->getRole();
 ?>
-
 <div style="width: 100%;">
     <div>
         <!-- Section pour l'affichage des informations des participants (étudiant, professeur, maître de stage) -->
@@ -33,7 +32,9 @@ $userRole = $person->getRole();
                     echo "<p><strong>Nom :</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
                     echo "<p><strong>Prénom :</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
                     echo "<p><strong>Email :</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
-                    echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                    if ($studentInfo['telephone'] == null) {
+                        echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                    }
                     echo "<p><strong>Formation :</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
                     echo "</div>";
                 } else {
@@ -47,7 +48,9 @@ $userRole = $person->getRole();
                     echo "<p><strong>Nom :</strong> " . htmlspecialchars($professorInfo['nom']) . "</p>";
                     echo "<p><strong>Prénom :</strong> " . htmlspecialchars($professorInfo['prenom']) . "</p>";
                     echo "<p><strong>Email :</strong> " . htmlspecialchars($professorInfo['email']) . "</p>";
-                    echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($professorInfo['telephone']) . "</p>";
+                    if ($professorInfo['telephone'] == null) {
+                        echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($professorInfo['telephone']) . "</p>";
+                    }
                     echo "<p><strong>Spécialité :</strong> " . htmlspecialchars($professorInfo['activite']) . "</p>";
                     echo "</div>";
                 } else {
@@ -61,7 +64,9 @@ $userRole = $person->getRole();
                     echo "<p><strong>Nom :</strong> " . htmlspecialchars($mentorInfo['nom']) . "</p>";
                     echo "<p><strong>Prénom :</strong> " . htmlspecialchars($mentorInfo['prenom']) . "</p>";
                     echo "<p><strong>Email :</strong> " . htmlspecialchars($mentorInfo['email']) . "</p>";
-                    echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($mentorInfo['telephone']) . "</p>";
+                    if ($mentorInfo['telephone'] == null) {
+                        echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($mentorInfo['telephone']) . "</p>";
+                    }
                     echo "<p><strong>Activité professionnelle :</strong> " . htmlspecialchars($mentorInfo['activite']) . "</p>";
                     echo "</div>";
                 } else {
