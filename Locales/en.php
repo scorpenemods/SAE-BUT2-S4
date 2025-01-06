@@ -60,4 +60,12 @@ return array(
     'enter_email' => "Enter your email address",
     'send_code' => "Send verification code",
     'retour_connexion' => "Back to login",
+
+
+    // LOGOUT
+    'deco_effec' => "Logout Successful",
+    'deco_success' => "You have been successfully logged out.",
+    'return_home' => "Return to Home",
+    'phrase_logout' => "If you do not wish to return to the home page, for security reasons, please close this page.",
+
 );

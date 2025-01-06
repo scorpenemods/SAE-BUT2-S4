@@ -192,7 +192,7 @@ $translations = include $langFile;
         <span onclick="window.location.href='Student.php?section=2'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '3'; ?>">Offres</span>
         <span onclick="window.location.href='Student.php?section=3'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '4'; ?>">Documents</span>
         <span onclick="window.location.href='Student.php?section=1'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '5'; ?>">Messagerie</span>
-        <span onclick="window.location.href='Student.php?section=5'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '6'; ?>">Notes</span>
+        <span onclick="window.location.href='Student.php?sect ion=5'" class="widget-button <?php echo $activeSection == '' ? 'Current' : '6'; ?>">Notes</span>
     </nav>
     <div class="Contenus">
         <!-- Accueil Content -->

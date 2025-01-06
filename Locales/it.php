@@ -60,4 +60,11 @@ return array(
     'enter_email' => "Inserisci il tuo indirizzo email",
     'send_code' => "Invia codice di verifica",
     'retour_connexion' => "Torna al login",
+
+    // LOGOUT
+    'deco_effec' => "Disconnessione riuscita",
+    'deco_success' => "Ti sei disconnesso con successo.",
+    'return_home' => "Torna alla Home",
+    'phrase_logout' => "Se non desideri tornare alla home page, per motivi di sicurezza, chiudi questa pagina.",
+
 );

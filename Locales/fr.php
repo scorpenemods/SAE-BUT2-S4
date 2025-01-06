@@ -65,6 +65,11 @@ return array(
     'send_code' => "Envoyer le code de vérification",
     'retour_connexion' => "Retour à la connexion",
 
+    // LOGOUT
+    'deco_effec' => "Déconnexion effectuée",
+    'deco_success' => "Vous avez été déconnecté avec succès.",
+    'return_home' => "Retour à l'accueil",
+    'phrase_logout' => "Si vous ne souhaitez pas revenir à l'accueil, pour des raisons de sécurité, veuillez fermer cette page.",
 
 
 );

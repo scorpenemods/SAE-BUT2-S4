@@ -60,4 +60,13 @@ return array(
     'enter_email' => "Geben Sie Ihre E-Mail-Adresse ein",
     'send_code' => "Bestätigungscode senden",
     'retour_connexion' => "Zurück zur Anmeldung",
+
+    // LOGOUT
+    'deco_effec' => "Erfolgreich abgemeldet",
+    'deco_success' => "Sie wurden erfolgreich abgemeldet.",
+    'return_home' => "Zurück zur Startseite",
+    'phrase_logout' => "Wenn Sie nicht zur Startseite zurückkehren möchten, schließen Sie diese Seite aus Sicherheitsgründen bitte.",
+
+
+
 );

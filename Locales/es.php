@@ -60,4 +60,11 @@ return array(
     'enter_email' => "Introduce tu dirección de correo electrónico",
     'send_code' => "Enviar código de verificación",
     'retour_connexion' => "Volver a iniciar sesión",
+
+    // LOGOUT
+    'deco_effec' => "Cierre de sesión exitoso",
+    'deco_success' => "Has cerrado sesión con éxito.",
+    'return_home' => "Volver a la página de inicio",
+    'phrase_logout' => "Si no deseas volver a la página de inicio, por razones de seguridad, cierra esta página.",
+
 );
