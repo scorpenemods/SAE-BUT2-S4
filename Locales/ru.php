@@ -1,4 +1,5 @@
 <?php
+// Russian translation of the site
 return [
     'welcome_message' => 'Добро пожаловать в Le Petit Stage!',
     'welcome_message2' => 'У нас есть решение!',

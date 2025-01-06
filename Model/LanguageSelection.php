@@ -1,3 +1,4 @@
+<!-- Choose the website language -->
 <form method="GET" action="">
     <label for="language-select">Langue :</label>
     <select id="language-select" name="lang" onchange="this.form.submit()">

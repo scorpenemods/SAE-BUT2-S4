@@ -1,4 +1,5 @@
 <?php
+// Ukranian translation of the site
 return [
     'welcome_message' => 'Ласкаво просимо до Le Petit Stage!',
     'welcome_message2' => 'Ми маємо рішення!',
