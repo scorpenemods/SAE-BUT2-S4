@@ -67,6 +67,10 @@ return array(
     'return_home' => "Zurück zur Startseite",
     'phrase_logout' => "Wenn Sie nicht zur Startseite zurückkehren möchten, schließen Sie diese Seite aus Sicherheitsgründen bitte.",
 
+    // REDIRECTION
+    'redirection_title' => "Weiterleitung",
+    'redirection' => "Weiterleitung...",
+    'return_phrase' => "Zurück zur Startseite in 3 Sekunden...",
 
 
 );

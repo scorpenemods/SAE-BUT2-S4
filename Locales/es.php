@@ -67,4 +67,9 @@ return array(
     'return_home' => "Volver a la página de inicio",
     'phrase_logout' => "Si no deseas volver a la página de inicio, por razones de seguridad, cierra esta página.",
 
+    // REDIRECTION
+    'redirection_title' => "Redirección",
+    'redirection' => "Redirigiendo...",
+    'return_phrase' => "Volviendo a la página de inicio en 3 segundos...",
+
 );

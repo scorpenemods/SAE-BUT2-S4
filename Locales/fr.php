@@ -71,5 +71,10 @@ return array(
     'return_home' => "Retour à l'accueil",
     'phrase_logout' => "Si vous ne souhaitez pas revenir à l'accueil, pour des raisons de sécurité, veuillez fermer cette page.",
 
+    // REDIRECTION
+    'redirection_title' => "Redirection",
+    'redirection' => "Redirection...",
+    'return_phrase' => "Retour à la page d'accueil dans 3 secondes...",
+
 
 );

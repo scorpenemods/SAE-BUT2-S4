@@ -67,4 +67,9 @@ return array(
     'return_home' => "Voltar para a página inicial",
     'phrase_logout' => "Se você não deseja voltar para a página inicial, por razões de segurança, feche esta página.",
 
+    // REDIRECTION
+    'redirection_title' => "Redirecionamento",
+    'redirection' => "Redirecionando...",
+    'return_phrase' => "Voltando para a página inicial em 3 segundos...",
+
 );

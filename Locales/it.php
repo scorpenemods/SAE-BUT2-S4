@@ -67,4 +67,9 @@ return array(
     'return_home' => "Torna alla Home",
     'phrase_logout' => "Se non desideri tornare alla home page, per motivi di sicurezza, chiudi questa pagina.",
 
+    // REDIRECTION
+    'redirection_title' => "Reindirizzamento",
+    'redirection' => "Reindirizzamento...",
+    'return_phrase' => "Ritorno alla pagina iniziale in 3 secondi...",
+
 );

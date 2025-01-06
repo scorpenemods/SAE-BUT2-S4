@@ -68,4 +68,9 @@ return array(
     'return_home' => "Return to Home",
     'phrase_logout' => "If you do not wish to return to the home page, for security reasons, please close this page.",
 
+    // REDIRECTION
+    'redirection_title' => "Redirection",
+    'redirection' => "Redirecting...",
+    'return_phrase' => "Returning to the home page in 3 seconds...",
+
 );
