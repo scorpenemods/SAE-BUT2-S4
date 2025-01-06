@@ -232,8 +232,8 @@ $translations = include $langFile;
 <footer class="PiedDePage">
     <!-- Pied de page avec logo additionnel et liens -->
     <img src="Resources/Logo_UPHF.png" alt="Logo uphf" width="10%">
-    <a href="Presentation/Redirection.php">Informations</a>
-    <a href="Presentation/Redirection.php">A propos</a>
+    <a href="Presentation/Redirection.php"><?= $translations['information_settings'] ?></a>
+    <a href="Presentation/Redirection.php"><?= $translations['a_propos'] ?></a>
 </footer>
 
 <script>
