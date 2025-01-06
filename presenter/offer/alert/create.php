@@ -26,8 +26,6 @@ try {
     $database->addAlert($userId, $duration, $address, $study_level, $salary, $begin_date);
 
     echo json_encode(["status" => "success", "message" => "Notification créée avec succès."]);
-}
-catch (Exception $e) {
+} catch (Exception $e) {
     echo json_encode(["status" => "error", "message" => "Erreur serveur : " . $e->getMessage()]);
 }
-
