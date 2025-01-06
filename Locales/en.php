@@ -51,4 +51,13 @@ return array(
     'formation_register' => "Course",
     'specialite_register' => "Specialty",
     'write_name_enterprise' => "Write the name of your company",
+
+    // ForgotPasswordMail
+
+    'title_mdp' => "Forgot Password",
+    'reni_mdp' => "Password Reset",
+    'adresse_mail' => "Email Address:",
+    'enter_email' => "Enter your email address",
+    'send_code' => "Send verification code",
+    'retour_connexion' => "Back to login",
 );

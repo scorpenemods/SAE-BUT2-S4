@@ -272,17 +272,17 @@ $translations = include $langFile;
                 if (this.value === 'student') {
                     functionStudent.style.display = 'block';
                     functionStudent.required = true;
-                    activityLabel.innerHTML = 'Formation <span class="required">*</span> :';
+                    activityLabel.innerHTML = '<?= $translations['formation_register'] ?><span class="required">*</span> :';
                 } else if (this.value === 'tutorprofessor') {
                     functionProfessor.style.display = 'block';
                     functionProfessor.required = true;
-                    activityLabel.innerHTML = 'Spécialité <span class="required">*</span> :';
+                    activityLabel.innerHTML = '<?= $translations['specialite_register'] ?><span class="required">*</span> :';
                 } else {
                     functionInput.style.display = 'block';
                     functionInput.required = false; // Champ non obligatoire
-                    activityLabel.innerHTML = 'Activité professionnelle/universitaire :';
+                    activityLabel.innerHTML = '<?= $translations['acti'] ?>';
                     if (this.value === 'tutorcompany') {
-                        functionInput.placeholder = 'Écrire le nom de votre entreprise';
+                        functionInput.placeholder = '<?= $translations['write_name_enterprise'] ?>';
                     }
                 }
             });

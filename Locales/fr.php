@@ -23,7 +23,7 @@ return array(
     'Deconnexion_Logout' => 'Deconnexion',
 
 
-    //AccountCreatiion
+    //AccountCreation
 
 
     'create_account' => 'Création du compte',
@@ -54,6 +54,17 @@ return array(
     'formation_register' => "Formation ",
     'specialite_register' => "Spécialité ",
     'write_name_enterprise' => "Écrire le nom de votre entreprise",
+
+
+    //ForgotPasswordMail
+
+    'title_mdp' => "Mot de passe oublié",
+    'reni_mdp' => "Réinitialisation du mot de passe",
+    'adresse_mail' => "Adresse email :",
+    'enter_email' => "Entrez votre adresse email",
+    'send_code' => "Envoyer le code de vérification",
+    'retour_connexion' => "Retour à la connexion",
+
 
 
 );
