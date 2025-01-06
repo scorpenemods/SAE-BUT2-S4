@@ -32,7 +32,7 @@ $userRole = $person->getRole();
                     echo "<p><strong>Nom :</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
                     echo "<p><strong>Prénom :</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
                     echo "<p><strong>Email :</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
-                    if ($studentInfo['telephone'] == null) {
+                    if ($studentInfo['telephone'] != null) {
                         echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
                     }
                     echo "<p><strong>Formation :</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
@@ -48,7 +48,7 @@ $userRole = $person->getRole();
                     echo "<p><strong>Nom :</strong> " . htmlspecialchars($professorInfo['nom']) . "</p>";
                     echo "<p><strong>Prénom :</strong> " . htmlspecialchars($professorInfo['prenom']) . "</p>";
                     echo "<p><strong>Email :</strong> " . htmlspecialchars($professorInfo['email']) . "</p>";
-                    if ($professorInfo['telephone'] == null) {
+                    if ($professorInfo['telephone'] != null) {
                         echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($professorInfo['telephone']) . "</p>";
                     }
                     echo "<p><strong>Spécialité :</strong> " . htmlspecialchars($professorInfo['activite']) . "</p>";
@@ -64,7 +64,7 @@ $userRole = $person->getRole();
                     echo "<p><strong>Nom :</strong> " . htmlspecialchars($mentorInfo['nom']) . "</p>";
                     echo "<p><strong>Prénom :</strong> " . htmlspecialchars($mentorInfo['prenom']) . "</p>";
                     echo "<p><strong>Email :</strong> " . htmlspecialchars($mentorInfo['email']) . "</p>";
-                    if ($mentorInfo['telephone'] == null) {
+                    if ($mentorInfo['telephone'] != null) {
                         echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($mentorInfo['telephone']) . "</p>";
                     }
                     echo "<p><strong>Activité professionnelle :</strong> " . htmlspecialchars($mentorInfo['activite']) . "</p>";
