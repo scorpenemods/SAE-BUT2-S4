@@ -217,8 +217,8 @@ $translations = include $langFile;
 
         <!-- Champ pour le numéro de téléphone -->
         <p>
-            <label for="phone"><?= $translations['telephone_register'] ?></label>
-            <input name="phone" id="phone" type="text"/>
+            <label for="phone"><?= $translations['telephone_register'] ?><span class="required">*</span></label>
+            <input name="phone" id="phone" type="text" required/>
         </p>
 
         <!-- Champ pour le mot de passe -->
