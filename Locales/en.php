@@ -92,4 +92,10 @@ return array(
     'valider votre code de vérification' => "Validate your verification code",
     'code de vérification' => "Verification code",
     'entrez le code' => "Enter the code",
+
+    //INFORMATION
+    'informations du compte' => "Account information",
+    'modifier adresse email' => "Edit email address",
+    'modifier numéro de téléphone' => "Edit phone number",
+    'modifier mot de passe' => "Change password",
 );

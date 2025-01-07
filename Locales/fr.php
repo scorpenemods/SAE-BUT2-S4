@@ -6,7 +6,7 @@ return array(
 
     'welcome_message' => 'Bienvenue sur Le Petit Stage !',
     'welcome_message2' => 'Nous avons la solution!',
-    'description_index' => "    Une application innovante pour les étudiants, enseignants et personnel de l'UPHF. Gérez vos stages et restez connectés avec toutes les parties prenantes facilement et efficacement.",
+    'description_index' => "Une application innovante pour les étudiants, enseignants et personnel de l'UPHF. Gérez vos stages et restez connectés avec toutes les parties prenantes facilement et efficacement.",
     'connexion_index' => "Connexion",
     'email_index' => 'Email :',
     'mdp_index' => 'Mot de passe :',
@@ -95,4 +95,10 @@ return array(
     'valider votre code de vérification' => "'Valider votre code de vérification'",
     'code de vérification' => "Code de vérification",
     'entrez le code' => "Entrez le code",
+
+    //INFORMATION
+    'informations du compte' => "Informations du compte",
+    'modifier adresse email' => "Modifier l'adresse email",
+    'modifier numéro de téléphone' => "Modifier le numéro de téléphone",
+    'modifier mot de passe' => "Modifier le mot de passe",
 );

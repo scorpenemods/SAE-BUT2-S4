@@ -26,6 +26,27 @@ if (isset($_SESSION['user'])) {
     header("Location: Logout.php");
     exit();
 }
+
+
+//TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
 ?>
 
 <!DOCTYPE html>
@@ -33,37 +54,37 @@ if (isset($_SESSION['user'])) {
 <head>
     <meta charset="UTF-8"> <!-- Définit l'encodage des caractères -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Rendre la page responsive -->
-    <title>Informations du compte</title> <!-- Titre de la page -->
+    <title><?= $translations['informations du compte']?></title> <!-- Titre de la page -->
     <link rel="stylesheet" href="../View/Settings/Information.css"> <!-- Lien vers la feuille de style CSS -->
     <link rel="stylesheet" href="/View/css/Footer.css">
     <script type="text/javascript" src="../View/Settings/Settings.js"></script> <!-- Lien vers le script JavaScript -->
 </head>
 <body>
 <section class="compte-info">
-    <h2>Informations du compte</h2> <!-- Titre de la section -->
+    <h2><?= $translations['informations du compte']?></h2> <!-- Titre de la section -->
     <table>
         <tr>
-            <td>Email :</td>
+            <td><?= $translations['email_index']?></td>
             <td><?php echo $email; ?></td> <!-- Affiche l'adresse email de l'utilisateur -->
-            <td><a href="../rebase/Modely/MailChange/MailChange.php"><button>Modifier adresse e-mail</button></a></td> <!-- Lien pour modifier l'email -->
+            <td><a href="../rebase/Modely/MailChange/MailChange.php"><button><?= $translations['modifier adresse email']?></button></a></td> <!-- Lien pour modifier l'email -->
         </tr>
         <tr>
-            <td>Prénom :</td>
+            <td><?= $translations['prenom_register']?></td>
             <td><?php echo $prenom; ?></td> <!-- Affiche le prénom de l'utilisateur -->
         </tr>
         <tr>
-            <td>Nom :</td>
+            <td><?= $translations['nom_register']?></td>
             <td><?php echo $nom; ?></td> <!-- Affiche le nom de famille de l'utilisateur -->
         </tr>
         <tr>
-            <td>Numéro de téléphone :</td>
+            <td><?= $translations['telephone_register']?></td>
             <td><?php echo $telephone; ?></td> <!-- Affiche le numéro de téléphone de l'utilisateur -->
-            <td><a href="../rebase/Modely/ChangePhoneNumber/ChangePhoneNumber.php"><button>Modifier numéro de téléphone</button></a></td> <!-- Lien pour modifier le numéro de téléphone -->
+            <td><a href="../rebase/Modely/ChangePhoneNumber/ChangePhoneNumber.php"><button><?= $translations['modifier numéro de téléphone']?></button></a></td> <!-- Lien pour modifier le numéro de téléphone -->
         </tr>
         <tr>
-            <td>Mot de passe :</td>
+            <td><?= $translations['mdp_index']?></td>
             <td>********</td> <!-- Le mot de passe n'est pas affiché pour des raisons de sécurité -->
-            <td><a href="ChangePassword.php"><button>Modifier mot de passe</button></a></td> <!-- Lien pour modifier le mot de passe -->
+            <td><a href="ChangePassword.php"><button><?= $translations['modifier mot de passe']?></button></a></td> <!-- Lien pour modifier le mot de passe -->
         </tr>
     </table>
 </section>

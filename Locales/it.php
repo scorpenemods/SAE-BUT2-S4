@@ -91,4 +91,10 @@ return array(
     'valider votre code de vérification' => "Conferma il tuo codice di verifica",
     'code de vérification' => "Codice di verifica",
     'entrez le code' => "Inserisci il codice",
+
+    //INFORMATION
+    'informations du compte' => "Informazioni dell'account",
+    'modifier adresse email' => "Modifica indirizzo email",
+    'modifier numéro de téléphone' => "Modifica numero di telefono",
+    'modifier mot de passe' => "Modifica password",
 );

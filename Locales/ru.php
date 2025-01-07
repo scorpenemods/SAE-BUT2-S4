@@ -92,4 +92,10 @@ return array(
     'valider votre code de vérification' => "Подтвердите ваш код подтверждения",
     'code de vérification' => "Код подтверждения",
     'entrez le code' => "Введите код",
+
+    //INFORMATION
+    'informations du compte' => "Информация об аккаунте",
+    'modifier adresse email' => "Изменить адрес электронной почты",
+    'modifier numéro de téléphone' => "Изменить номер телефона",
+    'modifier mot de passe' => "Изменить пароль",
 );

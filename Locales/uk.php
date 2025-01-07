@@ -91,4 +91,10 @@ return array(
     'valider votre code de vérification' => "Підтвердьте свій код підтвердження",
     'code de vérification' => "Код підтвердження",
     'entrez le code' => "Введіть код",
+
+    //INFORMATION
+    'informations du compte' => "Інформація про обліковий запис",
+    'modifier adresse email' => "Змінити електронну адресу",
+    'modifier numéro de téléphone' => "Змінити номер телефону",
+    'modifier mot de passe' => "Змінити пароль",
 );
