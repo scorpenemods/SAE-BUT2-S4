@@ -1,120 +1,202 @@
 <?php
 
-require_once "Database.php";
-$db = Database::getInstance();
-require dirname(__FILE__) . '/../Model/Offer.php';
+namespace Model;
 
-//Class to manage pending offers
+use Model\Company;
+use Model\Offer;
+
+require_once dirname(__FILE__) . '/Database.php';
+require_once dirname(__FILE__) . '/../Model/Offer.php';
+
+/**
+ * PendingOffer
+ * Represents a PendingOffer in the database
+ */
 class PendingOffer extends Offer
 {
     private int $id;
     private int $company_id;
     private string $type;
-
-    private int $offfer_id;
-
+    private int $offer_id;
     private string $status;
 
-
-    public function __construct(int $id, int $company_id, string $type, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, string $created_at, string $email, string $phone, string $website, int $offfer_id, string $status) {
-        parent::__construct($id, $company_id, $company, $title, $description, $job, $duration,  $begin_date, $salary, $address, $study_level,  TRUE, $email, $phone, $website, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"));
+    /**
+     * __construct
+     * Constructor used to instantiate the object, used only internally
+     * @param int $id
+     * @param int $company_id
+     * @param string $type
+     * @param Company $company
+     * @param string $title
+     * @param string $description
+     * @param string $job
+     * @param int $duration
+     * @param string $begin_date
+     * @param int $salary
+     * @param string $address
+     * @param string $study_level
+     * @param string $created_at
+     * @param string $email
+     * @param string $phone
+     * @param string $website
+     * @param int $offfer_id
+     * @param string $status
+     */
+    public function __construct(int $id, int $company_id, string $type, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, string $created_at, string $email, string $phone, string $website, int $offfer_id, string $status)
+    {
+        parent::__construct($id, $company_id, $company, $title, $description, $job, $duration, $begin_date, $salary, $address, $study_level, TRUE, $email, $phone, $website, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), false, 0, 0);
         $this->id = $id;
         $this->company_id = $company_id;
         $this->type = $type;
-        $this->offfer_id = $offfer_id;
+        $this->offer_id = $offfer_id;
         $this->status = $status;
+    }
+
+    /**
+     * instantiate_rows
+     * Instantiates the rows of the statement
+     * @param false|PDOStatement $stmt
+     * @return array|null
+     */
+    private static function instantiate_rows(false|PDOStatement $stmt): ?array
+    {
+        $result = $stmt->fetchAll();
+
+        if (!$result) {
+            return null;
+        }
+
+        foreach ($result as $row) {
+            $company = Company::get_by_id($row["company_id"]);
+
+            if (!$company) {
+                continue;
+            }
+
+            $offers[] = new PendingOffer(
+                $row["id"],
+                $row["company_id"],
+                $row["type"],
+                $company,
+                $row["title"],
+                $row["description"],
+                $row["job"],
+                $row["duration"],
+                $row["begin_date"],
+                $row["salary"],
+                $row["address"],
+                $row["study_level"],
+                date("Y-m-d H:i:s", strtotime($row["created_at"])),
+                $row["email"],
+                $row["phone"],
+                $row["website"],
+                $row["offer_id"],
+                $row["status"]
+            );
+        }
+        return $offers;
     }
 
 
     /**
-     * Get the id
+     * getId
+     * Returns the id of the Offer
      * @return int
      */
-    public function getId(): int
+    public function get_id(): int
     {
         return $this->id;
     }
 
     /**
-     * Get the Company id
+     * getCompanyId
+     * Returns the id of the Company
      * @return int
      */
-    public function getCompanyId(): int
+    public function get_company_id(): int
     {
         return $this->company_id;
     }
 
     /**
-     * Get the type
+     * get_type
+     * Returns the type of the Offer
      * @return string
      */
-    public function getType(): string
+    public function get_type(): string
     {
         return $this->type;
     }
 
     /**
-     * Get all Tag for a pending Offer
+     * getTags
+     * Returns the tags of the Offer
      * @return array|null
      */
-    public function getTag(): ?array
+    public function get_tags(): ?array
     {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Tag JOIN pending_Tag ON Tag.id = pending_Tag.tag_id WHERE pending_Tag.pending_id = :offer_id");
+        $stmt = $db->prepare("SELECT * FROM Tag JOIN PendingTag ON Tag.id = PendingTag.tag_id WHERE PendingTag.pending_id = :offer_id");
         $stmt->bindParam(":offer_id", $this->id);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
         $result = $stmt->fetchAll();
 
-        $Tag = [];
+        $tags = [];
         foreach ($result as $row) {
-            $Tag[] = $row["tag"];
+            $tags[] = $row["tag"];
         }
 
-        return $Tag;
+        return $tags;
     }
 
     /**
-     * Get an offer id
+     * get_offer_id
+     * Returns the id of the Offer
      * @return int
      */
-    public function getOfferId(): int {
-        return $this->offfer_id;
+    public function get_offer_id(): int
+    {
+        return $this->offer_id;
     }
 
     /**
-     * Get status
+     * get_status
+     * Returns the status of the Offer
      * @return string
      */
-    public function getStatus(): string {
+    public function get_status(): string
+    {
         return $this->status;
     }
 
+
     /**
-     * Get pending Offer by is id
+     * get_by_offer_id
+     * Returns the Offer with the given id
      * @param int $id
      * @return PendingOffer|null
      */
-    public static function getByOfferId(int $id): ?PendingOffer
+    public static function get_by_offer_id(int $id): ?PendingOffer
     {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE id = :id");
+        $stmt = $db->prepare("SELECT * FROM Pending_Offer WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
         $result = $stmt->fetch();
 
-        $company = Company::getById($result["company_id"]);
+        $company = Company::get_by_id($result["company_id"]);
 
         if (!$company) {
             return null;
@@ -143,69 +225,38 @@ class PendingOffer extends Offer
     }
 
     /**
-     * Get pending offers by Offer id
+     * get_by_offer
+     * Returns all the offers of the given Offer id
      * @param int $id
      * @return array|null
      */
-    public static function getByOffer(int $id): ?array {
+    public static function get_by_offer(int $id): ?array
+    {
         global $db;
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :id");
+        $stmt = $db->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
-        $result = $stmt->fetchAll();
-
-        if (!$result) {
-            return null;
-        }
-
-        foreach ($result as $row) {
-            $company = Company::getById($row["company_id"]);
-
-            if (!$company) {
-                continue;
-            }
-
-            $offers[] = new PendingOffer(
-                $row["id"],
-                $row["company_id"],
-                $row["type"],
-                $company,
-                $row["title"],
-                $row["description"],
-                $row["job"],
-                $row["duration"],
-                $row["begin_date"],
-                $row["salary"],
-                $row["address"],
-                $row["study_level"],
-                date("Y-m-d H:i:s", strtotime($row["created_at"])),
-                $row["email"],
-                $row["phone"],
-                $row["website"],
-                $row["offer_id"],
-                $row["status"]
-            );
-        }
-        return $offers;
+        return self::instantiate_rows($stmt);
     }
 
     /**
-     * Get all pending offers
+     * get_all
+     * Returns all the pending offers
      * @return array|null
      */
-    public static function getAll(): ?array
+    public static function get_all(): ?array
     {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer");
+        $stmt = $db->prepare("SELECT * FROM Pending_Offer");
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
@@ -213,7 +264,7 @@ class PendingOffer extends Offer
 
         $offers = [];
         foreach ($result as $row) {
-            $company = Company::getById($row["company_id"]);
+            $company = Company::get_by_id($row["company_id"]);
 
             if (!$company) {
                 continue;
@@ -245,16 +296,18 @@ class PendingOffer extends Offer
     }
 
     /**
-     * Get all new offers
+     * get_all_new
+     * Returns all the new offers
      * @return array|null
      */
-    public static function getAllNew(): ?array {
+    public static function get_all_new(): ?array
+    {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE type = 'new Offer' AND status = 'Pending'");
+        $stmt = $db->prepare("SELECT * FROM Pending_Offer WHERE type = 'new Offer' AND status = 'Pending'");
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
@@ -262,7 +315,7 @@ class PendingOffer extends Offer
 
         $offers = [];
         foreach ($result as $row) {
-            $company = Company::getById($row["company_id"]);
+            $company = Company::get_by_id($row["company_id"]);
 
             if (!$company) {
                 continue;
@@ -294,16 +347,18 @@ class PendingOffer extends Offer
     }
 
     /**
-     * Get all updated offers
+     * get_all_updated
+     * Returns all the updated offers
      * @return array|null
      */
-    public static function getAllUpdated(): ?array {
+    public static function get_all_updated(): ?array
+    {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE type = 'updated Offer' AND status = 'Pending'");
+        $stmt = $db->prepare("SELECT * FROM Pending_Offer WHERE type = 'updated Offer' AND status = 'Pending'");
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
@@ -311,7 +366,7 @@ class PendingOffer extends Offer
 
         $offers = [];
         foreach ($result as $row) {
-            $company = Company::getById($row["company_id"]);
+            $company = Company::get_by_id($row["company_id"]);
 
             if (!$company) {
                 continue;
@@ -343,7 +398,8 @@ class PendingOffer extends Offer
     }
 
     /**
-     * Create a new pending Offer
+     * create_pending
+     * Creates a new pending Offer
      * @param int $company_id
      * @param string $title
      * @param string $description
@@ -353,7 +409,7 @@ class PendingOffer extends Offer
      * @param string $address
      * @param string $education
      * @param string $startDate
-     * @param array $Tag
+     * @param array $tags
      * @param string $email
      * @param string $phone
      * @param string $website
@@ -361,19 +417,17 @@ class PendingOffer extends Offer
      * @param int $offer_id
      * @return PendingOffer|null
      */
-    public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $Tag, string $email, string $phone, string $website, int $user_id, int $offer_id): ?PendingOffer
+    public static function create_pending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $tags, string $email, string $phone, string $website, int $user_id, int $offer_id): ?PendingOffer
     {
         global $db;
 
-        //Get the type of the Offer
         if ($offer_id == 0) {
             $type = "new Offer";
         } else {
             $type = "updated Offer";
         }
 
-        //Insert the Offer in the pending_offers table
-        $stmt = $db->getConnection()->prepare("INSERT INTO Pending_Offer (user_id, type, offer_id, company_id, title, address, job, description, duration, salary,
+        $stmt = $db->prepare("INSERT INTO Pending_Offer (user_id, type, offer_id, company_id, title, address, job, description, duration, salary,
                             study_level, email, phone, website, begin_date) VALUES (:user_id, :type, :offer_id, :company_id, :title, :address, :job, :description, :duration, :salary,
                             :study_level, :email, :phone, :website, :begin_date)");
         $stmt->bindParam(":user_id", $user_id);
@@ -393,21 +447,20 @@ class PendingOffer extends Offer
         $stmt->bindParam(":begin_date", $startDate);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
-        $id = $db->getConnection()->lastInsertId();
+        $id = $db->lastInsertId();
 
-        //Add Tag in pending_Tag table
-        foreach ($Tag as $tag) {
-            $stmt = $db->getConnection()->prepare("INSERT INTO Pending_Tag (tag_id, pending_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
+        foreach ($tags as $tag) {
+            $stmt = $db->prepare("INSERT INTO Pending_Offer (tag_id, pending_id) VALUES ((SELECT tag FROM tags WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $id);
             $stmt->execute();
         }
         $company_id = intval($company_id);
-        $company = Company::getById($company_id);
+        $company = Company::get_by_id($company_id);
         $offer = new PendingOffer(
             $id,
             $company_id,
@@ -433,12 +486,13 @@ class PendingOffer extends Offer
     }
 
     /**
-     * Get the real duration of the Offer using modulo
+     * get_real_duration
+     * Get a human-readable duration of the Offer using modulo to get the years, months and days
      * @return string
      */
-    public function getRealDuration(): string
+    public function get_real_duration(): string
     {
-        $duration = $this->getDuration();
+        $duration = $this->get_duration() * 7;
 
         $years = intdiv($duration, 365);
         $remainingDays = $duration % 365;
@@ -447,7 +501,6 @@ class PendingOffer extends Offer
         $remainingDays = $remainingDays % 30;
 
         $weeks = intdiv($remainingDays, 7);
-        $days = $remainingDays % 7;
 
         $result = '';
 
@@ -460,44 +513,44 @@ class PendingOffer extends Offer
         if ($weeks > 0) {
             $result .= $weeks . ' semaine' . ($weeks > 1 ? 's' : '') . ', ';
         }
-        if ($days > 0) {
-            $result .= $days . ' jour' . ($days > 1 ? 's' : '');
-        }
 
         return rtrim($result, ', ');
     }
 
     /**
-     * Get all Tag
+     * get_all_tags
+     * Returns all the tags
      * @return array
      */
-    public static function getAllTag(): array
+    public static function get_all_tags(): array
     {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Tag;");
+        $stmt = $db->prepare("SELECT * FROM Tag;");
         $stmt->execute();
 
         $result = $stmt->fetchAll();
 
-        $Tag = [];
+        $tags = [];
         foreach ($result as $row) {
-            $Tag[] = $row["tag"];
+            $tags[] = $row["tag"];
         }
 
-        return $Tag;
+        return $tags;
     }
 
     /**
-     * Set the status of an Offer
+     * set_status
+     * Sets the status of the Offer
      * @param int $getId
      * @param string $string
      * @return void
      */
-    public static function setStatus(int $getId, string $string) {
+    public static function set_status(int $getId, string $string)
+    {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("UPDATE Pending_Offer SET status = :status WHERE id = :id");
+        $stmt = $db->prepare("UPDATE Pendingè_Tag SET status = :status WHERE id = :id");
         $stmt->bindParam(":status", $string);
         $stmt->bindParam(":id", $getId);
         $stmt->execute();

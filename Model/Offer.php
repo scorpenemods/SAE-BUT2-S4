@@ -1,190 +1,303 @@
 <?php
-require_once "Database.php";
-$db = Database::getInstance();
-//Class to manage offers
-class Offer {
+
+namespace Model;
+
+use Database;
+
+require_once dirname(__FILE__) . '/Database.php';
+$db = Database::getInstance()->getConnection();
+/**
+ * Offer
+ * Represents a Offer in the database
+ */
+class Offer
+{
     private int $id;
-    private int $company_id;
+    private int $companyId;
     private Company $company;
     private string $title;
     private string $description;
     private string $job;
     private int $duration;
-    private string $begin_date;
+    private string $beginDate;
     private int $salary;
     private string $address;
-    private string $study_level;
-    private bool $is_active;
+    private string $studyLevel;
+    private bool $isActive;
     private string $email;
     private string $phone;
     private string $website;
-    private string $created_at;
-    private string $updated_at;
+    private string $createdAt;
+    private string $updatedAt;
+    private bool $supress;
+    private float $latitude;
+    private float $longitude;
 
-    public function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $website, string $created_at, string $updated_at) {
+    /**
+     * __construct
+     * Constructor used to instantiate the object, used only internally
+     * @param int $id
+     * @param int $companyId
+     * @param Company $company
+     * @param string $title
+     * @param string $description
+     * @param string $job
+     * @param int $duration
+     * @param string $beginDate
+     * @param int $salary
+     * @param string $address
+     * @param string $studyLevel
+     * @param bool $isActive
+     * @param string $email
+     * @param string $phone
+     * @param string $website
+     * @param string $createdAt
+     * @param string $updatedAt
+     * @param bool $supress
+     */
+    protected function __construct(int $id, int $companyId, Company $company, string $title, string $description, string $job, int $duration, string $beginDate, int $salary, string $address, string $studyLevel, bool $isActive, string $email, string $phone, string $website, string $createdAt, string $updatedAt, bool $supress, float $latitude, float $longitude)
+    {
         $this->id = $id;
-        $this->company_id = $company_id;
+        $this->companyId = $companyId;
         $this->company = $company;
         $this->title = $title;
         $this->description = $description;
         $this->job = $job;
         $this->duration = $duration;
-        $this->begin_date = $begin_date;
+        $this->beginDate = $beginDate;
         $this->salary = $salary;
         $this->address = $address;
-        $this->study_level = $study_level;
-        $this->is_active = $is_active;
+        $this->studyLevel = $studyLevel;
+        $this->isActive = $isActive;
         $this->email = $email;
         $this->phone = $phone;
         $this->website = $website;
-        $this->created_at = $created_at;
-        $this->updated_at = $updated_at;
+        $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
+        $this->supress = $supress;
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
     }
 
+    /**
+     * instantiate_rows
+     * Utility function used to instantiate the rows of the result set
+     * @param false|PDOStatement $stmt
+     * @return array
+     */
+    private static function instantiate_rows(false|PDOStatement $stmt): array
+    {
+        $result = $stmt->fetchAll();
+
+        $offers = [];
+        foreach ($result as $row) {
+            $company = Company::get_by_id($row["company_id"]);
+
+            if (!$company) {
+                continue;
+            }
+
+            $offers[] = new Offer(
+                $row["id"],
+                $row["company_id"],
+                $company,
+                $row["title"],
+                $row["description"],
+                $row["job"],
+                $row["duration"],
+                $row["begin_date"],
+                $row["salary"],
+                $row["address"],
+                $row["study_level"],
+                $row["is_active"],
+                $row["email"],
+                $row["phone"],
+                $row["website"],
+                date("Y-m-d H:i:s", strtotime($row["created_at"])),
+                date("Y-m-d H:i:s", strtotime($row["updated_at"])),
+                $row["supress"],
+                $row["latitude"],
+                $row["longitude"]
+            );
+        }
+
+        return $offers;
+    }
 
     /**
-     * Get the id of the offer
+     * get_id
+     * Returns the id of the Offer
      * @return int
      */
-    public function getId(): int {
+    public function get_id(): int
+    {
         return $this->id;
     }
 
     /**
-     * Get the id of the Company
+     * get_company_id
+     * Returns the id of the Company
      * @return int
      */
-    public function getCompanyId(): int {
-        return $this->company_id;
+    public function get_company_id(): int
+    {
+        return $this->companyId;
     }
 
     /**
-     * Get the Company
+     * get_company
+     * Returns the Company
      * @return Company
      */
-    public function getCompany(): Company {
+    public function get_company(): Company
+    {
         return $this->company;
     }
 
     /**
-     * Get the title
+     * get_title
+     * Returns the title of the Offer
      * @return string
      */
-    public function getTitle(): string {
+    public function get_title(): string
+    {
         return $this->title;
     }
 
     /**
-     * Get the description
+     * get_description
+     * Returns the description of the Offer
      * @return string
      */
-    public function getDescription(): string {
+    public function get_description(): string
+    {
         return $this->description;
     }
 
     /**
-     * Get the job
+     * get_job
+     * Returns the job title of the Offer
      * @return string
      */
-    public function getJob(): string {
+    public function get_job(): string
+    {
         return $this->job;
     }
 
     /**
-     * Get the duration
+     * get_duration
+     * Returns the duration of the Offer
      * @return int
      */
-    public function getDuration(): int {
+    public function get_duration(): int
+    {
         return $this->duration;
     }
 
     /**
-     * Get the date of start
+     * get_begin_date
+     * Returns the begin date of the Offer
      * @return string
      */
-    public function getBeginDate(): string {
-        return $this->begin_date;
+    public function get_begin_date(): string
+    {
+        return $this->beginDate;
     }
 
     /**
-     * Get the salary
+     * get_salary
+     * Returns the salary of the Offer
      * @return int
      */
-    public function getSalary(): int {
+    public function get_salary(): int
+    {
         return $this->salary;
     }
 
     /**
-     * Get the address
+     * get_address
+     * Returns the address of the Offer
      * @return string
      */
-    public function getAddress(): string {
+    public function get_address(): string
+    {
         return $this->address;
     }
 
     /**
-     * Get the study level
+     * get_study_level
+     * Returns the study level of the Offer
      * @return string
      */
-    public function getStudyLevel(): string {
-        return $this->study_level;
+    public function get_study_level(): string
+    {
+        return $this->studyLevel;
     }
 
     /**
-     * Get the status of activation
+     * get_is_active
+     * Returns the is active flag of the Offer
      * @return bool
      */
-    public function getIsActive(): bool {
-        return $this->is_active;
+    public function get_is_active(): bool
+    {
+        return $this->isActive;
     }
 
     /**
-     * Get the email
+     * get_email
+     * Returns the email of the Offer
      * @return string
      */
-    public function getEmail(): string {
+    public function get_email(): string
+    {
         return $this->email;
     }
 
     /**
-     * Get the phone
+     * get_phone
+     * Returns the phone of the Offer
      * @return string
      */
-    public function getPhone(): string {
+    public function get_phone(): string
+    {
         return $this->phone;
     }
 
     /**
-     * Get the date of creation
+     * get_created_at
+     * Returns the created at date of the Offer
      * @return string
      */
-    public function getCreatedAt(): string {
-        return $this->created_at;
-    }
-
-    /**
-     * Get the date of modification
-     * @return string
-     */
-    public function getUpdatedAt(): string
+    public function get_created_at(): string
     {
-        return $this->updated_at;
+        return $this->createdAt;
     }
 
     /**
-     * Get the tags
+     * get_updated_at
+     * Returns the updated at date of the Offer
+     * @return string
+     */
+    public function get_updated_at(): string
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * get_tags
+     * Returns the tags of the Offer
      * @return array|null
      */
-    public function getTags(): ?array
+    public function get_tags(): ?array
     {
-
-
         global $db;
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Tag JOIN Tag_Offer ON Tag.id = Tag_Offer.tag_id WHERE Tag_Offer.offer_id = :offer_id");
+
+        $stmt = $db->prepare("SELECT * FROM tags JOIN Tag_Offer ON Tag.id = Tag_Offer.tag_id WHERE Tag_Offer.offer_id = :offer_id");
         $stmt->bindParam(":offer_id", $this->id);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
@@ -199,7 +312,38 @@ class Offer {
     }
 
     /**
-     * Update an Offer
+     * get_latitude
+     * Returns the latitude of the Offer
+     * @return float
+     */
+    public function get_latitude(): float
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * get_longitude
+     * Returns the longitude of the Offer
+     * @return float
+     */
+    public function get_longitude(): float
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * get_supress
+     * Returns if the Offer is supressed
+     * @return bool
+     */
+    public function get_supress(): bool
+    {
+        return $this->supress;
+    }
+
+    /**
+     * update
+     * Updates the Offer with the given id with the given data in the database
      * @param int $getId
      * @param string $getTitle
      * @param string $getDescription
@@ -215,12 +359,11 @@ class Offer {
      * @param string $getWebsite
      * @return Offer|null
      */
-    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, string $getWebsite): ?Offer
+    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, string $getWebsite, float $latitude, float $longitude)
     {
         global $db;
 
-        //Update the Offer
-        $stmt = $db->getConnection()->prepare("UPDATE Offer SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone, website = :website WHERE id = :id");
+        $stmt = $db->prepare("UPDATE Offer SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone, website = :website, latitude = :latitude, longitude = :longitude WHERE id = :id");
         $stmt->bindParam(":title", $getTitle);
         $stmt->bindParam(":description", $getDescription);
         $stmt->bindParam(":job", $getJob);
@@ -233,94 +376,79 @@ class Offer {
         $stmt->bindParam(":id", $getId);
         $stmt->bindParam(":begin_date", $getBeginDate);
         $stmt->bindParam(":website", $getWebsite);
+        $stmt->bindParam(":latitude", $latitude);
+        $stmt->bindParam(":longitude", $longitude);
 
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
-        //Delete the tags in the tags_offers table
-        $stmt = $db->getConnection()->prepare("DELETE FROM Tag_Offer WHERE offer_id = :id");
+        $stmt = $db->prepare("DELETE FROM Tag_Offer WHERE offer_id = :id");
         $stmt->bindParam(":id", $getId);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
-        //Add the tags in the tags_offers table
         foreach ($getTags as $tag) {
-            $stmt = $db->getConnection()->prepare("INSERT INTO Tag_Offer (tag_id, offer_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
+            $stmt = $db->prepare("INSERT INTO Tag_Offer (tag_id, offer_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $getId);
             $stmt->execute();
         }
 
-        $offer = Offer::getById($getId);
+        $offer = Offer::get_by_id($getId);
         return $offer;
     }
 
     /**
-     * Get the domain
+     * getDomain
+     * Returns the domain of the website
      * @return string|null
      */
-    public function getDomain(): ?string {
+    public function getDomain(): ?string
+    {
         $fullDomain = parse_url($this->website, PHP_URL_HOST);
 
         preg_match('/([a-z0-9-]+\.[a-z]{2,6})$/i', $fullDomain, $matches);
-    
+
         return $matches[1] ?? null;
     }
 
     /**
-     * Get the image
+     * getImage
+     * Returns the image URL of the website
      * @return string|null
      */
-    public function getImage(): ?string {
+    public function getImage(): ?string
+    {
         $imagePath = 'https://cdn.brandfetch.io/' . $this->getDomain() . '/w/512/h/512';
         return $imagePath;
     }
 
     /**
-     * Get the background color
-     * @return void
-     */
-    public function getBackgroundColor() {
-        $imagePath = $this->getImage();
-        $image = imagecreatefromwebp($imagePath);
-
-        $width = imagesx($image);
-        $height = imagesy($image);
-
-        $rgb = imagecolorat($image, 0, 0);
-
-        $r = ($rgb >> 16) & 0xFF;
-        $g = ($rgb >> 8) & 0xFF;
-        $b = $rgb & 0xFF;
-
-        imagedestroy($image);
-    }
-
-    /**
-     * Get an Offer by its id
+     * getById
+     * Returns the Offer with the given id
      * @param int $id
      * @return Offer|null
      */
-    public static function getById(int $id): ?Offer
+    public static function get_by_id(int $id): ?Offer
     {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Offer WHERE id = :id");
+        $stmt = $db->prepare("SELECT * FROM Offer WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
         $result = $stmt->fetch();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
-        $company = Company::getById($result["company_id"]);
+        $company = Company::get_by_id($result["company_id"]);
 
         if (!$company) {
             return null;
@@ -343,61 +471,35 @@ class Offer {
             $result["phone"],
             $result["website"],
             date("Y-m-d H:i:s", strtotime($result["created_at"])),
-            date("Y-m-d H:i:s", strtotime($result["updated_at"]))
+            date("Y-m-d H:i:s", strtotime($result["updated_at"])),
+            $result["supress"],
+            $result["latitude"],
+            $result["longitude"]
         );
     }
 
     /**
-     * Get all offers
+     * getAll
+     * Returns all the offers
      * @return array|null
      */
-    public static function getAll(): ?array
+    public static function get_all(): ?array
     {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Offer");
+        $stmt = $db->prepare("SELECT * FROM Offer");
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
-        $result = $stmt->fetchAll();
-
-        $offers = [];
-        foreach ($result as $row) {
-            $company = Company::getById($row["company_id"]);
-
-            if (!$company) {
-                continue;
-            }
-
-            $offers[] = new Offer(
-                $row["id"],
-                $row["company_id"],
-                $company,
-                $row["title"],
-                $row["description"],
-                $row["job"],
-                $row["duration"],
-                $row["begin_date"],
-                $row["salary"],
-                $row["address"],
-                $row["study_level"],
-                $row["is_active"],
-                $row["email"],
-                $row["phone"],
-                $row["website"],
-                date("Y-m-d H:i:s", strtotime($row["created_at"])),
-                date("Y-m-d H:i:s", strtotime($row["updated_at"]))
-            );
-        }
-
-        return $offers;
+        return self::instantiate_rows($stmt);
     }
 
     /**
-     * Create a new Offer
+     * create
+     * Creates a new Offer, inserts it into the database and returns the id
      * @param int $company_id
      * @param string $title
      * @param string $description
@@ -413,12 +515,13 @@ class Offer {
      * @param string $website
      * @return Offer|null
      */
-    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $website) {
+    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $website, float $latitude, float $longitude)
+    {
         global $db;
 
-
-        //Insert the Offer in the offers table
-        $stmt = $db->getConnection()->prepare("INSERT INTO Offer (company_id, title, description, job , duration, salary, address,  study_level, begin_date,email, phone, website) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,:email, :phone, :website)");
+        $stmt = $db->prepare("INSERT INTO Offer (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
+                    email, phone, website, latitude, longitude) VALUES (:company_id, :title, :description, :job, :duration, :salary, :address, :study_level, :begin_date,
+                    :email, :phone, :website, :latitude, :longitude)");
         $stmt->bindParam(":company_id", $company_id);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":description", $description);
@@ -431,18 +534,19 @@ class Offer {
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":phone", $phone);
         $stmt->bindParam(":website", $website);
+        $stmt->bindParam(":latitude", $latitude);
+        $stmt->bindParam(":longitude", $longitude);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
 
-        $id = $db->getConnection()->lastInsertId();
+        $id = $db->lastInsertId();
 
-        //Add the tags in the tags_offers table
         foreach ($tags as $tag) {
-            $stmt = $db->getConnection()->prepare("INSERT INTO Tag_Offer (tag_id, offer_id) VALUES ((SELECT tag FROM Tag WHERE id = :tag_id), :offer_id)");
+            $stmt = $db->prepare("INSERT INTO Tag_Offer (tag_id, offer_id) VALUES ((SELECT tag FROM tags WHERE id = :tag_id), :offer_id)");
             $stmt->bindParam(":tag_id", $tag);
             $stmt->bindParam(":offer_id", $id);
             $stmt->execute();
@@ -451,7 +555,7 @@ class Offer {
         $offer = new Offer(
             $id,
             $company_id,
-            Company::getById($company_id),
+            Company::get_by_id($company_id),
             $title,
             $description,
             $job,
@@ -465,19 +569,23 @@ class Offer {
             $phone,
             $website,
             date("Y-m-d H:i:s"),
-            date("Y-m-d H:i:s")
+            date("Y-m-d H:i:s"),
+            FALSE,
+            $latitude,
+            $longitude
         );
 
         return $offer;
     }
 
     /**
-     * Get the real duration of the Offer using modulo
+     * get_real_duration
+     * Get a human-readable duration of the Offer using modulo to get the years, months and days
      * @return string
      */
-    public function getRealDuration(): string
+    public function get_real_duration(): string
     {
-        $duration = $this->getDuration();
+        $duration = $this->get_duration();
 
         $years = intdiv($duration, 365);
         $remainingDays = $duration % 365;
@@ -499,22 +607,20 @@ class Offer {
         if ($weeks > 0) {
             $result .= $weeks . ' semaine' . ($weeks > 1 ? 's' : '') . ', ';
         }
-        if ($days > 0) {
-            $result .= $days . ' jour' . ($days > 1 ? 's' : '');
-        }
 
         return rtrim($result, ', ');
     }
 
     /**
-     * Get all tags
+     * get_all_tags
+     * Returns all the tags
      * @return array
      */
-    public static function getAllTags(): array
+    public static function get_all_tags(): array
     {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Tag;");
+        $stmt = $db->prepare("SELECT * FROM Tag;");
         $stmt->execute();
 
         $result = $stmt->fetchAll();
@@ -528,74 +634,48 @@ class Offer {
     }
 
     /**
-     * Get the website
+     * get_website
+     *
      * @return string
      */
-    public function getWebsite() {
+    public function get_website()
+    {
         return $this->website;
     }
 
     /**
-     * Get all offers of a Company
+     * get_company_offers
+     * Returns all the offers of the given Company
      * @param $companyId
      * @return array|null
      */
-    public static function getCompanyOffers($companyId): ?array
+    public static function get_company_offers($companyId): ?array
     {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Offer WHERE company_id = :company_id;");
+        $stmt = $db->prepare("SELECT * FROM Offer WHERE company_id = :company_id;");
         $stmt->bindParam(":company_id", $companyId);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
-        $result = $stmt->fetchAll();
-
-        $offers = [];
-        foreach ($result as $row) {
-            $company = Company::getById($row["company_id"]);
-
-            if (!$company) {
-                continue;
-            }
-
-            $offers[] = new Offer(
-                $row["id"],
-                $row["company_id"],
-                $company,
-                $row["title"],
-                $row["description"],
-                $row["job"],
-                $row["duration"],
-                $row["begin_date"],
-                $row["salary"],
-                $row["address"],
-                $row["study_level"],
-                $row["is_active"],
-                $row["email"],
-                $row["phone"],
-                $row["website"],
-                date("Y-m-d H:i:s", strtotime($row["created_at"])),
-                date("Y-m-d H:i:s", strtotime($row["updated_at"]))
-            );
-        }
-
-        return $offers;
+        return self::instantiate_rows($stmt);
     }
 
     /**
-     * Get all offers filtered by the filters
+     * get_filtered_offers
+     * Returns the filtered + paginated offers
      * @param int $n
      * @param array $filters
      * @return array|null
      */
-    public static function getFilteredOffers(int $n, array $filters): ?array {
+    public static function get_filtered_offers(int $n, array $filters): ?array
+    {
         global $db;
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS Offer.*, tag FROM Offer LEFT JOIN Tag_Offer ON Offer.id = Tag_Offer.offer_id LEFT JOIN Tag ON Tag.id = Tag_Offer.tag_id WHERE is_active AND begin_date >= CURDATE()";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS Offer.*, tag FROM Offer LEFT JOIN Tag_Offer ON Offer.id = Tag_Offer.offer_id LEFT JOIN Tag ON Tag.id = Tag_Offer.tag_id WHERE is_active AND begin_date >= CURDATE() AND NOT supress";
         $params = [];
 
         if (!empty($filters['title'])) {
@@ -614,7 +694,7 @@ class Offer {
             }
 
             $filters['title'] = preg_replace('/description\s*:\s*"(.*?)"/', '', $filters['title']);
-            
+
 
             $sql .= ' AND Offer.title LIKE :title';
             $params[':title'] = '%' . $filters['title'] . '%';
@@ -633,11 +713,6 @@ class Offer {
         if (!empty($filters['minSalary'])) {
             $sql .= ' AND Offer.salary >= :minSalary';
             $params[':minSalary'] = $filters['minSalary'];
-        }
-
-        if (!empty($filters['maxSalary'])) {
-            $sql .= ' AND Offer.salary <= :maxSalary';
-            $params[':maxSalary'] = $filters['maxSalary'];
         }
 
         if (!empty($filters['address'])) {
@@ -678,38 +753,48 @@ class Offer {
             $params[':company_id'] = $filters['company_id'];
         }
 
+        if (!empty($filters['latitude']) && !empty($filters['longitude']) && !empty($filters['distance'])) {
+            $sql .= ' AND (6371 * acos(cos(radians(:latitude)) * cos(radians(offers.latitude)) * cos(radians(offers.longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(offers.latitude)))) < :distance';
+            $params[':longitude'] = $filters['longitude'];
+            $params[':latitude'] = $filters['latitude'];
+            $params[':distance'] = $filters['distance'];
+        }
+
         if (!empty($filters['type'])) {
             if ($filters['type'] == 'new') {
-                $offers = pendingOffer::getAllNew();
+                $offers = pendingOffer::get_all_new();
                 return [$offers, ceil(count($offers) / 12)];
             } else if ($filters['type'] == 'updated') {
-                $offers = pendingOffer::getAllUpdated();
+                $offers = pendingOffer::get_all_updated();
                 return [$offers, ceil(count($offers) / 12)];
             } else if ($filters['type'] == 'inactive') {
                 if (!empty($filters['company_id'])) {
-                    $offers = offer::getAllInactive($filters['company_id']);
+                    $offers = offer::get_all_inactive($filters['company_id']);
                     return [$offers, ceil(count($offers) / 12)];
                 } else {
-                    $offers = offer::getAllInactive();
+                    $offers = offer::get_all_inactive();
                     return [$offers, ceil(count($offers) / 12)];
                 }
+            } else if ($filters['type'] == 'suppressed') {
+                $offers = offer::get_suppressed();
+                return [$offers, ceil(count($offers) / 12)];
             }
         }
 
-        $sql .= " LIMIT 12 OFFSET ". ($n - 1) * 12;
+        $sql .= " LIMIT 12 OFFSET " . ($n - 1) * 12;
 
-        $stmt = $db->getConnection()->prepare($sql);
+        $stmt = $db->prepare($sql);
         foreach ($params as $key => $value) {
             $stmt->bindValue($key, $value);
         }
         $stmt->execute();
 
-        $stmt2 = $db->getConnection()->query("SELECT FOUND_ROWS() as total");
+        $stmt2 = $db->query("SELECT FOUND_ROWS() as total");
         $count = $stmt2->fetch()['total'];
 
         $offers = [];
         foreach ($stmt->fetchAll() as $row) {
-            $company = Company::getById($row["company_id"]);
+            $company = Company::get_by_id($row["company_id"]);
 
             if (!$company) {
                 continue;
@@ -732,7 +817,10 @@ class Offer {
                 $row["phone"],
                 $row["website"],
                 date("Y-m-d H:i:s", strtotime($row["created_at"])),
-                date("Y-m-d H:i:s", strtotime($row["updated_at"]))
+                date("Y-m-d H:i:s", strtotime($row["updated_at"])),
+                $row["supress"],
+                $row["latitude"],
+                $row["longitude"]
             );
         }
 
@@ -740,18 +828,20 @@ class Offer {
     }
 
     /**
-     * Hide an Offer
+     * hide
+     * Hides the Offer with the given id
      * @param $id
      * @return true|null
      */
-    public static function hide($id) {
-        $db = Database::getInstance();
+    public static function hide($id)
+    {
+        global $db;
 
-        $stmt = $db->getConnection()->prepare("UPDATE Offer SET is_active = !is_active WHERE id = :id");
+        $stmt = $db->prepare("UPDATE Offer SET is_active = !is_active WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
@@ -759,20 +849,22 @@ class Offer {
     }
 
     /**
-     * Check if the company had offers
+     * is_company_offer
+     * Returns true if the Offer with the given id is from the given Company
      * @param int $id
      * @param int $company_id
      * @return bool|null
      */
-    public static function isCompanyOffer(int $id, int $company_id): ?bool {
+    public static function is_company_offer(int $id, int $companyId): ?bool
+    {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Offer WHERE id = :id AND company_id = :company_id");
+        $stmt = $db->prepare("SELECT * FROM Offer WHERE id = :id AND company_id = :company_id");
         $stmt->bindParam(":id", $id);
-        $stmt->bindParam(":company_id", $company_id);
+        $stmt->bindParam(":company_id", $companyId);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
@@ -786,18 +878,20 @@ class Offer {
     }
 
     /**
-     *  Verify if an Offer is already pending
+     * is_already_pending
+     * Returns true if the Offer with the given id is already pending
      * @param int $id
      * @return bool|null
      */
-    public static function isAlreadyPending(int $id): ?bool {
+    public static function is_already_pending(int $id): ?bool
+    {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :offer_id AND status = 'Pending'");
+        $stmt = $db->prepare("SELECT * FROM PendingOffer WHERE offer_id = :offer_id AND status = 'Pending'");
         $stmt->bindParam(":offer_id", $id);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
@@ -811,20 +905,22 @@ class Offer {
     }
 
     /**
-     * Add a favorite Offer for a user
+     * make_favorite
+     * Adds the Offer with the given id to the user's favorite offers
      * @param int $id
-     * @param int $user_id
+     * @param int $userId
      * @return bool|null
      */
-    public static function makeFavorite(int $id, int $user_id): ?bool {
+    public static function make_favorite(int $id, int $userId): ?bool
+    {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("INSERT INTO Favorite_Offer (offer_id, user_id) VALUES (:offer_id, :user_id)");
+        $stmt = $db->prepare("INSERT INTO FavoriteOffer (offer_id, user_id) VALUES (:offer_id, :user_id)");
         $stmt->bindParam(":offer_id", $id);
-        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":user_id", $userId);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
@@ -832,20 +928,22 @@ class Offer {
     }
 
     /**
-     * Remove a favorite Offer for a user
+     * remove_favorite
+     * Removes the Offer with the given id from the user's favorite offers
      * @param int $id
-     * @param int $user_id
+     * @param int $userId
      * @return bool|null
      */
-    public static function removeFavorite(int $id, int $user_id): ?bool {
+    public static function remove_favorite(int $id, int $userId): ?bool
+    {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("DELETE FROM Favorite_Offer WHERE offer_id = :offer_id AND user_id = :user_id");
+        $stmt = $db->prepare("DELETE FROM FavoriteOffer WHERE offer_id = :offer_id AND user_id = :user_id");
         $stmt->bindParam(":offer_id", $id);
-        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":user_id", $userId);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
@@ -853,20 +951,22 @@ class Offer {
     }
 
     /**
-     * Verify if a user has a favorite Offer
+     * is_favorite
+     * Returns true if the Offer with the given id is in the user's favorite offers
      * @param int $id
      * @param int $user_id
      * @return bool|null
      */
-    public static function isFavorite(int $id, int $user_id): ?bool {
+    public static function is_favorite(int $id, int $userId): ?bool
+    {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Favorite_Offer WHERE offer_id = :offer_id AND user_id = :user_id");
+        $stmt = $db->prepare("SELECT * FROM FavoriteOffer WHERE offer_id = :offer_id AND user_id = :user_id");
         $stmt->bindParam(":offer_id", $id);
-        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":user_id", $userId);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
@@ -880,55 +980,56 @@ class Offer {
     }
 
     /**
-     * Get all inactive offers
-     * @param int $company_id
+     * get_all_inactive
+     * Returns all the inactive offers
+     * @param int $companyId
      * @return array|null
      */
-    public static function getAllInactive(int $company_id = 0): ?array {
+    public static function get_all_inactive(int $companyId = 0): ?array
+    {
         global $db;
-        if ($company_id != 0) {
-            $stmt = $db->getConnection()->prepare("SELECT * FROM Offer WHERE is_active = 0 AND company_id = :company_id ORDER BY begin_date DESC");
-            $stmt->bindParam(":company_id", $company_id);
+        if ($companyId != 0) {
+            $stmt = $db->prepare("SELECT * FROM Offer WHERE is_active = 0 AND company_id = :company_id ORDER BY begin_date DESC");
+            $stmt->bindParam(":company_id", $companyId);
         } else {
-            $stmt = $db->getConnection()->prepare("SELECT * FROM Offer WHERE is_active = 0 ORDER BY begin_date DESC");
+            $stmt = $db->prepare("SELECT * FROM Offer WHERE is_active = 0 ORDER BY begin_date DESC");
         }
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
-        $result = $stmt->fetchAll();
+        return self::instantiate_rows($stmt);
+    }
 
-        $offers = [];
-        foreach ($result as $row) {
-            $company = Company::getById($row["company_id"]);
+    /**
+     * suppress
+     * Suppress the Offer with the given id
+     * @param int $id
+     * @return void
+     */
+    public static function suppress(int $id): void
+    {
+        global $db;
+        $stmt = $db->prepare("UPDATE Offer SET supress = 1 WHERE id = :id");
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+    }
 
-            if (!$company) {
-                continue;
-            }
-
-            $offers[] = new Offer(
-                $row["id"],
-                $row["company_id"],
-                $company,
-                $row["title"],
-                $row["description"],
-                $row["job"],
-                $row["duration"],
-                $row["begin_date"],
-                $row["salary"],
-                $row["address"],
-                $row["study_level"],
-                $row["is_active"],
-                $row["email"],
-                $row["phone"],
-                $row["website"],
-                date("Y-m-d H:i:s", strtotime($row["created_at"])),
-                date("Y-m-d H:i:s", strtotime($row["updated_at"]))
-            );
-            }
-
-        return $offers;
+    /**
+     * get_suppressed
+     * Returns all the suppressed offers
+     * @return array|null
+     */
+    public static function get_suppressed(): ?array
+    {
+        global $db;
+        $stmt = $db->prepare("SELECT * FROM Offer WHERE supress = 1");
+        $stmt->execute();
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+        return self::instantiate_rows($stmt);
     }
 }

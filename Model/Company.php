@@ -1,94 +1,132 @@
 <?php
-require_once "Database.php";
-$db = Database::getInstance();
-//Class to manage companies
-class Company {
+
+namespace Model;
+require_once dirname(__FILE__) . "/Database.php";
+
+/**
+ * Company
+ * Represents a Company in the database
+ */
+class Company
+{
     private int $id;
     private string $name;
     private int $size;
     private string $address;
-    private string $Siret ;
+    private string $siren;
     private string $created_at;
     private string $updated_at;
 
-    public function __construct(int $id, string $name, int $size, string $address, string $Siret, string $created_at, string $updated_at) {
+    /**
+     * __construct
+     * Constructor used to instantiate the object, used only internally
+     * @param int $id
+     * @param string $name
+     * @param int $size
+     * @param string $address
+     * @param string $siren
+     * @param string $created_at
+     * @param string $updated_at
+     */
+    private function __construct(int $id, string $name, int $size, string $address, string $siren, string $created_at, string $updated_at)
+    {
         $this->id = $id;
         $this->name = $name;
         $this->size = $size;
         $this->address = $address;
-        $this->Siret = $Siret;
+        $this->siren = $siren;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
     }
 
     /**
-     * Get the id of the company
+     * get_id
+     * Returns the id of the Company
      * @return int
      */
-    public function getId(): int {
+    public function get_id(): int
+    {
         return $this->id;
     }
 
     /**
-     * Get the name of the company
+     * get_name
+     * Returns the name of the Company
      * @return string
      */
-    public function getName(): string {
+    public function get_name(): ?string
+    {
         return $this->name;
     }
 
     /**
-     * Get the size of the company
+     * get_size
+     * Returns the size of the Company
      * @return int
      */
-    public function getSize(): int {
+    public function get_size(): int
+    {
         return $this->size;
     }
 
     /**
-     * Get the address of the company
+     * get_address
+     * Returns the address of the Company
      * @return string
      */
-    public function getAddress(): string {
+    public function get_address(): string
+    {
         return $this->address;
     }
 
     /**
-     * Get the siret of the company
+     * get_siren
+     * Returns the siren of the Company
      * @return string
      */
-    public function getSiret(): string {
-        return $this->Siret;
+    public function get_siren(): string
+    {
+        return $this->siren;
     }
 
     /**
-     * Get the creation date of the company
+     * get_created_at
+     * Returns the creation date of the Company
      * @return string
      */
-    public function getCreatedAt(): string {
+    public function get_created_at(): string
+    {
         return $this->created_at;
     }
 
     /**
-     * Get the modification date of the company
+     * get_updated_at
+     * Returns the last update date of the Company
      * @return string
      */
-    public function getUpdatedAt(): string {
+    public function get_updated_at(): string
+    {
         return $this->updated_at;
     }
 
     /**
-     * Get a Company by his id
-     * @return Company
+     * get_by_id
+     * Returns a Company by its id
+     * @param int $id
+     * @return Company|null
      */
-    public static function getById(int $id): ?Company {
+    public static function get_by_id(int $id): ?Company
+    {
         global $db;
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Company WHERE id = :id");
+
+        $stmt = $db->prepare("SELECT * FROM Company WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
-        if ($db->getConnection()->errorCode() != 0) {
+
+        if ($db->errorCode() != 0) {
             return null;
         }
+
         $result = $stmt->fetch();
 
         if (!$result) {
@@ -100,23 +138,25 @@ class Company {
             $result["name"],
             $result["size"],
             $result["address"],
-            $result["Siret"],
+            $result["siren"],
             $result["created_at"],
             $result["updated_at"]
         );
     }
 
     /**
-     * Get all companies
-     * @return array
+     * get_all
+     * Returns all companies
+     * @return array|null
      */
-    public static function getAll(): ?array {
+    public static function get_all(): ?array
+    {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("SELECT * FROM Company");
+        $stmt = $db->prepare("SELECT * FROM Company");
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
@@ -129,7 +169,7 @@ class Company {
                 $row["name"],
                 $row["size"],
                 $row["address"],
-                $row["Siret"],
+                $row["siren"],
                 $row["created_at"],
                 $row["updated_at"]
             );
@@ -139,33 +179,54 @@ class Company {
     }
 
     /**
-     * Create a new Company
-     * @return Company
+     * update
+     * Updates a Company in the database
+     * @param string $name
+     * @param int $size
+     * @param string $address
+     * @param string $siren
+     * @return Company|null
      */
-    public static function create(string $name, int $size, string $address, string $Siret): ?Company {
+    public static function create(string $name, int $size, string $address, string $siren): ?Company
+    {
         global $db;
 
-        $stmt = $db->getConnection()->prepare("INSERT INTO Company (name, size, address, Siret) VALUES (:name, :size, :address, :Siret)");
+        $stmt = $db->prepare("INSERT INTO Company (name, size, address, siren) VALUES (:name, :size, :address, :siren)");
         $stmt->bindParam(":name", $name);
         $stmt->bindParam(":size", $size);
         $stmt->bindParam(":address", $address);
-        $stmt->bindParam(":Siret", $Siret);
+        $stmt->bindParam(":siren", $siren);
         $stmt->execute();
 
-        if ($db->getConnection()->errorCode() != 0) {
+        if ($db->errorCode() != 0) {
             return null;
         }
 
-        $id = $db->getConnection()->lastInsertId();
+        $id = $db->lastInsertId();
 
         return new Company(
             $id,
             $name,
             $size,
             $address,
-            $Siret,
+            $siren,
             date("Y-m-d H:i:s"),
             date("Y-m-d H:i:s")
         );
+    }
+
+    public static function delete(int $id): ?bool
+    {
+        global $db;
+        $sql = "DELETE FROM Company WHERE id = :id";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        if ($db->errorCode()) {
+            return false;
+        }
+
+        return true;
     }
 }
