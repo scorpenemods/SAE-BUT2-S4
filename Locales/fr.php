@@ -76,5 +76,16 @@ return array(
     'redirection' => "Redirection...",
     'return_phrase' => "Retour à la page d'accueil dans 3 secondes...",
 
+    // BATCH
+    'import des utilisateurs terminé' => "Import des utilisateurs terminé.",
+    'cliquer pour retourner à la Gestion des Utilisateurs' => "Cliquer pour retourner à la Gestion des Utilisateurs",
 
+    //CHANGEPASSWORD
+    'vérification du code' => "Vérification du code",
+    'changement du mot de passe' => "Changement du mot de passe",
+    'ancien mot de passe' => "Ancien mot de passe",
+    'nouveau mot de passe' => "Nouveau mot de passe",
+    'confirmer le mot de passe' => "Confirmer le mot de passe",
+    'réinitialiser le mot de passe' => "Réinitialiser le mot de passe",
+    'retour' => "Retour",
 );

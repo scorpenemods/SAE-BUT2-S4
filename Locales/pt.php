@@ -72,4 +72,16 @@ return array(
     'redirection' => "Redirecionando...",
     'return_phrase' => "Voltando para a página inicial em 3 segundos...",
 
+    // BATCH
+    'import des utilisateurs terminé' => "Importação de usuários concluída.",
+    'cliquer pour retourner à la Gestion des Utilisateurs' => "Clique para retornar à Gestão de Usuários",
+
+    //CHANGEPASSWORD
+    'vérification du code' => "Verificação de código",
+    'changement du mot de passe' => "Alteração de senha",
+    'ancien mot de passe' => "Senha antiga",
+    'nouveau mot de passe' => "Nova senha",
+    'confirmer le mot de passe' => "Confirmar senha",
+    'réinitialiser le mot de passe' => "Redefinir senha",
+    'retour' => "Voltar",
 );

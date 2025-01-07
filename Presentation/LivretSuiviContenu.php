@@ -232,7 +232,7 @@ $file = $database->getLivretFile($groupId);
                     </tbody>
                 </table><br>
 
-                <strong>Commentaires du professeur : </strong>
+                <strong>Commentaires du professeur tuteur : </strong>
                 <textarea name="remarque[]" class="textareaLivret"></textarea> <br><br>
 
                 <strong>Commentaires du maitre de stage : </strong>
@@ -249,7 +249,7 @@ $file = $database->getLivretFile($groupId);
                 <h3 style="margin-bottom: 10px">Veuillez déposer votre rapport de stage ci-dessous :</h3>
 
                 <form class="box" method="post" enctype="multipart/form-data">
-                    <p><strong>Seuls les formats .pdf sont autorisés jusqu'à une taille maximale de 50 Mo. </strong></p><br>
+                    <p>Seuls les formats <strong>.pdf</strong> sont autorisés jusqu'à une taille maximale de <strong>50 Mo</strong>. </p><br>
                     <div class="box__input">
                         <input type="file" name="file" id="fileUpload">
                         <button class="box__button" type="submit">Uploader</button>

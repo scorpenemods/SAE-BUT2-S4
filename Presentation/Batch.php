@@ -14,9 +14,27 @@ if (isset($_FILES['csv_file']) && $_FILES['csv_file']['error'] == UPLOAD_ERR_OK)
     echo "File upload error. Please upload a valid CSV file.";
 }
 
+// TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
 
 ?>
-<h2>Import des utilisateurs terminé.</h2>
+<h2><?= $translations['import des utilisateurs terminé'] ?></h2>
 
-<button onclick="window.location.href = 'Secretariat.php';">Cliquer pour retourner à la Gestion des Utilisateurs</button>
+<button onclick="window.location.href = 'Secretariat.php';"><?= $translations['cliquer pour retourner à la Gestion des Utilisateurs'] ?></button>
 

@@ -72,5 +72,16 @@ return array(
     'redirection' => "Перенаправлення...",
     'return_phrase' => "Повернення на головну сторінку через 3 секунди...",
 
+    // BATCH
+    'import des utilisateurs terminé' => "Імпорт користувачів завершено.",
+    'cliquer pour retourner à la Gestion des Utilisateurs' => "Натисніть, щоб повернутися до Управління Користувачами",
 
+    //CHANGEPASSWORD
+    'vérification du code' => "Перевірка коду",
+    'changement du mot de passe' => "Зміна пароля",
+    'ancien mot de passe' => "Старий пароль",
+    'nouveau mot de passe' => "Новий пароль",
+    'confirmer le mot de passe' => "Підтвердити пароль",
+    'réinitialiser le mot de passe' => "Скинути пароль",
+    'retour' => "Назад",
 );

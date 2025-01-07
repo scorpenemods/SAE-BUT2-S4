@@ -73,4 +73,16 @@ return array(
     'redirection' => "Перенаправление...",
     'return_phrase' => "Возврат на главную страницу через 3 секунды...",
 
+    // BATCH
+    'import des utilisateurs terminé' => "Импорт пользователей завершён.",
+    'cliquer pour retourner à la Gestion des Utilisateurs' => "Нажмите, чтобы вернуться к Управлению Пользователями",
+
+    //CHANGEPASSWORD
+    'vérification du code' => "Проверка кода",
+    'changement du mot de passe' => "Изменение пароля",
+    'ancien mot de passe' => "Старый пароль",
+    'nouveau mot de passe' => "Новый пароль",
+    'confirmer le mot de passe' => "Подтвердить пароль",
+    'réinitialiser le mot de passe' => "Сбросить пароль",
+    'retour' => "Назад",
 );
