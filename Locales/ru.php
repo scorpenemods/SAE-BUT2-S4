@@ -85,4 +85,11 @@ return array(
     'confirmer le mot de passe' => "Подтвердить пароль",
     'réinitialiser le mot de passe' => "Сбросить пароль",
     'retour' => "Назад",
+
+    //EMAILVALIDATION
+    'pour finaliser votre inscription, veuillez valider votre adresse email. Un code de vérification a été envoyé à votre adresse email' => "Чтобы завершить регистрацию, подтвердите свой адрес электронной почты. Код подтверждения был отправлен на ваш адрес электронной почты",
+    "si vous n'avez pas reçu d'email, cliquez sur le bouton ci-dessous pour le renvoyer" => "Если вы не получили письмо, нажмите кнопку ниже, чтобы отправить его повторно",
+    'valider votre code de vérification' => "Подтвердите ваш код подтверждения",
+    'code de vérification' => "Код подтверждения",
+    'entrez le code' => "Введите код",
 );

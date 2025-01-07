@@ -84,4 +84,11 @@ return array(
     'confirmer le mot de passe' => "Confirmar contraseña",
     'réinitialiser le mot de passe' => "Restablecer contraseña",
     'retour' => "Volver",
+
+    //EMAILVALIDATION
+    'pour finaliser votre inscription, veuillez valider votre adresse email. Un code de vérification a été envoyé à votre adresse email' => "Para completar su registro, verifique su dirección de correo electrónico. Se ha enviado un código de verificación a su correo electrónico",
+    "si vous n'avez pas reçu d'email, cliquez sur le bouton ci-dessous pour le renvoyer" => "Si no ha recibido un correo electrónico, haga clic en el botón de abajo para reenviarlo",
+    'valider votre code de vérification' => "Validar su código de verificación",
+    'code de vérification' => "Código de verificación",
+    'entrez le code' => "Introduzca el código",
 );

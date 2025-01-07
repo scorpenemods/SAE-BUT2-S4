@@ -85,4 +85,11 @@ return array(
     'confirmer le mot de passe' => "Confirm password",
     'réinitialiser le mot de passe' => "Reset password",
     'retour' => "Back",
+
+    //EMAILVALIDATION
+    'pour finaliser votre inscription, veuillez valider votre adresse email. Un code de vérification a été envoyé à votre adresse email' => "To complete your registration, please verify your email address. A verification code has been sent to your email address",
+    "si vous n'avez pas reçu d'email, cliquez sur le bouton ci-dessous pour le renvoyer" => "If you have not received an email, click the button below to resend it",
+    'valider votre code de vérification' => "Validate your verification code",
+    'code de vérification' => "Verification code",
+    'entrez le code' => "Enter the code",
 );

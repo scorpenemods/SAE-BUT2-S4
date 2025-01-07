@@ -72,4 +72,23 @@ return array(
     'redirection' => "Reindirizzamento...",
     'return_phrase' => "Ritorno alla pagina iniziale in 3 secondi...",
 
+    // BATCH
+    'import des utilisateurs terminé' => "Importazione utenti completata",
+    'cliquer pour retourner à la Gestion des Utilisateurs' => "Clicca per tornare alla Gestione degli Utenti",
+
+    //CHANGEPASSWORD
+    'vérification du code' => "Verifica del codice",
+    'changement du mot de passe' => "Cambio della password",
+    'ancien mot de passe' => "Vecchia password",
+    'nouveau mot de passe' => "Nuova password",
+    'confirmer le mot de passe' => "Conferma password",
+    'réinitialiser le mot de passe' => "Reimposta la password",
+    'retour' => "Indietro",
+
+    //EMAILVALIDATION
+    'pour finaliser votre inscription, veuillez valider votre adresse email. Un code de vérification a été envoyé à votre adresse email' => "Per completare la registrazione, verifica il tuo indirizzo email. Un codice di verifica è stato inviato al tuo indirizzo email",
+    "si vous n'avez pas reçu d'email, cliquez sur le bouton ci-dessous pour le renvoyer" => "Se non hai ricevuto un'email, clicca sul pulsante qui sotto per reinviarla",
+    'valider votre code de vérification' => "Conferma il tuo codice di verifica",
+    'code de vérification' => "Codice di verifica",
+    'entrez le code' => "Inserisci il codice",
 );

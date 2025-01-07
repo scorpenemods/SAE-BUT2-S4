@@ -88,4 +88,11 @@ return array(
     'confirmer le mot de passe' => "Confirmer le mot de passe",
     'réinitialiser le mot de passe' => "Réinitialiser le mot de passe",
     'retour' => "Retour",
+
+    //EMAILVALIDATION
+    'pour finaliser votre inscription, veuillez valider votre adresse email. Un code de vérification a été envoyé à votre adresse email' => "Pour finaliser votre inscription, veuillez valider votre adresse email. Un code de vérification a été envoyé à votre adresse email",
+    "si vous n'avez pas reçu d'email, cliquez sur le bouton ci-dessous pour le renvoyer" => "Si vous n'avez pas reçu d'email, cliquez sur le bouton ci-dessous pour le renvoyer",
+    'valider votre code de vérification' => "'Valider votre code de vérification'",
+    'code de vérification' => "Code de vérification",
+    'entrez le code' => "Entrez le code",
 );

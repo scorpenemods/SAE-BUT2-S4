@@ -130,6 +130,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
     }
 }
 
+
+//TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
 ?>
 
 
@@ -167,9 +187,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
     </header>
 
     <div class="container">
-        <h2>Bienvenue sur Le Petit Stage!</h2>
-        <p>Pour finaliser votre inscription, veuillez valider votre adresse email. Un code de vérification a été envoyé à votre adresse email.</p>
-        <p>Si vous n'avez pas reçu d'email, cliquez sur le bouton ci-dessous pour le renvoyer.</p>
+        <h2><?= $translations['welcome_message']?>!</h2>
+        <p><?= $translations['pour finaliser votre inscription, veuillez valider votre adresse email. Un code de vérification a été envoyé à votre adresse email']?>.</p>
+        <p><?= $translations["si vous n'avez pas reçu d'email, cliquez sur le bouton ci-dessous pour le renvoyer"]?>.</p>
 
         <!-- Affichage des messages d'erreur et de succès -->
         <?php if (!empty($sendError)): ?>
@@ -185,13 +205,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
 
         <!-- Formulaire pour renvoyer le code de vérification -->
         <form action="" method="POST">
-            <button type="submit" name="resend_code" class="btn">Envoyer le code</button>
+            <button type="submit" name="resend_code" class="btn"><?= $translations['send_code']?></button>
         </form>
 
         <hr>
 
         <!-- Formulaire pour valider le code de vérification -->
-        <h3>Valider votre code de vérification</h3>
+        <h3><?= $translations['valider votre code de vérification']?></h3>
         <?php if (!empty($verifyError)): ?>
             <div class="notification error-notification">
                 <?php echo htmlspecialchars($verifyError); ?>
@@ -199,18 +219,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate_code'])) {
         <?php endif; ?>
         <form action="" method="POST">
             <div class="form-group">
-                <label for="verification_code">Code de vérification :</label>
-                <input type="text" id="verification_code" name="verification_code" placeholder="Entrez le code" required>
+                <label for="verification_code"><?= $translations['code de vérification']?> :</label>
+                <input type="text" id="verification_code" name="verification_code" placeholder=<?= $translations['entrez le code']?> required>
             </div>
-            <button type="submit" name="validate_code" class="btn">Valider</button>
+            <button type="submit" name="validate_code" class="btn"><?= $translations['validate']?></button>
         </form>
     </div>
 </div>
 
 <footer class="PiedDePage">
     <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF">
-    <a href="Redirection.php">Informations</a>
-    <a href="Redirection.php">À propos</a>
+    <a href="Redirection.php"><?= $translations['information_settings']?></a>
+    <a href="Redirection.php"><?= $translations['a_propos']?></a>
 </footer>
 </body>
 </html>

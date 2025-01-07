@@ -84,4 +84,11 @@ return array(
     'confirmer le mot de passe' => "Підтвердити пароль",
     'réinitialiser le mot de passe' => "Скинути пароль",
     'retour' => "Назад",
+
+    //EMAILVALIDATION
+    'pour finaliser votre inscription, veuillez valider votre adresse email. Un code de vérification a été envoyé à votre adresse email' => "Щоб завершити реєстрацію, підтвердьте свою електронну адресу. Код підтвердження було надіслано на вашу електронну адресу",
+    "si vous n'avez pas reçu d'email, cliquez sur le bouton ci-dessous pour le renvoyer" => "Якщо ви не отримали листа, натисніть кнопку нижче, щоб надіслати його повторно",
+    'valider votre code de vérification' => "Підтвердьте свій код підтвердження",
+    'code de vérification' => "Код підтвердження",
+    'entrez le code' => "Введіть код",
 );
