@@ -153,6 +153,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Fetch all groups with their members
 $groupsWithMembers = $database->getAllGroupsWithMembers();
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "./locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../Locales/fr.php";
+}
+
+
 ?>
 
 
@@ -184,54 +200,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
 
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
-<header class="navbar">
-    <div class="navbar-left">
-        <!-- Affichage du logo et du nom de l'application -->
-        <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
-        <span class="app-name">Le Petit Stage - Secrétariat</span>
-    </div>
-    <div class="navbar-right">
-
-        <div id="notification-icon" onclick="toggleNotificationPopup()">
-            <img id="notification-icon-img" src="../Resources/Notif.png" alt="Notifications">
-            <span id="notification-count" style="display: none;"></span>
-        </div>
-
-        <!-- Notification Popup -->
-        <div id="notification-popup" class="notification-popup">
-            <div class="notification-popup-header">
-                <h3>Notifications</h3>
-                <button onclick="closeNotificationPopup()">X</button>
-            </div>
-            <div class="notification-popup-content">
-                <ul id="notification-list">
-                    <!-- Notifications will be loaded here via JavaScript -->
-                </ul>
-            </div>
-        </div>
-
-
-
-        <!-- Affichage du nom de l'utilisateur connecté et contrôles pour changer la langue et le thème -->
-        <p><?php echo $userName; ?></p>
-        <label class="switch">
-            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-            <span class="slider round">
-                <span class="switch-sticker">🇫🇷</span>
-                <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-            </span>
-        </label>
-        <!-- Bouton pour ouvrir le menu des paramètres -->
-        <button class="mainbtn" onclick="toggleMenu()">
-            <img src="../Resources/Param.png" alt="Settings">
-        </button>
-        <div class="hide-list" id="settingsMenu">
-            <!-- Liens vers les pages d'informations et de déconnexion -->
-            <a href="Settings.php">Information</a>
-            <a href="Logout.php">Deconnexion</a>
-        </div>
-    </div>
-</header>
+<?php include_once("../View/Header.php");?>
 
 <!-- Section principale contenant les différents modules de l'application -->
 <section class="Menus">
@@ -617,14 +586,15 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
         <span class="close-modal">&times;</span>
     </div>
 </div>
+<footer>
+    <?php include '../View/Footer.php'; ?>
+</footer>
 
 <!-- Script JavaScript pour la gestion des utilisateurs -->
 <script src="../View/Principal/userManagement.js"></script>
 <script src="../View/Principal/GroupCreation.js"></script>
 <script src="/View/Principal/GroupMessenger.js"></script>
-<footer>
-    <?php include '../View/Footer.php'; ?>
-</footer>
+
 <script>
     // Ajouter une classe d'animation
     document.querySelectorAll('.form-control, .form-control-file').forEach(element => {

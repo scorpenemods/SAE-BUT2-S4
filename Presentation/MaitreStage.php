@@ -109,59 +109,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>"> <!-- Ajout de la classe 'dark-mode' si activée -->
-
-<!-- Barre de navigation -->
-<header class="navbar">
-    <div class="navbar-left">
-        <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
-        <span class="app-name">Le Petit Stage - Maitre de Stage</span>
-    </div>
-    <div class="navbar-right">
-
-
-        <div id="notification-icon" onclick="toggleNotificationPopup()">
-            <img id="notification-icon-img" src="../Resources/Notif.png" alt="Notifications">
-            <span id="notification-count" style="display: none;"></span>
-        </div>
-
-        <!-- Notification Popup -->
-        <div id="notification-popup" class="notification-popup">
-            <div class="notification-popup-header">
-                <h3>Notifications</h3>
-                <button onclick="closeNotificationPopup()">X</button>
-            </div>
-            <div class="notification-popup-content">
-                <ul id="notification-list">
-                    <!-- Notifications will be loaded here via JavaScript -->
-                </ul>
-            </div>
-        </div>
-
-
-
-        <p><?php echo $userName; ?></p> <!-- Affichage du nom de l'utilisateur -->
-
-        <!-- Commutateur de langue -->
-        <label class="switch">
-            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-            <span class="slider round">
-                    <span class="switch-sticker">🇫🇷</span>
-                    <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-                </span>
-        </label>
-
-        <!-- Bouton de paramètres -->
-        <button class="mainbtn" onclick="toggleMenu()">
-            <img src="../Resources/Param.png" alt="Settings">
-        </button>
-
-        <!-- Menu des paramètres caché par défaut -->
-        <div class="hide-list" id="settingsMenu">
-            <a href="Settings.php">Information</a>
-            <a href="Logout.php">Déconnexion</a>
-        </div>
-    </div>
-</header>
+<?php include_once("../View/Header.php");?>
 <div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
 <div class="sidebar" id="sidebar">
     <div class="search">
@@ -174,9 +122,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
                 <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
             </div>
         <?php endforeach; ?>
-
     </div>
-
 </div>
 
 <!-- Section contenant les différents menus -->
