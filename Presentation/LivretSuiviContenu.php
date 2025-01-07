@@ -70,10 +70,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $file = $database->getLivretFile($groupId);
+
+
+//TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
 ?>
 <!-- Changer le style pour que les formulaires s'affichent à côté des rencontres  -->
 <aside class="livretbar">
-    <h3 style="text-decoration: underline;">Rencontres / dépôts</h3><br>
+    <h3 style="text-decoration: underline;"><?= $translations['rencontres']?> / <?= $translations['dépôts']?></h3><br>
     <span class="vignette" onclick="showContent(0)">1ère rencontre</span><br>
 
     <span class="vignette" onclick="showContent(1)">Finalisation du livret</span><br>

@@ -11,7 +11,9 @@ return array(
     'email_index' => 'Электронная почта:',
     'mdp_index' => 'Пароль:',
     'connected_index' => 'Подключиться',
-    'changed_mdp_index' => 'Сменить пароль',
+    'connexion_problem' => "Проблемы с подключением?",
+    'changed_mdp_index' => "Изменить пароль",
+    'ou' => "или",
     'register_button_index' => 'Регистрация',
     'validate_email_index' => "Ваш адрес электронной почты не подтвержден.",
     'validate_email_index_button' => 'Подтвердить сейчас',
@@ -98,4 +100,9 @@ return array(
     'modifier adresse email' => "Изменить адрес электронной почты",
     'modifier numéro de téléphone' => "Изменить номер телефона",
     'modifier mot de passe' => "Изменить пароль",
+
+    //LIVRET DE SUIVI
+    'participants' => "Участники",
+    'rencontes' => "Встречи",
+    'dépôts' => "Депозиты",
 );

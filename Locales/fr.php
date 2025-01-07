@@ -11,7 +11,9 @@ return array(
     'email_index' => 'Email :',
     'mdp_index' => 'Mot de passe :',
     'connected_index' => 'Se connecter',
+    'connexion_problem' => 'Un problème pour se connecter ?',
     'changed_mdp_index' => 'Changer le mot de passe',
+    'ou' => "ou",
     'register_button_index' => 'S’enregistrer',
     'validate_email_index' => "Votre adresse email n'est pas validée.",
     'validate_email_index_button' => 'Valider maintenant',
@@ -101,4 +103,9 @@ return array(
     'modifier adresse email' => "Modifier l'adresse email",
     'modifier numéro de téléphone' => "Modifier le numéro de téléphone",
     'modifier mot de passe' => "Modifier le mot de passe",
+
+    //LIVRET DE SUIVI
+    'participants' => "Participants",
+    'rencontes' => "Rencontres",
+    'dépôts' => "Dépôts",
 );

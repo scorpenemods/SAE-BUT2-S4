@@ -211,13 +211,13 @@ $translations = include $langFile;
                     </div>
                 </div>
                 <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
-                <p>Un problème pour se connecter ?</p>
+                <p><?= $translations['connexion_problem']?></p>
                 <a href="Presentation/ForgotPasswordMail.php"><?= $translations['changed_mdp_index'] ?></a>
             </form>
         </div>
         <!-- Liens pour les utilisateurs non connectés -->
         <div class="button-group">
-            <p style="font-size: large"><b>ou</b></p>
+            <p style="font-size: large"><b><?= $translations['ou']?></b></p>
             <button class="secondary-button"><a class="login-link" href="Presentation/AccountCreation.php"><?= $translations['register_button_index'] ?></a></button>
         </div>
     </div>

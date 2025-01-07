@@ -11,7 +11,9 @@ return array(
     'email_index' => 'Email:',
     'mdp_index' => 'Password:',
     'connected_index' => 'Accedi',
-    'changed_mdp_index' => 'Cambia password',
+    'connexion_problem' => "Problemi di connessione?",
+    'changed_mdp_index' => "Modifica password",
+    'ou' => "o",
     'register_button_index' => 'Registrati',
     'validate_email_index' => "Il tuo indirizzo email non è stato convalidato.",
     'validate_email_index_button' => 'Convalida ora',
@@ -97,4 +99,9 @@ return array(
     'modifier adresse email' => "Modifica indirizzo email",
     'modifier numéro de téléphone' => "Modifica numero di telefono",
     'modifier mot de passe' => "Modifica password",
+
+    //LIVRET DE SUIVI
+    'participants' => "Partecipanti",
+    'rencontes' => "Incontri",
+    'dépôts' => "Depositi",
 );

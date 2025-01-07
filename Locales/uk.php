@@ -11,7 +11,9 @@ return array(
     'email_index' => 'Електронна пошта:',
     'mdp_index' => 'Пароль:',
     'connected_index' => 'Підключитися',
-    'changed_mdp_index' => 'Змінити пароль',
+    'connexion_problem' => "Проблеми з підключенням?",
+    'changed_mdp_index' => "Змінити пароль",
+    'ou' => "або",
     'register_button_index' => 'Зареєструватися',
     'validate_email_index' => "Вашу електронну пошту не підтверджено.",
     'validate_email_index_button' => 'Підтвердити зараз',
@@ -97,4 +99,9 @@ return array(
     'modifier adresse email' => "Змінити електронну адресу",
     'modifier numéro de téléphone' => "Змінити номер телефону",
     'modifier mot de passe' => "Змінити пароль",
+
+    //LIVRET DE SUIVI
+    'participants' => "Учасники",
+    'rencontes' => "Зустрічі",
+    'dépôts' => "Депозити",
 );
