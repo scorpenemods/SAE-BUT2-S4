@@ -44,30 +44,10 @@ if (!in_array($activeSection, $allowedSections)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings Le Petit Stage</title>
     <link rel="stylesheet" href="../View/Settings/Settings.css">
-    <link rel="stylesheet" href="/View/css/Footer.css">
     <script type="text/javascript" src="../View/Settings/Settings.js"></script>
 </head>
 <body>
-<header class="navbar">
-    <div class="navbar-left">
-        <a href="<?php echo $homePage; ?>">
-            <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
-        </a>
-        <span class="app-name">Le Petit Stage</span>
-    </div>
-
-    <div class="navbar-right">
-        <p><?php echo $userName; ?></p>
-        <!-- Language Switch -->
-        <label class="switch">
-            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-            <span class="slider round">
-                    <span class="switch-sticker">🇫🇷</span>
-                    <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-                </span>
-        </label>
-    </div>
-</header>
+<?php include_once("../View/Header.php");?>
 
 <div class="container">
     <div class="vertical-menu">
@@ -93,14 +73,8 @@ if (!in_array($activeSection, $allowedSections)) {
         }
 
         ?>
-        <a href='<?php echo $homePage; ?>' style="margin-left: 45%">
-            Retour à la page d'accueil
-        </a>
     </div>
 </div>
+<?php include "../View/Footer.php" ?>
 </body>
-
-<footer class="PiedDePage">
-    <?php include_once "../View/Footer.php" ?>
-</footer>
 </html>

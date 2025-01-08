@@ -1,22 +1,3 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    height: 120vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    animation: lightGradientAnimation 15s ease infinite; /* fluid anim */
-    transition: background 1s ease, color 1s ease;
-    color: var(--text-color); /* Font color */
-}
-
 /* Style du corps de la page */
 section.compte-info{
     display: flex;
@@ -24,22 +5,22 @@ section.compte-info{
     align-items: center;
     width: 50%;
     height: 60%;
-    margin-top: 5%;
+    margin-top: 10%;
     margin-bottom: 5%;
+    padding-top: 5%;
     margin-left: 25%;
+    border: solid 1px;
+    border-radius: 5%;
+    padding-bottom: 5%;
 }
 section.compte-info table{
-    border: solid 1px;
-    margin-top: 5%;
-    display: flex;
-    padding-top: 5%;
+    width: 60%;
     padding-bottom: 5%;
-    height: 110%;
-    border-radius: 5%;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
 }
 section.compte-info table *{
     padding: 5%;
+}
+section.compte-info table td{
+    padding-right: 2%;
+    padding-left: 2%;
 }

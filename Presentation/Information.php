@@ -1,7 +1,5 @@
 <?php
 
-session_start(); // Démarre une session pour accéder aux données utilisateur
-
 require_once "../Model/Person.php"; // Inclusion de la classe Person pour gérer les informations de l'utilisateur
 
 // Vérifie si l'utilisateur est connecté
@@ -87,9 +85,9 @@ $translations = include $langFile;
             <td><a href="ChangePassword.php"><button><?= $translations['modifier mot de passe']?></button></a></td> <!-- Lien pour modifier le mot de passe -->
         </tr>
     </table>
+    <a href='<?php echo $homePage; ?>'>
+        Retour à la page d'accueil
+    </a>
 </section>
 </body>
-<footer>
-    <?php include_once '../View/Footer.php'; ?>
-</footer>
 </html>
