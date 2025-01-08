@@ -1,8 +1,9 @@
 <?php
 
-require dirname(__FILE__) . '/Database.php';
+require_once dirname(__FILE__) . '/Database.php';
 require dirname(__FILE__) . '/../Model/Offer.php';
 $db = Database::getInstance()->getConnection();
+
 /**
  * PendingOffer
  * Represents a PendingOffer in the database

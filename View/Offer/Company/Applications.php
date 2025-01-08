@@ -51,7 +51,7 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
     <main>
         <div class="spacer">
             <div class="card">
-                <h2>Liste des Candidatures pour <?php echo Applications::get_offer_name($offerId);?></h2>
+                <h2>Liste des Candidatures pour <?php echo Application::get_offer_name($offerId);?></h2>
                 <div id="liste-candidats">
                 <?php
                     if ($groupeSecretariat) {
@@ -59,7 +59,7 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
                             $idUser = $apply->getIdUser();
                             echo "<div class='candidat'>";
                             echo "<div class='info'>";
-                            echo "<h3 class='nom'>".Applications::get_username($idUser)."</h3>";
+                            echo "<h3 class='nom'>".Application::get_username($idUser)."</h3>";
                             echo "<ul class='fichiers'>";
                             //Todo
                             echo "<li class='fichier' onclick='getFile(\"" . $idUser . "\", \"" . $offerId . "\", \"cv\")'>📎 CV</li>";

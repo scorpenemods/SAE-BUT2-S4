@@ -1,6 +1,6 @@
 <?php
-require_once dirname(__FILE__) . "/Database.php";
-$db = Database::getInstance();
+require_once dirname(__FILE__) . '/Database.php';
+$db = Database::getInstance()->getConnection();
 
 /**
  * Application

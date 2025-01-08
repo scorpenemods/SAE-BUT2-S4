@@ -3,9 +3,8 @@
 // Apply an Offer
 session_start();
 
-require dirname(__DIR__) . '/../Presentation/Database.php';
-
-global $db;
+require_once dirname(__DIR__) . '/../Model/Database.php';
+$db = Database::getInstance()->getConnection();
 
 $idUser = $_SESSION["user"];
 $uploadDir = 'uploads/';
