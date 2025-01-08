@@ -269,7 +269,7 @@ class Offer {
     public function get_tags(): ?array {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM tags JOIN Tag_Offer ON Tag.id = Tag_Offer.tag_id WHERE Tag_Offer.offer_id = :offer_id");
+        $stmt = $db->prepare("SELECT * FROM Tag JOIN Tag_Offer ON Tag.id = Tag_Offer.tag_id WHERE Tag_Offer.offer_id = :offer_id");
         $stmt->bindParam(":offer_id", $this->id);
         $stmt->execute();
 
@@ -796,8 +796,8 @@ class Offer {
      * @return true|null
      */
     public static function hide($id) {
-        global $db;
 
+        global $db;
         $stmt = $db->prepare("UPDATE Offer SET is_active = !is_active WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
