@@ -1810,22 +1810,17 @@ class Database
         return (bool)$stmt->fetchColumn();
     }
 
-    /**
-     * Get all stages of one user
-     * @param $userId
-     * @return array
-     */
-    public function getStages($userId): array
+    public function getStages(): array
     {
-        $query = "SELECT User.account_creation, User.id
+        $query = "SELECT User.nom, User.prenom
                     FROM User
                     Join Groupe g on User.id = g.user_id
-                    WHERE g.user_id = :user_id and User.role = 1";
+                    WHERE g.user_id = 4 and User.role = 1";
         $stmt = $this->connection->prepare($query);
-        $stmt->execute([':user_id' => $userId]);
+        $stmt->execute();
         $stages = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $stages[] = [substr($row['account_creation'], 0, 4), $row['id']];
+            $stages[] = $row['nom'] . ' ' . $row['prenom'];
         }
         return $stages;
     }
@@ -1833,25 +1828,32 @@ class Database
     //---------------- Secretariat send a message to everyone --------------------------------- //
 
     /**
-     * Get all valid users
-     * @return array|false
+     * @throws Exception
      */
-    public function getAllValidUsers()
+    public function addAlert($userId, $duration, $address, $study_level, $salary, $begin_date)
     {
-        $conn = $this->getConnection();
-        $query = "SELECT * FROM User WHERE status_user = 1";
-        $stmt = $conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    //---------------------- Livret de suvi --------------------------------- //
 
+        $query = 'insert into Alert (user_id, duration, address, study_level, salary, begin_date) VALUES (:user_id, :duration, :address, :study_level, :salary, :begin_date);';
+        $stmt = $this->getConnection()->prepare($query);
+        $stmt->bindParam(':user_id', $userId);
+        $stmt->bindParam(':duration', $duration, is_null($duration) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':study_level', $study_level);
+        $stmt->bindParam(':salary', $salary, is_null($salary) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindParam(':begin_date', $begin_date);
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de l'insertion : " . $e->getMessage());
+        }
+    }
     /**
      * Get a group by user_id (student's id)
      * @param $userId
      * @return mixed
      */
-    public function getGroupByUserId($userId) {
+    public function getGroupByUserId($userId): mixed
+    {
         $sql = "SELECT * FROM Groupe WHERE user_id = :uid LIMIT 1";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(['uid' => $userId]);
@@ -1860,230 +1862,45 @@ class Database
 
 
     /**
-     * Get or created FollowUpBook for selected conv_id
-     * @param $conv_id
-     * @return false|mixed|string
+     * @throws Exception
      */
-    public function getOrCreateFollowUpBook($conv_id) {
-        $stmt = $this->connection->prepare("SELECT id FROM FollowUpBook WHERE group_id = :cid");
-        $stmt->execute(['cid' => $conv_id]);
-        $f = $stmt->fetch();
-        if ($f) {
-            return $f['id'];
-        } else {
-            $start_date = date('Y-m-d');
-            $end_date = date('Y-m-d', strtotime('+3 months'));
-            $stmt = $this->connection->prepare("INSERT INTO FollowUpBook (status, start_date, end_date, group_id) 
-                                         VALUES ('En cours', :start, :end, :cid)");
-            $stmt->execute(['start' => $start_date, 'end' => $end_date, 'cid' => $conv_id]);
-            return $this->connection->lastInsertId();
+    public function deleteAlert($id): void
+        {
+
+        $query = 'delete from Alert where id = :id;';
+        $stmt = $this->getConnection()->prepare($query);
+        $stmt->bindParam(':id', $id);
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de la suppression : " . $e->getMessage());
         }
     }
 
-    /**
-     * Update a meeting book
-     * @param $meetingId
-     * @param $meetingDate
-     * @return bool
-     */
-    public function updateMeetingBook($meetingId, $meetingDate) {
-        $stmt = $this->connection->prepare("UPDATE MeetingBook SET meeting_date = :mdate WHERE id = :mid");
-        return $stmt->execute([
-            'mdate' => $meetingDate,
-            'mid'   => $meetingId
-        ]);
-    }
-
-    /**
-     * Delete meetings of a meeting book
-     * @param $meetingId
-     * @return bool
-     */
-    public function deleteMeeting($meetingId) {
-        // Since MeetingQCM and MeetingTexts link to MeetingBook,
-        // first delete the child entries
-        $stmt = $this->connection->prepare("DELETE FROM MeetingQCM WHERE meeting_id = :mid");
-        $stmt->execute(['mid' => $meetingId]);
-
-        $stmt = $this->connection->prepare("DELETE FROM MeetingTexts WHERE meeting_id = :mid");
-        $stmt->execute(['mid' => $meetingId]);
-
-        // Now we delete the meeting itself
-        $stmt = $this->connection->prepare("DELETE FROM MeetingBook WHERE id = :mid");
-        return $stmt->execute(['mid' => $meetingId]);
-    }
-
-    /**
-     * Update the meeting text of one metting
-     * @param $textId
-     * @param $newResponse
-     * @return bool
-     */
-    public function updateMeetingText($textId, $newResponse) {
-        $stmt = $this->connection->prepare("UPDATE MeetingTexts SET response = :resp WHERE id = :tid");
-        return $stmt->execute([
-            'resp' => $newResponse,
-            'tid'  => $textId
-        ]);
-    }
-
-    /**
-     * Update the meeting QCM of one meeting
-     * @param $qcmId
-     * @param $newOtherChoice
-     * @return bool
-     */
-    public function updateMeetingQCM($qcmId, $newOtherChoice) {
-        $stmt = $this->connection->prepare("UPDATE MeetingQCM SET other_choice = :oc WHERE id = :qid");
-        return $stmt->execute([
-            'oc' => $newOtherChoice,
-            'qid' => $qcmId
-        ]);
-    }
-
-    /**
-     * Getting FollowUpBook by id
-     * @param $id
-     * @return mixed
-     */
-    public function getFollowUpBook($id) {
-            $stmt = $this->connection->prepare("SELECT * FROM FollowUpBook WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-        return $stmt->fetch();
-    }
-
-    /**
-     * Insert new meeting in MeetingBook
-     * @param $followUpId
-     * @param $name
-     * @param $startDate
-     * @param $endDate
-     * @param $meetingDate
-     * @param $validation
-     * @return false|string
-     */
-    public function insertMeetingBook($followUpId, $name, $startDate, $endDate, $meetingDate, $validation) {
-        $stmt = $this->connection->prepare("INSERT INTO MeetingBook (followup_id, name, start_date, end_date, meeting_date, validation)
-                                     VALUES (:fid, :name, :start, :end, :mdate, :val)");
-        $stmt->execute([
-            'fid' => $followUpId,
-            'name' => $name,
-            'start' => $startDate,
-            'end' => $endDate,
-            'mdate' => $meetingDate,
-            'val' => $validation
-        ]);
-        return $this->connection->lastInsertId();
-    }
-
-    /**
-     * Get all meetings for a follow-up id
-     * @param $followUpId
-     * @return array|false
-     */
-    public function getMeetingsByFollowUp($followUpId) {
-        $stmt = $this->connection->prepare("SELECT * FROM MeetingBook WHERE followup_id = :fid");
-        $stmt->execute(['fid' => $followUpId]);
-        return $stmt->fetchAll();
-    }
-
-    /**
-     * Insert a new meeting QCM in a meeting
-     * @param $meetingId
-     * @param $title
-     * @param $choices
-     * @param $otherChoice
-     * @return void
-     */
-    public function insertMeetingQCM($meetingId, $title, $choices, $otherChoice) {
-        $stmt = $this->connection->prepare("INSERT INTO MeetingQCM (meeting_id, title, choices, other_choice) 
-                                     VALUES (:mid, :t, :c, :o)");
-        $stmt->execute([
-            'mid' => $meetingId,
-            't' => $title,
-            'c' => $choices,
-            'o' => $otherChoice
-        ]);
-    }
-
-    /**
-     * Get the meeting QCM by an id
-     * @param $meetingId
-     * @return array|false
-     */
-    public function getQCMByMeeting($meetingId) {
-        $stmt = $this->connection->prepare("SELECT * FROM MeetingQCM WHERE meeting_id = :mid");
-        $stmt->execute(['mid' => $meetingId]);
-        return $stmt->fetchAll();
-    }
-
-    /**
-     * Insert a new meeting text int a meeting
-     * @param $meetingId
-     * @param $title
-     * @param $response
-     * @return void
-     */
-    public function insertMeetingText($meetingId, $title, $response) {
-        $stmt = $this->connection->prepare("INSERT INTO MeetingTexts (meeting_id, title, response) VALUES (:mid, :t, :r)");
-        $stmt->execute([
-            'mid' => $meetingId,
-            't' => $title,
-            'r' => $response
-        ]);
-    }
-
-    /**
-     * Get the text of one metting
-     * @param $meetingId
-     * @return array|false
-     */
-    public function getTextsByMeeting($meetingId) {
-        $stmt = $this->connection->prepare("SELECT * FROM MeetingTexts WHERE meeting_id = :mid");
-        $stmt->execute(['mid' => $meetingId]);
-        return $stmt->fetchAll();
-    }
-
-    /**
-     * Get all info of one student
-     * @param $userId
-     * @return array|mixed
-     */
-    public function getStudentInfo($userId) {
-        $stmt = $this->connection->prepare("
-        SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.activite
-        FROM User u
-        WHERE u.id = :uid AND u.role = 1
-        LIMIT 1
-    ");
-        $stmt->execute(['uid' => $userId]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ? $result : [];
-    }
-
-    /**
-     * Get all info of one professor
-     * @param $userId
-     * @return array|mixed
-     */
-    public function getProfessorInfo($userId) {
-        // get associated student's group
-        $group = $this->getGroupByUserId($userId);
-        if ($group && $group['conv_id'] !== null) {
-            // Searching a professeur, connected with the same conv_id
-            $stmt = $this->connection->prepare("
-            SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.activite
-            FROM User u
-            JOIN Groupe g ON g.user_id = u.id
-            WHERE g.conv_id = :cid
-              AND u.role = 2
-            LIMIT 1
-        ");
-            $stmt->execute(['cid' => $group['conv_id']]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result ? $result : [];
+    public function getAlert(): array
+    {
+        $stmt = $this->getConnection()->prepare('select * from Alert;');
+        $stmt->execute();
+        $alerts = [];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $alerts[] = $row;
         }
-        return [];
+
+        return $alerts;
+    }
+
+    public function getAlertByUser($user_id): array
+    {
+        $stmt = $this->getConnection()->prepare('select * from Alert where user_id = :user_id;');
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $alerts = [];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $alerts[] = $row;
+        }
+        return $alerts;
     }
 
     /**
