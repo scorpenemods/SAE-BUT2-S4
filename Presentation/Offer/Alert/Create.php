@@ -4,7 +4,8 @@
 
 session_start();
 
-require $_SERVER['DOCUMENT_ROOT'] . '/Model/Database.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Model/Database.php';
+$db = Database::getInstance();
 
 if (!isset($_SESSION['user'])) {
     echo json_encode(["status" => "error", "message" => "Utilisateur non connecté."]);

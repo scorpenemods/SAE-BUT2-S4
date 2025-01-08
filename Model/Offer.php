@@ -1,6 +1,6 @@
 <?php
-require dirname(__FILE__) . '/../Presentation/Database.php';
-
+require_once dirname(__FILE__) . "/Database.php";
+$db = Database::getInstance();
 /**
  * Offer
  * Represents a Offer in the database
