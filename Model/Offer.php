@@ -376,11 +376,11 @@ class Offer {
     }
 
     /**
-     * getDomain
+     * get_domain
      * Returns the domain of the website
      * @return string|null
      */
-    public function getDomain(): ?string {
+    public function get_domain(): ?string {
         $fullDomain = parse_url($this->website, PHP_URL_HOST);
 
         preg_match('/([a-z0-9-]+\.[a-z]{2,6})$/i', $fullDomain, $matches);
@@ -394,7 +394,7 @@ class Offer {
      * @return string|null
      */
     public function get_image(): ?string {
-        $imagePath = 'https://cdn.brandfetch.io/' . $this->getDomain() . '/w/512/h/512';
+        $imagePath = 'https://cdn.brandfetch.io/' . $this->get_domain() . '/w/512/h/512';
         return $imagePath;
     }
 

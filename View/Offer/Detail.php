@@ -190,7 +190,7 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                             render_detail("Durée", "fas fa-clock", $offer_old->get_real_duration(), $offer->get_real_duration(), false);
                             render_detail("Téléphone", "fa-solid fa-phone", $offer_old->get_phone(), $offer->get_phone(), true, "tel:");
                             render_detail("Email", "fa-solid fa-envelope", $offer_old->get_email(), $offer->get_email(), true, "mailto:");
-                            render_detail("Site web", "fa-solid fa-link", $offer_old->getDomain(), $offer->getDomain(), true, "https://");
+                            render_detail("Site web", "fa-solid fa-link", $offer_old->get_domain(), $offer->get_domain(), true, "https://");
                             render_detail("Adresse", "fas fa-map-marker-alt", $offer_old->get_address(), $offer->get_address(), true, "https://maps.google.com/?q=");
                             render_detail("Date de début", "fas fa-calendar", $offer_old->get_begin_date(), $offer->get_begin_date(), false);
                             render_detail("Niveau d'études", "fas fa-graduation-cap", $offer_old->get_study_level(), $offer->get_study_level(), false);
@@ -201,7 +201,7 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                             render_detail("Durée", "fas fa-clock", $offer->get_real_duration(), $offer->get_real_duration(), false);
                             render_detail("Téléphone", "fa-solid fa-phone", $offer->get_phone(), $offer->get_phone(), true, "tel:");
                             render_detail("Email", "fa-solid fa-envelope", $offer->get_email(), $offer->get_email(), true, "mailto:");
-                            render_detail("Site web", "fa-solid fa-link", $offer->getDomain(), $offer->getDomain(), true, "https://");
+                            render_detail("Site web", "fa-solid fa-link", $offer->get_domain(), $offer->get_domain(), true, "https://");
                             render_detail("Adresse", "fas fa-map-marker-alt", $offer->get_address(), $offer->get_address(), true, "https://maps.google.com/?q=");
                             render_detail("Date de début", "fas fa-calendar", $offer->get_begin_date(), $offer->get_begin_date(), false);
                             render_detail("Niveau d'études", "fas fa-graduation-cap", $offer->get_study_level(), $offer->get_study_level(), false);
