@@ -1725,7 +1725,7 @@ class Database
      * @param string $type
      * @return bool
      */
-    public function addNotification(int $userId, string $content, string $type): bool
+    public function addNotification(int $userId, string $content, string $type):bool
     {
         date_default_timezone_set('Europe/Paris');
         require_once __DIR__ . '/Config.php';
@@ -1879,6 +1879,7 @@ class Database
 
     public function getAlert(): array
     {
+
         $stmt = $this->getConnection()->prepare('select * from Alert;');
         $stmt->execute();
         $alerts = [];
