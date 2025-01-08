@@ -5,10 +5,10 @@ session_start();
 
 require dirname(__FILE__) . '/../../../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../../../Model/Company.php';
-require dirname(__FILE__) . '/../../../Model/Database.php';
 require dirname(__FILE__) . '/../../../Presentation/Offer/Notify.php';
 
-function get_coordinates($address) {
+function get_coordinates($address): ?array
+{
     $base_url = "https://nominatim.openstreetmap.org/search";
     $params = [
         'q' => $address,
@@ -59,7 +59,7 @@ if (isset($_SESSION['Secretariat']) && isset($_POST['id']) && isset($_SERVER["HT
             $longitude = $coordinates[1];
             $offer_notify = Offer::create($company_id, $offer->get_title(), $offer->get_description(), $offer->get_job(), $offer->get_duration(), $offer->get_salary(), $offer->get_address(), $offer->get_study_level(), $offer->get_begin_date(), $offer->get_tags(), $offer->get_email(), $offer->get_phone(), $offer->get_website(), $latitude, $longitude);
             send_notification($offer_notify);
-            error_log("apres lappel de sendNotification");
+            error_log("apres l'appel de sendNotification");
         } else {
             $coordinates = get_coordinates($offer);
             $latitude = $coordinates[0];

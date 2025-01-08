@@ -1,7 +1,8 @@
 <?php
 // File: Notify.php
 // Notify users of new offers
-
+require_once dirname(__FILE__) . '/../../Model/Offer.php';
+$db = Database::getInstance()->getConnection();
 function send_notification($offer): void
 {
     $database = (Database::getInstance());

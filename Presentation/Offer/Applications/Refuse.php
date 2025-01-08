@@ -3,7 +3,8 @@
 // Refuse an application
 session_start();
 
-require '../../../Model/Application.php';
+require_once dirname(__FILE__) . '/../../../Model/Offer.php';
+$db = Database::getInstance()->getConnection();
 $httpReferer = $_SERVER["HTTP_REFERER"];
 
 if ((isset($_SESSION['company']) || isset($_SESSION['secretariat'])) && isset($_POST['idOffer'])) {

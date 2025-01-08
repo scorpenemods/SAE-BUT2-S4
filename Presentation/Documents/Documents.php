@@ -13,7 +13,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Initialize the database
-$db = Database::getInstance();
+require_once dirname(__FILE__) . '/../../Model/Offer.php';
+$db = Database::getInstance()->getConnection();
 $userId = $_SESSION['user_id']; // ID of the connected student
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {

@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once '../../Model/Database.php';
+require_once dirname(__FILE__) . '/../Model/Offer.php';
+$db = Database::getInstance()->getConnection();
 
 if (!isset($_SESSION['user_id'])) {
     echo "Vous devez être connecté pour télécharger ce fichier.";
