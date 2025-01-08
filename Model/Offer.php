@@ -551,7 +551,7 @@ class Offer {
      * @return string
      */
     public function get_real_duration(): string {
-        $duration = $this->get_duration();
+        $duration = $this->get_duration() * 7;
 
         $years = intdiv($duration, 365);
         $remainingDays = $duration % 365;
@@ -560,7 +560,6 @@ class Offer {
         $remainingDays = $remainingDays % 30;
 
         $weeks = intdiv($remainingDays, 7);
-        $days = $remainingDays % 7;
 
         $result = '';
 

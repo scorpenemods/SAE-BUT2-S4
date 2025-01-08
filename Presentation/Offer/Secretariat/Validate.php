@@ -7,7 +7,6 @@ require dirname(__FILE__) . '/../../../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../../../Model/Company.php';
 require dirname(__FILE__) . '/../../../Presentation/Offer/Notify.php';
 
-
 if (isset($_SESSION['secretariat']) && isset($_POST['id']) && isset($_SERVER["HTTP_REFERER"])) {
     $offer = PendingOffer::get_by_offer_id($_POST['id']);
     if ($offer->get_status() == "Pending") {

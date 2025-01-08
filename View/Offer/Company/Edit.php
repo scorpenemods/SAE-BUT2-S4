@@ -41,7 +41,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['companyId']) && isset($
             <h1>Modifier une offre de stage</h1>
             <form action="../../../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $offer->get_id(); ?>">
-                <input type="hidden" name="company_id" value="<?php echo $companyId; ?>">
+                <input type="hidden" name="companyId" id="companyId" value="<?php echo $offer->get_company_id(); ?>">
                 <div class="form-group">
                     <label for="title">Titre de l'offre</label>
                     <input type="text" id="title" name="title" value="<?php echo $offer->get_title(); ?>" placeholder="Ex: Développeur Web Junior">
@@ -53,8 +53,9 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['companyId']) && isset($
                         <input type="text" id="searchInput" class="search-input" placeholder="Entrez une adresse exemple : 123 Rue de la Paix, 75000 Paris" value="<?php echo $offer->get_address(); ?>" required>
                         <div id="dropdown" class="dropdown2"></div>
                     </div>
-                    <input type="hidden" id="latitude" name="latitude">
-                    <input type="hidden" id="longitude" name="longitude">
+                    <input type="hidden" id="address" name="address" value="<?php echo $offer->get_address(); ?>">
+                    <input type="hidden" id="latitude" name="latitude" value="<?php echo $offer->get_latitude(); ?>">
+                    <input type="hidden" id="longitude" name="longitude" value="<?php echo $offer->get_longitude(); ?>">
 
                 </div>
 
@@ -85,8 +86,8 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['companyId']) && isset($
                         <input type="text" id="education" name="education" value="<?php echo $offer->get_study_level(); ?>">
                     </div>
                     <div class="form-group">
-                        <label for="start-date">Date de début</label>
-                        <input type="date" id="start-date" name="start-date" value="<?php echo $offer->get_begin_date(); ?>">
+                        <label for="startDate">Date de début</label>
+                        <input type="date" id="startDate" name="startDate" value="<?php echo $offer->get_begin_date(); ?>">
                     </div>
                 </div>
 
