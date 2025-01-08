@@ -1,7 +1,6 @@
 <?php
 // File: Filter.php
 // Filter offers by criteria
-use Model\Offer;
 
 /**
  * get_page_offers

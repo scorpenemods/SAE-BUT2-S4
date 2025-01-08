@@ -15,12 +15,12 @@ if (isset($_SESSION['last_activity'])) {
     $inactive_time = time() - $_SESSION['last_activity'];
 
     // Si le temps d'inactivité dépasse le délai autorisé
-    if ($inactive_time > SESSION_TIMEOUT) {
-        // Détruire la session et rediriger vers la page de connexion
-        session_unset();
-        session_destroy();
-        header("Location: Logout.php");
-    }
+//    if ($inactive_time > SESSION_TIMEOUT) {
+//        // Détruire la session et rediriger vers la page de connexion
+//        session_unset();
+//        session_destroy();
+//        header("Location: Logout.php");
+//    }
 }
 
 $_SESSION['last_activity'] = time();
@@ -264,7 +264,7 @@ $translations = include $langFile;
         <!-- Offres Content -->
         <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
             Contenu Offres
-            <a href="../View/List.php?type=all">
+            <a href="../View/Offer/List.php?type=all">
                 <button type="button">Voir les offres</button>
             </a>
         </div>

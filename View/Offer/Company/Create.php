@@ -1,5 +1,7 @@
 <?php
-use Model\Company;session_start();
+// File: Create.php
+// Create a company
+session_start();
 
 require dirname(__FILE__) . '/../../../Model/Company.php';
 global $tags;
@@ -29,7 +31,7 @@ if (!(isset($_SESSION['companyId'])) || $_SESSION['companyId'] == 0) {
         <?php include dirname(__FILE__) . '/../../Header.php'; ?>
         <main class="container-principal">
             <h1>Créer une entreprise</h1>
-            <form action="../../../../SAE-BUT2-1.1/Presentation/Offer/Company/Create.php" method="post" enctype="multipart/form-data">
+            <form action="../../../Presentation/Offer/Company/Create.php" method="post" enctype="multipart/form-data">
 
                 <div class="form-group">
                     <label for="title">Nom de l'entreprise</label>
@@ -42,6 +44,7 @@ if (!(isset($_SESSION['companyId'])) || $_SESSION['companyId'] == 0) {
                         <input type="text" id="searchInput" class="search-input" placeholder="Entrez une adresse exemple : 123 Rue de la Paix, 75000 Paris" required>
                         <div id="dropdown" class="dropdown2"></div>
                     </div>
+                    <input type="hidden" id="address" name="address">
                     <input type="hidden" id="latitude" name="latitude">
                     <input type="hidden" id="longitude" name="longitude">
 
@@ -98,6 +101,7 @@ if (!(isset($_SESSION['companyId'])) || $_SESSION['companyId'] == 0) {
             const dropdown2 = document.getElementById('dropdown');
             const latitudeInput = document.getElementById('latitude');
             const longitudeInput = document.getElementById('longitude');
+            const addressInput = document.getElementById('address');
 
             let debounceTimer;
 
@@ -129,6 +133,7 @@ if (!(isset($_SESSION['companyId'])) || $_SESSION['companyId'] == 0) {
                         item.className = 'dropdown-item';
                         item.textContent = result.display_name;
                         item.addEventListener('click', () => {
+                            addressInput.value = result.display_name;
                             searchInput.value = result.display_name;
                             latitudeInput.value = result.lat;
                             longitudeInput.value = result.lon;

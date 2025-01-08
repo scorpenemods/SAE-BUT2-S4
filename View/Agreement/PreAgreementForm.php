@@ -9,10 +9,10 @@ session_start();
     <meta name="description" content="Le Petit Stage - Pre-convention">
     <title>Le Petit Stage</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/View/css/header.css">
-    <link rel="stylesheet" href="/View/css/footer.css">
-    <link rel="stylesheet" href="/View/css/list.css">
-    <link rel="stylesheet" href="/View/css/PreAgreementForm.css">
+    <link rel="stylesheet" href="/view/css/header.css">
+    <link rel="stylesheet" href="/view/css/footer.css">
+    <link rel="stylesheet" href="/view/css/list.css">
+    <link rel="stylesheet" href="/view/css/PreAgreementForm.css">
     <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>

@@ -1,7 +1,7 @@
 <?php
 // File: Delete.php
 // Delete a Company
-use Model\Company;session_start();
+session_start();
 
 require dirname(__FILE__) . '/../../../Model/Company.php';
 

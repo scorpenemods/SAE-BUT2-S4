@@ -1,7 +1,7 @@
 <?php
 // File: Suppress.php
 // Suppress an Offer
-use Model\Offer;session_start();
+session_start();
 
 require dirname(__FILE__) . '/../../../Model/Offer.php';
 

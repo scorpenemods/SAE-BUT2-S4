@@ -1,14 +1,11 @@
 <?php
-
-namespace Model;
-require_once dirname(__FILE__) . "/Database.php";
+require dirname(__FILE__) . "/../Presentation/Database.php";
 
 /**
  * Company
  * Represents a Company in the database
  */
-class Company
-{
+class Company {
     private int $id;
     private string $name;
     private int $size;
@@ -28,8 +25,7 @@ class Company
      * @param string $created_at
      * @param string $updated_at
      */
-    private function __construct(int $id, string $name, int $size, string $address, string $siren, string $created_at, string $updated_at)
-    {
+    private function __construct(int $id, string $name, int $size, string $address, string $siren, string $created_at, string $updated_at) {
         $this->id = $id;
         $this->name = $name;
         $this->size = $size;
@@ -44,8 +40,7 @@ class Company
      * Returns the id of the Company
      * @return int
      */
-    public function get_id(): int
-    {
+    public function get_id(): int {
         return $this->id;
     }
 
@@ -54,8 +49,7 @@ class Company
      * Returns the name of the Company
      * @return string
      */
-    public function get_name(): ?string
-    {
+    public function get_name(): ?string {
         return $this->name;
     }
 
@@ -64,8 +58,7 @@ class Company
      * Returns the size of the Company
      * @return int
      */
-    public function get_size(): int
-    {
+    public function get_size(): int {
         return $this->size;
     }
 
@@ -74,8 +67,7 @@ class Company
      * Returns the address of the Company
      * @return string
      */
-    public function get_address(): string
-    {
+    public function get_address(): string {
         return $this->address;
     }
 
@@ -84,8 +76,7 @@ class Company
      * Returns the siren of the Company
      * @return string
      */
-    public function get_siren(): string
-    {
+    public function get_siren(): string {
         return $this->siren;
     }
 
@@ -94,8 +85,7 @@ class Company
      * Returns the creation date of the Company
      * @return string
      */
-    public function get_created_at(): string
-    {
+    public function get_created_at(): string {
         return $this->created_at;
     }
 
@@ -104,8 +94,7 @@ class Company
      * Returns the last update date of the Company
      * @return string
      */
-    public function get_updated_at(): string
-    {
+    public function get_updated_at(): string {
         return $this->updated_at;
     }
 
@@ -115,8 +104,7 @@ class Company
      * @param int $id
      * @return Company|null
      */
-    public static function get_by_id(int $id): ?Company
-    {
+    public static function get_by_id(int $id): ?Company {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM Company WHERE id = :id");
@@ -149,8 +137,7 @@ class Company
      * Returns all companies
      * @return array|null
      */
-    public static function get_all(): ?array
-    {
+    public static function get_all(): ?array {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM Company");
@@ -187,8 +174,7 @@ class Company
      * @param string $siren
      * @return Company|null
      */
-    public static function create(string $name, int $size, string $address, string $siren): ?Company
-    {
+    public static function create(string $name, int $size, string $address, string $siren): ?Company {
         global $db;
 
         $stmt = $db->prepare("INSERT INTO Company (name, size, address, siren) VALUES (:name, :size, :address, :siren)");
@@ -215,8 +201,7 @@ class Company
         );
     }
 
-    public static function delete(int $id): ?bool
-    {
+    public static function delete(int $id): ?bool {
         global $db;
         $sql = "DELETE FROM Company WHERE id = :id";
         $stmt = $db->prepare($sql);

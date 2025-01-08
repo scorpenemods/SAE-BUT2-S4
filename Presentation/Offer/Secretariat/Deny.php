@@ -1,7 +1,7 @@
 <?php
 // File: Reject.php
 // Reject a pending Offer
-use Model\PendingOffer;session_start();
+session_start();
 
 require dirname(__FILE__) . '/../../../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../../../Model/Company.php';

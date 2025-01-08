@@ -1,4 +1,6 @@
 <?php
+// File: ManageAlert.php
+// Manage alerts
 session_start();
 
 require $_SERVER['DOCUMENT_ROOT'] . '/Model/Database.php';

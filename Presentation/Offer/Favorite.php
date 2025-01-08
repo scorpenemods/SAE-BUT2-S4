@@ -1,9 +1,9 @@
 <?php
 // File: Favorite.php
 // Make an Offer favorite
-use Model\Offer;session_start();
+session_start();
 
-require dirname(__FILE__) . '/../../Models/Offer.php';
+require dirname(__FILE__) . '/../../Model/Offer.php';
 
 $http_referer = $_SERVER["HTTP_REFERER"];
 $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);

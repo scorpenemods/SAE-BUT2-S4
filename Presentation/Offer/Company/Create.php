@@ -1,9 +1,9 @@
 <?php
 // File: Create.php
 // Create a Company
-use Model\Company;session_start();
+session_start();
 
-require dirname(__FILE__) . "/../../../Models/Company.php";
+require dirname(__FILE__) . "/../../../Model/Company.php";
 
 $userId = $_SESSION['user'] ?? false;
 $httpReferer = $_SERVER['HTTP_REFERER'] ?? false;
@@ -24,7 +24,7 @@ if (isset($_POST['name']) && isset($_POST['size']) && isset($_POST['address']) &
         die();
     }
     //Create the Company
-    $company = Company::create($name, $size, $address, $siren, $userId);
+    $company = Company::create($name, $size, $address, $siren);
 
     //If the Company is created, redirect to the list of companies
     if ($company) {

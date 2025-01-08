@@ -1,11 +1,13 @@
 <?php
-use Model\Offer;session_start();
+// File: List.php
+// List all offers
+session_start();
 
-require_once dirname(__FILE__) . '/../../Model/Company.php';
-require_once dirname(__FILE__) . '/../../Model/PendingOffer.php';
+require dirname(__FILE__) . '/../../Model/Company.php';
+require dirname(__FILE__) . '/../../Model/PendingOffer.php';
 
-require_once dirname(__FILE__) . '/../../Presentation/Utils.php';
-require_once dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
+require dirname(__FILE__) . '/../../Presentation/Utils.php';
+require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 
 $_SESSION['user'] = 1;
 $_SESSION['companyId'] = 0;
@@ -93,7 +95,6 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
     </head>
     <body>
         <?php include dirname(__FILE__) . '/../Header.php'; ?>
-
         <div class="blur-overlay" id="blurOverlay"></div>
         <main>
             <form method="GET">
@@ -116,7 +117,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 <?php
                 if ($secretariat_group) {
                     echo '<div id="new"> <a href="/View/Offer/List.php?type=new">Nouvelles offres</i></a> </div>';
-                    echo '<div id="manage"> <a href="/View/Offer/ManageCompanies.php">Gestions des sociétés</i></a> </div>';
+                    echo '<div id="manage"> <a href="/View/Offer/ManageCompany.php">Gestions des sociétés</i></a> </div>';
                     echo '<div id="suppressed"><a href="/View/Offer/List.php?type=suppressed">Offres supprimés</i></a> </div>';
                 }
 
@@ -127,7 +128,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 }
 
                 if (!$secretariat_group && $companyId == 0) {
-                    echo '<div id="manage_alerts" style="text-align: center"> <a href="/View/Offer/ManageAlerts.php">Gérer les alertes</i></a> </div>';
+                    echo '<div id="manage_alerts" style="text-align: center"> <a href="/View/Offer/ManageAlert.php">Gérer les alertes</i></a> </div>';
                     echo '<div id="manage_applications" style="text-align: center"> <a href="/View/Offer/ManageApplication.php">Voir mes candidatures</a></div>';
                 }
                 ?>
@@ -140,19 +141,19 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                     if ($companyId != 0 && !($companyId == $offer->get_company()->get_id())) {
                         continue;
                     }
-                    echo "<a class='Company-link' href='/View/Offer/Detail.php?id=" . $offer->get_id() . '&type=' . $type . "'>";
-                        echo "<div class='Company-card'>";
-                            echo "<div class='Company-header'>";
+                    echo "<a class='company-link' href='/View/Offer/Detail.php?id=" . $offer->get_id() . '&type=' . $type . "'>";
+                        echo "<div class='company-card'>";
+                            echo "<div class='company-header'>";
                                 if ($type == 'all') {
                                     echo '<button title="Like" class="heart" onclick="heartUpdate(' . $offer->get_id() . ')"><i id="heart-icon-' . $offer->getId() . '" class="'. (Offer::is_favorite($offer->getId(), $userId) ? 'fa-solid' : 'fa-regular') . ' fa-heart"></i></button>';
                                 }
                                 echo "<img src='".$offer->get_image()."' alt='Logo de " . $offer->get_company()->get_name() . "'>";
                                 echo "<h3 class='title'>". $offer->get_title() ."</h3>";
-                                echo "<span class='Company'><i class='fas fa-building'></i> " . $offer->get_company()->get_name() . "</span>";
+                                echo "<span class='company'><i class='fas fa-building'></i> " . $offer->get_company()->get_name() . "</span>";
                             echo "</div>";
-                            echo "<div class='Company-info'>";
+                            echo "<div class='company-info'>";
                                 echo "<p>" . truncate_UTF8($offer->get_description(), 100) . "</p>";
-                                echo "<div class='Company-meta'>";
+                                echo "<div class='company-meta'>";
                                     echo "<span><i class='fas fa-clock'></i> " . $offer->get_real_duration() . "</span>";
                                     echo "<span><i class='fas fa-graduation-cap'></i> " . $offer->get_study_level() . "</span>";
                                 echo "</div>";
@@ -295,7 +296,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 };
 
                 $.ajax({
-                    url: '/Presenter/Offer/Alert/Create.php',
+                    url: '/Presentation/Offer/Alert/Create.php',
                     type: 'POST',
                     data: {
                         duration: filters.duration,

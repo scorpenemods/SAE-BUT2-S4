@@ -1,14 +1,14 @@
 <?php
 // File: Create.php
 // Create a pending Offer
-use Model\Offer;use Model\PendingOffer;session_start();
+session_start();
 
-require dirname(__FILE__) . "/../../Models/PendingOffer.php";
-require dirname(__FILE__) . "/../../Models/Company.php";
+require dirname(__FILE__) . "/../../Model/PendingOffer.php";
+require dirname(__FILE__) . "/../../Model/Company.php";
 
 $userId = $_SESSION['user'] ?? false;
 if (!$userId) {
-    header("Location: ../Offer/View/Create.php");
+    //header("Location: ../Offer/View/Create.php");
     die();
 }
 
@@ -19,7 +19,7 @@ if (isset($id)) {
     foreach ($offers as $offer) {
         $status = $offer->getStatus();
         if ($status == "Pending") {
-            header("Location: ../../View/Offer/List.php");
+            //header("Location: ../../View/Offer/List.php");
             die();
         }
     }
@@ -41,7 +41,7 @@ if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['addre
     $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING) ?? false;
     $website = filter_input(INPUT_POST, 'website', FILTER_SANITIZE_URL) ?? false;
 
-    if (!$id || !$title || !$address || !$job || !$description || !$duration || !$salary || !$education || !$startDate || !$email || !$phone || !$website) {
+    if (!$title || !$address || !$job || !$description || !$duration || !$salary || !$education || !$startDate || !$email || !$phone || !$website) {
         header("Location: ../../View/Offer/Create.php?failure");
         die();
     }

@@ -3,7 +3,7 @@
 // Delete an Alert
 session_start();
 
-require $_SERVER['DOCUMENT_ROOT'] . '/Models/Database.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/Model/Database.php';
 
 if (!isset($_SESSION['user'])) {
     echo json_encode(["status" => "error", "message" => "Utilisateur non connecté."]);

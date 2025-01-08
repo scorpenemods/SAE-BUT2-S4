@@ -3,7 +3,7 @@
 // Apply an Offer
 session_start();
 
-require dirname(__DIR__) . '/../Presenter/Database.php';
+require dirname(__DIR__) . '/../Presentation/Database.php';
 
 global $db;
 

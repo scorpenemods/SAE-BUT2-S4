@@ -1,17 +1,11 @@
 <?php
+require dirname(__FILE__) . '/../Presentation/Database.php';
 
-namespace Model;
-
-use Database;
-
-require_once dirname(__FILE__) . '/Database.php';
-$db = Database::getInstance()->getConnection();
 /**
  * Offer
  * Represents a Offer in the database
  */
-class Offer
-{
+class Offer {
     private int $id;
     private int $companyId;
     private Company $company;
@@ -55,8 +49,7 @@ class Offer
      * @param string $updatedAt
      * @param bool $supress
      */
-    protected function __construct(int $id, int $companyId, Company $company, string $title, string $description, string $job, int $duration, string $beginDate, int $salary, string $address, string $studyLevel, bool $isActive, string $email, string $phone, string $website, string $createdAt, string $updatedAt, bool $supress, float $latitude, float $longitude)
-    {
+    protected function __construct(int $id, int $companyId, Company $company, string $title, string $description, string $job, int $duration, string $beginDate, int $salary, string $address, string $studyLevel, bool $isActive, string $email, string $phone, string $website, string $createdAt, string $updatedAt, bool $supress, float $latitude, float $longitude) {
         $this->id = $id;
         $this->companyId = $companyId;
         $this->company = $company;
@@ -85,8 +78,7 @@ class Offer
      * @param false|PDOStatement $stmt
      * @return array
      */
-    private static function instantiate_rows(false|PDOStatement $stmt): array
-    {
+    private static function instantiate_rows(false|PDOStatement $stmt): array {
         $result = $stmt->fetchAll();
 
         $offers = [];
@@ -129,8 +121,7 @@ class Offer
      * Returns the id of the Offer
      * @return int
      */
-    public function get_id(): int
-    {
+    public function get_id(): int {
         return $this->id;
     }
 
@@ -139,8 +130,7 @@ class Offer
      * Returns the id of the Company
      * @return int
      */
-    public function get_company_id(): int
-    {
+    public function get_company_id(): int {
         return $this->companyId;
     }
 
@@ -149,8 +139,7 @@ class Offer
      * Returns the Company
      * @return Company
      */
-    public function get_company(): Company
-    {
+    public function get_company(): Company {
         return $this->company;
     }
 
@@ -159,8 +148,7 @@ class Offer
      * Returns the title of the Offer
      * @return string
      */
-    public function get_title(): string
-    {
+    public function get_title(): string {
         return $this->title;
     }
 
@@ -169,8 +157,7 @@ class Offer
      * Returns the description of the Offer
      * @return string
      */
-    public function get_description(): string
-    {
+    public function get_description(): string {
         return $this->description;
     }
 
@@ -179,8 +166,7 @@ class Offer
      * Returns the job title of the Offer
      * @return string
      */
-    public function get_job(): string
-    {
+    public function get_job(): string {
         return $this->job;
     }
 
@@ -189,8 +175,7 @@ class Offer
      * Returns the duration of the Offer
      * @return int
      */
-    public function get_duration(): int
-    {
+    public function get_duration(): int {
         return $this->duration;
     }
 
@@ -199,8 +184,7 @@ class Offer
      * Returns the begin date of the Offer
      * @return string
      */
-    public function get_begin_date(): string
-    {
+    public function get_begin_date(): string {
         return $this->beginDate;
     }
 
@@ -209,8 +193,7 @@ class Offer
      * Returns the salary of the Offer
      * @return int
      */
-    public function get_salary(): int
-    {
+    public function get_salary(): int {
         return $this->salary;
     }
 
@@ -219,8 +202,7 @@ class Offer
      * Returns the address of the Offer
      * @return string
      */
-    public function get_address(): string
-    {
+    public function get_address(): string {
         return $this->address;
     }
 
@@ -229,8 +211,7 @@ class Offer
      * Returns the study level of the Offer
      * @return string
      */
-    public function get_study_level(): string
-    {
+    public function get_study_level(): string {
         return $this->studyLevel;
     }
 
@@ -239,8 +220,7 @@ class Offer
      * Returns the is active flag of the Offer
      * @return bool
      */
-    public function get_is_active(): bool
-    {
+    public function get_is_active(): bool {
         return $this->isActive;
     }
 
@@ -249,8 +229,7 @@ class Offer
      * Returns the email of the Offer
      * @return string
      */
-    public function get_email(): string
-    {
+    public function get_email(): string {
         return $this->email;
     }
 
@@ -259,8 +238,7 @@ class Offer
      * Returns the phone of the Offer
      * @return string
      */
-    public function get_phone(): string
-    {
+    public function get_phone(): string {
         return $this->phone;
     }
 
@@ -269,8 +247,7 @@ class Offer
      * Returns the created at date of the Offer
      * @return string
      */
-    public function get_created_at(): string
-    {
+    public function get_created_at(): string {
         return $this->createdAt;
     }
 
@@ -279,8 +256,7 @@ class Offer
      * Returns the updated at date of the Offer
      * @return string
      */
-    public function get_updated_at(): string
-    {
+    public function get_updated_at(): string {
         return $this->updatedAt;
     }
 
@@ -289,8 +265,7 @@ class Offer
      * Returns the tags of the Offer
      * @return array|null
      */
-    public function get_tags(): ?array
-    {
+    public function get_tags(): ?array {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM tags JOIN Tag_Offer ON Tag.id = Tag_Offer.tag_id WHERE Tag_Offer.offer_id = :offer_id");
@@ -316,8 +291,7 @@ class Offer
      * Returns the latitude of the Offer
      * @return float
      */
-    public function get_latitude(): float
-    {
+    public function get_latitude(): float {
         return $this->latitude;
     }
 
@@ -326,8 +300,7 @@ class Offer
      * Returns the longitude of the Offer
      * @return float
      */
-    public function get_longitude(): float
-    {
+    public function get_longitude(): float {
         return $this->longitude;
     }
 
@@ -336,8 +309,7 @@ class Offer
      * Returns if the Offer is supressed
      * @return bool
      */
-    public function get_supress(): bool
-    {
+    public function get_supress(): bool {
         return $this->supress;
     }
 
@@ -359,8 +331,7 @@ class Offer
      * @param string $getWebsite
      * @return Offer|null
      */
-    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, string $getWebsite, float $latitude, float $longitude)
-    {
+    public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, string $getWebsite, float $latitude, float $longitude) {
         global $db;
 
         $stmt = $db->prepare("UPDATE Offer SET title = :title, description = :description, job = :job, duration = :duration, salary = :salary, address = :address, study_level = :study_level, begin_date = :begin_date, email = :email, phone = :phone, website = :website, latitude = :latitude, longitude = :longitude WHERE id = :id");
@@ -409,22 +380,20 @@ class Offer
      * Returns the domain of the website
      * @return string|null
      */
-    public function getDomain(): ?string
-    {
+    public function getDomain(): ?string {
         $fullDomain = parse_url($this->website, PHP_URL_HOST);
 
         preg_match('/([a-z0-9-]+\.[a-z]{2,6})$/i', $fullDomain, $matches);
-
+    
         return $matches[1] ?? null;
     }
 
     /**
-     * getImage
+     * get_image
      * Returns the image URL of the website
      * @return string|null
      */
-    public function getImage(): ?string
-    {
+    public function get_image(): ?string {
         $imagePath = 'https://cdn.brandfetch.io/' . $this->getDomain() . '/w/512/h/512';
         return $imagePath;
     }
@@ -435,8 +404,7 @@ class Offer
      * @param int $id
      * @return Offer|null
      */
-    public static function get_by_id(int $id): ?Offer
-    {
+    public static function get_by_id(int $id): ?Offer {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM Offer WHERE id = :id");
@@ -483,8 +451,7 @@ class Offer
      * Returns all the offers
      * @return array|null
      */
-    public static function get_all(): ?array
-    {
+    public static function get_all(): ?array {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM Offer");
@@ -515,8 +482,7 @@ class Offer
      * @param string $website
      * @return Offer|null
      */
-    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $website, float $latitude, float $longitude)
-    {
+    public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $website, float $latitude, float $longitude) {
         global $db;
 
         $stmt = $db->prepare("INSERT INTO Offer (company_id, title, description, job , duration, salary, address,  study_level, begin_date,
@@ -583,8 +549,7 @@ class Offer
      * Get a human-readable duration of the Offer using modulo to get the years, months and days
      * @return string
      */
-    public function get_real_duration(): string
-    {
+    public function get_real_duration(): string {
         $duration = $this->get_duration();
 
         $years = intdiv($duration, 365);
@@ -616,8 +581,7 @@ class Offer
      * Returns all the tags
      * @return array
      */
-    public static function get_all_tags(): array
-    {
+    public static function get_all_tags(): array {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM Tag;");
@@ -638,8 +602,7 @@ class Offer
      *
      * @return string
      */
-    public function get_website()
-    {
+    public function get_website() {
         return $this->website;
     }
 
@@ -649,8 +612,7 @@ class Offer
      * @param $companyId
      * @return array|null
      */
-    public static function get_company_offers($companyId): ?array
-    {
+    public static function get_company_offers($companyId): ?array {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM Offer WHERE company_id = :company_id;");
@@ -671,8 +633,7 @@ class Offer
      * @param array $filters
      * @return array|null
      */
-    public static function get_filtered_offers(int $n, array $filters): ?array
-    {
+    public static function get_filtered_offers(int $n, array $filters): ?array {
         global $db;
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS Offer.*, tag FROM Offer LEFT JOIN Tag_Offer ON Offer.id = Tag_Offer.offer_id LEFT JOIN Tag ON Tag.id = Tag_Offer.tag_id WHERE is_active AND begin_date >= CURDATE() AND NOT supress";
@@ -694,7 +655,7 @@ class Offer
             }
 
             $filters['title'] = preg_replace('/description\s*:\s*"(.*?)"/', '', $filters['title']);
-
+            
 
             $sql .= ' AND Offer.title LIKE :title';
             $params[':title'] = '%' . $filters['title'] . '%';
@@ -781,7 +742,7 @@ class Offer
             }
         }
 
-        $sql .= " LIMIT 12 OFFSET " . ($n - 1) * 12;
+        $sql .= " LIMIT 12 OFFSET ". ($n - 1) * 12;
 
         $stmt = $db->prepare($sql);
         foreach ($params as $key => $value) {
@@ -833,8 +794,7 @@ class Offer
      * @param $id
      * @return true|null
      */
-    public static function hide($id)
-    {
+    public static function hide($id) {
         global $db;
 
         $stmt = $db->prepare("UPDATE Offer SET is_active = !is_active WHERE id = :id");
@@ -855,8 +815,7 @@ class Offer
      * @param int $company_id
      * @return bool|null
      */
-    public static function is_company_offer(int $id, int $companyId): ?bool
-    {
+    public static function is_company_offer(int $id, int $companyId): ?bool {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM Offer WHERE id = :id AND company_id = :company_id");
@@ -883,11 +842,10 @@ class Offer
      * @param int $id
      * @return bool|null
      */
-    public static function is_already_pending(int $id): ?bool
-    {
+    public static function is_already_pending(int $id): ?bool {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM PendingOffer WHERE offer_id = :offer_id AND status = 'Pending'");
+        $stmt = $db->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :offer_id AND status = 'Pending'");
         $stmt->bindParam(":offer_id", $id);
         $stmt->execute();
 
@@ -911,11 +869,10 @@ class Offer
      * @param int $userId
      * @return bool|null
      */
-    public static function make_favorite(int $id, int $userId): ?bool
-    {
+    public static function make_favorite(int $id, int $userId): ?bool {
         global $db;
 
-        $stmt = $db->prepare("INSERT INTO FavoriteOffer (offer_id, user_id) VALUES (:offer_id, :user_id)");
+        $stmt = $db->prepare("INSERT INTO Favorite_Offer (offer_id, user_id) VALUES (:offer_id, :user_id)");
         $stmt->bindParam(":offer_id", $id);
         $stmt->bindParam(":user_id", $userId);
         $stmt->execute();
@@ -934,11 +891,10 @@ class Offer
      * @param int $userId
      * @return bool|null
      */
-    public static function remove_favorite(int $id, int $userId): ?bool
-    {
+    public static function remove_favorite(int $id, int $userId): ?bool {
         global $db;
 
-        $stmt = $db->prepare("DELETE FROM FavoriteOffer WHERE offer_id = :offer_id AND user_id = :user_id");
+        $stmt = $db->prepare("DELETE FROM Favorite_Offer WHERE offer_id = :offer_id AND user_id = :user_id");
         $stmt->bindParam(":offer_id", $id);
         $stmt->bindParam(":user_id", $userId);
         $stmt->execute();
@@ -957,11 +913,10 @@ class Offer
      * @param int $user_id
      * @return bool|null
      */
-    public static function is_favorite(int $id, int $userId): ?bool
-    {
+    public static function is_favorite(int $id, int $userId): ?bool {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM FavoriteOffer WHERE offer_id = :offer_id AND user_id = :user_id");
+        $stmt = $db->prepare("SELECT * FROM Favorite_Offer WHERE offer_id = :offer_id AND user_id = :user_id");
         $stmt->bindParam(":offer_id", $id);
         $stmt->bindParam(":user_id", $userId);
         $stmt->execute();
@@ -985,8 +940,7 @@ class Offer
      * @param int $companyId
      * @return array|null
      */
-    public static function get_all_inactive(int $companyId = 0): ?array
-    {
+    public static function get_all_inactive(int $companyId = 0): ?array {
         global $db;
         if ($companyId != 0) {
             $stmt = $db->prepare("SELECT * FROM Offer WHERE is_active = 0 AND company_id = :company_id ORDER BY begin_date DESC");
@@ -1009,8 +963,7 @@ class Offer
      * @param int $id
      * @return void
      */
-    public static function suppress(int $id): void
-    {
+    public static function suppress(int $id): void {
         global $db;
         $stmt = $db->prepare("UPDATE Offer SET supress = 1 WHERE id = :id");
         $stmt->bindParam(":id", $id);
@@ -1022,8 +975,7 @@ class Offer
      * Returns all the suppressed offers
      * @return array|null
      */
-    public static function get_suppressed(): ?array
-    {
+    public static function get_suppressed(): ?array {
         global $db;
         $stmt = $db->prepare("SELECT * FROM Offer WHERE supress = 1");
         $stmt->execute();

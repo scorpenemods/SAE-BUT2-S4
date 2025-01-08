@@ -1,5 +1,7 @@
 <?php
-use Model\Offer;session_start();
+// File: Edit.php
+// Edit an offer
+session_start();
 global $tags;
 
 require dirname(__FILE__) . '/../../../Model/Offer.php';
@@ -37,7 +39,7 @@ if (isset($_SESSION['Secretariat']) || (isset($_SESSION['companyId']) && isset($
         <?php include dirname(__FILE__) . '/../../Header.php'; ?>
         <main class="container-principal">
             <h1>Modifier une offre de stage</h1>
-            <form action="../../../../SAE-BUT2-1.1/Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
+            <form action="../../../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $offer->get_id(); ?>">
                 <input type="hidden" name="company_id" value="<?php echo $companyId; ?>">
                 <div class="form-group">

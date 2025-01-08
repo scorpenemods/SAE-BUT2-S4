@@ -1,6 +1,4 @@
 <?php
-
-namespace Model;
 require dirname(__FILE__) . "/../Presentation/Database.php";
 
 
@@ -8,8 +6,7 @@ require dirname(__FILE__) . "/../Presentation/Database.php";
  * Application
  * Represent an apply for an Offer
  */
-class Application
-{
+class Application {
     private int $idUser;
     private int $idOffer;
     private string $createdAt;
@@ -21,8 +18,7 @@ class Application
      * @param string $createdAt
      * @param string $status
      */
-    public function __construct(int $idUser, int $idOffer, string $createdAt, string $status)
-    {
+    public function __construct(int $idUser, int $idOffer, string $createdAt, string $status) {
         $this->idUser = $idUser;
         $this->idOffer = $idOffer;
         $this->createdAt = $createdAt;
@@ -34,8 +30,7 @@ class Application
      * get ID of the user who apply
      * @return int
      */
-    public function get_id_user(): int
-    {
+    public function get_id_user(): int {
         return $this->idUser;
     }
 
@@ -44,8 +39,7 @@ class Application
      * get ID of an Offer
      * @return int
      */
-    public function get_id_offer(): int
-    {
+    public function get_id_offer(): int {
         return $this->idOffer;
     }
 
@@ -54,8 +48,7 @@ class Application
      * get the date of creation of an Application
      * @return string
      */
-    public function get_created_at(): string
-    {
+    public function get_created_at(): string {
         return $this->createdAt;
     }
 
@@ -64,8 +57,7 @@ class Application
      * get_status of an apply
      * @return string
      */
-    public function get_status(): string
-    {
+    public function get_status(): string {
         return $this->status;
     }
 
@@ -75,8 +67,7 @@ class Application
      * @param int $idUser
      * @return string|null
      */
-    public static function get_username(int $idUser): ?string
-    {
+    public static function get_username(int $idUser): ?string {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM User WHERE id = :id");
@@ -102,8 +93,7 @@ class Application
      * @param int $idOffer
      * @return string|null
      */
-    public static function get_offer_name(int $idOffer): ?string
-    {
+    public static function get_offer_name(int $idOffer): ?string {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM Offer WHERE id = :id");
@@ -130,8 +120,7 @@ class Application
      * @param string $status
      * @return array|null
      */
-    public static function get_all_for_offer(int $idOffer, string $status): ?array
-    {
+    public static function get_all_for_offer(int $idOffer, string $status): ?array {
         global $db;
 
         $stmt = $db->prepare("SELECT * FROM Application WHERE id_offer = :id AND status = :status");
@@ -162,8 +151,7 @@ class Application
      * @param int $idOffer
      * @return bool|null
      */
-    public static function validate(int $idOffer): ?bool
-    {
+    public static function validate(int $idOffer): ?bool {
         global $db;
         $stmt = $db->prepare("UPDATE Application SET status = 'Accepted' WHERE id_offer = :id;");
         $stmt->bindParam(":id", $idOffer);
@@ -182,8 +170,7 @@ class Application
      * @param int $idOffer
      * @return bool|null
      */
-    public static function refuse(int $idOffer): ?bool
-    {
+    public static function refuse(int $idOffer): ?bool {
         global $db;
         $stmt = $db->prepare("UPDATE Application SET status = 'Rejected' WHERE id_offer = :id;");
         $stmt->bindParam(":id", $idOffer);
@@ -199,8 +186,7 @@ class Application
     /**
      *
      */
-    public static function get_all_for_user(int $idUser): ?array
-    {
+    public static function get_all_for_user(int $idUser): ?array {
         global $db;
         $stmt = $db->prepare("SELECT * FROM Application WHERE id_user = :id");
         $stmt->bindParam(":id", $idUser);

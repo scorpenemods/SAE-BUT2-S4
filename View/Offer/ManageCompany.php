@@ -1,5 +1,7 @@
 <?php
-use Model\Company;session_start();
+// File: ManageCompany.php
+// Manage companies
+session_start();
 
 require dirname(__FILE__) . '/../../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../../Model/Company.php';

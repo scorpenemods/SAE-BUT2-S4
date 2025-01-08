@@ -2,7 +2,7 @@
 // File: GetFile.php
 // Get a file from the server
 
-use Model\Application;require '../../Models/Application.php';
+require '../../Model/Applications.php';
 
 function download_file($user, $offer, $type) {
     error_reporting(E_ALL ^ E_DEPRECATED);
@@ -15,7 +15,7 @@ function download_file($user, $offer, $type) {
 
     if (file_exists($filePath)) {
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="' . Application::get_username($user) . '_' . $type . '.pdf"');
+        header('Content-Disposition: attachment; filename="' . Applications::get_username($user) . '_' . $type . '.pdf"');
         header('Content-Length: ' . filesize($filePath));
 
 

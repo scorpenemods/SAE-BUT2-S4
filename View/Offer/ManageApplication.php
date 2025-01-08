@@ -1,5 +1,7 @@
 <?php
-use Model\Application;use Model\Offer;session_start();
+// File: ManageApplication.php
+// Manage applications
+session_start();
 
 require dirname(__FILE__) . '/../../Model/Application.php';
 require dirname(__FILE__) . '/../../Model/Offer.php';

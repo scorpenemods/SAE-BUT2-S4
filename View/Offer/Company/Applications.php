@@ -1,5 +1,7 @@
 <?php
-use Model\Application;use Model\Offer;require '../../../Model/Application.php';
+// File: Application.php
+// Create an application
+require '../../../Model/Applications.php';
 session_start();
 
 require dirname(__FILE__) . '/../../../Model/Offer.php';
@@ -24,7 +26,7 @@ $groupeSecretariat = $_SESSION['secretariat'] ?? false;
 $companyId = $_SESSION['companyId'] ?? 0;
 
 if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, $companyId))) {
-    $applications = Application::get_all_for_offer($offerId, $type);
+    $applications = Applications::get_all_for_offer($offerId, $type);
 } else {
     header("Location: ../../Offer/List.php");
     die();
@@ -49,7 +51,7 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
     <main>
         <div class="spacer">
             <div class="card">
-                <h2>Liste des Candidatures pour <?php echo Application::get_offer_name($offerId);?></h2>
+                <h2>Liste des Candidatures pour <?php echo Applications::get_offer_name($offerId);?></h2>
                 <div id="liste-candidats">
                 <?php
                     if ($groupeSecretariat) {
@@ -57,7 +59,7 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
                             $idUser = $apply->getIdUser();
                             echo "<div class='candidat'>";
                             echo "<div class='info'>";
-                            echo "<h3 class='nom'>".Application::get_username($idUser)."</h3>";
+                            echo "<h3 class='nom'>".Applications::get_username($idUser)."</h3>";
                             echo "<ul class='fichiers'>";
                             //Todo
                             echo "<li class='fichier' onclick='getFile(\"" . $idUser . "\", \"" . $offerId . "\", \"cv\")'>📎 CV</li>";
@@ -67,11 +69,11 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
                             echo "<span class='date'>".$apply->getCreatedAt()."</span>";
                             if (!$groupeSecretariat) {
                                 echo "<div class='actions'>";
-                                    echo "<form action='../../../../SAE-BUT2-1.1/Presentation/Offer/Application/Validate.php' method='post'>";
+                                    echo "<form action='../../../Presentation/Offer/Applications/Validate.php' method='post'>";
                                         echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
                                         echo "<input class='button accept' type='submit' name='Valider' value='Valider'>";
                                     echo "</form>";
-                                    echo "<form action='../../../../SAE-BUT2-1.1/Presentation/Offer/Application/Validate.php' method='post'>";
+                                    echo "<form action='../../../Presentation/Offer/Applications/Validate.php' method='post'>";
                                         echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
                                         echo "<input class='button refuse' id='refuseButton' type='submit' name='Refuser' value='Refuser'>";
                                     echo "</form>";
@@ -80,7 +82,7 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
                             echo "</div>";
                         }
                     } else {
-                        echo "No Application found";
+                        echo "No Applications found";
                     }
                 ?>
                 </div>
