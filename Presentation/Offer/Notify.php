@@ -10,21 +10,21 @@ function send_notification($offer): void
 
     foreach ($alerts as $alert) {
         $params = [];
-        $userId = $alert['userId'];
+        $userId = $alert['user_id'];
 
         if ($alert['duration'] !== 0) {
             $params['duration'] = $alert['duration'];
         }
-        if ($alert['address'] !== '') {
+        if ($alert['address'] !== null) {
             $params['address'] = $alert['address'];
         }
-        if ($alert['studyLevel'] !== '') {
+        if ($alert['studyLevel'] !== null) {
             $params['studyLevel'] = $alert['studyLevel'];
         }
         if ($alert['salary'] !== 0) {
             $params['salary'] = $alert['salary'];
         }
-        if ($alert['beginDate'] !== '') {
+        if ($alert['beginDate'] !== null) {
             $params['beginDate'] = $alert['beginDate'];
         }
 
