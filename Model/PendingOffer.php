@@ -1,7 +1,7 @@
 <?php
 
 require_once dirname(__FILE__) . '/Database.php';
-require dirname(__FILE__) . '/../Model/Offer.php';
+require_once dirname(__FILE__) . '/../Model/Offer.php';
 $db = Database::getInstance()->getConnection();
 
 /**
@@ -36,9 +36,11 @@ class PendingOffer extends Offer {
      * @param string $website
      * @param int $offfer_id
      * @param string $status
+     * @param float $latitude
+     * @param float $longitude
      */
-    public function __construct(int $id, int $company_id, string $type, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, string $created_at, string $email, string $phone, string $website, int $offfer_id, string $status) {
-        parent::__construct($id, $company_id, $company, $title, $description, $job, $duration,  $begin_date, $salary, $address, $study_level,  TRUE, $email, $phone, $website, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), false, 0, 0);
+    public function __construct(int $id, int $company_id, string $type, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, string $created_at, string $email, string $phone, string $website, int $offfer_id, string $status, float $latitude, float $longitude) {
+        parent::__construct($id, $company_id, $company, $title, $description, $job, $duration,  $begin_date, $salary, $address, $study_level,  TRUE, $email, $phone, $website, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), false,$latitude, $longitude);
         $this->id = $id;
         $this->company_id = $company_id;
         $this->type = $type;
@@ -84,7 +86,9 @@ class PendingOffer extends Offer {
                 $row["phone"],
                 $row["website"],
                 $row["offer_id"],
-                $row["status"]
+                $row["status"],
+                $row["latitude"],
+                $row["longitude"]
             );
         }
         return $offers;
@@ -206,7 +210,9 @@ class PendingOffer extends Offer {
             $result["phone"],
             $result["website"],
             $result["offer_id"],
-            $result["status"]
+            $result["status"],
+            $result["latitude"],
+            $result["longitude"]
         );
     }
 
@@ -272,7 +278,9 @@ class PendingOffer extends Offer {
                 $row["phone"],
                 $row["website"],
                 $row["offer_id"],
-                $row["status"]
+                $row["status"],
+                $row["latitude"],
+                $row["longitude"]
             );
         }
 
@@ -322,7 +330,9 @@ class PendingOffer extends Offer {
                 $row["phone"],
                 $row["website"],
                 $row["offer_id"],
-                $row["status"]
+                $row["status"],
+                $row["latitude"],
+                $row["longitude"]
             );
         }
 
@@ -372,7 +382,9 @@ class PendingOffer extends Offer {
                 $row["phone"],
                 $row["website"],
                 $row["offer_id"],
-                $row["status"]
+                $row["status"],
+                $row["latitude"],
+                $row["longitude"]
             );
         }
 
@@ -409,8 +421,8 @@ class PendingOffer extends Offer {
         }
 
         $stmt = $db->prepare("INSERT INTO Pending_Offer (user_id, type, offer_id, company_id, title, address, job, description, duration, salary,
-                            study_level, email, phone, website, begin_date) VALUES (:user_id, :type, :offer_id, :company_id, :title, :address, :job, :description, :duration, :salary,
-                            :study_level, :email, :phone, :website, :begin_date)");
+                            study_level, email, phone, website, begin_date, latitude, longitude) VALUES (:user_id, :type, :offer_id, :company_id, :title, :address, :job, :description, :duration, :salary,
+                            :study_level, :email, :phone, :website, :begin_date, :latitude, :longitude)");
         $stmt->bindParam(":user_id", $user_id);
         $stmt->bindParam(":type", $type);
         $stmt->bindParam(":offer_id", $offer_id);
@@ -426,6 +438,8 @@ class PendingOffer extends Offer {
         $stmt->bindParam(":phone", $phone);
         $stmt->bindParam(":website", $website);
         $stmt->bindParam(":begin_date", $startDate);
+        $stmt->bindParam(":latitude", $latitude);
+        $stmt->bindParam(":longitude", $longitude);
         $stmt->execute();
 
         if ($db->errorCode() != 0) {
@@ -460,7 +474,9 @@ class PendingOffer extends Offer {
             $phone,
             $website,
             $offer_id,
-            "pending"
+            "pending",
+            $latitude,
+            $longitude
         );
 
         return $offer;

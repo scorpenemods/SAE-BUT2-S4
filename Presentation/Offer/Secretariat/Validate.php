@@ -17,7 +17,8 @@ function get_coordinates($address): ?array
     ];
     $options = [
         'http' => [
-            'header' => "User-Agent: YourApp/1.0 (your@email.com)\r\n"
+            'header' => "User-Agent: YourApp/1.0 (your@email.com)\r\n",
+            'method' => 'GET'
         ]
     ];
 
@@ -26,42 +27,54 @@ function get_coordinates($address): ?array
 
     try {
         $response = file_get_contents($url, false, $context);
-        $httpResponseHeader = $httpResponseHeader ?? [];
-        $statusCode = intval(substr($httpResponseHeader[0], 9, 3));
+
+        if ($response === false) {
+            echo "Failed to get contents from URL\n";
+            return null;
+        }
+
+        $statusCode = $http_response_header[0] ?? '';
+        preg_match('/HTTP\/\d\.\d\s+(\d+)/', $statusCode, $matches);
+        $statusCode = $matches[1] ?? 0;
+
         echo "Status Code: $statusCode\n";
 
-        if ($statusCode === 200) {
+        if ($statusCode == 200) {
             $data = json_decode($response, true);
-            if ($data) {
+            if (!empty($data)) {
                 return [floatval($data[0]['lat']), floatval($data[0]['lon'])];
             } else {
-                echo "Aucune donnée trouvée pour cette adresse.\n";
+                echo "No data found for this address.\n";
                 return null;
             }
         } else {
-            echo "Erreur HTTP: $statusCode\n";
-            echo "Réponse: $response\n";
+            echo "HTTP Error: $statusCode\n";
+            echo "Response: $response\n";
             return null;
         }
     } catch (Exception $e) {
-        echo "Erreur de requête: " . $e->getMessage() . "\n";
+        echo "Request Error: " . $e->getMessage() . "\n";
         return null;
     }
 }
 
-if (isset($_SESSION['Secretariat']) && isset($_POST['id']) && isset($_SERVER["HTTP_REFERER"])) {
+echo get_coordinates("New York, États-Unis d'Amérique");
+
+if (isset($_SESSION['secretariat']) && isset($_POST['id']) && isset($_SERVER["HTTP_REFERER"])) {
     $offer = PendingOffer::get_by_offer_id($_POST['id']);
     if ($offer->get_status() == "Pending") {
         if ($offer->get_offer_id() == 0) {
             $company_id = $offer->get_company_id();
-            $coordinates = get_coordinates($offer);
+            $coordinates = get_coordinates($offer->get_address());
+            echo $coordinates;
+            echo $offer->get_address();
             $latitude = $coordinates[0];
             $longitude = $coordinates[1];
             $offer_notify = Offer::create($company_id, $offer->get_title(), $offer->get_description(), $offer->get_job(), $offer->get_duration(), $offer->get_salary(), $offer->get_address(), $offer->get_study_level(), $offer->get_begin_date(), $offer->get_tags(), $offer->get_email(), $offer->get_phone(), $offer->get_website(), $latitude, $longitude);
             send_notification($offer_notify);
             error_log("apres l'appel de sendNotification");
         } else {
-            $coordinates = get_coordinates($offer);
+            $coordinates = get_coordinates($offer->get_address());
             $latitude = $coordinates[0];
             $longitude = $coordinates[1];
             Offer::update($offer->get_offer_id(), $offer->get_title(), $offer->get_description(), $offer->get_job(), $offer->get_duration(), $offer->get_salary(), $offer->get_address(), $offer->get_study_level(), $offer->get_begin_date(), $offer->get_tags(), $offer->get_email(), $offer->get_phone(), $offer->get_website(), $latitude, $longitude);
@@ -69,4 +82,4 @@ if (isset($_SESSION['Secretariat']) && isset($_POST['id']) && isset($_SERVER["HT
         PendingOffer::set_status($offer->get_id(), "Accepted");
     }
 }
-header("Location: ../../../View/Offer/List.php?type=all");
+//header("Location: ../../../View/Offer/List.php?type=all");

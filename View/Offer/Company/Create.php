@@ -135,8 +135,8 @@ if (!(isset($_SESSION['companyId'])) || $_SESSION['companyId'] == 0) {
                         item.addEventListener('click', () => {
                             addressInput.value = result.display_name;
                             searchInput.value = result.display_name;
-                            latitudeInput.value = result.lat;
-                            longitudeInput.value = result.lon;
+                            latitudeInput.value = toString(result.lat);
+                            longitudeInput.value = toString(result.lon);
                             dropdown2.style.display = 'none';
                         });
                         dropdown2.appendChild(item);

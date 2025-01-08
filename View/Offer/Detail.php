@@ -18,13 +18,13 @@ if (!$offerId) {
     die();
 }
 
-$company_id = $_SESSION['companyId'] ?? 0;
-if ($company_id != 0 && Offer::is_company_offer($offerId, $company_id)) {
+$companyId = $_SESSION['companyId'] ?? 0;
+if ($companyId != 0 && Offer::is_company_offer($offerId, $companyId)) {
     //header("Location: ../Offer/List.php");
     //die();
-    echo !Offer::is_company_offer($offerId, $company_id);
+    echo !Offer::is_company_offer($offerId, $companyId);
 }
-$secretariat_group = $_SESSION['secretariat'] ?? false;
+$secretariatGroup = $_SESSION['secretariat'] ?? false;
 
 switch ($type) {
     case 'updated':
@@ -39,7 +39,7 @@ switch ($type) {
         break;
 }
 
-if ($offer->get_supress() && !$secretariat_group) {
+if ($offer->get_supress() && !$secretariatGroup) {
     //Make a 403 error
     header("HTTP/1.1 403 Forbidden");
     die();
@@ -155,11 +155,11 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                                     echo "<div class='apply-button-container'>";
                                     echo "<input type='hidden' name='id' value='" . $offer->get_id() . "'>";
 
-                                    if (!$secretariat_group && $company_id == 0) {
+                                    if (!$secretariatGroup && $companyId == 0) {
                                         echo "<button class='apply-button-edit' id='apply-button' onclick='openModal()'>Postuler</button>";
                                     }
 
-                                    if ($company_id !== 0 || $secretariat_group) {
+                                    if (($companyId !== 0 || $secretariatGroup) && $type != 'new' ) {
                                         echo "<button class='apply-button-edit'><a href='./Company/Applications.php?id=".$offerId."'>Candidatures</a></button>";
                                         echo "<form action='Company/Edit.php' method='get' id='edit-form'>";
                                             echo "<input type='hidden' name='id' value='" . $offer->get_id() . "'>";
@@ -173,8 +173,8 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                                     }
                                 }
 
-                                if ($secretariat_group && ($type == "new" || $type == "updated")) render_form('../../Presentation/Offer/Secretariat/Deny.php', $offer->get_id(), "Refuser", "deny-form", ['id' => $offer->get_id()]);
-                                if ($secretariat_group && ($type == "new" || $type == "updated")) render_form('../../Presentation/Offer/Secretariat/Validate.php', $offer->get_id(), "Valider", "validate-form", ['id' => $offer->get_id()], "validate-form");
+                                if ($secretariatGroup && ($type == "new" || $type == "updated")) render_form('../../Presentation/Offer/Secretariat/Deny.php', $offer->get_id(), "Refuser", "deny-form", ['id' => $offer->get_id()]);
+                                if ($secretariatGroup && ($type == "new" || $type == "updated")) render_form('../../Presentation/Offer/Secretariat/Validate.php', $offer->get_id(), "Valider", "validate-form", ['id' => $offer->get_id()], "validate-form");
                             ?>
                         </div>
                     </div>
