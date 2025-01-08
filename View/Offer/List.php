@@ -145,7 +145,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                         echo "<div class='company-card'>";
                             echo "<div class='company-header'>";
                                 if ($type == 'all') {
-                                    echo '<button title="Like" class="heart" onclick="heartUpdate(' . $offer->get_id() . ')"><i id="heart-icon-' . $offer->getId() . '" class="'. (Offer::is_favorite($offer->getId(), $userId) ? 'fa-solid' : 'fa-regular') . ' fa-heart"></i></button>';
+                                    echo '<button title="Like" class="heart" onclick="heartUpdate(' . $offer->get_id() . ')"><i id="heart-icon-' . $offer->get_id() . '" class="'. (Offer::is_favorite($offer->get_id(), $userId) ? 'fa-solid' : 'fa-regular') . ' fa-heart"></i></button>';
                                 }
                                 echo "<img src='".$offer->get_image()."' alt='Logo de " . $offer->get_company()->get_name() . "'>";
                                 echo "<h3 class='title'>". $offer->get_title() ."</h3>";
