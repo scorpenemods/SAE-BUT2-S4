@@ -11,7 +11,7 @@ require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 
 $_SESSION['user'] = 1;
 $_SESSION['companyId'] = 0;
-$_SESSION['secretariat'] = true;
+$_SESSION['secretariat'] = false;
 
 $userId = $_SESSION['user'] ?? 0;
 $companyId = $_SESSION['companyId'] ?? 0;

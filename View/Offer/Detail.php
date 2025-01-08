@@ -160,7 +160,7 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                                     }
 
                                     if (($companyId !== 0 || $secretariatGroup) && $type != 'new' ) {
-                                        echo "<button class='apply-button-edit'><a href='./Company/Applications.php?id=".$offerId."'>Candidatures</a></button>";
+                                        echo "<button class='apply-button-edit'><a href='./Company/Application.php?id=".$offerId."'>Candidatures</a></button>";
                                         echo "<form action='Company/Edit.php' method='get' id='edit-form'>";
                                             echo "<input type='hidden' name='id' value='" . $offer->get_id() . "'>";
                                             echo "<button class='apply-button-edit' id='edit-button'". ($isAlreadyPending ? "disabled=true> Modification en attente" : ">Modification") . "</button>";

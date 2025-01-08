@@ -84,7 +84,7 @@ class Application {
             return null;
         }
 
-        return $result["username"];
+        return $result["nom"];
     }
 
     /**
@@ -123,7 +123,7 @@ class Application {
     public static function get_all_for_offer(int $idOffer, string $status): ?array {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM Application WHERE id_offer = :id AND status = :status");
+        $stmt = $db->prepare("SELECT * FROM Application WHERE idOffer = :id AND status = :status");
         $stmt->bindParam(":id", $idOffer);
         $stmt->bindParam(":status", $status);
         $stmt->execute();
@@ -153,7 +153,7 @@ class Application {
      */
     public static function validate(int $idOffer): ?bool {
         global $db;
-        $stmt = $db->prepare("UPDATE Application SET status = 'Accepted' WHERE id_offer = :id;");
+        $stmt = $db->prepare("UPDATE Application SET status = 'Accepted' WHERE idOffer = :id;");
         $stmt->bindParam(":id", $idOffer);
         $stmt->execute();
 
@@ -172,7 +172,7 @@ class Application {
      */
     public static function refuse(int $idOffer): ?bool {
         global $db;
-        $stmt = $db->prepare("UPDATE Application SET status = 'Rejected' WHERE id_offer = :id;");
+        $stmt = $db->prepare("UPDATE Application SET status = 'Rejected' WHERE idOffer = :id;");
         $stmt->bindParam(":id", $idOffer);
         $stmt->execute();
 
@@ -188,7 +188,7 @@ class Application {
      */
     public static function get_all_for_user(int $idUser): ?array {
         global $db;
-        $stmt = $db->prepare("SELECT * FROM Application WHERE id_user = :id");
+        $stmt = $db->prepare("SELECT * FROM Application WHERE idUser = :id");
         $stmt->bindParam(":id", $idUser);
         $stmt->execute();
 

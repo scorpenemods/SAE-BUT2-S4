@@ -1,7 +1,7 @@
 <?php
 // File: Application.php
 // Create an application
-require '../../../Model/Applications.php';
+require '../../../Model/Application.php';
 session_start();
 
 require dirname(__FILE__) . '/../../../Model/Offer.php';
@@ -26,7 +26,7 @@ $groupeSecretariat = $_SESSION['secretariat'] ?? false;
 $companyId = $_SESSION['companyId'] ?? 0;
 
 if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, $companyId))) {
-    $applications = Applications::get_all_for_offer($offerId, $type);
+    $applications = Application::get_all_for_offer($offerId, $type) ?? [];
 } else {
     header("Location: ../../Offer/List.php");
     die();
@@ -39,7 +39,7 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des Candidatures</title>
     <link rel="stylesheet" href="../../css/Header.css">
-    <link rel="stylesheet" href="../../css/Applications.css">
+    <link rel="stylesheet" href="../../css/Application.css">
     <link rel="stylesheet" href="../../css/Footer.css">
     <link rel="stylesheet" href="../../css/Notification.css">
     <script src="../../Js/Notification.js"></script>
@@ -54,9 +54,9 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
                 <h2>Liste des Candidatures pour <?php echo Application::get_offer_name($offerId);?></h2>
                 <div id="liste-candidats">
                 <?php
-                    if ($groupeSecretariat) {
+                    if ($applications != []) {
                         foreach($applications as $apply){
-                            $idUser = $apply->getIdUser();
+                            $idUser = $apply->get_id_user();
                             echo "<div class='candidat'>";
                             echo "<div class='info'>";
                             echo "<h3 class='nom'>".Application::get_username($idUser)."</h3>";
@@ -66,7 +66,7 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
                             echo "<li class='fichier' onclick='getFile(\"" . $idUser . "\", \"" . $offerId . "\", \"motivation\")'>📎 Lettre de motivation</li>";
                             echo "</ul>";
                             echo "</div>";
-                            echo "<span class='date'>".$apply->getCreatedAt()."</span>";
+                            echo "<span class='date'>".$apply->get_created_at()."</span>";
                             if (!$groupeSecretariat) {
                                 echo "<div class='actions'>";
                                     echo "<form action='../../../Presentation/Offer/Applications/Validate.php' method='post'>";
