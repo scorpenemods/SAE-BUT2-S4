@@ -52,12 +52,12 @@ if (!(isset($_SESSION['companyId'])) || $_SESSION['companyId'] == 0) {
 
                 <div class="form-group">
                     <label for="size">Nombre de salariés</label>
-                    <input type="text" id="size" name="size" placeholder="Ex: 10 salariés" required>
+                    <input type="number" id="size" name="size" placeholder="Ex: 10 salariés" required>
                 </div>
 
                 <div class="form-group">
                     <label for="siren">Siren</label>
-                    <input type="text" id="siren" name="siren" placeholder="Ex: 123443212" required>
+                    <input type="number" max="99999999999999" id="siren" name="siren" placeholder="Ex: 123443212" required>
                 </div>
 
                 <button type="submit">Créer l'entreprise</button>

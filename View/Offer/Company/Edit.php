@@ -8,7 +8,7 @@ require dirname(__FILE__) . '/../../../Model/Offer.php';
 require dirname(__FILE__) . '/../../../Model/Company.php';
 
 // Check if user has a Company
-if (isset($_SESSION['Secretariat']) || (isset($_SESSION['companyId']) && isset($_GET['id']))) {
+if (isset($_SESSION['secretariat']) || (isset($_SESSION['companyId']) && isset($_GET['id']))) {
     $companyId = $_SESSION['companyId'];
     $offer = Offer::get_by_id($_GET['id']);
     if ($companyId!= null && !Offer::is_company_offer($_GET['id'], $companyId)) {
