@@ -40,11 +40,9 @@ if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['addre
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL) ?? false;
     $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING) ?? false;
     $website = filter_input(INPUT_POST, 'website', FILTER_SANITIZE_URL) ?? false;
-    $latitude = filter_input(INPUT_POST, 'latitude', FILTER_SANITIZE_NUMBER_FLOAT) ?? false;
-    $longitude = filter_input(INPUT_POST, 'longitude', FILTER_SANITIZE_NUMBER_FLOAT) ?? false;
+    $latitude = filter_input(INPUT_POST, 'latitude', FILTER_VALIDATE_FLOAT) ?? false;
+    $longitude = filter_input(INPUT_POST, 'longitude', FILTER_VALIDATE_FLOAT) ?? false;
 
-    echo floatval($latitude);
-    echo floatval($longitude);
     if (!$title || !$address || !$job || !$description || !$duration || !$salary || !$education || !$startDate || !$email || !$phone || !$website || !$latitude || !$longitude) {
         header("Location: ../../View/Offer/Create.php?failure");
         die();
@@ -59,7 +57,7 @@ if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['addre
     }
 
     //Create the Offer
-    $offer = pendingOffer::create_pending($companyId, $title, $description, $job, $duration, $salary, $address, $education, $startDate, $selectedTags, $email, $phone, $website, $userId, $id);
+    $offer = pendingOffer::create_pending($companyId, $title, $description, $job, $duration, $salary, $address, $education, $startDate, $selectedTags, $email, $phone, $website, $userId, $id, floatval($latitude), floatval($longitude));
 
     //If the Offer is created, redirect to the list of pending offers
     if ($offer) {

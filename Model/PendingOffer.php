@@ -411,7 +411,7 @@ class PendingOffer extends Offer {
      * @param int $offer_id
      * @return PendingOffer|null
      */
-    public static function create_pending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $tags, string $email, string $phone, string $website, int $user_id, int $offer_id): ?PendingOffer {
+    public static function create_pending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $tags, string $email, string $phone, string $website, int $user_id, int $offer_id, $latitude, $longitude): ?PendingOffer {
         global $db;
 
         if ($offer_id == 0) {
