@@ -184,7 +184,6 @@ if (!file_exists($langFile)) {
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <link rel="stylesheet" href="../View/Principal/Modals.css">
-    <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="/View/Principal/Notif.js"></script>
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <!-- Include jQuery -->

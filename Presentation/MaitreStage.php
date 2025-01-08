@@ -99,7 +99,6 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js" defer></script>
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
-    <link rel="stylesheet" href="/View/css/Footer.css">
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <script src="/View/Principal/Notif.js"></script>
     <!-- Include jQuery -->

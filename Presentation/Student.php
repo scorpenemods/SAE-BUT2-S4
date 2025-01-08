@@ -97,7 +97,6 @@ $translations = include $langFile;
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="/View/Principal/Principal.css">
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
-    <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="/View/Principal/Principal.js" defer></script>
     <script src="/View/Principal/Notif.js"></script>
     <link rel="stylesheet" href="../View/Documents/Documents.css">
@@ -251,7 +250,6 @@ $translations = include $langFile;
                         if($noter != ""){
                             echo '<tr class="lsttitlenotes">';
                                 echo '<th>Sujet</th>';
-                                echo '<th>Appréciation</th>';
                                 echo '<th>Note</th>';
                                 echo '<th>Coefficient</th>';
                             echo '</tr>';
@@ -262,7 +260,6 @@ $translations = include $langFile;
                                     echo '<td>' . htmlspecialchars($note->getCoeff()); '</td>';
                                 echo '</tr>';
                                 endforeach;
-                                echo '<td class="test"></td>';
                                 echo '<td class="test"></td>';
                                 echo '<td class="test"></td>';
                                 $add = [];

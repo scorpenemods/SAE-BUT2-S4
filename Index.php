@@ -228,13 +228,7 @@ $translations = include $langFile;
     <?= $translations['validate_email_index'] ?> <a href="Presentation/EmailValidationNotice.php"><?= $translations['register_button_index_button'] ?></a>
     <button onclick="closeNotification()">&times;</button>
 </div>
-
-<footer class="PiedDePage">
-    <!-- Pied de page avec logo additionnel et liens -->
-    <img src="Resources/Logo_UPHF.png" alt="Logo uphf" width="10%">
-    <a href="Presentation/Redirection.php"><?= $translations['information_settings'] ?></a>
-    <a href="Presentation/Redirection.php"><?= $translations['a_propos'] ?></a>
-</footer>
+<?php include './View/Footer.php'; ?>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
