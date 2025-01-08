@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-
 include_once'Header.php';
 function afficherMentionLegale() {
     // Récupérer la valeur de la mention depuis la session ou GET

@@ -30,8 +30,8 @@ function download_file($user, $offer, $type): bool
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user']) && isset($_POST['Offer']) && isset($_POST['type'])) {
-    $result = download_file($_POST['user'], $_POST['Offer'], $_POST['type']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user']) && isset($_POST['offer']) && isset($_POST['type'])) {
+    $result = download_file($_POST['user'], $_POST['offer'], $_POST['type']);
     if (!$result) {
         http_response_code(400);
         echo "Error in request.";

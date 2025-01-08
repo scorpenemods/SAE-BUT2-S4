@@ -94,7 +94,7 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
     <script>
         function getFile(idUser, idOffer, typeStr) {
             $.ajax({
-                url: '../../../presenter/offer/getfile.php',
+                url: '../../../Presentation/Offer/GetFile.php',
                 method: 'POST',
                 data: { user: idUser, offer: idOffer, type: typeStr },
                 xhrFields: {

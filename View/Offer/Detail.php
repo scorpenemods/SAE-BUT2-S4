@@ -247,7 +247,7 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
         <?php include dirname(__FILE__) . '/../Footer.php'; ?>
         <script type="text/javascript">
             document.querySelectorAll('.Offer-header').forEach(element => {
-                element.style.backgroundImage = `url(<?php echo $offer->getImage(); ?>)`;
+                element.style.backgroundImage = `url(<?php echo $offer->get_image(); ?>)`;
             });
 
             function openModal() {
@@ -264,7 +264,7 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
 
                 const formData = new FormData(form);
                 $.ajax({
-                    url: '/presenter/offer/apply.php',
+                    url: '/Presentation/Offer/Apply.php',
                     type: 'POST',
                     data: formData,
                     processData: false,

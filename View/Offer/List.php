@@ -9,9 +9,32 @@ require dirname(__FILE__) . '/../../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../../Presentation/Utils.php';
 require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 
+
+$secretariat_group = false;
+$_SESSION['secretariat'] = false;
+
+
+if (isset($_SESSION['company_id'])) {
+    $company_id = $_SESSION['company_id'];
+}
+else{
+    $company_id = 0;
+    $_SESSION["company_id"] = $company_id;
+}
+
+
+if ($_SESSION["user_role"]==4 || $_SESSION["user_role"]==5) {
+    $secretariat_group = true;
+    $_SESSION['secretariat'] = true;
+}
+
+if (isset($_SESSION['user'])) {
+    $user_id = $_SESSION['user'];
+}
+
 $_SESSION['user'] = 1;
 $_SESSION['companyId'] = 0;
-$_SESSION['secretariat'] = false;
+$_SESSION['secretariat'] = true;
 
 $userId = $_SESSION['user'] ?? 0;
 $companyId = $_SESSION['companyId'] ?? 0;

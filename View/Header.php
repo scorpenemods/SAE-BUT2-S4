@@ -22,3 +22,4 @@
         <li><a href="/View/Offer/List.php?type=all"><i class="fas fa-envelope"></i> Toutes les Offres</a></li>
     </ul>
 </nav>
+
