@@ -182,9 +182,7 @@ if (!file_exists($langFile)) {
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <!-- Lien vers le script JavaScript principal -->
     <script src="../View/Principal/Principal.js"></script>
-    <link rel="stylesheet" href="/View/Principal/Notifs.css">
-    <link rel="stylesheet" href="../View/Principal/Modals.css">
-    <script src="/View/Principal/Notif.js"></script>
+    <link rel="stylesheet" href="../View/Principal/Modals.css">*
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -96,9 +96,7 @@ $translations = include $langFile;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="/View/Principal/Principal.css">
-    <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <script src="/View/Principal/Principal.js" defer></script>
-    <script src="/View/Principal/Notif.js"></script>
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

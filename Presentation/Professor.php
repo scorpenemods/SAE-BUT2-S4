@@ -89,8 +89,6 @@ $userId = $person->getId();
     <title>Le Petit Stage - Professeur</title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js" defer></script>
-    <link rel="stylesheet" href="/View/Principal/Notifs.css">
-    <script src="/View/Principal/Notif.js"></script>
     <script src="/View/Principal/Note.js"></script>
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <!-- Include jQuery -->

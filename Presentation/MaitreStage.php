@@ -98,9 +98,7 @@ $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'
     <title>Le Petit Stage - Maitre de Stage</title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js" defer></script>
-    <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <link rel="stylesheet" href="../View/Documents/Documents.css">
-    <script src="/View/Principal/Notif.js"></script>
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include EmojiOneArea -->
