@@ -24,8 +24,6 @@ if (isset($_SESSION['personne'])){
 
     if ($role == 3){
         $company = $database->getCompanybyUserId($id);
-        echo $company['country'];
-
     }
 }
 
@@ -56,17 +54,16 @@ if (isset($_SESSION['personne'])){
         <div class="form-group">
             <div class="radio-group">
                 <!-- Stage en France -->
-                <input type="radio" id="france-int" name="internship-type" value="france-int" checked disabled/>
+                <input type="radio" id="france-int" name="internship-type" value="france-int"/>
                 <label for="france-int">Stage en France</label>
 
                 <!-- Stage à l'étranger -->
-                <input type="radio" id="abroad-int" name="internship-type" value="abroad-int" disabled/>
+                <input type="radio" id="abroad-int" name="internship-type" value="abroad-int"/>
                 <label for="abroad-int">Stage à l'étranger</label>
             </div>
         </div>
 
         <?php }
-
         else{
         ?>
 
@@ -98,21 +95,24 @@ if (isset($_SESSION['personne'])){
         <div class="form-group">
             <!-- Nom de l'entreprise -->
             <label for="company-name">Nom de l'entreprise</label>
-            <input type="text" id="company-name" name="company-name" required>
+            <input type="text" id="company-name" name="company-name" value="<?php echo $company['name']?>"   required>
 
             <!-- Adresse de l'entreprise -->
             <label for="company-address">Adresse de l'entreprise</label>
-            <input type="text" id="company-address" name="company-address" required>
+            <input type="text" id="company-address" name="company-address" value="<?php echo $company['address']?>"   required>
 
             <!-- Code postal et ville de l'entreprise -->
             <label for="company-postal-code">Code Postal</label>
-            <input type="text" id="company-postal-code" name="company-postal-code" required>
+            <input type="text" id="company-postal-code" name="company-postal-code" value="<?php echo $company['postal_code']?>"   required>
 
             <label for="company-city">Ville</label>
-            <input type="text" id="company-city" name="company-city" required>
+            <input type="text" id="company-city" name="company-city" value="<?php echo $company['city']?>"   required>
         </div>
 
 
+        <?php
+        if ($company['country'] == "France"){
+        ?>
         <div class="intership-location" id="intership-location">
             <div class="encadre">
                 <!-- Informations obligatoires pour un stage en France uniquement -->
@@ -123,24 +123,27 @@ if (isset($_SESSION['personne'])){
                     <!-- Numéro SIRET -->
                     <div class="form-group">
                         <label for="siret">N° SIRET</label>
-                        <input type="text" id="siret" name="siret" maxlength="14" minlength="14" required placeholder="14 chiffres" />
+                        <input type="text" id="siret" name="siret" maxlength="14" minlength="14" required placeholder="14 chiffres" value="<?php echo $company['siret']?>"   />
 
                         <!-- Informations complémentaires : APE, Effectif, et Statut juridique -->
                         <!-- Code APE -->
                         <label for="ape">Code APE</label>
-                        <input type="text" id="ape" name="ape" maxlength="5" placeholder="Ex : 12345" />
+                        <input type="text" id="ape" name="ape" maxlength="5" placeholder="Ex : 12345" value="<?php echo $company['APE_code']?>"  />
 
                         <!-- Effectif de l'entreprise -->
                         <label for="workforce">Effectif</label>
-                        <input type="text" id="workforce" name="workforce"/>
+                        <input type="text" id="workforce" name="workforce" value="<?php echo $company['size']?>"  />
 
                         <!-- Statut juridique -->
                         <label for="legal-status">Statut juridique</label>
-                        <input type="text" id="legal-status" name="legal-status" placeholder="Ex : SARL, SAS, etc." />
+                        <input type="text" id="legal-status" name="legal-status" placeholder="Ex : SARL, SAS, etc." value="<?php echo $company['legal_status']?>"  />
                     </div>
                 </div>
             </div>
         </div>
+        <?php
+        }
+        ?>
 
         <div class="encadre">
             <!-- Section 1 : Représentant Légal -->
@@ -148,28 +151,28 @@ if (isset($_SESSION['personne'])){
                 <h3>1/ Représentant Légal</h3>
                 <div class="form-item">
                     <label for="nom_legal">Nom :</label>
-                    <input type="text" id="nom_legal" name="nom_legal" required >
+                    <input type="text" id="nom_legal" name="nom_legal">
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="form-item radio-group">
                     <label>Civilité :</label>
-                    <input type="radio" id="mme_legal" name="civilite_legal" value="Mme" required>
+                    <input type="radio" id="mme_legal" name="civilite_legal" value="Mme" >
                     <label for="mme_legal">Mme</label>
-                    <input type="radio" id="mr_legal" name="civilite_legal" value="Mr" required>
+                    <input type="radio" id="mr_legal" name="civilite_legal" value="Mr" >
                     <label for="mr_legal">Mr</label>
                 </div>
             </div>
             <div class="form-group">
                 <div class="form-item">
                     <label for="fonction_legal">Fonction dans l'entreprise :</label>
-                    <input type="text" id="fonction_legal" name="fonction_legal" required>
+                    <input type="text" id="fonction_legal" name="fonction_legal" >
                 </div>
 
                 <div class="form-item">
                     <label for="mail_legal">Email :</label>
-                    <input type="email" id="mail_legal" name="mail_legal" required>
+                    <input type="email" id="mail_legal" name="mail_legal" >
                 </div>
             </div>
 
@@ -178,7 +181,7 @@ if (isset($_SESSION['personne'])){
                 <h3>2/ Tuteur Entreprise</h3>
                 <div class="form-item">
                     <label for="nom_tuteur">Nom :</label>
-                    <input type="text" id="nom_tuteur" name="nom_tuteur" required>
+                    <input type="text" id="nom_tuteur" name="nom_tuteur" value="<?php echo $nom?>"  >
                 </div>
             </div>
             <div class="form-group">
@@ -193,17 +196,17 @@ if (isset($_SESSION['personne'])){
             <div class="form-group">
                 <div class="form-item">
                     <label for="fonction_tuteur">Fonction dans l'entreprise :</label>
-                    <input type="text" id="fonction_tuteur" name="fonction_tuteur" required >
+                    <input type="text" id="fonction_tuteur" name="fonction_tuteur" required>
                 </div>
 
                 <div class="form-item">
                     <label for="tel_tuteur">Téléphone :</label>
-                    <input type="tel" id="tel_tuteur" name="tel_tuteur" pattern="[0-9]{10}" required>
+                    <input type="tel" id="tel_tuteur" name="tel_tuteur" pattern="[0-9]{10}" value="<?php echo $telephone?>"   required>
                 </div>
 
                 <div class="form-item">
                     <label for="mail_tuteur">Email :</label>
-                    <input type="email" id="mail_tuteur" name="mail_tuteur" required>
+                    <input type="email" id="mail_tuteur" name="mail_tuteur" value="<?php echo $email?>" required>
                 </div>
 
                 <div class="form-item">
@@ -222,25 +225,25 @@ if (isset($_SESSION['personne'])){
                 <h3>3/ Signature de la Convention</h3>
                 <div class="form-item">
                     <label for="nom_signataire">Nom :</label>
-                    <input type="text" id="nom_signataire" name="nom_signataire" required>
+                    <input type="text" id="nom_signataire" name="nom_signataire">
                 </div>
 
                 <div class="form-item radio-group">
                     <label>Civilité :</label>
-                    <input type="radio" id="mme_signataire" name="civilite_signataire" value="Mme" required>
+                    <input type="radio" id="mme_signataire" name="civilite_signataire" value="Mme" >
                     <label for="mme_signataire">Mme</label>
-                    <input type="radio" id="mr_signataire" name="civilite_signataire" value="Mr" required>
+                    <input type="radio" id="mr_signataire" name="civilite_signataire" value="Mr" >
                     <label for="mr_signataire">Mr</label>
                 </div>
 
                 <div class="form-item">
                     <label for="fonction_signataire">Fonction dans l'entreprise :</label>
-                    <input type="text" id="fonction_signataire" name="fonction_signataire" required>
+                    <input type="text" id="fonction_signataire" name="fonction_signataire" >
                 </div>
 
                 <div class="form-item">
                     <label for="mail_signataire">Email :</label>
-                    <input type="email" id="mail_signataire" name="mail_signataire" required>
+                    <input type="email" id="mail_signataire" name="mail_signataire" >
                 </div>
             </div>
         </div>
@@ -379,73 +382,31 @@ if (isset($_SESSION['personne'])){
         </div>
 
 
-        <!-- Dates et Signatures -->
+        <!-- Dates et Signatures à mettre quand toutes les parties auront remplis la conv
         <div class="form-group">
             <h2>Signatures et Validation</h2>
-
-            <label for="date_signature_etudiant">Date (Signature Étudiant) :</label>
-            <div id="signature-pad"></div>
-            <input type="date" id="date_signature_etudiant" name="date_signature_etudiant" required>
 
             <label for="date_signature_tuteur">Date (Signature Tuteur Entreprise) :</label>
             <input type="date" id="date_signature_tuteur" name="date_signature_tuteur" required>
         </div>
 
-        <div class="form-group">
-            <div class="radio-group">
-                <label>Validation par le responsable de l’UE Professionnalisation :</label>
-                <input type="radio" id="validation_oui" name="validation" value="oui" required>
-                <label for="validation_oui">Oui</label>
-                <input type="radio" id="validation_non" name="validation" value="non" required>
-                <label for="validation_non">Non</label>
-            </div>
+         Canvas pour dessiner la signature
+        <div class="signature">
+            <label for="signature">Signature :</label>
+            <canvas id="signatureCanvas" width="400" height="100" style="border: 1px solid #000;"></canvas>
+            <br>
+            <button type="button" onclick="clearSignature()">Effacer</button>
+            <br>
+             Champ caché pour envoyer la signature en base64
+            <input type="hidden" id="signatureData" name="signatureData">
         </div>
+        -->
 
-        <div class="form-group">
-            <label for="responsable_nom">Nom du responsable :</label>
-            <input type="text" id="responsable_nom" name="responsable_nom" required>
-
-            <label for="responsable_prenom">Prénom du responsable :</label>
-            <input type="text" id="responsable_prenom" name="responsable_prenom" required >
-
-            <label for="responsable_signature">Signature du responsable :</label>
-            <input type="text" id="responsable_signature" name="responsable_signature" required>
-        </div>
-
-        <div class="form-group">
-            <label for="enseignant_referent">Enseignant référent :</label>
-            <input type="text" id="enseignent_referent" name="enseignent_referent" required>    </div>
-
-        <button type="submit">Soumettre</button>
+        <button type="submit">Soumettre aux autres parties</button>
     </form>
 </div>
 
-<script>
-    function toggleInputFrDiv(){
-        if (inputContainer.style.display === 'none'){
-            inputContainer.style.display = 'block';
-        }
-        else{
-            inputContainer.style.display = 'block';
-        }
-    }
 
-    function toggleInputAb() {
-        const inputContainer1 = document.getElementById('intership-location');
-        inputContainer1.style.display = 'none';
-
-        const inputContainer2 = document.getElementById('country');
-        inputContainer2.style.display = 'block';
-    }
-
-    function toggleInputFr(){
-        const inputContainer1 = document.getElementById('intership-location');
-        inputContainer1.style.display = 'block';
-
-        const inputContainer2 = document.getElementById('country');
-        inputContainer2.style.display = 'none';
-    }
-</script>
 </body>
 </html>
 

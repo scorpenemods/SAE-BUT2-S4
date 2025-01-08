@@ -451,8 +451,18 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
         <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
             Contenu Rapports
         </div>
+
+
+
+
         <!-- Section Documents -->
-        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
+        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4" data-section="documents">
+            <h2>Espace conventions :</h2>
+            <?php include_once("Documents/Convention.php");?>
+            <script src="../View/Documents/Conventions.js"></script>
+            <br>
+
+            <h2>Vos documents :</h2>
             <?php include_once("Documents/Documents.php");?>
             <script src="../View/Documents/Documents.js"></script>
         </div>

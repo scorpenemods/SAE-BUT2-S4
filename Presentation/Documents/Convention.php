@@ -17,6 +17,7 @@ $db = Database::getInstance();
 $userId = $_SESSION['user_id']; // ID de l'étudiant connecté
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
+    $groupId = $_POST['group-id'];
     if (!empty($_FILES['files'])) {
         foreach ($_FILES['files']['tmp_name'] as $index => $tmpName) {
             $name = $_FILES['files']['name'][$index];
@@ -31,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
                     continue;
                 }
 
-                $uploadDir = '../uploads/';
+                $uploadDir = 'uploads/';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
@@ -43,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
                 if (move_uploaded_file($tmpName, $filePath)) {
                     // Ajouter le fichier dans la base de données
                     $db->addFile($name, $filePath, $userId, $size);
+                    $db->addConventionToGroup($groupId, $filePath);
                 }
             }
         }
@@ -57,14 +59,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
 
 // Récupérer les fichiers pour les afficher
 $files = $db->getFiles($userId);
+
+// récuperer les groupes:
+$groups = $db->getAllGroupsWithMembers();
 ?>
 <html lang="FR">
 <body>
 <form class="box" method="post" action="" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
+    <label for="group-id">Uploader une convention pour un groupe :</label>
+    <select id="group-id" name="group-id" required>
+        <option value="">sélectionnez un groupe</option>
+        <?php foreach ($groups as $group): ?>
+            <option value="<?= $group['group_id'] ?>"> <?= htmlspecialchars($group['group_name']) ?> </option>
+        <?php endforeach; ?>
+    </select>
+
     <div class="box__input">
-        <input type="file" name="files[]" id="file" multiple>
+        <input type="file" name="files[]" id="file2" multiple>
         <button class="box__button" type="submit">Uploader</button>
     </div>
     <div class="box__uploading">Envoi en cours...</div>
