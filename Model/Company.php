@@ -106,8 +106,8 @@ class Company {
      * @return Company|null
      */
     public static function get_by_id(int $id): ?Company {
-        global $db;
 
+        global $db;
         $stmt = $db->prepare("SELECT * FROM Company WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
