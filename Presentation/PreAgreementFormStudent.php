@@ -15,9 +15,6 @@ if (isset($_SESSION['personne'])){
         $idPreConv = $_GET['id'];
         $liste = $database->getInputsPreAgreementForm($idPreConv);
 
-        foreach ($liste as $ligne){
-            echo $ligne;
-        }
 
         $inputs = json_decode($liste['inputs'], true);
 
@@ -75,7 +72,13 @@ function getFieldValue($field, $inputs = null, $default = null) {
 <div class="form-container">
     <h1>Formulaire de Pré-Convention de Stage</h1>
     <h3>Veuillez compléter la partie vous concernant : </h3>
-    <form action="SubmitPreAgreementStudent.php" method="POST">
+    <?php if ($role==1){ ?>
+            <form action="SubmitPreAgreementStudent.php" method="POST">
+    <?php } ?>
+    <?php if ($role==4 || $role==5){ ?>
+            <form action="SubmitPreAgreementSecretariat.php" method="POST">
+    <?php } ?>
+
 
         <!-- Section Étudiant -->
         <section class="form-section">
@@ -490,7 +493,16 @@ function getFieldValue($field, $inputs = null, $default = null) {
             <input type="text" id="enseignent_referent" name="enseignent_referent" value="<?php echo getFieldValue('enseignantReferent', $inputs); ?>" >
         </div>
 
-        <button type="submit">Soumettre aux autres parties</button>
+        <?php if ($role==1){ ?>
+            <button type="submit">Enregistrer et soumettre aux autres parties</button>
+        <?php } ?>
+
+        <?php if ($role==4 || $role==5){ ?>
+            <button type="submit" name="action" value="action1">Enregistrer et soumettre aux autres parties</button>
+            <button type="submit" name="action" value="action2">Valider définitivement ce formulaire de pré-convention</button>
+        <?php } ?>
+
+
     </form>
 </div>
 

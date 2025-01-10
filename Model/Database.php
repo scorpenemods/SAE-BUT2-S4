@@ -1558,6 +1558,26 @@ class Database
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /*public function getAllPreAgreementForm(){
+        $stmt = $this->connection->prepare("select id from Pre_Agreement;");
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }*/
+
+    public function getStudentsWithPreAgreementFormValid(): false|array
+    {
+        $stmt = $this->connection->prepare("select PA.id, User.nom, User.prenom from User Join sae.Pre_Agreement PA on User.id = PA.idStudent where PA.status=1;");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getStudentsWithPreAgreementFormInvalid(): false|array
+    {
+        $stmt = $this->connection->prepare("select PA.id, User.nom, User.prenom from User Join sae.Pre_Agreement PA on User.id = PA.idStudent where PA.status=0;");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
     public function addConventionToGroup(int $groupId, string $path): void {
         $sql = "update Convention set path_convention = :path where id = :groupId";

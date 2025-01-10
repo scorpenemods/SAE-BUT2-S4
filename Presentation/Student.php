@@ -305,7 +305,7 @@ if (isset($_POST['go'])) {
                 </div>
             </div>
 
-            <!--afficher la prévonc-->
+            <!--afficher la préconv-->
             <?php
             $idPreAgreementForm = $database->getPreAgreementFormStudent($senderId);
             if (!$idPreAgreementForm == null) {
