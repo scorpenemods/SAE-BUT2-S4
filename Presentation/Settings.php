@@ -2,6 +2,7 @@
 
 session_start(); // Assurez-vous que la session est démarrée
 require_once "../Model/Person.php"; // Ensure Person class is correctly included
+require_once "../Model/Database.php";
 
 // Vérifie si l'utilisateur est connecté en consultant la variable 'user' dans $_SESSION
 if (!isset($_SESSION['user'])) {
@@ -10,10 +11,17 @@ if (!isset($_SESSION['user'])) {
     exit(); // Termine l'exécution du script
 }
 
+
 $person = unserialize($_SESSION['user']);
 $userName = $person->getPrenom() . ' ' . $person->getNom();
 $userRole = $person->getRole();
+
+// Récupération des préférences de l'utilisateur depuis la base de données
+$senderId = $person->getId(); // Récupère l'ID de l'utilisateur pour les requêtes de base de données
+$database = (Database::getInstance());
+$preferences = $database->getUserPreferences($senderId);
 $darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? 'checked' : '';
+
 // Détermine la page d'accueil en fonction du rôle de l'utilisateur
 $homePage = '';
 if ($userRole == 1) {
@@ -51,12 +59,18 @@ if (!in_array($activeSection, $allowedSections)) {
         // Appliquer le mode sombre si activé dans les préférences
         let darkModeEnabled = "<?php echo $darkmode; ?>" === 'checked';
         if (darkModeEnabled) {
+            const footerSwitch = document.getElementById('footer');
+            const infosSwitch = document.getElementById('infos');
+            const prefSwitch = document.getElementById('pref');
             document.body.classList.add('dark-mode');
+            footerSwitch.classList.add('dark-mode');
+            infosSwitch.classList.add('dark-mode');
+            prefSwitch.classList.add('dark-mode');
         }
     });
 
 </script>
-<body class="dark-mode">
+<body>
 <?php include_once("../View/Header.php");?>
 
 <div class="container">

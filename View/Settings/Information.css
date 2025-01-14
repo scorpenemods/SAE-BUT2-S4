@@ -12,9 +12,10 @@ section.compte-info{
     border: solid 1px;
     border-radius: 5%;
     padding-bottom: 5%;
-    background-color: white;
+    background: var(--container-bg); /* dynamic background */
     box-shadow: 5px 5px 10px black;
 }
+
 section.compte-info table{
     width: 60%;
     padding-bottom: 5%;
@@ -24,5 +25,23 @@ section.compte-info table *{
 }
 section.compte-info table td{
     padding-right: 2%;
-    padding-left: 2%;
+    width: 33%;
+}
+section.compte-info a.home-button{
+    text-decoration: none;
+    color: black;
+    border: solid black 1px;
+    padding: 2%;
+    border-radius: 15px;
+    background-color: transparent;
+    box-shadow: 1px 1px 3px black;
+}
+section.compte-info button{
+    text-decoration: none;
+    color: black;
+    border: solid black 1px;
+    padding: 5%;
+    border-radius: 15px;
+    background-color: transparent;
+    box-shadow: 1px 1px 3px black;
 }

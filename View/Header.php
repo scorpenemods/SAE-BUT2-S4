@@ -69,14 +69,20 @@ $translations = include $langFile;
         <?php
         include '../Model/LanguageSelection.php';
         ?>
+
         <!-- Bouton pour ouvrir le menu des paramètres -->
-        <button class="mainbtn" onclick="toggleMenu()">
-            <img src="../Resources/Param.png" alt="Settings">
-        </button>
-        <div class="hide-list" id="settingsMenu">
-            <!-- Liens vers les pages d'informations et de déconnexion -->
-            <a href="../Presentation/Settings.php">Information</a>
-            <a href="../Presentation/Logout.php">Deconnexion</a>
-        </div>
+        <?php
+        $pagename = basename($_SERVER['PHP_SELF']);
+        if ($pagename != "Settings.php") {
+            echo '<button class="mainbtn" onclick="toggleMenu()">';
+            echo '<img src="../Resources/Param.png" alt="Settings">';
+            echo '</button>';
+            echo '<div class="hide-list" id="settingsMenu">';
+            echo '<a href="../Presentation/Settings.php">Information</a>';
+            echo '<a href="../Presentation/Logout.php">Deconnexion</a>';
+            echo '</div>';
+        }
+        ?>
+
     </div>
 </header>

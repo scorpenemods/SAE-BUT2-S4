@@ -6,16 +6,17 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #ecf0f1;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    background: var(--background-gradient);
     animation: lightGradientAnimation 15s ease infinite; /* fluid anim */
+    background-size: 200% 200%;
     transition: background 1s ease, color 1s ease;
     color: var(--text-color); /* Font color */
+    margin: 0;
 }
-
 
 /* Default Light theme */
 :root {
@@ -26,13 +27,15 @@ body {
 }
 
 /* Dark theme */
-body.dark-mode {
+body.dark-mode, section.dark-mode{
     --background-gradient: linear-gradient(135deg, #1e3c72, #2a5298, #3a6073);
     --text-color: #f0f4f7;
     --container-bg: rgba(44, 62, 80, 0.85);
+    color: black;
     --text-gradient: #ffffff, #33ccff;
     animation: darkGradientAnimation 15s ease infinite;
 }
+
 
 
 .vertical-menu {

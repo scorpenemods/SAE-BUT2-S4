@@ -57,7 +57,7 @@ $translations = include $langFile;
     <script type="text/javascript" src="../View/Settings/Settings.js"></script> <!-- Lien vers le script JavaScript -->
 </head>
 <body>
-<section class="compte-info">
+<section id="infos" class="compte-info">
     <h2><?= $translations['informations du compte']?></h2> <!-- Titre de la section -->
     <table>
         <tr>
@@ -84,7 +84,7 @@ $translations = include $langFile;
             <td><a href="ChangePassword.php"><button><?= $translations['modifier mot de passe']?></button></a></td> <!-- Lien pour modifier le mot de passe -->
         </tr>
     </table>
-    <a href='<?php echo $homePage; ?>'>
+    <a class="home-button" href='<?php echo $homePage; ?>'>
         Retour à la page d'accueil
     </a>
 </section>

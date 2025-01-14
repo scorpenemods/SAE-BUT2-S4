@@ -98,7 +98,7 @@ $darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? '
     </script>
 <?php endif; ?>
 
-<section class="preferences">
+<section id="pref" class="preferences">
     <h2>Préférences</h2>
     <form method="POST" action="./Settings.php?section=preferences">
         <div class="preference-item">
