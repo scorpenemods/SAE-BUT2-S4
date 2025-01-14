@@ -209,7 +209,7 @@ $translations = include $langFile;
                             <input type="hidden" name="receiver_id" id="receiver_id" value="">
                             <input type="hidden" name="group_id" id="group_id" value="">
                             <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="submit">Envoyer</button>
+                            <button type="submit"><?= $translations['send']?></button>
                         </form>
                     </div>
                 </div>
@@ -221,35 +221,33 @@ $translations = include $langFile;
 
     <!-- Offres Content -->
     <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
-        Contenu Offres
+        <?= $translations['contenu offres']?>
         <a href="../View/List.php?type=all">
-            <button type="button">Voir les offres</button>
+            <button type="button"><?= $translations['voir offres']?></button>
         </a>
     </div>
 </section>
-
-<?php include '../View/Footer.php'; ?>
 
 <!-- Fenêtre modale pour contacter le secrétariat -->
 <div id="contact-secretariat-modal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h3>Envoyer un message au secrétariat</h3>
+        <h3><?= $translations['send_admin']?></h3>
         <form id="contactSecretariatForm" enctype="multipart/form-data" method="POST" action="ContactSecretariat.php">
             <div class="form-group">
-                <label for="subject">Sujet :</label>
-                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="Sujet de votre message">
+                <label for="subject"><?= $translations['sujet']?> :</label>
+                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="<?= $translations['sujet_message']?>">
             </div>
             <div class="form-group">
-                <label for="message">Message :</label>
-                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
+                <label for="message"><?= $translations['message']?> :</label>
+                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="<?= $translations['write_mess']?>" required></textarea>
             </div>
             <div class="form-group position-relative">
-                <label for="file" class="form-label">Joindre un fichier :</label>
+                <label for="file" class="form-label"><?= $translations['joindre fichier']?> :</label>
                 <input type="file" class="form-control-file animated-file-input" id="file" name="file">
                 <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné" style="display: none;">✖️</button>
             </div>
-            <button type="submit" class="btn btn-primary btn-block animated-button">Envoyer au secrétariat</button>
+            <button type="submit" class="btn btn-primary btn-block animated-button"><?= $translations['mess_admin']?></button>
         </form>
     </div>
 </div>

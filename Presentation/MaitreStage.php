@@ -140,22 +140,22 @@ $translations = include $langFile;
 <!-- Section contenant les différents menus -->
 <section class="Menus" id="Menus">
     <nav>
-        <span onclick="window.location.href='MaitreStage.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>">Accueil</span>
-        <span onclick="window.location.href='MaitreStage.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>">Mission de stage</span>
-        <span onclick="window.location.href='MaitreStage.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>">Gestion Stagiaire</span>
-        <span onclick="window.location.href='MaitreStage.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>">Livret de Suivi</span>
-        <span onclick="window.location.href='MaitreStage.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>">Documents</span>
-        <span onclick="window.location.href='MaitreStage.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>">Messagerie</span>
-        <span onclick="window.location.href='MaitreStage.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>">Notes</span>
-        <span onclick="window.location.href='MaitreStage.php?section=7'" class="widget-button <?php echo $activeSection == '7' ? 'Current' : ''; ?>">Offres</span>
+        <span onclick="window.location.href='MaitreStage.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>"><?= $translations['accueil']?></span>
+        <span onclick="window.location.href='MaitreStage.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>"><?= $translations['mission stage']?></span>
+        <span onclick="window.location.href='MaitreStage.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>"><?= $translations['gestion stagiaire']?></span>
+        <span onclick="window.location.href='MaitreStage.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>"><?= $translations['livret suivi']?></span>
+        <span onclick="window.location.href='MaitreStage.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>"><?= $translations['documents']?></span>
+        <span onclick="window.location.href='MaitreStage.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>"><?= $translations['messagerie']?></span>
+        <span onclick="window.location.href='MaitreStage.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>"><?= $translations['notes']?></span>
+        <span onclick="window.location.href='MaitreStage.php?section=7'" class="widget-button <?php echo $activeSection == '7' ? 'Current' : ''; ?>"><?= $translations['offres']?></span>
     </nav>
 
 
     <div class="Contenus">
         <!-- Contenu de l'Accueil -->
         <div class="<?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">
-            <h2>Bienvenue sur la plateforme pour les Maitres de Stage!</h2><br>
-            <p>Gérez vos stagiaires, communiquez facilement et suivez l'évolution de leurs compétences.</p><br>
+            <h2><?= $translations['welcome_intsup']?></h2><br>
+            <p></p><br>
         </div>
 
         <!-- Contenu des autres sections -->
@@ -180,9 +180,9 @@ $translations = include $langFile;
                     <div class="search-bar">
                         <input type="text" id="search-input" placeholder="Search contacts..." onkeyup="searchContacts()">
                     </div>
-                    <h3>Contacts</h3>
+                    <h3><?= $translations['contacts']?></h3>
                     <!-- Bouton pour contacter le secrétariat -->
-                    <button id="contact-secretariat-btn" class="contact-secretariat-btn">Contacter le secrétariat</button>
+                    <button id="contact-secretariat-btn" class="contact-secretariat-btn"><?= $translations['contacter secrétariat']?></button>
                     <ul id="contacts-list">
                         <?php include_once("ContactList.php");?>
                         <?php include_once("GroupContactList.php");?>
@@ -228,22 +228,22 @@ $translations = include $langFile;
 <div id="contact-secretariat-modal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h3>Envoyer un message au secrétariat</h3>
+        <h3><?= $translations['send_admin']?></h3>
         <form id="contactSecretariatForm" enctype="multipart/form-data" method="POST" action="ContactSecretariat.php">
             <div class="form-group">
-                <label for="subject">Sujet :</label>
-                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="Sujet de votre message">
+                <label for="subject"><?= $translations['sujet']?> :</label>
+                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="<?= $translations['sujet_message']?>">
             </div>
             <div class="form-group">
-                <label for="message">Message :</label>
-                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
+                <label for="message"><?= $translations['message']?> :</label>
+                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="<?= $translations['write_mess']?>" required></textarea>
             </div>
             <div class="form-group position-relative">
-                <label for="file" class="form-label">Joindre un fichier :</label>
+                <label for="file" class="form-label"><?= $translations['joindre fichier']?> :</label>
                 <input type="file" class="form-control-file animated-file-input" id="file" name="file">
                 <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné" style="display: none;">✖️</button>
             </div>
-            <button type="submit" class="btn btn-primary btn-block animated-button">Envoyer au secrétariat</button>
+            <button type="submit" class="btn btn-primary btn-block animated-button"><?= $translations['mess_admin']?></button>
         </form>
     </div>
 </div>
