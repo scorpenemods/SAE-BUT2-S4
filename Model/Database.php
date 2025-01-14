@@ -107,11 +107,12 @@ class Database
      * @return array
      */
     public function getFiles(int $studentId): array {
-        $sql = "SELECT * FROM File WHERE user_id = :studentId";
+        $sql = "SELECT * FROM File WHERE user_id = :studentId AND conv_id IS NULL";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([':studentId' => $studentId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 
     /**
      * Get booklet's file on database
