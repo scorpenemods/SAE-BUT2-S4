@@ -162,4 +162,13 @@ return array(
     'sujet_message' => "Subject of your message",
     'write_mess' => "Write your message here...",
     'search_contact' => "Search contacts...",
+
+    // DOCUMENTS
+    'upload' => "Upload",
+    'envoi' => 'Finishing upload...',
+    'envoi_terminer' => "Upload finished!",
+    'erreur' => "Erreur",
+    'fichiers upload' => "Uploaded files",
+    'download' => "Download",
+    'delete' => "Delete",
 );

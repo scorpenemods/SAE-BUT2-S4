@@ -57,21 +57,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
 
 // Retrieve files to view them
 $files = $db->getFiles($userId);
+
+
+//TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
 ?>
 
 <form class="box" method="post" action="" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
     <div class="box__input">
         <input type="file" name="files[]" id="file" multiple>
-        <button class="box__button" type="submit">Uploader</button>
+        <button class="box__button" type="submit"><?= $translations['upload']?></button>
     </div>
-    <div class="box__uploading">Envoi en cours...</div>
-    <div class="box__success">Upload terminé !</div>
-    <div class="box__error">Erreur : <span></span></div>
+    <div class="box__uploading"><?= $translations['envoi']?></div>
+    <div class="box__success"><?= $translations['envoi_terminer']?></div>
+    <div class="box__error"><?= $translations['erreur']?> : <span></span></div>
 </form>
 
 <div class="file-list">
-    <h2>Fichiers Uploadés</h2>
+    <h2><?= $translations['fichiers upload']?></h2>
     <div class="file-grid">
         <?php foreach ($files as $file): ?>
             <div class="file-card">
@@ -81,12 +102,12 @@ $files = $db->getFiles($userId);
                 </div>
                 <form method="get" action="Documents/Download.php">
                     <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
-                    <button type="submit" class="download-button">Télécharger</button>
+                    <button type="submit" class="download-button"><?= $translations['download']?></button>
                 </form>
                 <form method="post" action="" class="delete-form">
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                     <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
-                    <button type="submit" class="delete-button">Supprimer</button>
+                    <button type="submit" class="delete-button"><?= $translations['delete']?></button>
                 </form>
             </div>
         <?php endforeach; ?>

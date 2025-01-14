@@ -165,4 +165,13 @@ return array(
     'sujet_message' => "Sujet de votre message",
     'write_mess' => "Écrivez votre message ici...",
     'search_contact' => "Rechercher des contacts...",
+
+    // DOCUMENTS
+    'upload' => "Envoyer",
+    'envoi' => 'Envoi en cours...',
+    'envoi_terminer' => "Envoi terminé !",
+    'erreur' => "Erreur",
+    'fichiers upload' => "Fichiers Envoyés",
+    'download' => "Télécharger",
+    'delete' => "Supprimer",
 );
