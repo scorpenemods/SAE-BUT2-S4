@@ -123,6 +123,7 @@ return array(
 
     // PAGE
     'professeur' => "Professeur",
+    'maitre stage' => "Maitre de Stage",
     'accueil' => "Accueil",
     'mission stage' => "Mission de stage",
     'gestion étudiants' => "Gestion étudiants",
@@ -151,7 +152,7 @@ return array(
     'welcome_intsup' => "Bienvenue sur la plateforme pour les Maitres de Stage!",
     'info_intsup' => "Gérez vos stagiaires, communiquez facilement et suivez l'évolution de leurs compétences.",
     'info_stud' => "Cette application est conçue pour faciliter la gestion des stages pour les étudiants de l'UPHF, les enseignants, les maitres de stage et le secrétariat.",
-    'livret_info' => "Suivez votre progression et recevez des retours de votre tuteur ou enseignant.",
+    'livret_info' => "Suivez votre progression et recevez des retours de votre maitre de stage ou enseignant.",
     'offres_info' => "Consultez les offres de stage disponibles et postulez directement.",
     'documents_info' => "Téléchargez et partagez des documents nécessaires pour votre stage.",
     'messagerie_info' => "Communiquez facilement avec votre tuteur, enseignant, ou autres contacts.",

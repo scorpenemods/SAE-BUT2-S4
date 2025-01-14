@@ -119,7 +119,8 @@ return array(
     'ajouter champ' => "Add a field",
 
     // PAGE TOUT ROLE
-    'professeur' => "Professor",
+    'professeur' => "Teacher",
+    'maitre stage' => "Internship Supervisor",
     'accueil' => "Home",
     'mission stage' => "Internship mission",
     'gestion étudiants' => "Student management",
@@ -148,7 +149,7 @@ return array(
     'welcome_intsup' => "Welcome to the platform for Internship Supervisors!",
     'info_intsup' => "Manage your interns, communicate easily, and track the development of their skills.",
     'info_stud' => "This application is designed to facilitate internship management for UPHF students, teachers, internship supervisors, and the administration.",
-    'livret_info' => "Track your progress and receive feedback from your tutor or teacher.",
+    'livret_info' => "Track your progress and receive feedback from your internship supervisor or teacher.",
     'offres_info' => "View available internship offers and apply directly.",
     'documents_info' => "Download and share necessary documents for your internship.",
     'messagerie_info' => "Easily communicate with your tutor, teacher, or other contacts.",
