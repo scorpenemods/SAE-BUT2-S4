@@ -119,5 +119,17 @@ return array(
     'ajouter champ' => "Add a field",
 
     // PAGE TOUT ROLE
-
+    'professeur' => "Professor",
+    'accueil' => "Home",
+    'mission stage' => "Internship mission",
+    'gestion étudiants' => "Student management",
+    'livret suivi' => "Monitoring booklet",
+    'documents' => "Documents",
+    'messagerie' => "Messaging",
+    'notes' => "Notes",
+    'offres' => "Offers",
+    'welcome_prof' => 'Welcome to the platform for Professors!',
+    'info_prof' => 'Manage students, track their progress, and easily communicate with them.',
+    'contacts' => 'Contacts',
+    'contacter secrétariat' => 'Contact the administration',
 );

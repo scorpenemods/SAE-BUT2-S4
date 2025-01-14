@@ -122,5 +122,17 @@ return array(
     'ajouter champ' => "Ajouter un champ",
 
     // PAGE TOUT ROLE
-
+    'professeur' => "Professeur",
+    'accueil' => "Accueil",
+    'mission stage' => "Mission de stage",
+    'gestion étudiants' => "Gestion étudiants",
+    'Livret suivi' => "Livret de suivi",
+    'Documents' => "Documents",
+    'messagerie' => "Messagerie",
+    'notes' => "Notes",
+    'offres' => "Offres",
+    'welcome_prof' => 'Bienvenue sur la plateforme pour Professeurs!',
+    'info_prof' => "Gérez les étudiants, suivez leur progression et communiquez facilement avec eux.",
+    'contacts' => "Contacts",
+    'contacter secrétariat' => "Contacter le secrétariat",
 );
