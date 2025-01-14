@@ -102,6 +102,21 @@ return array(
 
     //LIVRET DE SUIVI
     'participants' => "Учасники",
-    'rencontes' => "Зустрічі",
+    'rencontres' => "зустрічі",
     'dépôts' => "Депозити",
+    'rencontre' => "зустріч",
+    'finalisation livret' => "Завершення буклету",
+    'ajouter rencontre' => "Додати зустріч",
+    'supprimer rencontre' => "Видалити останню зустріч",
+    'formulaire' => "Форма",
+    'date' => "Дата ",
+    'lieu' => "Місце ",
+    'en entreprise' => "В компанії",
+    'par téléphone' => "По телефону",
+    'en visio' => "У відеозв'язку",
+    'autre' => "Інше",
+    'ajouter champ' => "Додати поле",
+
+    // PAGE TOUT ROLE
+
 );

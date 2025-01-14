@@ -103,6 +103,21 @@ return array(
 
     //LIVRET DE SUIVI
     'participants' => "Participants",
-    'rencontes' => "Meetings",
+    'rencontres' => "Meetings",
     'dépôts' => "Deposits",
+    'rencontre' => "meeting",
+    'finalisation livret' => "Finalization of the booklet",
+    'ajouter rencontre' => "Add a meeting",
+    'supprimer rencontre' => "Delete the last meeting",
+    'formulaire' => "Form",
+    'date' => "Date of the ",
+    'lieu' => "Place of the ",
+    'en entreprise' => "In the company",
+    'par téléphone' => "On the phone",
+    'en visio' => "Via video call",
+    'autre' => "Other",
+    'ajouter champ' => "Add a field",
+
+    // PAGE TOUT ROLE
+
 );

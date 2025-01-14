@@ -106,6 +106,21 @@ return array(
 
     //LIVRET DE SUIVI
     'participants' => "Participants",
-    'rencontes' => "Rencontres",
+    'rencontres' => "Rencontres",
     'dépôts' => "Dépôts",
+    'rencontre' => "rencontre",
+    'finalisation livret' => "Finalisation du livret",
+    'ajouter rencontre' => "Ajouter une rencontre",
+    'supprimer rencontre' => "Supprimer la dernière rencontre",
+    'formulaire' => "Formulaire",
+    'date' => "Date de la ",
+    'lieu' => "Lieu de la ",
+    'en entreprise' => "En entreprise",
+    'par téléphone' => "Par téléphone",
+    'en visio' => "En visio",
+    'autre' => "Autre",
+    'ajouter champ' => "Ajouter un champ",
+
+    // PAGE TOUT ROLE
+
 );
