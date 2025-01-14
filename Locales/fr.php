@@ -155,6 +155,7 @@ return array(
     'offres_info' => "Consultez les offres de stage disponibles et postulez directement.",
     'documents_info' => "Téléchargez et partagez des documents nécessaires pour votre stage.",
     'messagerie_info' => "Communiquez facilement avec votre tuteur, enseignant, ou autres contacts.",
+    'tapez message' => 'Tapez un message...',
 
     // CONTACT SECRETARIAT
     'send_admin' => "Envoyer un message au secrétariat",
@@ -163,4 +164,5 @@ return array(
     'mess_admin' => "Envoyer au secrétariat",
     'sujet_message' => "Sujet de votre message",
     'write_mess' => "Écrivez votre message ici...",
+    'search_contact' => "Rechercher des contacts...",
 );

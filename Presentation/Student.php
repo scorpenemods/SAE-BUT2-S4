@@ -189,7 +189,7 @@ $translations = include $langFile;
                     <div class="contacts">
                         <div class="search-bar">
                             <label for="search-input"></label>
-                            <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                            <input type="text" id="search-input" placeholder="<?= $translations['search_contact']?>" onkeyup="searchContacts()">
                         </div>
                         <h3><?= $translations['contacts']?></h3>
                         <!-- Bouton pour contacter le secrétariat -->
@@ -223,8 +223,8 @@ $translations = include $langFile;
                                 <!-- Hidden fields for receiver_id and group_id -->
                                 <input type="hidden" name="receiver_id" id="receiver_id" value="">
                                 <input type="hidden" name="group_id" id="group_id" value="">
-                                <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                                <button type="submit">Envoyer</button>
+                                <input type="text" id="message-input" name="message" placeholder="<?= $translations['tapez message']?>">
+                                <button type="submit"><?= $translations['send']?></button>
                             </form>
                         </div>
                     </div>

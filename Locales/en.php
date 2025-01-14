@@ -152,6 +152,7 @@ return array(
     'offres_info' => "View available internship offers and apply directly.",
     'documents_info' => "Download and share necessary documents for your internship.",
     'messagerie_info' => "Easily communicate with your tutor, teacher, or other contacts.",
+    'tapez message' => 'Type a message...',
 
     // CONTACT SECRETARIAT
     'send_admin' => "Send a message to the administration",
@@ -160,4 +161,5 @@ return array(
     'mess_admin' => "Send to the administration",
     'sujet_message' => "Subject of your message",
     'write_mess' => "Write your message here...",
+    'search_contact' => "Search contacts...",
 );
