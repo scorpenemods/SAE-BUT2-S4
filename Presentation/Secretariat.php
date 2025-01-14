@@ -238,8 +238,8 @@ $translations = include $langFile;
     <div class="Contenus">
         <!-- Contenu de la section Accueil -->
         <div class="Contenu <?php echo $activeSection == '0' ? 'Visible' : ''; ?>" id="content-0">
-            <h2>Bienvenue sur la plateforme Secrétariat!</h2><br>
-            <p>Gérez les utilisateurs, consultez les documents et accédez aux rapports des stages.</p><br>
+            <h2><?= $translations['welcome_admin']?></h2><br>
+            <p><?= $translations['info_admin']?></p><br>
 
         </div>
 
@@ -249,7 +249,7 @@ $translations = include $langFile;
             <div class="user-management">
                 <!-- Section pour la création de nouveau secrétaire -->
                 <div class="pending-requests">
-                    <button id="showButton" onclick="showForm()"">Nouveau secrétaire</button>
+                    <button id="showButton" onclick="showForm()""><?= $translations['nouveau secrétaire']?></button>
                     <!-- Form -->
                     <div id="secretariatCreation" style="display: none;">
                         <form action="Secretariat.php" method="POST">

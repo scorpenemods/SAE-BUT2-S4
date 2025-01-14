@@ -157,6 +157,9 @@ return array(
     'documents_info' => "Téléchargez et partagez des documents nécessaires pour votre stage.",
     'messagerie_info' => "Communiquez facilement avec votre tuteur, enseignant, ou autres contacts.",
     'tapez message' => 'Tapez un message...',
+    'welcome_admin' => "Bienvenue sur la plateforme Secrétariat!",
+    'info_admin' => "Gérez les utilisateurs, consultez les documents et accédez aux rapports des stages.",
+    'nouveau secrétaire' => "Nouveau secrétaire",
 
     // CONTACT SECRETARIAT
     'send_admin' => "Envoyer un message au secrétariat",

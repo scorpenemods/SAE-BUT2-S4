@@ -167,15 +167,12 @@ $translations = include $langFile;
 
             <input type="radio" name="choice" value="tutorcompany" id="tutorcompany" required />
             <label for="tutorcompany"><?= $translations['prof_pro'] ?><span class="required">*</span></label>
-
-            <input type="radio" name="choice" value="secretariat" id="secretariat" required />
-            <label for="secretariat"><?= $translations['secre'] ?><span class="required">*</span></label>
         </p>
 
         <!-- Champ pour la fonction professionnelle/universitaire -->
         <p id="activity-field">
             <label for="function"><?= $translations['acti'] ?><span class="required">*</span></label>
-            <!-- Champ de saisie pour Tuteur professionnel et Secrétariat -->
+            <!-- Champ de saisie pour Tuteur professionnel -->
             <input name="function" id="function-input" type="text" style="display: none;" />
             <!-- Liste déroulante pour Étudiant -->
             <select name="function_student" id="function-student" style="display: none;">

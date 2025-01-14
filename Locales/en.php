@@ -29,7 +29,6 @@ return array(
     'etu' => 'Student',
     'prof_refe' => 'Referring Professor',
     'prof_pro' => 'Professional Tutor',
-    'secre' => 'Secretariat',
     'acti' => 'Professional/Academic Activity',
     'selection_formation' => 'Select your course',
     'info' => 'Computer Science',
@@ -154,6 +153,9 @@ return array(
     'documents_info' => "Download and share necessary documents for your internship.",
     'messagerie_info' => "Easily communicate with your tutor, teacher, or other contacts.",
     'tapez message' => 'Type a message...',
+    'welcome_admin' => "Welcome to the Administration platform!",
+    'info_admin' => "Manage users, view documents, and access internship reports.",
+    'nouveau secrétaire' => "New administrator",
 
     // CONTACT SECRETARIAT
     'send_admin' => "Send a message to the administration",
