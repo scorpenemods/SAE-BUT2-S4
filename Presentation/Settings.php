@@ -13,7 +13,7 @@ if (!isset($_SESSION['user'])) {
 $person = unserialize($_SESSION['user']);
 $userName = $person->getPrenom() . ' ' . $person->getNom();
 $userRole = $person->getRole();
-
+$darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? 'checked' : '';
 // Détermine la page d'accueil en fonction du rôle de l'utilisateur
 $homePage = '';
 if ($userRole == 1) {
@@ -46,7 +46,17 @@ if (!in_array($activeSection, $allowedSections)) {
     <link rel="stylesheet" href="../View/Settings/Settings.css">
     <script type="text/javascript" src="../View/Settings/Settings.js"></script>
 </head>
-<body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Appliquer le mode sombre si activé dans les préférences
+        let darkModeEnabled = "<?php echo $darkmode; ?>" === 'checked';
+        if (darkModeEnabled) {
+            document.body.classList.add('dark-mode');
+        }
+    });
+
+</script>
+<body class="dark-mode">
 <?php include_once("../View/Header.php");?>
 
 <div class="container">
@@ -71,7 +81,6 @@ if (!in_array($activeSection, $allowedSections)) {
         } elseif ($activeSection == 'preferences') {
             include './Preference.php';
         }
-
         ?>
     </div>
 </div>

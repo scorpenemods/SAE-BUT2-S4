@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    background-color: #ecf0f1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -14,7 +14,6 @@ body {
     animation: lightGradientAnimation 15s ease infinite; /* fluid anim */
     transition: background 1s ease, color 1s ease;
     color: var(--text-color); /* Font color */
-    height: 100%
 }
 
 
@@ -62,7 +61,6 @@ body.dark-mode {
 .main-content {
     flex-grow: 1;
     padding: 20px;
-    background-color: #ecf0f1;
     color: #333;
 }
 

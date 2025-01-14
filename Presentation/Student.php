@@ -109,18 +109,11 @@ $translations = include $langFile;
             // Appliquer le mode sombre si activé dans les préférences
             let darkModeEnabled = "<?php echo $darkmode; ?>" === 'checked';
             if (darkModeEnabled) {
+                const footerSwitch = document.getElementById('footer');
                 document.body.classList.add('dark-mode');
+                footerSwitch.classList.add('dark-mode');
                 document.getElementById('theme-switch').checked = true; // Coche le switch pour le mode sombre
             }
-
-            // Gestion du toggle du mode sombre
-            document.getElementById('theme-switch').addEventListener('change', function () {
-                if (this.checked) {
-                    document.body.classList.add('dark-mode');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                }
-            });
         });
 
     </script>

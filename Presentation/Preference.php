@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $darkmode_value = isset($_POST['darkmode']) ? 1 : 0; // Nouveau pour darkmode
 
     // Mettre à jour ou insérer les préférences de l'utilisateur
-    if ($db->setUserPreferences($userId, $notif_value, $a2f_value, $darkmode_value)) {
+    if ($db->setUserPreferences($userId, $notif_value, $darkmode_value)) {
         // Définir le message de succès dans la session
         $_SESSION['success_message'] = "Les préférences ont été mises à jour avec succès.";
         header("Location: Settings.php");
@@ -98,9 +98,9 @@ $darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? '
     </script>
 <?php endif; ?>
 
-<main>
+<section class="preferences">
     <h2>Préférences</h2>
-    <form class="preferences" method="POST" action="Settings.php?section=preferences">
+    <form method="POST" action="./Settings.php?section=preferences">
         <div class="preference-item">
             <span>Notification :</span>
             <span>Off</span>
@@ -121,7 +121,7 @@ $darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? '
         </div>
         <input type="submit" value="Enregistrer les préférences">
     </form>
-</main>
+</section>
 
 </body>
 </html>

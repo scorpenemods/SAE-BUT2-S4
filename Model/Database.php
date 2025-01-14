@@ -773,10 +773,10 @@ class Database
      * @param $darkmode
      * @return bool
      */
-    public function setUserPreferences($userId, $notification, $a2f, $darkmode): bool
+    public function setUserPreferences($userId, $notification, $darkmode): bool
     {
-        $sql = "INSERT INTO Preference (user_id, notification, a2f, darkmode) 
-            VALUES (:user_id, :notification, :a2f, :darkmode)
+        $sql = "INSERT INTO Preference (notification, a2f, darkmode, user_id) 
+            VALUES (:notification, :a2f, :darkmode, :user_id)
             ON DUPLICATE KEY UPDATE notification = :notification, a2f = :a2f, darkmode = :darkmode";
 
         try {
@@ -784,7 +784,7 @@ class Database
             $stmt->execute([
                 ':user_id' => $userId,
                 ':notification' => $notification,
-                ':a2f' => $a2f,
+                ':a2f' => 0,
                 ':darkmode' => $darkmode
             ]);
             return true;
