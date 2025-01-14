@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
 }
 
 // Retrieve files to view them
-$files = $db->getFiles($userId);
+//$files = $db->getFiles($userId);
 ?>
 
 <form class="box" method="post" action="" enctype="multipart/form-data">

@@ -5,10 +5,8 @@ session_start();
 
 require dirname(__FILE__) . '/../../../Model/Company.php';
 
-$httpReferer = $_SERVER["HTTP_REFERER"];
-
-if (isset($_SESSION['secretariat']) && isset($_POST['companyId'])) {
-    $boolean = Company::delete($_POST['companyId']);
+if (isset($_SESSION['secretariat']) && isset($_POST['company_id'])) {
+    $boolean = Company::delete($_POST['company_id']);
     if ($boolean) {
         die(json_encode(array("status" => "success")));
     } else {

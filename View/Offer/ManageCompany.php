@@ -70,7 +70,7 @@ $companies = Company::get_all();
         <script type="text/javascript">
             function deleteCompany (id) {
                 $.ajax({
-                    url: '../../presenter/offer/company/delete.php',
+                    url: '../../Presentation/Offer/Company/Delete.php',
                     type: 'POST',
                     data: {
                         company_id: id

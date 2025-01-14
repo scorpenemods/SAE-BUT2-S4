@@ -204,7 +204,7 @@ class Company {
 
     public static function delete(int $id): ?bool {
         global $db;
-        $sql = "DELETE FROM Company WHERE id = :id";
+        $sql = "DELETE FROM Company WHERE id = :id ";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
