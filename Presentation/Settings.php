@@ -20,7 +20,7 @@ $userRole = $person->getRole();
 $senderId = $person->getId(); // Récupère l'ID de l'utilisateur pour les requêtes de base de données
 $database = (Database::getInstance());
 $preferences = $database->getUserPreferences($senderId);
-$darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? 'checked' : '';
+$darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
 
 // Détermine la page d'accueil en fonction du rôle de l'utilisateur
 $homePage = '';
@@ -54,23 +54,7 @@ if (!in_array($activeSection, $allowedSections)) {
     <link rel="stylesheet" href="../View/Settings/Settings.css">
     <script type="text/javascript" src="../View/Settings/Settings.js"></script>
 </head>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Appliquer le mode sombre si activé dans les préférences
-        let darkModeEnabled = "<?php echo $darkmode; ?>" === 'checked';
-        if (darkModeEnabled) {
-            const footerSwitch = document.getElementById('footer');
-            const infosSwitch = document.getElementById('infos');
-            const prefSwitch = document.getElementById('pref');
-            document.body.classList.add('dark-mode');
-            footerSwitch.classList.add('dark-mode');
-            infosSwitch.classList.add('dark-mode');
-            prefSwitch.classList.add('dark-mode');
-        }
-    });
-
-</script>
-<body>
+<body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
 <?php include_once("../View/Header.php");?>
 
 <div class="container">

@@ -57,7 +57,7 @@ $translations = include $langFile;
     <script type="text/javascript" src="../View/Settings/Settings.js"></script> <!-- Lien vers le script JavaScript -->
 </head>
 <body>
-<section id="infos" class="compte-info">
+<section id="infos" class="compte-info  <?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
     <h2><?= $translations['informations du compte']?></h2> <!-- Titre de la section -->
     <table>
         <tr>

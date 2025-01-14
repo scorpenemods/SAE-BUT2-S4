@@ -44,7 +44,7 @@ $database = (Database::getInstance());
 
 // Récupération des préférences de l'utilisateur depuis la base de données
 $preferences = $database->getUserPreferences($senderId);
-$darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? 'checked' : ''; // Vérifie si le mode sombre est activé dans les préférences utilisateur
+$darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? 'checked' : ''; // Vérifie si le mode sombre est activé dans les préférences utilisateur
 
 // Si une section est spécifiée dans l'URL, elle est stockée dans la session pour gérer l'affichage de la section active
 if (isset($_GET['section'])) {
@@ -105,22 +105,8 @@ $translations = include $langFile;
     <!-- Include EmojiOneArea -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Appliquer le mode sombre si activé dans les préférences
-            let darkModeEnabled = "<?php echo $darkmode; ?>" === 'checked';
-            if (darkModeEnabled) {
-                const footerSwitch = document.getElementById('footer');
-                document.body.classList.add('dark-mode');
-                footerSwitch.classList.add('dark-mode');
-                document.getElementById('theme-switch').checked = true; // Coche le switch pour le mode sombre
-            }
-        });
-
-    </script>
 </head>
-<body>
+<body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
     <?php include_once("../View/Header.php");?>
     <div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
     <div class="sidebar" id="sidebar">

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/View/css/Footer.css">
 </head>
-<footer id="footer">
+<footer id="footer" class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
     <div class="container">
         <div class="footer-content">
             <div class="footer-row">
