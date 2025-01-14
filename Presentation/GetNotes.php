@@ -198,107 +198,360 @@ foreach ($underNotesData as $noteId => $sousNotes) {
 
 ?>
 
-<form id="noteForm" action="Professor.php" method="post">
-    <input type="hidden" id="student-id" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
+<body>
+
+<?php
+// Tableau statique des 4 notes
+$notes = [
+    [
+        'id'    => 1,
+        'sujet' => 'A',
+        'note'  => 12.00,
+        'coeff' => 4
+    ],
+    [
+        'id'    => 2,
+        'sujet' => 'B',
+        'note'  => 5.00,
+        'coeff' => 2
+    ],
+    [
+        'id'    => 3,
+        'sujet' => 'C',
+        'note'  => 15.00,
+        'coeff' => 3
+    ],
+    [
+        'id'    => 4,
+        'sujet' => 'D',
+        'note'  => 8.75,
+        'coeff' => 1
+    ],
+];
+?>
 
 
-    <h2 id="selected-student-name"><?= $studentName; ?></h2>
-    <div class="notes-container">
-        <table id="notesTable" class="notes-table">
-            <thead>
+<input type="hidden" id="student-id" name="student_id" value="">
+<h2 id="selected-student-name">Sélectionnez un étudiant</h2>
+<form id="noteForm" action="#" method="post">
+    <table id="notesTable" class="notes-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Sujet</th>
+            <th>Note /20</th>
+            <th>Coefficient</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach ($notes as $data): ?>
+            <?php
+            $noteId  = $data['id'];
+            $sujet   = $data['sujet'];
+            $noteVal = $data['note'];
+            $coeff   = $data['coeff'];
+            ?>
+            <!-- Ligne principale -->
             <tr>
-                <th>ID</th>
-                <th>Sujet</th>
-                <th>Note /20</th>
-                <th>Coefficient</th>
-                <th>Actions</th>
+                <td><?= $noteId ?></td>
+                <td>
+                    <?= htmlspecialchars($sujet) ?>
+                </td>
+                <td><?= number_format($noteVal, 2) ?></td>
+                <td>
+                    <input type="number" value="<?= $coeff ?>" disabled>
+                </td>
+                <td>
+                    <button
+                            type="button"
+                            onclick="showUnderTable(this, 'desc<?= $noteId ?>')"
+                    >
+                        Afficher Détails
+                    </button>
+                </td>
             </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($notesWithAverage as $noteData) : ?>
-                <?php $note = $noteData['note']; ?>
-                <?php $moyenne = $noteData['moyenne']; ?>
-                <tr>
-                    <td><?= htmlspecialchars($note->getId()); ?></td>
-                    <td>
-            <textarea name="sujet_<?= htmlspecialchars($note->getId()); ?>" rows="1" disabled>
-                <?= htmlspecialchars($note->getSujet()); ?>
-            </textarea>
-                    </td>
-                    <td>
-                        <?php if ($moyenne !== null): ?>
-                            <?= number_format($moyenne, 2); ?>
-                        <?php else: ?>
-                            Aucune sous-note
-                        <?php endif; ?>
-                    </td>
-                    <td><input type="number" name="coeff_<?= htmlspecialchars($note->getId()); ?>" value="<?= htmlspecialchars($note->getCoeff()); ?>" disabled></td>
-                    <td>
-                        <form method="POST" action="Professor.php" style="display:inline;">
-                            <input type="hidden" name="action" value="delete_note">
-                            <input type="hidden" name="note_id" value="<?= htmlspecialchars($note->getId()); ?>">
-                            <input type="hidden" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
-                            <button type="submit">Supprimer</button>
-                        </form>
-                        <button type="button" onclick="showUnderTable(this, 'desc<?= $note->getId(); ?>')">Afficher Détails</button>
-                    </td>
 
+            <!-- Sous-ligne, cachée par défaut -->
+            <tr id="desc<?= $noteId ?>" class="idUnderTable" style="display: none;">
+                <td colspan="5">
+                    <!-- ================================
+                         Sous-tableaux (sliders)
+                         ================================ -->
 
-                </tr>
-                <input type="hidden" name="note_id[]" value="<?= htmlspecialchars($note->getId()); ?>">
+                    <!-- 1) Aptitudes intellectuelles -->
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Aptitudes intellectuelles</th>
+                            <th>Échelle (0 à 5)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Sens de l'observation</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="0"
+                                                oninput="updateValue('slider-value-obs-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Qualité du raisonnement logique</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="0"
+                                                oninput="updateValue('slider-value-rais-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sens pratique</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="0"
+                                                oninput="updateValue('slider-value-prat-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
+                    <!-- 2) Qualités opérationnelles -->
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Qualités opérationnelles</th>
+                            <th>Échelle (0 à 5)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Efficacité, respect des délais</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="0"
+                                                oninput="updateValue('slider-value-eff-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sens de la qualité</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="0"
+                                                oninput="updateValue('slider-value-qual-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Esprit d'initiative</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="0"
+                                                oninput="updateValue('slider-value-ini-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Autonomie</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="0"
+                                                oninput="updateValue('slider-value-auto-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-                <?php if (!empty($underNotes[$note->getId()]) || true) : ?>
-                    <tr id="desc<?= $note->getId(); ?>" class="idUnderTable" style="display: none;">
-                        <td colspan="5">
-                            <table width="100%">
-                                <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th>Note</th>
-                                    <th>Actions</th>
+                    <!-- 3) Relationnel et comportement -->
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Relationnel et comportement</th>
+                            <th>Échelle (0 à 5)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Sens des rapports humains</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="0"
+                                                oninput="updateValue('slider-value-rel-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Ponctualité, assiduité</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="0"
+                                                oninput="updateValue('slider-value-ponc-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Intérêt porté par le sujet</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="0"
+                                                oninput="updateValue('slider-value-int-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <?php if (!empty($underNotes[$note->getId()])) : ?>
-                                    <?php foreach ($underNotes[$note->getId()] as $sousNote) : ?>
-                                        <tr>
-                                            <td><?= htmlspecialchars($sousNote->getDescription()); ?></td>
-                                            <td><?= htmlspecialchars($sousNote->getNote()); ?></td>
-                                            <td>
-                                                <form method="POST" action="Professor.php" style="display:inline;">
-                                                    <input type="hidden" name="action" value="delete_under_note">
-                                                    <input type="hidden" name="student_id" value="<?= htmlspecialchars($studentId); ?>">
-                                                    <input type="hidden" name="under_note_id" value="<?= htmlspecialchars($sousNote->getId()); ?>">
-                                                    <button type="submit">Supprimer</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else : ?>
-                                    <tr>
-                                        <td colspan="3" style="text-align: center; color: gray;">
-                                            Aucune sous-note disponible
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                                </tbody>
-                            </table>
-                            <button type="button" data-note-id="<?= $note->getId(); ?>" onclick="addUnderNoteRow(this)">Ajouter une ligne</button>
-                        </td>
-                    </tr>
-                <?php endif; ?>
+                </td>
+            </tr>
 
+        <?php endforeach; ?>
 
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-        <?php if ($studentId) : ?>
-            <div style="margin-bottom: 10px;">
-                <button type="button" onclick="addNoteRow()">Ajouter une note</button>
-            </div>
-        <?php endif; ?>
-    </div>
-
+        </tbody>
+    </table>
 </form>
+</body>

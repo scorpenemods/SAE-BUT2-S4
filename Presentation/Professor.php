@@ -78,6 +78,25 @@ $person = unserialize($_SESSION['user']);
 $userId = $person->getId();
 
 
+//TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
 ?>
 
 
@@ -86,7 +105,7 @@ $userId = $person->getId();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Petit Stage - Professeur</title>
+    <title>Le Petit Stage - <?= $translations['professeur']?></title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js" defer></script>
     <script src="/View/Principal/Note.js"></script>
@@ -116,22 +135,22 @@ $userId = $person->getId();
 
 <section class="Menus" id="Menus">
     <nav>
-        <span onclick="widget(0)" class="widget-button Current">Accueil</span>
-        <span onclick="widget(1)" class="widget-button">Mission de stage</span>
-        <span onclick="widget(2)" class="widget-button">Gestion Étudiants</span>
-        <span onclick="widget(3)" class="widget-button">Livret de suivi</span>
-        <span onclick="widget(4)" class="widget-button">Documents</span>
-        <span onclick="widget(5)" class="widget-button">Messagerie</span>
-        <span onclick="widget(6)" class="widget-button">Notes</span>
-        <span onclick="widget(7)" class="widget-button">Offres</span>
+        <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
+        <span onclick="widget(1)" class="widget-button"><?= $translations['mission stage']?></span>
+        <span onclick="widget(2)" class="widget-button"><?= $translations['gestion étudiants']?></span>
+        <span onclick="widget(3)" class="widget-button"><?= $translations['livret suivi']?></span>
+        <span onclick="widget(4)" class="widget-button"><?= $translations['documents']?></span>
+        <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
+        <span onclick="widget(6)" class="widget-button"><?= $translations['notes']?></span>
+        <span onclick="widget(7)" class="widget-button"><?= $translations['offres']?></span>
 
     </nav>
 
 
     <div class="Contenus">
         <div class="<?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">
-            <h2>Bienvenue sur la plateforme pour Professeurs!</h2><br>
-            <p>Gérez les étudiants, suivez leur progression et communiquez facilement avec eux.</p><br>
+            <h2><?= $translations['welcome_prof']?></h2><br>
+            <p><?= $translations['infos_prof']?></p><br>
         </div>
         <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">Contenu des missions de stage</div>
         <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">
@@ -155,9 +174,9 @@ $userId = $person->getId();
                         <label for="search-input"></label>
                         <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
                     </div>
-                    <h3>Contacts</h3>
+                    <h3><?= $translations['contacts']?></h3>
                     <!-- Bouton pour contacter le secrétariat -->
-                    <button id="contact-secretariat-btn" class="contact-secretariat-btn">Contacter le secrétariat</button>
+                    <button id="contact-secretariat-btn" class="contact-secretariat-btn"><?= $translations['contacter secrétariat']?></button>
                     <ul id="contacts-list">
                         <?php include_once("ContactList.php");?>
                         <?php include_once("GroupContactList.php");?>

@@ -95,13 +95,13 @@ $translations = include $langFile;
 <!-- Changer le style pour que les formulaires s'affichent à côté des rencontres  -->
 <aside class="livretbar">
     <h3 style="text-decoration: underline;"><?= $translations['rencontres']?> / <?= $translations['dépôts']?></h3><br>
-    <span class="vignette" onclick="showContent(0)">1ère rencontre</span><br>
+    <span class="vignette" onclick="showContent(0)"><?= $translations['rencontre']?> 1</span><br>
 
-    <span class="vignette" onclick="showContent(1)">Finalisation du livret</span><br>
+    <span class="vignette" onclick="showContent(1)"><?= $translations['finalisation livret']?></span><br>
 
-    <button onclick="addMeeting()" type="button">+ Ajouter une rencontre</button>
+    <button onclick="addMeeting()" type="button">+ <?= $translations['ajouter rencontre']?></button>
 
-    <button onclick="deleteMeeting()" type="button">- Supprimer la dernière rencontre</button>
+    <button onclick="deleteMeeting()" type="button">- <?= $translations['supprimer rencontre']?></button>
 </aside>
 
 <!-- Affichage des informations des participants : -->
@@ -112,16 +112,16 @@ $translations = include $langFile;
 
     <!-- Rencontre 1 -->
     <div class="content-section" id="0">
-        <h3 style="padding: 10px">Formulaire</h3>
+        <h3 style="padding: 10px"><?= $translations['formulaire']?></h3>
         <div class="livret-header">
-            <h3>1ère rencontre</h3>
+            <h3><?= $translations['rencontre']?> 1</h3>
         </div>
 
         <!-- Formulaire -->
         <div class="participants">
             <form method="post" id="formContainer-0">
                 <p>
-                    Date de rencontre : <label style="color: red">*</label> <br>
+                    <?= $translations['date'] . $translations['rencontre']?> : <label style="color: red">*</label> <br>
 
                     <input type="date" name="meeting"/>
                 </p>
@@ -129,17 +129,17 @@ $translations = include $langFile;
                 <br><br>
 
                 <p>
-                    Lieu de la rencontre : <label style="color: red">*</label> <br>
+                    <?= $translations['lieu'] . $translations['rencontre']?> : <label style="color: red">*</label> <br>
 
-                    <input type="radio" id="Entreprise" name="Lieu"><label> En entreprise</label> <br>
-                    <input type="radio" id="Tél" name="Lieu"><label> Par téléphone</label> <br>
-                    <input type="radio" id="Visio" name="Lieu"><label> En visio</label> <br>
-                    <input type="radio" id="Autre" name="Lieu"><label> Autre</label> <input type="text" name="Lieu">
+                    <input type="radio" id="Entreprise" name="Lieu"><label> <?= $translations['en entreprise']?></label> <br>
+                    <input type="radio" id="Tél" name="Lieu"><label> <?= $translations['par téléphone']?></label> <br>
+                    <input type="radio" id="Visio" name="Lieu"><label> <?= $translations['en visio']?></label> <br>
+                    <input type="radio" id="Autre" name="Lieu"><label> <?= $translations['autre']?></label> <input type="text" name="Lieu">
                 </p>
 
                 <br><br>
 
-                <button onclick="addField('formContainer-0')" type="button">+ Ajouter un champ</button>
+                <button onclick="addField('formContainer-0')" type="button">+ <?= $translations['ajouter champ']?></button>
 
             </form>
         </div>

@@ -207,6 +207,12 @@ function showUnderTable(button, idUnderTable) {
 
 
 
+function updateValue(displayId, value) {
+    document.getElementById(displayId).textContent = value;
+}
+
+
+
 
 
 
