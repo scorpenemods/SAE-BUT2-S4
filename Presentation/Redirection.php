@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 // Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
 if (isset($_GET['lang'])) {
@@ -18,6 +19,24 @@ if (!file_exists($langFile)) {
 $translations = include $langFile;
 
 
+if ($_SESSION["user_role"] == 4 || $_SESSION["user_role"] == 5) {
+    header('Location: Secretariat.php?section=0');
+    die();
+}
+if ($_SESSION["user_role"] == 3) {
+    header('Location: MaitreStage.php?section=0');
+
+}
+if ($_SESSION["user_role"] == 2) {
+    header('Location: Professor.php?section=0');
+
+}
+if ($_SESSION["user_role"] == 1) {
+    header('Location: Student.php?section=0');
+
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -32,28 +51,6 @@ $translations = include $langFile;
     <h1><?= $translations['redirection'] ?></h1>
     <p><?= $translations['return_phrase'] ?></p>
 </div>
-<?php
-session_start();
 
-if($_SESSION["user_role"] == 4 || $_SESSION["user_role"] == 5){
-    header('Location: Secretariat.php?section=0');
-    die();
-}
-if($_SESSION["user_role"] == 3 ){
-    header('Location: MaitreStage.php?section=1');
-
-}
-if($_SESSION["user_role"] == 2 ){
-    header('Location: Professor.php?section=1');
-
-}
-if($_SESSION["user_role"] == 1){
-    header('Location: Student.php?section=1');
-
-}
-
-
-
-?>
 </body>
 </html>

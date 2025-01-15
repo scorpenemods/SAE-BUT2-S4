@@ -28,8 +28,8 @@ if ($_SESSION["user_role"]==4 || $_SESSION["user_role"]==5) {
     $_SESSION['secretariat'] = true;
 }
 
-if (isset($_SESSION['user'])) {
-    $user_id = $_SESSION['user'];
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
 }
 
 

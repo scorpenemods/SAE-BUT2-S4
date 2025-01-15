@@ -6,7 +6,7 @@ session_start();
 require_once dirname(__FILE__) . "/../../Model/PendingOffer.php";
 require_once dirname(__FILE__) . "/../../Model/Company.php";
 
-$userId = $_SESSION['user'] ?? false;
+$userId = $_SESSION['user_id'] ?? false;
 if (!$userId) {
     //header("Location: ../Offer/View/Create.php");
     die();
