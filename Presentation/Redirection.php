@@ -25,7 +25,7 @@ $translations = include $langFile;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $translations['redirection_title'] ?></title>
-    <link rel="stylesheet" href="../View/Redirection/Redirection.css"> <!-- Lien vers le fichier CSS -->
+    <link rel="stylesheet" href="../View/Redirection/Redirection.css">
 </head>
 <body>
 <div class="container">

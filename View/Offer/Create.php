@@ -77,12 +77,12 @@ if (!(isset($_SESSION['companyId'])) || $_SESSION['companyId'] == 0) {
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="duration">Durée</label>
-                        <input type="text" id="duration" name="duration" placeholder="Ex: 6 semaines" required>
+                        <label for="duration">Durée en semaine</label>
+                        <input type="number" id="duration" name="duration" placeholder="Ex: 6 semaines" min="1" required>
                     </div>
                     <div class="form-group">
                         <label for="salary">Salaire</label>
-                        <input type="text" id="salary" name="salary" placeholder="Ex: 600€ / mois" required>
+                        <input type="number" id="salary" name="salary" placeholder="Ex: 600€ / mois" min="0" required>
                     </div>
                 </div>
 

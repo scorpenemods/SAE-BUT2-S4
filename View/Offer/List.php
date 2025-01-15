@@ -139,21 +139,23 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                     echo '<div id="new"> <a href="/View/Offer/List.php?type=new">Nouvelles offres</i></a> </div>';
                     echo '<div id="manage"> <a href="/View/Offer/ManageCompany.php">Gestions des sociétés</i></a> </div>';
                     echo '<div id="suppressed"><a href="/View/Offer/List.php?type=suppressed">Offres supprimés</i></a> </div>';
+                    echo '<div id="create_company" style="text-align: center"> <a href="Company/Create.php">Créer une société</i></a> </div>';
                 }
 
                 if ($secretariat_group || $company_id != 0) {
                     echo '<div id="all"><a href="/View/Offer/List.php?type=all">Tous les offres</i></a> </div>';
                     echo '<div id="updated"> <a href="/View/Offer/List.php?type=updated">Offres mises à jour</i></a> </div>';
                     echo '<div id="inactive"> <a href="/View/Offer/List.php?type=inactive">Offres inactives</i></a> </div>';
+                    echo '<div id="create_company" style="text-align: center"> <a href="Company/Create.php">Créer une société</i></a> </div>';
                 }
 
                 if (!$secretariat_group && $company_id == 0) {
                     echo '<div id="manage_alerts" style="text-align: center"> <a href="/View/Offer/ManageAlert.php">Gérer les alertes</i></a> </div>';
                     echo '<div id="manage_applications" style="text-align: center"> <a href="/View/Offer/ManageApplication.php">Voir mes candidatures</a></div>';
+
                 }
                 ?>
                 <div id="create" style="text-align: center"> <a href="Create.php">Créer une offre</i></a> </div>
-                <div id="create_company" style="text-align: center"> <a href="Company/Create.php">Créer une société</i></a> </div>
             </div>
             <div class="company-listings">
                 <?php
