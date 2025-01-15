@@ -27,17 +27,7 @@ function updateValue(spanId, val) {
     }
 }
 
-function submitSlider(slider) {
-    const noteId = slider.getAttribute('data-note-id');
-    const description = slider.getAttribute('data-description');
-    const value = slider.value;
 
-    document.getElementById('sliderNoteId').value = noteId;
-    document.getElementById('sliderDescription').value = description;
-    document.getElementById('sliderValue').value = value;
-
-    document.getElementById('sliderForm').submit();
-}
 
 document.addEventListener('DOMContentLoaded', function () {
     const noteForm = document.getElementById('noteForm');

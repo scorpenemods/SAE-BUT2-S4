@@ -866,9 +866,14 @@ function selectStudent(element) {
     } else {
         console.error("Impossible de trouver l'élément avec l'ID 'selected-student-name'");
     }
-    document.getElementById('noteForm').submit();
-
-
+    if (isNotesTabActive()) {
+        // Si l'onglet Notes est actif, soumettez le formulaire
+        document.getElementById('noteForm').submit();
+    } else {
+        // Sinon, traitez la sélection sans recharger la page
+        console.log(`Étudiant ${studentId} sélectionné hors de l'onglet Notes.`);
+        // Ajoutez ici d'autres actions si nécessaire
+    }
     // Charger les notes de l'étudiant sélectionné
     fetchStudentInfo(studentId);
     fetchStudentInfoManage(studentId);
@@ -876,6 +881,10 @@ function selectStudent(element) {
 
 }
 
+function isNotesTabActive() {
+    const notesTab = document.getElementById('content-6');
+    return notesTab && notesTab.classList.contains('Visible');
+}
 
 document.getElementById('studentForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Empêche le rechargement de la page
@@ -903,9 +912,6 @@ function fetchNotes(studentId) {
             console.error('Erreur lors de la récupération des notes :', error);
         });
 }
-
-
-
 
 // -----------------------------------------------------------------------//
 // send a message only by clicking the button
