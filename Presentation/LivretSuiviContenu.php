@@ -16,62 +16,12 @@ $userRole = $person->getRole();
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
-
-$groupId = $database->getGroup($studentInfo['id'], $professorInfo['id'], $mentorInfo['id']);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Configuration des paramètres d'upload
-    $allowedExtensions = ['pdf'];
-    $maxFileSize = 50 * 1024 * 1024; // 50 Mo en octets
-
-    // Vérification que le fichier a été téléchargé
-    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-        $file = $_FILES['file'];
-
-        // Extraction des informations du fichier
-        $fileName = $file['name'];
-        $fileSize = $file['size'];
-        $fileTmpPath = $file['tmp_name'];
-        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-        // Vérification de l'extension et de la taille
-        if (!in_array($fileExtension, $allowedExtensions)) {
-            die("Erreur : Seuls les fichiers .pdf sont autorisés.");
-        }
-
-        if ($fileSize > $maxFileSize) {
-            die("Erreur : La taille du fichier dépasse la limite de 50 Mo.");
-        }
-
-        // Déplacement du fichier vers un répertoire permanent
-        $uploadDir = 'uploads/'; // Répertoire où stocker les fichiers (créez-le si nécessaire)
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-
-        $uniqueFileName = uniqid('file_', true) . '.' . $fileExtension;
-        $destinationPath = $uploadDir . $uniqueFileName;
-
-        if (move_uploaded_file($fileTmpPath, $destinationPath)) {
-            // Appel de la méthode addLivretFile
-            $result = $database->addLivretFile($fileName, $destinationPath, $studentInfo['id'], $fileSize, $groupId);
-
-            if ($result) {
-                echo "Fichier téléchargé et enregistré avec succès.";
-            } else {
-                echo "Erreur lors de l'enregistrement dans la base de données.";
-            }
-        } else {
-            echo "Erreur : Échec du déplacement du fichier.";
-        }
-    } else {
-        echo "Erreur : Aucun fichier téléchargé ou erreur lors de l'upload.";
-    }
+if (empty($_SESSION['csrf_rapport'])) {
+    $_SESSION['csrf_rapport'] = bin2hex(random_bytes(16));
 }
 
-$file = $database->getLivretFile($groupId);
-
-
+$groupId = $database->getGroup($studentInfo['id'], $professorInfo['id'], $mentorInfo['id']);
+$_SESSION['group_id'] = $groupId;
 //TRADUCTION
 
 // Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
@@ -260,51 +210,51 @@ $translations = include $langFile;
                 <textarea name="remarque[]" class="textareaLivret"></textarea> <br><br>
             </form>
 
+            <?php include_once("Documents/Documents.php");?>
+
+            <h2>Gestion des Rapports</h2>
+            <form class="box" method="post" action="" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                <input type="hidden" name="form_id" value="uploader_rapport">
+                <input type="hidden" name="groupId" value="<?=$groupId?>">
+                <div class="box__input">
+                    <input type="file" name="files[]" id="file-rapport" multiple>
+                    <button class="box__button" type="submit">Uploader Rapport</button>
+                </div>
+            </form>
+
 
 
             <?php
-            //Vérifie que seulement l'étudiant peut voir le dépôt de fichiers
-            if ($userRole == $userRole){
-                ?>
-
-                <h3 style="margin-bottom: 10px">Veuillez déposer votre rapport de stage ci-dessous :</h3>
-
-                <form class="box" method="post" enctype="multipart/form-data">
-                    <p>Seuls les formats <strong>.pdf</strong> sont autorisés jusqu'à une taille maximale de <strong>50 Mo</strong>. </p><br>
-                    <div class="box__input">
-                        <input type="file" name="file" id="fileUpload">
-                        <button class="box__button" type="submit">Uploader</button>
-                    </div>
-                </form>
-                <?php
-            }   ?>
-
+            $db = Database::getInstance();
+            $rapportfiles = $db->getLivretFile($groupId);
+            ?>
             <div class="file-list">
-                <h2>Fichier(s) déposé(s) :</h2>
+                <h2>Fichiers Uploadés</h2>
                 <div class="file-grid">
-                    <?php
-                    //Affiche les fichiers uploadés depuis le livret de suivi
-                    foreach ($file as $f):
-                    if (!empty($f)): ?>
+                    <?php foreach ($rapportfiles as $rapportfiles): ?>
                         <div class="file-card">
                             <div class="file-info">
-                                <strong><?= htmlspecialchars($f['name']) ?></strong>
-                                <p><?= round($f['size'] / 1024, 2) ?> KB</p>
+                                <strong><?= htmlspecialchars($rapportfiles['name']) ?></strong>
+                                <p><?= round($rapportfiles['size'] / 1024, 2) ?> KB</p>
                             </div>
                             <form method="get" action="Documents/Download.php">
-                                <input type="hidden" name="file" value="<?= htmlspecialchars($f['path']) ?>">
+                                <input type="hidden" name="file" value="<?= htmlspecialchars($rapportfiles['path']) ?>">
                                 <button type="submit" class="download-button">Télécharger</button>
                             </form>
                             <form method="post" action="" class="delete-form">
                                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                <input type="hidden" name="livretFileId" value="<?= $f['id'] ?>">
+                                <input type="hidden" name="form_id" value="delete_rapport">
+                                <input type="hidden" name="fileId" value="<?= $rapportfiles['id'] ?>">
                                 <button type="submit" class="delete-button">Supprimer</button>
                             </form>
                         </div>
-                    <?php endif;
-                    endforeach;?>
+                    <?php endforeach; ?>
                 </div>
             </div>
+
+
+
         </div>
         <div style="display: flex; ">
             <!-- Validation du formulaire -->

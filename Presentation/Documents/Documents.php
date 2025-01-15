@@ -1,5 +1,4 @@
 <?php
-
 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
 
 // Generate a CSRF token if not already done
@@ -16,7 +15,10 @@ if (!isset($_SESSION['user_id'])) {
 $db = Database::getInstance();
 $userId = $_SESSION['user_id']; // ID of the connected student
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
+function handleFileUpload($db, $userId): void
+{
+    global $allowedExtensions;
+
     if (!empty($_FILES['files'])) {
         foreach ($_FILES['files']['tmp_name'] as $index => $tmpName) {
             $name = $_FILES['files']['name'][$index];
@@ -24,8 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
             $error = $_FILES['files']['error'][$index];
 
             if ($error === UPLOAD_ERR_OK) {
-                // Check the file extension
-                $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION)); // Get the extension
+                $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
                 if (!in_array($extension, $allowedExtensions)) {
                     echo "Le fichier $name n'est pas autorisé. Seules les images et les PDF sont acceptés.<br>";
                     continue;
@@ -40,76 +41,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
                 if ($db->fileExists($name, $userId)) {
                     continue; // Skip file if already existing
                 }
+
                 if (move_uploaded_file($tmpName, $filePath)) {
-                    // Add the file to the database
                     $db->addFile($name, $filePath, $userId, $size);
                 }
             }
         }
     }
+}
+function handleRapportUpload($db, $userId, $groupId): void
+{
+    global $allowedExtensions;
 
-    // Manage file deletion
-    if (!empty($_POST['fileId'])) {
-        $db->deleteFile((int)$_POST['fileId']);
+    if (!empty($_FILES['files'])) {
+        foreach ($_FILES['files']['tmp_name'] as $index => $tmpName) {
+            $name = $_FILES['files']['name'][$index];
+            $size = $_FILES['files']['size'][$index];
+            $error = $_FILES['files']['error'][$index];
+
+            if ($error === UPLOAD_ERR_OK) {
+                $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+                if (!in_array($extension, $allowedExtensions)) {
+                    echo "Le fichier $name n'est pas autorisé. Seules les images et les PDF sont acceptés.<br>";
+                    continue;
+                }
+
+                $uploadDir = '../uploads/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                $filePath = $uploadDir . uniqid() . '-' . basename($name);
+
+                if ($db->fileExists($name, $userId)) {
+                    continue; // Skip file if already existing
+                }
+
+                if (move_uploaded_file($tmpName, $filePath)) {
+                    if (is_int($groupId)) {
+                        $db->addLivretFile($name, $filePath, $userId, $size, $groupId);
+                    }
+                    else{
+                        error_log("pas int zebo ". $groupId);
+                    }
+                }
+            }
+        }
     }
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
+    // Gestion des fichiers du Code 1
+    if ($_POST['form_id'] === 'uploader_fichier' || $_POST['form_id'] === 'delete_file') {
+        if ($_POST['form_id'] === 'uploader_fichier') {
+            handleFileUpload($db, $userId);
+            error_log('Fichier Upload');
+        } elseif ($_POST['form_id'] === 'delete_file') {
+            // Suppression d'un fichier (Code 1)
+            if (!empty($_POST['fileId'])) {
+                $fileId = (int)$_POST['fileId'];
+                $db->deleteFile($fileId);
+            }
+        }
+    }
+
+    // Gestion des rapports du Code 2
+    if ($_POST['form_id'] === 'uploader_rapport' || $_POST['form_id'] === 'delete_rapport') {
+        if ($_POST['form_id'] === 'uploader_rapport') {
+
+            $groupId = $_SESSION['group_id'];
+
+            if ($groupId === null) {
+                error_log("nullgroupid " . $groupId);
+            } elseif (is_string($groupId)) {
+                error_log("groupid is a string: " . $groupId);
+            }
+
+            handleRapportUpload($db, $userId, $groupId);
+            error_log('Rapport Upload');
+        } elseif ($_POST['form_id'] === 'delete_rapport') {
+            // Suppression d'un rapport (Code 2)
+            if (!empty($_POST['fileId'])) {
+                $fileId = (int)$_POST['fileId'];
+                $db->deleteFile($fileId);
+            }
+        }
+    }
+
+    // Redirection pour éviter la soumission multiple
     header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
 }
 
-// Retrieve files to view them
 $files = $db->getFiles($userId);
-
-
-//TRADUCTION
-
-// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
-if (isset($_GET['lang'])) {
-    $lang = $_GET['lang'];
-    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
-} else {
-    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
-}
-
-// Vérification si le fichier de langue existe, sinon charger le français par défaut
-$langFile = "../locales/{$lang}.php";
-if (!file_exists($langFile)) {
-    $langFile = "../locales/fr.php";
-}
-
-// Charger les traductions
-$translations = include $langFile;
-
-?>
-
-<form class="box" method="post" action="" enctype="multipart/form-data">
-    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-    <div class="box__input">
-        <input type="file" name="files[]" id="file" multiple>
-        <button class="box__button" type="submit"><?= $translations['upload']?></button>
-    </div>
-    <div class="box__uploading"><?= $translations['envoi']?></div>
-    <div class="box__success"><?= $translations['envoi_terminer']?></div>
-    <div class="box__error"><?= $translations['erreur']?> : <span></span></div>
-</form>
-
-<div class="file-list">
-    <h2><?= $translations['fichiers upload']?></h2>
-    <div class="file-grid">
-        <?php foreach ($files as $file): ?>
-            <div class="file-card">
-                <div class="file-info">
-                    <strong><?= htmlspecialchars($file['name']) ?></strong>
-                    <p><?= round($file['size'] / 1024, 2) ?> KB</p>
-                </div>
-                <form method="get" action="Documents/Download.php">
-                    <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
-                    <button type="submit" class="download-button"><?= $translations['download']?></button>
-                </form>
-                <form method="post" action="" class="delete-form">
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                    <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
-                    <button type="submit" class="delete-button"><?= $translations['delete']?></button>
-                </form>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</div>
