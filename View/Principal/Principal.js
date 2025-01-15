@@ -858,6 +858,7 @@ function selectStudent(element) {
     // Mise à jour de l'ID dans l'input caché du formulaire
     document.getElementById('student-id').value = studentId;
 
+
     // Mettre à jour le nom de l'étudiant affiché
     const studentNameElement = document.getElementById('selected-student-name');
     if (studentNameElement) {
@@ -865,6 +866,7 @@ function selectStudent(element) {
     } else {
         console.error("Impossible de trouver l'élément avec l'ID 'selected-student-name'");
     }
+    document.getElementById('noteForm').submit();
 
 
     // Charger les notes de l'étudiant sélectionné

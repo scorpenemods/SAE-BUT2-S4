@@ -1192,241 +1192,6 @@ class Database
     // --------------------  Note in Database ------------------------------------------ //
 
     /**
-     * Add a note into database
-     * @param $studentId
-     * @param $notesData
-     * @param $pdo
-     * @return void
-     * @throws Exception
-     */
-    function addNotes($studentId, $notesData, $pdo): void
-    {
-        try {
-            // Vérification des données en entrée
-            if (!is_array($notesData)) {
-                throw new Exception("Les données fournies à addNotes doivent être un tableau.");
-            }
-
-            foreach ($notesData as $note) {
-                if (!isset($note['sujet'], $note['note'], $note['coeff'])) {
-                    throw new Exception("Données manquantes dans une note : " . print_r($note, true));
-                }
-
-                if (empty($note['sujet']) || $note['note'] < 0 || $note['note'] > 20 || $note['coeff'] <= 0) {
-                    throw new Exception("Données invalides dans une note : " . print_r($note, true));
-                }
-            }
-
-            // Préparation de la requête d'insertion
-            $query = $pdo->prepare("INSERT INTO Note (sujet, note, coeff, user_id)
-            VALUES (:sujet, :note, :coeff, :user_id)");
-
-            // Exécution pour chaque note
-            foreach ($notesData as $note) {
-                $query->execute([
-                    ':sujet' => $note['sujet'],
-                    ':note' => floatval($note['note']),
-                    ':coeff' => floatval($note['coeff']),
-                    ':user_id' => $studentId
-                ]);
-            }
-        } catch (PDOException $e) {
-            // Gérer les erreurs de la base de données
-            echo "Erreur lors de l'insertion des notes : " . $e->getMessage();
-            error_log($e->getMessage());
-            throw $e;
-        } catch (Exception $e) {
-            // Gérer les autres erreurs
-            echo "Erreur : " . $e->getMessage();
-            error_log($e->getMessage());
-            throw $e;
-        }
-    }
-
-
-    /**
-     * Modify a note into database
-     * @param $noteId
-     * @param $studentId
-     * @param $sujet
-     * @param $coeff
-     * @param $pdo
-     * @return void
-     * @throws Exception
-     */
-    public function updateNote($noteId, $studentId, $sujet, $coeff, $pdo): void
-    {
-        try {
-            $pdo->beginTransaction();
-            $stmt = $pdo->prepare("
-            UPDATE Note
-            SET sujet = :sujet, coeff = :coeff
-            WHERE id = :id AND user_id = :user_id
-        ");
-
-            $stmt->execute([
-                ':sujet' => $sujet,
-                ':coeff' => $coeff,
-                ':id' => $noteId,
-                ':user_id' => $studentId
-            ]);
-
-            if ($stmt->rowCount() === 0) {
-                throw new Exception("Aucune ligne modifiée. ID incorrect ou permissions insuffisantes.");
-            }
-
-            $pdo->commit();
-        } catch (PDOException $e) {
-            $pdo->rollBack();
-            error_log("Erreur SQL : " . $e->getMessage());
-            throw new Exception("Erreur lors de la mise à jour : " . $e->getMessage(), 0, $e);
-        }
-    }
-
-
-    /**
-     * Add under note to a specific note
-     * @param array $notesData
-     * @param PDO $pdo
-     * @return void
-     * @throws Exception
-     */
-    function addUnderNotes(array $notesData, PDO $pdo): void
-    {
-        try {
-            // Verification of entry data
-            if (!is_array($notesData)) {
-                throw new Exception("Les données fournies à addUnderNotes doivent être un tableau.");
-            }
-
-            // Verification of every under notes
-            foreach ($notesData as $note) {
-                if (!isset($note['description'], $note['note_id'], $note['note'])) {
-                    throw new Exception("Données manquantes dans une sous-note : " . print_r($note, true));
-                }
-
-                if (empty($note['description']) || !is_numeric($note['note']) || $note['note'] < 0 || $note['note'] > 20) {
-                    throw new Exception("Données invalides dans une sous-note : " . print_r($note, true));
-                }
-            }
-
-            // Preparation of insertion request
-            $query = $pdo->prepare("INSERT INTO Sous_Note (description, note_id, note) VALUES (:description, :note_id, :note_value)");
-
-            // Insertion of every under notes
-            foreach ($notesData as $note) {
-                $query->execute([
-                    ':description' => $note['description'],
-                    ':note_id' => (int)$note['note_id'],
-                    ':note_value' => (int)$note['note']
-                ]);
-            }
-        } catch (PDOException $e) {
-            // Handling database errors
-            echo "Erreur lors de l'insertion des sous-notes : " . $e->getMessage();
-            error_log($e->getMessage());
-            throw $e;
-        } catch (Exception $e) {
-            // Handling other errors
-            echo "Erreur : " . $e->getMessage();
-            error_log($e->getMessage());
-            throw $e;
-        }
-    }
-
-
-    /**
-     * Delete a note
-     * @param $noteId
-     * @param $studentId
-     * @param $pdo
-     * @return void
-     */
-    public function deleteNote($noteId, $studentId, $pdo): void
-    {
-        try {
-            // Preparation of the delete note request
-            $stmt = $pdo->prepare("DELETE FROM Note WHERE id = :id AND user_id = :user_id");
-
-            // Run query with parameters
-            $stmt->execute([
-                ':id' => $noteId,
-                ':user_id' => $studentId  // Using of student id
-            ]);
-
-            // Checking the number of rows affected
-            if ($stmt->rowCount() > 0) {
-                echo "Note supprimée avec succès";
-            } else {
-                echo "Aucune note trouvée avec cet ID et cet utilisateur. Annulation de la suppression.";
-            }
-        } catch (PDOException $e) {
-            echo "Erreur lors de la suppression de la note : " . $e->getMessage();
-            throw $e;
-        }
-    }
-
-    /**
-     * Delete under note for a specific note
-     * @param $underNoteId
-     * @param $pdo
-     * @return void
-     * @throws Exception
-     */
-    public function deleteUnderNote($underNoteId, $pdo): void {
-        $stmt = $pdo->prepare("DELETE FROM Sous_Note WHERE sousNote_id = :id");
-        $stmt->execute([':id' => $underNoteId]);
-
-        if ($stmt->rowCount() === 0) {
-            throw new Exception("Aucune sous-note supprimée. L'ID est peut-être incorrect.");
-        }
-    }
-
-    /**
-     * Get the average of student notes
-     * @param $noteId
-     * @param $pdo
-     * @return float|int|null
-     */
-    public function getMainNoteAverage($noteId, $pdo): float|int|null
-    {
-        // Retrieve all under notes linked to this note
-        $stmt = $pdo->prepare("SELECT note FROM Sous_Note WHERE note_id = :note_id");
-        $stmt->execute([':note_id' => $noteId]);
-        $sousNotes = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-        // If no under note is found, return null
-        if (!$sousNotes || count($sousNotes) === 0) {
-            return null;
-        }
-
-        // Retrieve the main coefficient of the note
-        $stmtCoeff = $pdo->prepare("SELECT coeff FROM Note WHERE id = :id");
-        $stmtCoeff->execute([':id' => $noteId]);
-        $coeff = $stmtCoeff->fetchColumn();
-
-        $totaleSumNote = 0;
-        $totaleSumCoeff = 0;
-
-        // Calculation of the weighted sum of notes
-        foreach ($sousNotes as $note) {
-            $note = floatval($note);
-
-            $totaleSumNote += $note * $coeff;
-            $totaleSumCoeff += $coeff;
-        }
-
-        // Check that there is a total coefficient to avoid division by zero
-        if ($totaleSumCoeff === 0) {
-            return null;
-        }
-
-        // Calculate the weighted average
-        return $totaleSumNote / $totaleSumCoeff;
-    }
-
-
-    /**
      * Get all notes of a student
      * @param $studentId
      * @return array
@@ -1440,40 +1205,130 @@ class Database
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return an associative array
     }
 
+
     /**
-     * Get all under notes of a student
-     * @param $studentId
-     * @return array
+     * Crée automatiquement les 4 lignes principales pour un étudiant
+     * @param int $studentId
      */
-    public function getUnderNotes($studentId): array
-    {
-        $query = "SELECT
-                sn.sousNote_id AS SousNoteID,
-                sn.description AS Description,
-                sn.note AS SousNote,
-                n.id AS NoteID
-              FROM
-                Sous_Note sn
-                JOIN Note n ON sn.note_id = n.id
-              WHERE
-                n.user_id = ?";
-
-        $stmt = $this->connection->prepare($query);
-        $stmt->execute([$studentId]);
-
-        // Get all rows as associative array
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $underNotes = [];
-        foreach ($rows as $row) {
-            $underNotes[$row['NoteID']][] = new Sous_Note(
-                $row['SousNoteID'],
-                $row['Description'],
-                $row['SousNote']
-            );
+    public function createMainNotesForStudent(int $studentId): void {
+        if ($studentId <= 0) {
+            echo "Erreur : ID utilisateur invalide.";
+            return;
         }
-        return $underNotes;
+
+        // Vérifiez si les lignes principales existent déjà
+        $sqlCheck = "SELECT COUNT(*) FROM Note WHERE user_id = :user_id";
+        $stmtCheck = $this->connection->prepare($sqlCheck);
+        $stmtCheck->bindParam(':user_id', $studentId, PDO::PARAM_INT);
+        $stmtCheck->execute();
+        $noteCount = $stmtCheck->fetchColumn();
+
+        if ($noteCount == 0) {
+            // Insérez les 4 lignes principales
+            $sqlInsert = "
+            INSERT INTO Note (sujet, note, coeff, user_id) VALUES
+            ('A', 0, 4, :user_id),
+            ('B', 0, 2, :user_id),
+            ('C', 0, 3, :user_id),
+            ('D', 0, 1, :user_id)
+        ";
+            $stmtInsert = $this->connection->prepare($sqlInsert);
+            $stmtInsert->bindParam(':user_id', $studentId, PDO::PARAM_INT);
+
+            try {
+                $stmtInsert->execute();
+                echo "Les lignes principales ont été créées avec succès.";
+            } catch (PDOException $e) {
+                echo "Erreur lors de l'insertion : " . $e->getMessage();
+            }
+        }
     }
+
+
+    public function saveSliderValue(int $noteId, string $description, int $value): void
+    {
+        try {
+            // Vérifie si la ligne existe déjà
+            $checkSql = "SELECT COUNT(*) FROM Sous_Note WHERE note_id = :note_id AND description = :description";
+            $checkStmt = $this->connection->prepare($checkSql);
+            $checkStmt->bindParam(':note_id', $noteId, PDO::PARAM_INT);
+            $checkStmt->bindParam(':description', $description, PDO::PARAM_STR);
+            $checkStmt->execute();
+            $exists = $checkStmt->fetchColumn() > 0;
+
+            if ($exists) {
+                // Mise à jour si la ligne existe
+                $updateSql = "UPDATE Sous_Note SET note = :note WHERE note_id = :note_id AND description = :description";
+                $updateStmt = $this->connection->prepare($updateSql);
+                $updateStmt->bindParam(':note_id', $noteId, PDO::PARAM_INT);
+                $updateStmt->bindParam(':description', $description, PDO::PARAM_STR);
+                $updateStmt->bindParam(':note', $value, PDO::PARAM_INT);
+                $updateStmt->execute();
+            } else {
+                // Insertion si la ligne n'existe pas
+                $insertSql = "INSERT INTO Sous_Note (note_id, description, note) VALUES (:note_id, :description, :note)";
+                $insertStmt = $this->connection->prepare($insertSql);
+                $insertStmt->bindParam(':note_id', $noteId, PDO::PARAM_INT);
+                $insertStmt->bindParam(':description', $description, PDO::PARAM_STR);
+                $insertStmt->bindParam(':note', $value, PDO::PARAM_INT);
+                $insertStmt->execute();
+            }
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de l'enregistrement : " . $e->getMessage());
+        }
+    }
+
+    public function getSliderValues(int $noteId): array {
+        $sql = "SELECT description, note FROM Sous_Note WHERE note_id = :note_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':note_id', $noteId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getMainNoteAverage(int $noteId): float|int|null
+    {
+        // Récupérer toutes les sous-notes liées à cette note
+        $stmt = $this->connection->prepare("SELECT note FROM Sous_Note WHERE note_id = :note_id");
+        $stmt->execute([':note_id' => $noteId]);
+        $sousNotes = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        // Si aucune sous-note n'est trouvée, retourner null
+        if (!$sousNotes || count($sousNotes) === 0) {
+            return null;
+        }
+
+        // Récupérer le coefficient principal de la note
+        $stmtCoeff = $this->connection->prepare("SELECT coeff FROM Note WHERE id = :id");
+        $stmtCoeff->execute([':id' => $noteId]);
+        $coeff = $stmtCoeff->fetchColumn();
+
+        // Vérification si le coefficient est valide
+        if ($coeff === false) {
+            return null;
+        }
+
+        $totalSumNote = 0;
+        $totalSumCoeff = 0;
+
+        // Calcul de la somme pondérée des sous-notes
+        foreach ($sousNotes as $note) {
+            $note = floatval($note); // Convertir la sous-note en float
+
+            $totalSumNote += $note * $coeff;
+            $totalSumCoeff += $coeff;
+        }
+
+        // Vérifier qu'il y a bien un coefficient total pour éviter une division par zéro
+        if ($totalSumCoeff === 0) {
+            return null;
+        }
+
+        // Calculer la moyenne pondérée et la ramener sur 20
+        $average = ($totalSumNote / $totalSumCoeff) * (20 / 5); // Ramener sur 20
+        return $average;
+    }
+
 
 
 
