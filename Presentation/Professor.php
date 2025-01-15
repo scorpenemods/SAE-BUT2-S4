@@ -251,7 +251,7 @@ $translations = include $langFile;
             </div>
         </div>
         <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">
-            <?php  include_once "GetNotes.php"?>
+            <?php include_once "GetNotesProf.php" ?>
         </div>
 
     <!-- Offres Content -->

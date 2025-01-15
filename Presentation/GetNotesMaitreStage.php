@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $database->createMainNotesForStudent($studentId);
 
         // Rediriger pour éviter un double envoi de formulaire
-        header("Location: Professor.php?student_id=$studentId");
+        header("Location: MaitreStage.php?student_id=$studentId");
         exit;
     }
 
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Redirection après enregistrement
-        header("Location: Professor.php?student_id=$studentId");
+        header("Location: MaitreStage.php?student_id=$studentId");
         exit;
     }
 }
@@ -78,14 +78,14 @@ foreach ($notes as $data) {
 
 
 <h2 id="selected-student-name"><?= $studentName ?></h2>
-<form id="noteForm" action="Professor.php" method="post">
+<form id="noteForm" action="MaitreStage.php" method="post">
     <input type="hidden" id="student-id" name="student_id" value="<?= htmlspecialchars($studentId ?? '') ?>">
 
 
     <table id="notesTable" class="notes-table">
         <thead>
         <tr>
-            <th>ID</th>
+
             <th>Sujet</th>
             <th>Note /20</th>
             <th>Coefficient</th>
@@ -111,7 +111,7 @@ foreach ($notes as $data) {
             ?>
             <!-- Ligne principale -->
             <tr>
-                <td><?= $noteId ?></td>
+                <input type="hidden" name="note_id" value="<?= $noteId ?>">
                 <td>
                     <?= htmlspecialchars($sujet) ?>
                 </td>
@@ -119,8 +119,8 @@ foreach ($notes as $data) {
                 <td><?= number_format($coeff) ?></td>
                 <td>
                     <button
-                            type="button"
-                            onclick="showUnderTable(this, 'desc<?= $noteId ?>')"
+                        type="button"
+                        onclick="showUnderTable(this, 'desc<?= $noteId ?>')"
                     >
                         Afficher Détails
                     </button>
@@ -144,11 +144,11 @@ foreach ($notes as $data) {
                                 <div class="slider-container">
                                     <div class="slider-wrapper">
                                         <input
-                                                type="range"
-                                                min="0" max="5" step="1"
-                                                value="<?= htmlspecialchars($sliderValuesMap['observation'] ?? 0) ?>"
-                                                name="sliders[<?= $noteId ?>][observation]"
-                                                oninput="updateValue('slider-value-obs-<?= $noteId ?>', this.value)"
+                                            type="range"
+                                            min="0" max="5" step="1"
+                                            value="<?= htmlspecialchars($sliderValuesMap['observation'] ?? 0) ?>"
+                                            name="sliders[<?= $noteId ?>][observation]"
+                                            oninput="updateValue('slider-value-obs-<?= $noteId ?>', this.value)"
                                         >
                                         <div class="ticks">
                                             <div class="tick">0</div>
@@ -168,11 +168,11 @@ foreach ($notes as $data) {
                                 <div class="slider-container">
                                     <div class="slider-wrapper">
                                         <input
-                                                type="range"
-                                                min="0" max="5" step="1"
-                                                value="<?= htmlspecialchars($sliderValuesMap['raisonnement'] ?? 0) ?>"
-                                                name="sliders[<?= $noteId ?>][raisonnement]"
-                                                oninput="updateValue('slider-value-rais-<?= $noteId ?>', this.value)"
+                                            type="range"
+                                            min="0" max="5" step="1"
+                                            value="<?= htmlspecialchars($sliderValuesMap['raisonnement'] ?? 0) ?>"
+                                            name="sliders[<?= $noteId ?>][raisonnement]"
+                                            oninput="updateValue('slider-value-rais-<?= $noteId ?>', this.value)"
                                         >
                                         <div class="ticks">
                                             <div class="tick">0</div>
@@ -192,11 +192,11 @@ foreach ($notes as $data) {
                                 <div class="slider-container">
                                     <div class="slider-wrapper">
                                         <input
-                                                type="range"
-                                                min="0" max="5" step="1"
-                                                value="<?= htmlspecialchars($sliderValuesMap['pratique'] ?? 0) ?>"
-                                                name="sliders[<?= $noteId ?>][pratique]"
-                                                oninput="updateValue('slider-value-prat-<?= $noteId ?>', this.value)"
+                                            type="range"
+                                            min="0" max="5" step="1"
+                                            value="<?= htmlspecialchars($sliderValuesMap['pratique'] ?? 0) ?>"
+                                            name="sliders[<?= $noteId ?>][pratique]"
+                                            oninput="updateValue('slider-value-prat-<?= $noteId ?>', this.value)"
                                         >
                                         <div class="ticks">
                                             <div class="tick">0</div>
@@ -226,11 +226,11 @@ foreach ($notes as $data) {
                                 <div class="slider-container">
                                     <div class="slider-wrapper">
                                         <input
-                                                type="range"
-                                                min="0" max="5" step="1"
-                                                value="<?= htmlspecialchars($sliderValuesMap['efficacite'] ?? 0) ?>"
-                                                name="sliders[<?= $noteId ?>][efficacite]"
-                                                oninput="updateValue('slider-value-eff-<?= $noteId ?>', this.value)"
+                                            type="range"
+                                            min="0" max="5" step="1"
+                                            value="<?= htmlspecialchars($sliderValuesMap['efficacite'] ?? 0) ?>"
+                                            name="sliders[<?= $noteId ?>][efficacite]"
+                                            oninput="updateValue('slider-value-eff-<?= $noteId ?>', this.value)"
                                         >
                                         <div class="ticks">
                                             <div class="tick">0</div>
@@ -250,11 +250,11 @@ foreach ($notes as $data) {
                                 <div class="slider-container">
                                     <div class="slider-wrapper">
                                         <input
-                                                type="range"
-                                                min="0" max="5" step="1"
-                                                value="<?= htmlspecialchars($sliderValuesMap['qualite'] ?? 0) ?>"
-                                                name="sliders[<?= $noteId ?>][qualite]"
-                                                oninput="updateValue('slider-value-qual-<?= $noteId ?>', this.value)"
+                                            type="range"
+                                            min="0" max="5" step="1"
+                                            value="<?= htmlspecialchars($sliderValuesMap['qualite'] ?? 0) ?>"
+                                            name="sliders[<?= $noteId ?>][qualite]"
+                                            oninput="updateValue('slider-value-qual-<?= $noteId ?>', this.value)"
                                         >
                                         <div class="ticks">
                                             <div class="tick">0</div>
@@ -274,11 +274,11 @@ foreach ($notes as $data) {
                                 <div class="slider-container">
                                     <div class="slider-wrapper">
                                         <input
-                                                type="range"
-                                                min="0" max="5" step="1"
-                                                value="<?= htmlspecialchars($sliderValuesMap['initiative'] ?? 0) ?>"
-                                                name="sliders[<?= $noteId ?>][initiative]"
-                                                oninput="updateValue('slider-value-ini-<?= $noteId ?>', this.value)"
+                                            type="range"
+                                            min="0" max="5" step="1"
+                                            value="<?= htmlspecialchars($sliderValuesMap['initiative'] ?? 0) ?>"
+                                            name="sliders[<?= $noteId ?>][initiative]"
+                                            oninput="updateValue('slider-value-ini-<?= $noteId ?>', this.value)"
                                         >
                                         <div class="ticks">
                                             <div class="tick">0</div>
@@ -298,11 +298,11 @@ foreach ($notes as $data) {
                                 <div class="slider-container">
                                     <div class="slider-wrapper">
                                         <input
-                                                type="range"
-                                                min="0" max="5" step="1"
-                                                value="<?= htmlspecialchars($sliderValuesMap['autonomie'] ?? 0) ?>"
-                                                name="sliders[<?= $noteId ?>][autonomie]"
-                                                oninput="updateValue('slider-value-auto-<?= $noteId ?>', this.value)"
+                                            type="range"
+                                            min="0" max="5" step="1"
+                                            value="<?= htmlspecialchars($sliderValuesMap['autonomie'] ?? 0) ?>"
+                                            name="sliders[<?= $noteId ?>][autonomie]"
+                                            oninput="updateValue('slider-value-auto-<?= $noteId ?>', this.value)"
                                         >
                                         <div class="ticks">
                                             <div class="tick">0</div>
@@ -332,11 +332,11 @@ foreach ($notes as $data) {
                                 <div class="slider-container">
                                     <div class="slider-wrapper">
                                         <input
-                                                type="range"
-                                                min="0" max="5" step="1"
-                                                value="<?= htmlspecialchars($sliderValuesMap['rapports'] ?? 0) ?>"
-                                                name="sliders[<?= $noteId ?>][rapports]"
-                                                oninput="updateValue('slider-value-rel-<?= $noteId ?>', this.value)"
+                                            type="range"
+                                            min="0" max="5" step="1"
+                                            value="<?= htmlspecialchars($sliderValuesMap['rapports'] ?? 0) ?>"
+                                            name="sliders[<?= $noteId ?>][rapports]"
+                                            oninput="updateValue('slider-value-rel-<?= $noteId ?>', this.value)"
                                         >
                                         <div class="ticks">
                                             <div class="tick">0</div>
@@ -356,11 +356,11 @@ foreach ($notes as $data) {
                                 <div class="slider-container">
                                     <div class="slider-wrapper">
                                         <input
-                                                type="range"
-                                                min="0" max="5" step="1"
-                                                value="<?= htmlspecialchars($sliderValuesMap['ponctualite'] ?? 0) ?>"
-                                                name="sliders[<?= $noteId ?>][ponctualite]"
-                                                oninput="updateValue('slider-value-ponc-<?= $noteId ?>', this.value)"
+                                            type="range"
+                                            min="0" max="5" step="1"
+                                            value="<?= htmlspecialchars($sliderValuesMap['ponctualite'] ?? 0) ?>"
+                                            name="sliders[<?= $noteId ?>][ponctualite]"
+                                            oninput="updateValue('slider-value-ponc-<?= $noteId ?>', this.value)"
                                         >
                                         <div class="ticks">
                                             <div class="tick">0</div>
@@ -380,11 +380,11 @@ foreach ($notes as $data) {
                                 <div class="slider-container">
                                     <div class="slider-wrapper">
                                         <input
-                                                type="range"
-                                                min="0" max="5" step="1"
-                                                value="<?= htmlspecialchars($sliderValuesMap['interet'] ?? 0) ?>"
-                                                name="sliders[<?= $noteId ?>][interet]"
-                                                oninput="updateValue('slider-value-int-<?= $noteId ?>', this.value)"
+                                            type="range"
+                                            min="0" max="5" step="1"
+                                            value="<?= htmlspecialchars($sliderValuesMap['interet'] ?? 0) ?>"
+                                            name="sliders[<?= $noteId ?>][interet]"
+                                            oninput="updateValue('slider-value-int-<?= $noteId ?>', this.value)"
                                         >
                                         <div class="ticks">
                                             <div class="tick">0</div>

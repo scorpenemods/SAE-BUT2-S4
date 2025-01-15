@@ -1,4 +1,6 @@
 <?php
+ob_start();
+
 // Démarre une session pour gérer les informations de l'utilisateur connecté
 session_start();
 
@@ -113,6 +115,8 @@ $translations = include $langFile;
     <title>Le Petit Stage - <?= $translations['maitre stage']?></title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js" defer></script>
+    <script src="/View/Principal/Note.js"></script>
+
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -254,7 +258,7 @@ $translations = include $langFile;
         </div>
 
         <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : ' '; ?>" id="content-6">
-            <?php include_once("GetNotes.php");?>
+            <?php include_once("GetNotesMaitreStage.php");?>
     </div>
 </section>
 
@@ -347,3 +351,6 @@ $translations = include $langFile;
 
 
 </html>
+<?php
+ob_end_flush();
+?>
