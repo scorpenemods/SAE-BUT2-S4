@@ -1326,6 +1326,13 @@ class Database
 
         // Calculer la moyenne pondérée et la ramener sur 20
         $average = ($totalSumNote / $totalSumCoeff) * (20 / 5); // Ramener sur 20
+
+        // Mettre à jour la table Note avec la nouvelle moyenne
+        $updateStmt = $this->connection->prepare("UPDATE Note SET note = :moyenne WHERE id = :id");
+        $updateStmt->execute([
+            ':moyenne' => $average,
+            ':id' => $noteId,
+        ]);
         return $average;
     }
 
