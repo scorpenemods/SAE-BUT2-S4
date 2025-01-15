@@ -32,7 +32,7 @@ function handleFileUpload($db, $userId): void
                     continue;
                 }
 
-                $uploadDir = '../uploads/';
+                $uploadDir = '../Presentation/uploads/';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
@@ -66,7 +66,7 @@ function handleRapportUpload($db, $userId, $groupId): void
                     continue;
                 }
 
-                $uploadDir = '../uploads/';
+                $uploadDir = '../Presentation/RapportDeStage/';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
@@ -77,12 +77,7 @@ function handleRapportUpload($db, $userId, $groupId): void
                 }
 
                 if (move_uploaded_file($tmpName, $filePath)) {
-                    if (is_int($groupId)) {
-                        $db->addLivretFile($name, $filePath, $userId, $size, $groupId);
-                    }
-                    else{
-                        error_log("pas int zebo ". $groupId);
-                    }
+                    $db->addLivretFile($name, $filePath, $userId, $size, $groupId);
                 }
             }
         }
@@ -95,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
     if ($_POST['form_id'] === 'uploader_fichier' || $_POST['form_id'] === 'delete_file') {
         if ($_POST['form_id'] === 'uploader_fichier') {
             handleFileUpload($db, $userId);
-            error_log('Fichier Upload');
         } elseif ($_POST['form_id'] === 'delete_file') {
             // Suppression d'un fichier (Code 1)
             if (!empty($_POST['fileId'])) {
@@ -111,14 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
 
             $groupId = $_SESSION['group_id'];
 
-            if ($groupId === null) {
-                error_log("nullgroupid " . $groupId);
-            } elseif (is_string($groupId)) {
-                error_log("groupid is a string: " . $groupId);
-            }
-
             handleRapportUpload($db, $userId, $groupId);
-            error_log('Rapport Upload');
         } elseif ($_POST['form_id'] === 'delete_rapport') {
             // Suppression d'un rapport (Code 2)
             if (!empty($_POST['fileId'])) {
