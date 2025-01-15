@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_PO
 
     // Redirection pour éviter la soumission multiple
     header("Location: " . $_SERVER['PHP_SELF']);
-    exit;
+
 }
 
 $files = $db->getFiles($userId);
