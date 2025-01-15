@@ -275,12 +275,7 @@ $translations = include $langFile;
                                 endforeach;
                                 echo '<td class="test"></td>';
                                 echo '<td class="test"></td>';
-                                $add = [];
-                                $coeff = [];
-                                foreach ($notes as $note) {
-                                    array_push($add,$note->getNote()*$note->getCoeff());
-                                    array_push($coeff, $note->getCoeff());
-                                } echo "<td>" . $translations['moyenne'] . round(array_sum($add)/array_sum($coeff),2) . "</td>";
+
                         }
                         else {
                             echo '<p class="noNotes">' . $translations['aucune note'] . '</p>';
