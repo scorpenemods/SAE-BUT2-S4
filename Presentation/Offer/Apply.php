@@ -14,6 +14,7 @@ if (!is_dir($uploadDir)) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $offer = $_POST['offer'];
 
     if (!isset($_SESSION["user"])) {

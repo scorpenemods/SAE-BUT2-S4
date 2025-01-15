@@ -5,7 +5,7 @@ if (isset($_GET['lang'])) {
     $lang = $_GET['lang'];
     $_SESSION['lang'] = $lang; // Enregistrer la langue en session
 } else {
-    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+    $lang = $_SESSION['lang'] ?? 'fr'; // Langue par défaut
 }
 
 // Vérification si le fichier de langue existe, sinon charger le français par défaut

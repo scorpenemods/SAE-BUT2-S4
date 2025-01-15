@@ -32,13 +32,10 @@ if (isset($_SESSION['user'])) {
     $user_id = $_SESSION['user'];
 }
 
-$_SESSION['user'] = 1;
-$_SESSION['companyId'] = 0;
-$_SESSION['secretariat'] = true;
 
-$userId = $_SESSION['user'] ?? 0;
-$companyId = $_SESSION['companyId'] ?? 0;
-$secretariat_group = $_SESSION['secretariat'] ?? false;
+
+
+
 
 $pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT) ?? 1;
 $currentURL = $_SERVER["REQUEST_URI"];
@@ -90,11 +87,11 @@ if (isset($address)) { $filters["address"] = $address; }
 if (isset($duration)) { $filters["duration"] = $duration; }
 if (isset($sector)) { $filters["sector"] = $sector; }
 if (isset($keywords)) { $filters["keywords"] = $keywords; }
-if (isset($type) && ($secretariat_group || $companyId != 0)) { $filters["type"] = $type; }
+if (isset($type) && ($secretariat_group || $company_id != 0)) { $filters["type"] = $type; }
 if (isset($latitude)) { $filters["latitude"] = $latitude; }
 if (isset($longitude)) { $filters["longitude"] = $longitude; }
 if (isset($distance)) { $filters["distance"] = $distance; }
-if ($companyId != 0) { $filters["company_id"] = $companyId; }
+if ($company_id != 0) { $filters["company_id"] = $company_id; }
 
 $filteredOffers = get_page_offers($pageId, $filters);
 $offers = $filteredOffers["offers"] ?? array();
@@ -144,13 +141,13 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                     echo '<div id="suppressed"><a href="/View/Offer/List.php?type=suppressed">Offres supprimés</i></a> </div>';
                 }
 
-                if ($secretariat_group || $companyId != 0) {
+                if ($secretariat_group || $company_id != 0) {
                     echo '<div id="all"><a href="/View/Offer/List.php?type=all">Tous les offres</i></a> </div>';
                     echo '<div id="updated"> <a href="/View/Offer/List.php?type=updated">Offres mises à jour</i></a> </div>';
                     echo '<div id="inactive"> <a href="/View/Offer/List.php?type=inactive">Offres inactives</i></a> </div>';
                 }
 
-                if (!$secretariat_group && $companyId == 0) {
+                if (!$secretariat_group && $company_id == 0) {
                     echo '<div id="manage_alerts" style="text-align: center"> <a href="/View/Offer/ManageAlert.php">Gérer les alertes</i></a> </div>';
                     echo '<div id="manage_applications" style="text-align: center"> <a href="/View/Offer/ManageApplication.php">Voir mes candidatures</a></div>';
                 }
@@ -161,14 +158,14 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
             <div class="company-listings">
                 <?php
                 foreach ($offers as $offer) {
-                    if ($companyId != 0 && !($companyId == $offer->get_company()->get_id())) {
+                    if ($company_id != 0 && !($company_id == $offer->get_company()->get_id())) {
                         continue;
                     }
                     echo "<a class='company-link' href='/View/Offer/Detail.php?id=" . $offer->get_id() . '&type=' . $type . "'>";
                         echo "<div class='company-card'>";
                             echo "<div class='company-header'>";
                                 if ($type == 'all') {
-                                    echo '<button title="Like" class="heart" onclick="heartUpdate(' . $offer->get_id() . ')"><i id="heart-icon-' . $offer->get_id() . '" class="'. (Offer::is_favorite($offer->get_id(), $userId) ? 'fa-solid' : 'fa-regular') . ' fa-heart"></i></button>';
+                                    echo '<button title="Like" class="heart" onclick="heartUpdate(' . $offer->get_id() . ')"><i id="heart-icon-' . $offer->get_id() . '" class="'. (Offer::is_favorite($offer->get_id(), $user_id) ? 'fa-solid' : 'fa-regular') . ' fa-heart"></i></button>';
                                 }
                                 echo "<img src='".$offer->get_image()."' alt='Logo de " . $offer->get_company()->get_name() . "'>";
                                 echo "<h3 class='title'>". $offer->get_title() ."</h3>";
@@ -345,7 +342,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
 
             function heartUpdate(id) {
                 $.ajax({
-                    url: '/presenter/offer/favorite.php',
+                    url: '/Presentation/Offer/Favorite.php',
                     type: 'POST',
                     data: {id: id},
                     success: function(msg, status, jqXHR) {

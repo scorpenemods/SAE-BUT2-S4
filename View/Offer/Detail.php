@@ -10,32 +10,32 @@ require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 $returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 error_reporting(E_ALL ^ E_DEPRECATED);
-$offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+$offer_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? "all";
 
-if (!$offerId) {
+if (!$offer_id) {
     header("Location: " . $returnUrl);
     die();
 }
 
 $companyId = $_SESSION['companyId'] ?? 0;
-if ($companyId != 0 && Offer::is_company_offer($offerId, $companyId)) {
+if ($companyId != 0 && Offer::is_company_offer($offer_id, $companyId)) {
     //header("Location: ../Offer/List.php");
     //die();
-    echo !Offer::is_company_offer($offerId, $companyId);
+    echo !Offer::is_company_offer($offer_id, $companyId);
 }
 $secretariatGroup = $_SESSION['secretariat'] ?? false;
 
 switch ($type) {
     case 'updated':
-        $offer = PendingOffer::get_by_offer_id($offerId);
+        $offer = PendingOffer::get_by_offer_id($offer_id);
         $offer_old = Offer::get_by_id($offer->get_offer_id());
         break;
     case 'new':
-        $offer = PendingOffer::get_by_offer_id($offerId);
+        $offer = PendingOffer::get_by_offer_id($offer_id);
         break;
     default:
-        $offer = Offer::get_by_id($offerId);
+        $offer = Offer::get_by_id($offer_id);
         break;
 }
 
@@ -45,7 +45,7 @@ if ($offer->get_supress() && !$secretariatGroup) {
     die();
 }
 
-$isAlreadyPending = Offer::is_already_pending($offerId);
+$isAlreadyPending = Offer::is_already_pending($offer_id);
 
 /**
  * renderDetail
@@ -160,7 +160,7 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                                     }
 
                                     if (($companyId !== 0 || $secretariatGroup) && $type != 'new' ) {
-                                        echo "<button class='apply-button-edit'><a href='./Company/Application.php?id=".$offerId."'>Candidatures</a></button>";
+                                        echo "<button class='apply-button-edit'><a href='./Company/Application.php?id=".$offer_id."'>Candidatures</a></button>";
                                         echo "<form action='Company/Edit.php' method='get' id='edit-form'>";
                                             echo "<input type='hidden' name='id' value='" . $offer->get_id() . "'>";
                                             echo "<button class='apply-button-edit' id='edit-button'". ($isAlreadyPending ? "disabled=true> Modification en attente" : ">Modification") . "</button>";
@@ -234,7 +234,7 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                                 echo "<input type='file' class='file-upload' id='cv' name='cv' accept='.pdf' required><br>";
                                 echo "<label for='motivation'>Déposez votre lettre de motivation :</label>";
                                 echo "<input type='file' class='file-upload' id='motivation' name='motivation' accept='.pdf' required>";
-                                echo "<input type='hidden' name='offre' value='" . $offer->get_id() . "'>";
+                                echo "<input type='hidden' name='offer' value='" . $offer->get_id() . "'>";
                                 echo "<br>";
                                 echo "<button type='submit'>Valider la candidature</button>";
                             echo "</form>";

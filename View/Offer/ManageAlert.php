@@ -64,7 +64,7 @@ $alerts = $database->getAlertByUser($userId);
         <script type="text/javascript">
             function deleteAlert (id) {
                 $.ajax({
-                    url: '../../presenter/offer/alert/delete.php',
+                    url: '../../Presentation/Offer/Alert/Delete.php',
                     type: 'POST',
                     data: {
                         id: id
