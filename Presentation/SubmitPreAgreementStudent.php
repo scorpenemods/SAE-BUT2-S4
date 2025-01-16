@@ -3,6 +3,11 @@
 require_once '../Model/Database.php';
 $database = Database::getInstance();
 
+if ($_POST["action"] == "action1"){
+    header('location: google.com');
+
+}
+
 //partie étudiant
 $nomStudent =  $_POST['nom-student'];
 $prenomStudent =  $_POST['prenom-student'];
@@ -149,9 +154,6 @@ $form_data = [
 ];
 
 $inputs_json = json_encode($form_data);
-foreach($form_data as $key => $value){
-    echo $value;
-}
 
 if ($database->getPreAgreementFormById($idPreConv) != null){
     $database->updateInputsPreAgreementStudent($idPreConv, $inputs_json);
@@ -164,6 +166,12 @@ else{
     exit();
 }
 
+/*if ($_POST['action'] == 'submit'){
+    $database->updatePreAgreementStudent($idPreConv, 1);
+    header('location: Student.php');
+    exit();
+}*/
+
 
 /*
 foreach($form_data as $key => $value){
@@ -171,6 +179,6 @@ foreach($form_data as $key => $value){
 }
 */
 //une fois que c en bdd, on notifie le secretariat, qui va attribuer un tuteur enseignant a l'élève et une fois fait
-$database->addNotification(1, "Un élève à effectué une demande de pré-convention, veuillez lui attribuer un tuteur enseignant", "pré-convention");
+//$database->addNotification(1, "Un élève à effectué une demande de pré-convention, veuillez lui attribuer un tuteur enseignant", "pré-convention");
 
 ?>

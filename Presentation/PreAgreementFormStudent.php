@@ -10,35 +10,48 @@ session_start();
 
 if (isset($_SESSION['personne'])){
 
+    $readonly = "";
+    $checked = "";
+
     //recuperer les infos de la préconvention si on la consulte après l'avoir créer précedemment
     if (isset($_GET['id'])){ //si y'a déjà des valeurs rentrées
         $idPreConv = $_GET['id'];
         $liste = $database->getInputsPreAgreementForm($idPreConv);
-
-
         $inputs = json_decode($liste['inputs'], true);
 
-    }
+        $status = $database->PreAgreementIsValid($idPreConv); //recupere le status de la preconvention
 
-    else{ //sinon on prérempli, ici c'est le scénario "création du form"
-        $personne = $_SESSION['personne'];
-
-        $role = $personne->getRole();
-        $nom = $personne->getNom();
-        $activite = $personne->getActivite();
-        $prenom = $personne->getPrenom();
-        $telephone = $personne->getTelephone();
-        $email = $personne->getEmail();
-        $id = $personne->getId();
-        if ($role == 1){ //si c'est l'élève
-            if (isset($_GET['tutor'])) { // on récup le tuteur séléctionné
-                $tutor = htmlspecialchars($_GET['tutor']);
-            } else{
-                header('Location: index.php'); //on renvoie à index car pas possible qu'il n'y ai pas eu de séléction
-                exit();
-            }
+        if ($status == 1){
+            $readonly = "readonly";
+            $checked = "checked disabled";
+        }
+        else{
+            $readonly = "";
+            $checked = "";
         }
     }
+
+
+
+    $personne = $_SESSION['personne'];
+
+    $role = $personne->getRole();
+    $nom = $personne->getNom();
+    $activite = $personne->getActivite();
+    $prenom = $personne->getPrenom();
+    $telephone = $personne->getTelephone();
+    $email = $personne->getEmail();
+    $id = $personne->getId();
+
+    if ($role == 1){ //si c'est l'élève
+        if (isset($_GET['tutor'])) { // on récup le tuteur séléctionné
+            $tutor = htmlspecialchars($_GET['tutor']);
+        } else{
+            header('Location: index.php'); //on renvoie à index car pas possible qu'il n'y ai pas eu de séléction
+            exit();
+        }
+    }
+
 
 }else{
     header('Location: index.php');
@@ -71,46 +84,39 @@ function getFieldValue($field, $inputs = null, $default = null) {
 
 <div class="form-container">
     <h1>Formulaire de Pré-Convention de Stage</h1>
-    <h3>Veuillez compléter la partie vous concernant : </h3>
-    <?php if ($role==1){ ?>
-            <form action="SubmitPreAgreementStudent.php" method="POST">
-    <?php } ?>
-    <?php if ($role==4 || $role==5){ ?>
-            <form action="SubmitPreAgreementSecretariat.php" method="POST">
-    <?php } ?>
-
+    <form action="SubmitPreAgreementStudent.php" method="POST">
 
         <!-- Section Étudiant -->
         <section class="form-section">
             <h2>Étudiant</h2>
             <div class="form-group">
                 <label for="nom-student">Nom</label>
-                <input type="text" id="nom-student" name="nom-student" value="<?php echo getFieldValue('nomStudent', $inputs, $nom); ?>" required>
+                <input type="text" id="nom-student" name="nom-student" value="<?php echo getFieldValue('nomStudent', $inputs, $nom); ?>" <?php echo $readonly ?> required>
                 <label for="prenom-student">Prénom</label>
-                <input type="text" id="prenom-student" name="prenom-student" value="<?php echo getFieldValue('prenomStudent', $inputs, $prenom); ?>" required>
+                <input type="text" id="prenom-student" name="prenom-student" value="<?php echo getFieldValue('prenomStudent', $inputs, $prenom); ?>" <?php echo $readonly ?> required>
 
                 <label for="num-student">Numéro Étudiant</label>
-                <input type="text" id="num-student" name="num-student" value="<?php echo getFieldValue('numStudent', $inputs); ?>" required>
+                <input type="text" id="num-student" name="num-student" value="<?php echo getFieldValue('numStudent', $inputs); ?>" <?php echo $readonly ?> required>
 
                 <div class="radio-group">
                     <label>Niveau de Formation :</label>
-                    <input type="radio" id="but2" name="formation-level" value="BUT2" <?php echo (getFieldValue('formationLevel', $inputs) === 'BUT2') ? 'checked' : ''; ?> required>
+                    <input type="radio" id="but2" name="formation-level" value="BUT2" <?php echo (getFieldValue('formationLevel', $inputs) === 'BUT2') ? 'checked' : ''; ?> <?php echo $checked ?> required>
                     <label for="but2">BUT 2</label>
-                    <input type="radio" id="but3" name="formation-level" value="BUT3" <?php echo (getFieldValue('formationLevel', $inputs) === 'BUT3') ? 'checked' : ''; ?>  required>
+                    <input type="radio" id="but3" name="formation-level" value="BUT3" <?php echo (getFieldValue('formationLevel', $inputs) === 'BUT3') ? 'checked' : ''; ?> <?php echo $checked ?> required>
                     <label for="but3">BUT 3</label>
                 </div>
 
                 <label for="formation">Intitulé de la formation</label>
-                <input type="text" id="formation" name="formation" value="<?php echo getFieldValue('formation', $inputs, $activite); ?>" readonly>
+                <input type="text" id="formation" name="formation" value="<?php echo getFieldValue('formation', $inputs, $activite); ?>" <?php echo $readonly ?> required>
             </div>
 
             <!-- Type de stage -->
             <div class="form-group">
                 <div class="radio-group">
                     <label>Obligation du stage :</label>
-                    <input type="radio" id="obligatory" name="obligation" value="obligatory" <?php echo (getFieldValue('obligation', $inputs) === 'obligatory') ? 'checked' : ''; ?> required>
+                    <input type="radio" id="obligatory" name="obligation" value="obligatory" <?php echo (getFieldValue('obligation', $inputs) === 'obligatory') ? 'checked' : ''; ?> <?php echo $checked ?> required>
                     <label for="obligatory">Stage Obligatoire</label>
-                    <input type="radio" id="not-obligatory" name="obligation" value="not-obligatory" <?php echo (getFieldValue('obligation', $inputs) === 'not-obligatory') ? 'checked' : ''; ?> required>
+                    <input type="radio" id="not-obligatory" name="obligation" value="not-obligatory" <?php echo (getFieldValue('obligation', $inputs) === 'not-obligatory') ? 'checked' : ''; ?> <?php echo $checked ?> required>
                     <label for="not-obligatory">Non obligatoire</label>
                 </div>
             </div>
@@ -118,33 +124,33 @@ function getFieldValue($field, $inputs = null, $default = null) {
             <div class="form-group">
                 <div class="radio-group">
                     <label>Type de candidature :</label>
-                    <input type="radio" id="spontaneous-application" name="application-type" value="spontaneous-application" <?php echo (getFieldValue('applicationType', $inputs) === 'spontaneous-application') ? 'checked' : ''; ?> required>
+                    <input type="radio" id="spontaneous-application" name="application-type" value="spontaneous-application" <?php echo (getFieldValue('applicationType', $inputs) === 'spontaneous-application') ? 'checked' : ''; ?> <?php echo $checked ?> required>
                     <label for="spontaneous-application">Candidature Spontanée</label>
-                    <input type="radio" id="response" name="application-type" value="response" <?php echo (getFieldValue('applicationType', $inputs) === 'response') ? 'checked' : ''; ?> required>
+                    <input type="radio" id="response" name="application-type" value="response" <?php echo (getFieldValue('applicationType', $inputs) === 'response') ? 'checked' : ''; ?> <?php echo $checked ?> required>
                     <label for="response">Réponse à une offre</label>
-                    <input type="radio" id="network" name="application-type" value="network" <?php echo (getFieldValue('applicationType', $inputs) === 'network') ? 'checked' : ''; ?> required>
+                    <input type="radio" id="network" name="application-type" value="network" <?php echo (getFieldValue('applicationType', $inputs) === 'network') ? 'checked' : ''; ?> <?php echo $checked ?> required>
                     <label for="network">Réseau de connaissance</label>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="adress-student">Adresse durant le stage</label>
-                <input type="text" id="adress-student" name="adress-student" value="<?php echo getFieldValue('address', $inputs); ?>" required>
+                <input type="text" id="adress-student" name="adress-student" value="<?php echo getFieldValue('address', $inputs); ?>" <?php echo $readonly ?> required>
 
                 <label for="postal-code-student">Code Postal</label>
-                <input type="text" id="postal-code-student" name="postal-code-student" value="<?php echo getFieldValue('postalCodeStudent', $inputs); ?>" required>
+                <input type="text" id="postal-code-student" name="postal-code-student" value="<?php echo getFieldValue('postalCodeStudent', $inputs); ?>" <?php echo $readonly ?> required>
 
                 <label for="student-city">Ville</label>
-                <input type="text" id="student-city" name="student-city" value="<?php echo getFieldValue('cityStudent', $inputs); ?>" required>
+                <input type="text" id="student-city" name="student-city" value="<?php echo getFieldValue('cityStudent', $inputs); ?>" <?php echo $readonly ?> required>
 
                 <label for="phone-student">Téléphone (Fixe)</label>
-                <input type="text" id="phone-student" name="phone-student" value="<?php echo getFieldValue('postalCodeStudent', $inputs); ?>">
+                <input type="text" id="phone-student" name="phone-student" value="<?php echo getFieldValue('postalCodeStudent', $inputs);  ?> " <?php echo $readonly ?>>
 
                 <label for="phone-number-student">Téléphone (Portable)</label>
-                <input type="text" id="phone-number-student" name="phone-number-student" value="<?php echo getFieldValue('phoneNumberStudent', $inputs, $telephone); ?>" required>
+                <input type="text" id="phone-number-student" name="phone-number-student" value="<?php echo getFieldValue('phoneNumberStudent', $inputs, $telephone); ?>" <?php echo $readonly ?> required>
 
                 <label for="email-student">Email</label>
-                <input type="email" id="email-student" name="email-student" value="<?php echo getFieldValue('emailStudent', $inputs, $email); ?>" required>
+                <input type="email" id="email-student" name="email-student" value="<?php echo getFieldValue('emailStudent', $inputs, $email); ?>" <?php echo $readonly ?> required>
 
                 <input type="hidden" name="mentor" value="<?php echo $tutor ?>" />
                 <input type="hidden" name="student-id" value="<?php echo $id ?>" />
@@ -494,12 +500,12 @@ function getFieldValue($field, $inputs = null, $default = null) {
         </div>
 
         <?php if ($role==1){ ?>
-            <button type="submit">Enregistrer et soumettre aux autres parties</button>
+            <button type="submit" name="action" value="action1">Enregistrer et soumettre aux autres parties</button>
         <?php } ?>
 
         <?php if ($role==4 || $role==5){ ?>
-            <button type="submit" name="action" value="action1">Enregistrer et soumettre aux autres parties</button>
-            <button type="submit" name="action" value="action2">Valider définitivement ce formulaire de pré-convention</button>
+            <button type="submit" name="action" value="action2">Enregistrer et soumettre aux autres parties</button>
+            <button type="submit" name="action" value="action3">Valider définitivement ce formulaire de pré-convention</button>
         <?php } ?>
 
 
