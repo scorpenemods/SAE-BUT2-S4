@@ -9,7 +9,7 @@ require dirname(__FILE__) . '/../../Model/Company.php';
 global $tags;
 
 if (isset($_SESSION['secretariat']) || isset($_SESSION['companyId'])) {
-    $companyId = $_SESSION['companyId'];
+    $companyId = $_SESSION['company_id'];
     $groupeSecretariat = $_SESSION['secretariat'];
 }
 
@@ -106,7 +106,7 @@ if (!(isset($_SESSION['companyId'])) || $_SESSION['companyId'] == 0) {
                             $tags = Offer::get_all_tags();
 
                             foreach ($tags as $tag) {
-                                echo "<label><input type='checkbox' name='tag_" . $tag . "' value='" . $tag . "'> " . $tag . "</label>";
+                                echo "<label><input type='checkbox' name='tag" . $tag . "' value='" . $tag . "'> " . $tag . "</label>";
                             }
                             ?>
                         </div>
@@ -192,6 +192,9 @@ if (!(isset($_SESSION['companyId'])) || $_SESSION['companyId'] == 0) {
                         fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=jsonv2&polygon_geojson=1`)
                             .then(response => response.json())
                             .then(data => {
+                                console.log(data);
+                                console.log(data.lon);
+                                console.log(data.lat);
                                 displayResults(data);
                             })
                             .catch(error => {

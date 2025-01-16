@@ -8,7 +8,7 @@ require_once dirname(__FILE__) . "/../../Model/Company.php";
 
 $userId = $_SESSION['user_id'] ?? false;
 if (!$userId) {
-    //header("Location: ../Offer/View/Create.php");
+    header("Location: ../Offer/View/Create.php");
     die();
 }
 
@@ -26,9 +26,9 @@ if (isset($id)) {
 }
 
 error_reporting(E_ALL ^ E_DEPRECATED);
-if (isset($_POST['companyId']) && isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) && isset($_POST['description']) && isset($_POST['duration']) && isset($_POST['salary']) && isset($_POST['education']) && isset($_POST['startDate']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['latitude']) && isset($_POST['longitude'])) {
+if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['address']) && isset($_POST['job']) && isset($_POST['description']) && isset($_POST['duration']) && isset($_POST['salary']) && isset($_POST['education']) && isset($_POST['start-date']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['latitude']) && isset($_POST['longitude'])) {
     $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT) ?? false;
-    $companyId = filter_input(INPUT_POST, 'companyId', FILTER_SANITIZE_NUMBER_INT) ?? false;
+    $companyId = filter_input(INPUT_POST, 'company_id', FILTER_SANITIZE_NUMBER_INT) ?? false;
     $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING) ?? false;
     $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING) ?? false;
     $job = filter_input(INPUT_POST, 'job', FILTER_SANITIZE_STRING) ?? false;
@@ -36,7 +36,7 @@ if (isset($_POST['companyId']) && isset($_POST['title']) && isset($_POST['addres
     $duration = filter_input(INPUT_POST, 'duration', FILTER_SANITIZE_NUMBER_INT) ?? false;
     $salary = filter_input(INPUT_POST, 'salary', FILTER_SANITIZE_NUMBER_FLOAT) ?? false;
     $education = filter_input(INPUT_POST, 'education', FILTER_SANITIZE_STRING) ?? false;
-    $startDate = filter_input(INPUT_POST, 'startDate', FILTER_SANITIZE_STRING) ?? false;
+    $startDate = filter_input(INPUT_POST, 'start-date', FILTER_SANITIZE_STRING) ?? false;
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL) ?? false;
     $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING) ?? false;
     $website = filter_input(INPUT_POST, 'website', FILTER_SANITIZE_URL) ?? false;
@@ -51,7 +51,7 @@ if (isset($_POST['companyId']) && isset($_POST['title']) && isset($_POST['addres
     $selectedTags = array();
     $tags = Offer::get_all_tags();
     foreach ($tags as $tag) {
-        if (isset($_POST["tag_" . $tag])) {
+        if (isset($_POST["tag" . $tag])) {
             $selectedTags[] = $tag;
         }
     }
