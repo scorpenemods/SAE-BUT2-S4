@@ -17,7 +17,7 @@ if ($user === null) {
     exit();
 }
 
-$applications = Application::get_all_for_user($user);
+$applications = Application::get_all_for_user($_SESSION['user_id']);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -53,23 +53,25 @@ $applications = Application::get_all_for_user($user);
                     </thead>
                     <tbody>
                         <?php
-                        foreach ($applications as $apply) {
-                            $offer = Offer::get_by_id($apply->get_id_offer());
-                            echo "<tr>";
-                            echo "<td><a href='/View/Offer/Detail.php?id=" . $offer->get_id() . "'>" . $offer->get_title() . "</a></td>";
-                            echo "<td><a href='mailto:" . $offer->get_email() . "'>" . $offer->get_email() . "</a></td>";
-                            echo "<td><a href='tel:" . $offer->get_phone() . "'>" . $offer->get_phone() . "</a></td>";
-                            echo "<td>" . $offer->get_begin_date() . "</td>";
-                            switch ($apply->getStatus()) {
-                                case "Pending":
-                                    echo "<td style='background: orange; text-align: center'>" . "En attente" . "</td>";
-                                    break;
-                                case "Accepted":
-                                    echo "<td style='background: green; text-align: center'>" . "Accepté" . "</td>";
-                                    break;
-                                case "Rejected":
-                                    echo "<td style='background: red; text-align: center'>" . "Refusé" . "</td>";
-                                    break;
+                        if (isset($apply)){
+                                foreach ($applications as $apply) {
+                                $offer = Offer::get_by_id($apply->get_id_offer());
+                                echo "<tr>";
+                                echo "<td><a href='/View/Offer/Detail.php?id=" . $offer->get_id() . "'>" . $offer->get_title() . "</a></td>";
+                                echo "<td><a href='mailto:" . $offer->get_email() . "'>" . $offer->get_email() . "</a></td>";
+                                echo "<td><a href='tel:" . $offer->get_phone() . "'>" . $offer->get_phone() . "</a></td>";
+                                echo "<td>" . $offer->get_begin_date() . "</td>";
+                                switch ($apply->getStatus()) {
+                                    case "Pending":
+                                        echo "<td style='background: orange; text-align: center'>" . "En attente" . "</td>";
+                                        break;
+                                    case "Accepted":
+                                        echo "<td style='background: green; text-align: center'>" . "Accepté" . "</td>";
+                                        break;
+                                    case "Rejected":
+                                        echo "<td style='background: red; text-align: center'>" . "Refusé" . "</td>";
+                                        break;
+                                }
                             }
                             echo "</tr>";
                         }

@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $stmt = $db->prepare("INSERT INTO Application (idUser, idOffer) VALUES (:idUser, :idOffer)");
-            $stmt->bindParam(':idUser', $idUser);
+            $stmt->bindParam(':idUser', $_SESSION['user_id']);
             $stmt->bindParam(':idOffer', $offer);
             $stmt->execute();
 
