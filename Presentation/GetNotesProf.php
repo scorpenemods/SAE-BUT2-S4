@@ -93,315 +93,321 @@ foreach ($notes as $data) {
         </tr>
         </thead>
         <tbody>
-            <?php foreach ($notes as $data): ?>
-                <?php
-                $noteId  = $data->getId();
-                $sujet   = $data->getSujet();
-                $noteVal = $data->getNote();
-                $coeff   = $data->getCoeff();
-                $sliderValues = $database->getSliderValues($noteId);
-                $average = $noteAverages[$noteId] ?? null;
 
-                // Créer un tableau associatif pour stocker les valeurs des curseurs
-                $sliderValuesMap = [];
-                foreach ($sliderValues as $slider) {
-                    $sliderValuesMap[$slider['description']] = $slider['note'];
-                }
-                ?>
-                <!-- Ligne principale -->
-                <tr>
-                    <input type="hidden" name="note_id" value="<?= $noteId ?>">
-                    <td>
-                        <?= htmlspecialchars($sujet) ?>
-                    </td>
-                    <td><?= $average !== null ? number_format($average, 2) : 'N/A' ?></td>
-                    <td><?= number_format($coeff) ?></td>
-                    <td>
-                        <button
-                                type="button"
-                                onclick="showUnderTable(this, 'desc<?= $noteId ?>')"
-                        >
-                            Afficher Détails
-                        </button>
-                    </td>
-                </tr>
+        <?php foreach ($notes as $data): ?>
+            <?php
+            $noteId  = $data->getId();
+            $sujet   = $data->getSujet();
+            $noteVal = $data->getNote();
+            $coeff   = $data->getCoeff();
+            $sliderValues = $database->getSliderValues($noteId);
+            $average = $noteAverages[$noteId] ?? null;
 
-                <!-- Sous-ligne, cachée par défaut -->
-                <tr id="desc<?= $noteId ?>" class="idUnderTable" style="display: none;">
-                    <td colspan="5">
-                        <table class="UnderNotes">
-                            <thead>
-                            <tr>
-                                <th>Aptitudes intellectuelles</th>
-                                <th>Échelle (0 à 5)</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>Sens de l'observation</td>
-                                <td>
-                                    <div class="slider-container">
-                                        <div class="slider-wrapper">
-                                            <input
-                                                    type="range"
-                                                    min="0" max="5" step="1"
-                                                    value="<?= htmlspecialchars($sliderValuesMap['observation'] ?? 0) ?>"
-                                                    name="sliders[<?= $noteId ?>][observation]"
-                                                    oninput="updateValue('slider-value-obs-<?= $noteId ?>', this.value)"
-                                            >
-                                            <div class="ticks">
-                                                <div class="tick">0</div>
-                                                <div class="tick">1</div>
-                                                <div class="tick">2</div>
-                                                <div class="tick">3</div>
-                                                <div class="tick">4</div>
-                                                <div class="tick">5</div>
-                                            </div>
+            // Créer un tableau associatif pour stocker les valeurs des curseurs
+            $sliderValuesMap = [];
+            foreach ($sliderValues as $slider) {
+                $sliderValuesMap[$slider['description']] = $slider['note'];
+            }
+
+            $isEnterpriseEvaluation = ($sujet !== 'Évaluation de l\'entreprise');
+            ?>
+            <!-- Ligne principale -->
+            <tr>
+                <input type="hidden" name="note_id" value="<?= $noteId ?>">
+                <td>
+                    <?= htmlspecialchars($sujet) ?>
+                </td>
+                <td><?= $average !== null ? number_format($average, 2) : 'N/A' ?></td>
+                <td><?= number_format($coeff) ?></td>
+                <td>
+                    <?php if (!$isEnterpriseEvaluation): ?>
+                        <p style="color: red; font-weight: bold;">Vous ne pouvez pas modifier cette note</p>
+                    <?php else: ?>
+                        <button type="button" onclick="showUnderTable(this, 'desc<?= $noteId ?>')">Afficher Détails</button>
+                    <?php endif; ?>
+                </td>
+            </tr>
+
+            <!-- Sous-ligne, cachée par défaut -->
+            <tr id="desc<?= $noteId ?>" class="idUnderTable" style="display: none;">
+
+                <td colspan="5">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Aptitudes intellectuelles</th>
+                            <th>Échelle (0 à 5)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Sens de l'observation</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="<?= htmlspecialchars($sliderValuesMap['observation'] ?? 0) ?>"
+                                                name="sliders[<?= $noteId ?>][observation]"
+                                                oninput="updateValue('slider-value-obs-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Qualité du raisonnement logique</td>
-                                <td>
-                                    <div class="slider-container">
-                                        <div class="slider-wrapper">
-                                            <input
-                                                    type="range"
-                                                    min="0" max="5" step="1"
-                                                    value="<?= htmlspecialchars($sliderValuesMap['raisonnement'] ?? 0) ?>"
-                                                    name="sliders[<?= $noteId ?>][raisonnement]"
-                                                    oninput="updateValue('slider-value-rais-<?= $noteId ?>', this.value)"
-                                            >
-                                            <div class="ticks">
-                                                <div class="tick">0</div>
-                                                <div class="tick">1</div>
-                                                <div class="tick">2</div>
-                                                <div class="tick">3</div>
-                                                <div class="tick">4</div>
-                                                <div class="tick">5</div>
-                                            </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Qualité du raisonnement logique</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="<?= htmlspecialchars($sliderValuesMap['raisonnement'] ?? 0) ?>"
+                                                name="sliders[<?= $noteId ?>][raisonnement]"
+                                                oninput="updateValue('slider-value-rais-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Sens pratique</td>
-                                <td>
-                                    <div class="slider-container">
-                                        <div class="slider-wrapper">
-                                            <input
-                                                    type="range"
-                                                    min="0" max="5" step="1"
-                                                    value="<?= htmlspecialchars($sliderValuesMap['pratique'] ?? 0) ?>"
-                                                    name="sliders[<?= $noteId ?>][pratique]"
-                                                    oninput="updateValue('slider-value-prat-<?= $noteId ?>', this.value)"
-                                            >
-                                            <div class="ticks">
-                                                <div class="tick">0</div>
-                                                <div class="tick">1</div>
-                                                <div class="tick">2</div>
-                                                <div class="tick">3</div>
-                                                <div class="tick">4</div>
-                                                <div class="tick">5</div>
-                                            </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sens pratique</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="<?= htmlspecialchars($sliderValuesMap['pratique'] ?? 0) ?>"
+                                                name="sliders[<?= $noteId ?>][pratique]"
+                                                oninput="updateValue('slider-value-prat-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <table class="UnderNotes">
-                            <thead>
-                            <tr>
-                                <th>Qualités opérationnelles</th>
-                                <th>Échelle (0 à 5)</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>Efficacité, respect des délais</td>
-                                <td>
-                                    <div class="slider-container">
-                                        <div class="slider-wrapper">
-                                            <input
-                                                    type="range"
-                                                    min="0" max="5" step="1"
-                                                    value="<?= htmlspecialchars($sliderValuesMap['efficacite'] ?? 0) ?>"
-                                                    name="sliders[<?= $noteId ?>][efficacite]"
-                                                    oninput="updateValue('slider-value-eff-<?= $noteId ?>', this.value)"
-                                            >
-                                            <div class="ticks">
-                                                <div class="tick">0</div>
-                                                <div class="tick">1</div>
-                                                <div class="tick">2</div>
-                                                <div class="tick">3</div>
-                                                <div class="tick">4</div>
-                                                <div class="tick">5</div>
-                                            </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Qualités opérationnelles</th>
+                            <th>Échelle (0 à 5)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Efficacité, respect des délais</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="<?= htmlspecialchars($sliderValuesMap['efficacite'] ?? 0) ?>"
+                                                name="sliders[<?= $noteId ?>][efficacite]"
+                                                oninput="updateValue('slider-value-eff-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Sens de la qualité</td>
-                                <td>
-                                    <div class="slider-container">
-                                        <div class="slider-wrapper">
-                                            <input
-                                                    type="range"
-                                                    min="0" max="5" step="1"
-                                                    value="<?= htmlspecialchars($sliderValuesMap['qualite'] ?? 0) ?>"
-                                                    name="sliders[<?= $noteId ?>][qualite]"
-                                                    oninput="updateValue('slider-value-qual-<?= $noteId ?>', this.value)"
-                                            >
-                                            <div class="ticks">
-                                                <div class="tick">0</div>
-                                                <div class="tick">1</div>
-                                                <div class="tick">2</div>
-                                                <div class="tick">3</div>
-                                                <div class="tick">4</div>
-                                                <div class="tick">5</div>
-                                            </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sens de la qualité</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="<?= htmlspecialchars($sliderValuesMap['qualite'] ?? 0) ?>"
+                                                name="sliders[<?= $noteId ?>][qualite]"
+                                                oninput="updateValue('slider-value-qual-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Esprit d'initiative</td>
-                                <td>
-                                    <div class="slider-container">
-                                        <div class="slider-wrapper">
-                                            <input
-                                                    type="range"
-                                                    min="0" max="5" step="1"
-                                                    value="<?= htmlspecialchars($sliderValuesMap['initiative'] ?? 0) ?>"
-                                                    name="sliders[<?= $noteId ?>][initiative]"
-                                                    oninput="updateValue('slider-value-ini-<?= $noteId ?>', this.value)"
-                                            >
-                                            <div class="ticks">
-                                                <div class="tick">0</div>
-                                                <div class="tick">1</div>
-                                                <div class="tick">2</div>
-                                                <div class="tick">3</div>
-                                                <div class="tick">4</div>
-                                                <div class="tick">5</div>
-                                            </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Esprit d'initiative</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="<?= htmlspecialchars($sliderValuesMap['initiative'] ?? 0) ?>"
+                                                name="sliders[<?= $noteId ?>][initiative]"
+                                                oninput="updateValue('slider-value-ini-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Autonomie</td>
-                                <td>
-                                    <div class="slider-container">
-                                        <div class="slider-wrapper">
-                                            <input
-                                                    type="range"
-                                                    min="0" max="5" step="1"
-                                                    value="<?= htmlspecialchars($sliderValuesMap['autonomie'] ?? 0) ?>"
-                                                    name="sliders[<?= $noteId ?>][autonomie]"
-                                                    oninput="updateValue('slider-value-auto-<?= $noteId ?>', this.value)"
-                                            >
-                                            <div class="ticks">
-                                                <div class="tick">0</div>
-                                                <div class="tick">1</div>
-                                                <div class="tick">2</div>
-                                                <div class="tick">3</div>
-                                                <div class="tick">4</div>
-                                                <div class="tick">5</div>
-                                            </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Autonomie</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="<?= htmlspecialchars($sliderValuesMap['autonomie'] ?? 0) ?>"
+                                                name="sliders[<?= $noteId ?>][autonomie]"
+                                                oninput="updateValue('slider-value-auto-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <table class="UnderNotes">
-                            <thead>
-                            <tr>
-                                <th>Relationnel et comportement</th>
-                                <th>Échelle (0 à 5)</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>Sens des rapports humains</td>
-                                <td>
-                                    <div class="slider-container">
-                                        <div class="slider-wrapper">
-                                            <input
-                                                    type="range"
-                                                    min="0" max="5" step="1"
-                                                    value="<?= htmlspecialchars($sliderValuesMap['rapports'] ?? 0) ?>"
-                                                    name="sliders[<?= $noteId ?>][rapports]"
-                                                    oninput="updateValue('slider-value-rel-<?= $noteId ?>', this.value)"
-                                            >
-                                            <div class="ticks">
-                                                <div class="tick">0</div>
-                                                <div class="tick">1</div>
-                                                <div class="tick">2</div>
-                                                <div class="tick">3</div>
-                                                <div class="tick">4</div>
-                                                <div class="tick">5</div>
-                                            </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Relationnel et comportement</th>
+                            <th>Échelle (0 à 5)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Sens des rapports humains</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="<?= htmlspecialchars($sliderValuesMap['rapports'] ?? 0) ?>"
+                                                name="sliders[<?= $noteId ?>][rapports]"
+                                                oninput="updateValue('slider-value-rel-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Ponctualité, assiduité</td>
-                                <td>
-                                    <div class="slider-container">
-                                        <div class="slider-wrapper">
-                                            <input
-                                                    type="range"
-                                                    min="0" max="5" step="1"
-                                                    value="<?= htmlspecialchars($sliderValuesMap['ponctualite'] ?? 0) ?>"
-                                                    name="sliders[<?= $noteId ?>][ponctualite]"
-                                                    oninput="updateValue('slider-value-ponc-<?= $noteId ?>', this.value)"
-                                            >
-                                            <div class="ticks">
-                                                <div class="tick">0</div>
-                                                <div class="tick">1</div>
-                                                <div class="tick">2</div>
-                                                <div class="tick">3</div>
-                                                <div class="tick">4</div>
-                                                <div class="tick">5</div>
-                                            </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Ponctualité, assiduité</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="<?= htmlspecialchars($sliderValuesMap['ponctualite'] ?? 0) ?>"
+                                                name="sliders[<?= $noteId ?>][ponctualite]"
+                                                oninput="updateValue('slider-value-ponc-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Intérêt porté par le sujet</td>
-                                <td>
-                                    <div class="slider-container">
-                                        <div class="slider-wrapper">
-                                            <input
-                                                    type="range"
-                                                    min="0" max="5" step="1"
-                                                    value="<?= htmlspecialchars($sliderValuesMap['interet'] ?? 0) ?>"
-                                                    name="sliders[<?= $noteId ?>][interet]"
-                                                    oninput="updateValue('slider-value-int-<?= $noteId ?>', this.value)"
-                                            >
-                                            <div class="ticks">
-                                                <div class="tick">0</div>
-                                                <div class="tick">1</div>
-                                                <div class="tick">2</div>
-                                                <div class="tick">3</div>
-                                                <div class="tick">4</div>
-                                                <div class="tick">5</div>
-                                            </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Intérêt porté par le sujet</td>
+                            <td>
+                                <div class="slider-container">
+                                    <div class="slider-wrapper">
+                                        <input
+                                                type="range"
+                                                min="0" max="5" step="1"
+                                                value="<?= htmlspecialchars($sliderValuesMap['interet'] ?? 0) ?>"
+                                                name="sliders[<?= $noteId ?>][interet]"
+                                                oninput="updateValue('slider-value-int-<?= $noteId ?>', this.value)"
+                                        >
+                                        <div class="ticks">
+                                            <div class="tick">0</div>
+                                            <div class="tick">1</div>
+                                            <div class="tick">2</div>
+                                            <div class="tick">3</div>
+                                            <div class="tick">4</div>
+                                            <div class="tick">5</div>
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+
+                </td>
+            </tr>
+
+        <?php endforeach; ?>
         </tbody>
     </table>
     <button type="submit">Enregistrer la note</button>
