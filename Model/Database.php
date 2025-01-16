@@ -996,11 +996,13 @@ class Database
         return $groups;
     }
 
+
     /**
      * Delete a group by id
      * @param $groupId
      * @return bool
      */
+
     public function deleteGroup($groupId)
     {
         try {
@@ -1991,4 +1993,207 @@ class Database
         $stmt = $this->connection->prepare($sqlUpdate);
         $stmt->execute([':conv_id' => $convId]);
     }
+
+    public function getCompanyById(int $id){
+        $sql = "select * from company where id = :id;";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getCompanyByUserId(int $id): array {
+        $sql = "SELECT Company.id, Company.name, Company.size, Company.address, Company.Siret, 
+                   Company.postal_code, Company.phone_number, Company.city, Company.country, 
+                   Company.APE_code, Company.legal_status
+            FROM Company 
+            JOIN User_Company ON User_Company.company_id = Company.id 
+            WHERE User_Company.user_id = :id;";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        try {
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne
+
+            if ($result) {
+                return [
+                    'id' => $result['id'],
+                    'name' => $result['name'],
+                    'size' => $result['size'],
+                    'address' => $result['address'],
+                    'siret' => $result['Siret'],
+                    'postal_code' => $result['postal_code'],
+                    'phone_number' => $result['phone_number'],
+                    'city' => $result['city'],
+                    'country' => $result['country'],
+                    'APE_code' => $result['APE_code'],
+                    'legal_status' => $result['legal_status']
+                ];
+            }
+
+            // Si aucun résultat trouvé
+            return [];
+        } catch (PDOException $e) {
+            // Gestion des erreurs : journalisation, levée d'exception, ou retour d'une réponse vide
+            error_log("Database error: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getPreAgreementByIdGroup(int $id){
+        $sql = "select id from Pre_Agreement where idGroup = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllMentor(): false|array
+    {
+        $sql = "select id, nom, prenom from User where role = 3";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function insertInputsPreAgreementStudent($json, int $idStudent, int $idMentor, int $idProfessor = null): void {
+        if (is_array($json)) {
+            $json = json_encode($json);
+        }
+
+        if ($idProfessor !== null && $idMentor !== -1) {
+            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent, idMentor, idProfessor) VALUES (DEFAULT, 0, :inputs, :idStudent, :idMentor, :idProfessor)";
+        }
+        else if ($idProfessor == null && $idMentor == -1) {
+            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent) VALUES (DEFAULT, 0, :inputs, :idStudent)";
+        }
+        else if ($idProfessor == null && $idMentor != -1){
+            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent, idMentor) VALUES (DEFAULT, 0, :inputs, :idStudent, :idMentor)";
+        }
+        else {
+            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent, idProfessor) VALUES (DEFAULT, 0, :inputs, :idStudent, :idProfessor)";
+        }
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':inputs', $json, PDO::PARAM_STR);
+        $stmt->bindParam(':idStudent', $idStudent, PDO::PARAM_INT);
+        $stmt->bindParam(':idMentor', $idMentor, PDO::PARAM_INT);
+
+        if ($idProfessor !== null) {
+            $stmt->bindParam(':idProfessor', $idProfessor, PDO::PARAM_INT);
+        }
+        if($idMentor !== -1){
+            $stmt->bindParam(':idMentor', $idMentor, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+    }
+
+    public function updateInputsPreAgreementStudent(int $id, $json ): void {
+        $stmt = $this->connection->prepare("UPDATE Pre_Agreement set inputs = :json where id = :id;");
+        $stmt->bindParam(':json', $json);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function getPreAgreementFormById($id){
+        $stmt = $this->connection->prepare("select id from Pre_Agreement WHERE id = :id");
+        $stmt ->bindParam('id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function getPreAgreementFormStudent($idPerson){
+        $stmt = $this->connection->prepare("SELECT id FROM Pre_Agreement WHERE idStudent = :idPerson;");
+        $stmt -> bindParam('idPerson', $idPerson);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function getPreAgreementFormMentor($idPerson){
+        $stmt = $this->connection->prepare("SELECT id FROM Pre_Agreement WHERE idMentor = :idPerson;");
+        $stmt -> bindParam('idPerson', $idPerson);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function getPreAgreementFormProfessor($idPerson){
+        $stmt = $this->connection->prepare("SELECT id FROM Pre_Agreement WHERE idProfessor = :idPerson;");
+        $stmt -> bindParam('idPerson', $idPerson);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getInputsPreAgreementForm($idPreAgreementForm){
+        $stmt = $this->connection->prepare("SELECT inputs FROM Pre_Agreement WHERE id = :idPreAgreementForm;");
+        $stmt->bindParam(':idPreAgreementForm', $idPreAgreementForm, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /*public function getAllPreAgreementForm(){
+        $stmt = $this->connection->prepare("select id from Pre_Agreement;");
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }*/
+
+    public function getStudentsWithPreAgreementFormValid(): false|array
+    {
+        $stmt = $this->connection->prepare("select PA.id, User.nom, User.prenom from User Join sae.Pre_Agreement PA on User.id = PA.idStudent where PA.status=1;");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getStudentsWithPreAgreementFormInvalid(): false|array
+    {
+        $stmt = $this->connection->prepare("select PA.id, User.nom, User.prenom from User Join sae.Pre_Agreement PA on User.id = PA.idStudent where PA.status=0;");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function addConventionToGroup(int $groupId, string $path): void {
+        $sql = "update Convention set path_convention = :path where id = :groupId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':path', $path, PDO::PARAM_STR);
+        $stmt->bindParam(':groupId', $groupId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function getUserGroupByIdUser(int $id): ?int
+    {
+        $sql = "select conv_id from Groupe where user_id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? (int)$result['conv_id'] : null;
+
+    }
+
+    public function getAgreementByGroupId(int $id): ?string
+    {
+        $sql = "select path_convention from Convention where id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['path_convention'] : null;
+    }
+
+    public function PreAgreementIsValid(int $id){
+        $stmt = $this->connection->prepare("select status from Pre_Agreement where id = :id;");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)$result['status'];
+    }
+
+    public function setValidPreAgreement(int $id): void
+    {
+        $stmt = $this->connection->prepare("update Pre_Agreement set status = 1 where id = :id;");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
 }

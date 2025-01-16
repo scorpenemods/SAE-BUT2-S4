@@ -174,7 +174,6 @@ $translations = include $langFile;
         </div>
         <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">
             <?php include_once("Documents/Documents.php");?>
-
             <h2>Gestion des Fichiers</h2>
             <form class="box" method="post" action="" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
@@ -209,6 +208,10 @@ $translations = include $langFile;
                     <?php endforeach; ?>
                 </div>
             </div>
+
+            <script src="../View/Documents/Documents.js"></script>
+            <a href="../View/Agreement/PreAgreementFormCompany.php">Accès au formulaire de pré-convention</a>
+
         </div>
 
         <!-- Contenu de la Messagerie -->

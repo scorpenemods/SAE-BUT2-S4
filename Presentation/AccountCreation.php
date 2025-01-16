@@ -166,7 +166,12 @@ $translations = include $langFile;
             <label for="tutorprofessor"><?= $translations['prof_refe'] ?><span class="required">*</span></label>
 
             <input type="radio" name="choice" value="tutorcompany" id="tutorcompany" required />
+
             <label for="tutorcompany"><?= $translations['prof_pro'] ?><span class="required">*</span></label>
+
+            <input type="radio" name="choice" value="secretariat" id="secretariat" required />
+            <label for="secretariat">Secrétariat <span class="required">*</span></label>
+
         </p>
 
         <!-- Champ pour la fonction professionnelle/universitaire -->

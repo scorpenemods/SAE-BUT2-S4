@@ -203,6 +203,7 @@ $translations = include $langFile;
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="../View/Principal/Modals.css">
     <link rel="stylesheet" href="../View/Documents/Documents.css">
+    <link rel="stylesheet" href="../View/Agreement/SecretariatConsultPreAgreementForm.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include EmojiOneArea -->
@@ -436,8 +437,32 @@ $translations = include $langFile;
         <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
             Contenu Rapports
         </div>
+
+
+
+
         <!-- Section Documents -->
-        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
+        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4" data-section="documents">
+            <h2>Espace conventions :</h2>
+            <!--
+            <?php //include_once("Documents/Convention.php");?>
+            <script src="../View/Documents/Conventions.js"></script>
+            <br>
+            -->
+
+            <button id="PreAgreement">Consulter un formulaire de pré-convention</button>
+            <button id="PreAgreementToValidate">Consulter les pré-conventions à valider</button>
+
+            <?php //premier bouton
+            include_once("SecretariatConsultValidPreAgreementForm.php");
+            //second bouton
+            include_once("SecretariatConsultInvalidPreAgreementForm.php"); ?>
+            <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
+
+
+
+
+            <h2>Vos documents :</h2>
             <?php include_once("Documents/Documents.php");?>
 
             <h2>Gestion des Fichiers</h2>

@@ -252,12 +252,42 @@ $translations = include $langFile;
                 </div>
             </div>
 
+
             <!-- Notes Content -->
             <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">
                 <div class="notes-container">
                     <table class="notes-table">
                         <?php
                         $noter = "";
+
+        <!-- Documents Content -->
+        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
+
+        </div>
+
+        <!-- Livret de suivi Content -->
+        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
+            <!-- Affichage du livret de suivi -->
+
+            <?php include_once("LivretSuivi.php");?>
+        </div>
+
+        <!-- Notes Content -->
+        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
+            <div class="notes-container">
+                <table class="notes-table">
+                    <?php
+                    $noter = "";
+                    foreach ($notes as $note):
+                        $noter = $note->getNote();
+                    endforeach;
+                    if($noter != ""){
+                        echo '<tr class="lsttitlenotes">';
+                            echo '<th>Sujet</th>';
+                            echo '<th>Appréciation</th>';
+                            echo '<th>Note</th>';
+                            echo '<th>Coefficient</th>';
+                        echo '</tr>';
                         foreach ($notes as $note):
                             $noter = $note->getNote();
                         endforeach;
