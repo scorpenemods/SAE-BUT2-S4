@@ -513,7 +513,7 @@ body.dark-mode .sidebar {
 .sidebar-toggle {
     cursor: pointer;
     font-size: 45px;
-    position: absolute;
+    position: fixed;
     top: 100px;
     left: 5px;
     z-index: 4;
