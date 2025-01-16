@@ -274,8 +274,6 @@ $translations = include $langFile;
                                     echo '<td>' . htmlspecialchars($note->getCoeff()); '</td>';
                                 echo '</tr>';
                                 endforeach;
-                                echo '<td class="test"></td>';
-                                echo '<td class="test"></td>';
 
                         }
                         else {

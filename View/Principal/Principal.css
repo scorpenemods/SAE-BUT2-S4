@@ -986,34 +986,6 @@ button:hover {
     margin-left: 5px;
 }
 
-/*---------------------- Notes ------------------*/
-
-.notes-container {
-    margin-top: 20px;
-}
-
-.notes-table {
-    width: 100%;
-    border-collapse: collapse;
-    border: transparent;
-}
-
-.notes-table th, .notes-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-.notes-table th {
-    background-color: #f4f4f4;
-}
-
-.notes-buttons {
-    margin-top: 20px;
-    display: flex;
-    justify-content: right;
-}
-
 .mainbtn {
     padding: 10px 15px;
     background-color: #007BFF;
@@ -1556,17 +1528,43 @@ section.Menus div.Contenus div.Contenu p.noNotes{
 
 /* ----------------- Style du tableau des notes -------------------- */
 
-.slider-container {
+.notes-container {
+    margin-top: 20px;
+}
+
+.notes-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: transparent;
+}
+
+.notes-table th, .notes-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.notes-table th {
+    background-color: #f4f4f4;
+}
+
+.notes-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: right;
+}
+
+table.notes-table .slider-container {
     width: 300px;
     margin: 20px auto;
     text-align: center;
 }
 
-.slider-wrapper {
+table.notes-table .slider-wrapper {
     position: relative;
 }
 
-input[type="range"] {
+table.notes-table input[type="range"] {
     width: 100%;
     margin: 20px 0;
     appearance: none;
@@ -1576,7 +1574,7 @@ input[type="range"] {
     position: relative;
 }
 
-input[type="range"]::-webkit-slider-thumb {
+table.notes-table input[type="range"]::-webkit-slider-thumb {
     appearance: none;
     width: 20px;
     height: 40px;
@@ -1589,7 +1587,7 @@ input[type="range"]::-webkit-slider-thumb {
     top: 17px; /* Center the thumb with the track */
 }
 
-input[type="range"]::-moz-range-thumb {
+table.notes-table input[type="range"]::-moz-range-thumb {
     width: 20px;
     height: 40px;
     background-color: black;
@@ -1600,7 +1598,7 @@ input[type="range"]::-moz-range-thumb {
     top: 17px; /* Center the thumb with the track */
 }
 
-input[type="range"]::-ms-thumb {
+table.notes-table input[type="range"]::-ms-thumb {
     width: 20px;
     height: 40px;
     background-color: black;
@@ -1611,7 +1609,7 @@ input[type="range"]::-ms-thumb {
     top: 17px; /* Center the thumb with the track */
 }
 
-.ticks {
+table.notes-table .ticks {
     display: flex;
     justify-content: space-between;
     position: absolute;
@@ -1619,13 +1617,24 @@ input[type="range"]::-ms-thumb {
     width: 100%;
 }
 
-.tick {
+table.notes-table .tick {
     text-align: center;
     font-size: 16px; /* Enlarge the numbers */
     transform: translateX(-50%); /* Center align each number */
 }
 
-.value-display {
+table.notes-table .value-display {
     margin-top: 10px;
     font-size: 18px;
+}
+
+table.notes-table table.UnderNotes{
+    width: 100%;
+}
+
+table.notes-table table.UnderNotes td{
+    width: 50%;
+}
+table.notes-table table.UnderNotes input{
+    color: red;
 }
