@@ -1,3 +1,15 @@
+// Vérifier au chargement si la classe doit être ajoutée
+document.addEventListener("DOMContentLoaded", function() {
+    if (sessionStorage.getItem("lastPage") === "index.php") {
+        sessionStorage.setItem("lastPage", "main");
+        widget(0);
+    }
+    else{
+        widget(localStorage.getItem('classAdded'));
+    }
+});
+
+
 // Code menu paramètre
 // Afficher
 function show(header) {
@@ -63,6 +75,8 @@ function widget(x) {
     now.classList.remove("Current");
     let span = document.querySelectorAll("section span");
     span[x].classList.add("Current")
+
+    localStorage.setItem('classAdded', x);
 }
 
 // Fonction pour envoyer un message

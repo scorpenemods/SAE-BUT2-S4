@@ -143,7 +143,6 @@ $translations = include $langFile;
         <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
         <span onclick="widget(6)" class="widget-button"><?= $translations['notes']?></span>
         <span onclick="widget(7)" class="widget-button"><?= $translations['offres']?></span>
-
     </nav>
 
 

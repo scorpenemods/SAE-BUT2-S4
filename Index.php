@@ -263,6 +263,8 @@ $translations = include $langFile;
         notification.classList.remove('show');
     }
 
+    sessionStorage.setItem("lastPage", "index.php");
+
 </script>
 </body>
 </html>

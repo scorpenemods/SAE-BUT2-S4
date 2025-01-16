@@ -221,18 +221,18 @@ $translations = include $langFile;
 <!-- Section principale contenant les différents modules de l'application -->
 <section class="Menus">
     <nav>
+
         <!-- Boutons de navigation entre les différents contenus de la section -->
-        <span onclick="window.location.href='Secretariat.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>" id="content-0"><?= $translations['accueil']?></span>
+        <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
         <?php if ($userRole == 5) { ?>
-        <span onclick="window.location.href='Secretariat.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1"><?= $translations['gestion secrétariat']?></span>
-        <span onclick="window.location.href='Secretariat.php?section=8'" class="widget-button <?php echo $activeSection == '8' ? 'Current' : ''; ?>" id="content-8">Logs</span>
+        <span onclick="widget(1)" class="widget-button"><?= $translations['gestion secrétariat']?></span>
+        <span onclick="widget(2)" class="widget-button"><?= $translations['gestion utilisateurs']?></span>
         <?php } ?>
-        <span onclick="window.location.href='Secretariat.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2"><?= $translations['gestion utilisateurs']?></span>
-        <span onclick="window.location.href='Secretariat.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3"><?= $translations['rapports']?></span>
-        <span onclick="window.location.href='Secretariat.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4"><?= $translations['documents']?></span>
-        <span onclick="window.location.href='Secretariat.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5"><?= $translations['messagerie']?></span>
-        <span onclick="window.location.href='Secretariat.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>" id="content-6"><?= $translations['groupes']?></span>
-        <span onclick="window.location.href='Secretariat.php?section=7'" class="widget-button <?php echo $activeSection == '7' ? 'Current' : ''; ?>" id="content-7"><?= $translations['offres']?></span>
+        <span onclick="widget(3)" class="widget-button"><?= $translations['rapports']?></span>
+        <span onclick="widget(4)" class="widget-button"><?= $translations['documents']?></span>
+        <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
+        <span onclick="widget(6)" class="widget-button"><?= $translations['groupes']?></span>
+        <span onclick="widget(7)" class="widget-button"><?= $translations['offres']?></span>
 
     </nav>
     <div class="Contenus">

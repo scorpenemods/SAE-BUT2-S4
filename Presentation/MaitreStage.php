@@ -144,14 +144,14 @@ $translations = include $langFile;
 <!-- Section contenant les différents menus -->
 <section class="Menus" id="Menus">
     <nav>
-        <span onclick="window.location.href='MaitreStage.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>"><?= $translations['accueil']?></span>
-        <span onclick="window.location.href='MaitreStage.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>"><?= $translations['mission stage']?></span>
-        <span onclick="window.location.href='MaitreStage.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>"><?= $translations['gestion stagiaire']?></span>
-        <span onclick="window.location.href='MaitreStage.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>"><?= $translations['livret suivi']?></span>
-        <span onclick="window.location.href='MaitreStage.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>"><?= $translations['documents']?></span>
-        <span onclick="window.location.href='MaitreStage.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>"><?= $translations['messagerie']?></span>
-        <span onclick="window.location.href='MaitreStage.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>"><?= $translations['notes']?></span>
-        <span onclick="window.location.href='MaitreStage.php?section=7'" class="widget-button <?php echo $activeSection == '7' ? 'Current' : ''; ?>"><?= $translations['offres']?></span>
+        <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
+        <span onclick="widget(1)" class="widget-button"><?= $translations['mission stage']?></span>
+        <span onclick="widget(2)" class="widget-button"><?= $translations['gestion stagiaire']?></span>
+        <span onclick="widget(3)" class="widget-button"><?= $translations['livret suivi']?></span>
+        <span onclick="widget(4)" class="widget-button"><?= $translations['documents']?></span>
+        <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
+        <span onclick="widget(6)" class="widget-button"><?= $translations['notes']?></span>
+        <span onclick="widget(7)" class="widget-button"><?= $translations['offres']?></span>
     </nav>
 
 

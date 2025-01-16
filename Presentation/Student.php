@@ -120,13 +120,14 @@ $translations = include $langFile;
     </div>
     <section class="Menus" id="Menus">
         <nav>
-            <span onclick="window.location.href='Student.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : '0'; ?>"><?= $translations['accueil']?></span>
-            <span onclick="window.location.href='Student.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : '1'; ?>"><?= $translations['mission stage']?></span>
-            <span onclick="window.location.href='Student.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : '2'; ?>"><?= $translations['livret suivi']?></span>
-            <span onclick="window.location.href='Student.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : '3'; ?>"><?= $translations['offres']?></span>
-            <span onclick="window.location.href='Student.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : '4'; ?>"><?= $translations['documents']?></span>
-            <span onclick="window.location.href='Student.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : '5'; ?>"><?= $translations['messagerie']?></span>
-            <span onclick="window.location.href='Student.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : '6'; ?>"><?= $translations['notes']?></span>
+
+            <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
+            <span onclick="widget(1)" class="widget-button"><?= $translations['mission stage']?></span>
+            <span onclick="widget(2)" class="widget-button"><?= $translations['livret suivi']?></span>
+            <span onclick="widget(3)" class="widget-button"><?= $translations['offres']?></span>
+            <span onclick="widget(4)" class="widget-button"><?= $translations['documents']?></span>
+            <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
+            <span onclick="widget(6)" class="widget-button"><?= $translations['notes']?></span>
         </nav>
         <div class="Contenus">
             <!-- Accueil Content -->
