@@ -1227,10 +1227,10 @@ class Database
             // Insérez les 4 lignes principales
             $sqlInsert = "
             INSERT INTO Note (sujet, note, coeff, user_id) VALUES
-            ('A', 0, 4, :user_id),
-            ('B', 0, 2, :user_id),
-            ('C', 0, 3, :user_id),
-            ('D', 0, 1, :user_id)
+            ('Rapport', 0, 4, :user_id),
+            ('Évaluation de l''entreprise', 0, 2, :user_id),
+            ('Soutenance', 0, 3, :user_id),
+            ('Technicité', 0, 1, :user_id)
         ";
             $stmtInsert = $this->connection->prepare($sqlInsert);
             $stmtInsert->bindParam(':user_id', $studentId, PDO::PARAM_INT);
@@ -1334,6 +1334,13 @@ class Database
             ':id' => $noteId,
         ]);
         return $average;
+    }
+
+    public function getNoteSujet(int $noteId): ?string {
+        $sql = "SELECT sujet FROM Note WHERE id = :note_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([':note_id' => $noteId]);
+        return $stmt->fetchColumn() ?: null;
     }
 
 

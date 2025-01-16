@@ -20,19 +20,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Enregistrement des curseurs
-    if (isset($_POST['sliders'])) {
-        $studentId = (int)$_POST['student_id']; // Récupérer l'ID de l'étudiant
-        foreach ($_POST['sliders'] as $noteId => $sliders) {
-            foreach ($sliders as $description => $value) {
-                $database->saveSliderValue((int)$noteId, $description, (int)$value);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Enregistrement des curseurs uniquement pour "Évaluation de l'entreprise"
+        if (isset($_POST['sliders']) && isset($_POST['student_id'])) {
+            $studentId = (int)$_POST['student_id'];
+            foreach ($_POST['sliders'] as $noteId => $sliders) {
+                // Vérifier si la note correspond au sujet "Évaluation de l'entreprise"
+                $noteSujet = $database->getNoteSujet($noteId);
+                if ($noteSujet === 'Évaluation de l\'entreprise') {
+                    foreach ($sliders as $description => $value) {
+                        $database->saveSliderValue((int)$noteId, $description, (int)$value);
+                    }
+                }
             }
-        }
 
-        // Redirection après enregistrement
-        header("Location: MaitreStage.php?student_id=$studentId");
-        exit;
+            // Redirection après enregistrement
+            header("Location: MaitreStage.php?student_id=$studentId");
+            exit;
+        }
     }
+
 }
 
 // Gérer le cas où un étudiant est sélectionné via la redirection
@@ -75,8 +82,6 @@ foreach ($notes as $data) {
 
 ?>
 <body>
-
-
 <h2 id="selected-student-name"><?= $studentName ?></h2>
 <form id="noteForm" action="MaitreStage.php" method="post">
     <input type="hidden" id="student-id" name="student_id" value="<?= htmlspecialchars($studentId ?? '') ?>">
@@ -103,13 +108,16 @@ foreach ($notes as $data) {
             $sliderValues = $database->getSliderValues($noteId);
             $average = $noteAverages[$noteId] ?? null;
 
-            // Créer un tableau associatif pour stocker les valeurs des curseurs
+
             $sliderValuesMap = [];
             foreach ($sliderValues as $slider) {
                 $sliderValuesMap[$slider['description']] = $slider['note'];
             }
+
+            if($sujet === 'Rapport' || $sujet === 'Soutenance' || $sujet === 'Technicité') {
+                continue;
+            }
             ?>
-            <!-- Ligne principale -->
             <tr>
                 <input type="hidden" name="note_id" value="<?= $noteId ?>">
                 <td>
@@ -118,12 +126,7 @@ foreach ($notes as $data) {
                 <td><?= $average !== null ? number_format($average, 2) : 'N/A' ?></td>
                 <td><?= number_format($coeff) ?></td>
                 <td>
-                    <button
-                        type="button"
-                        onclick="showUnderTable(this, 'desc<?= $noteId ?>')"
-                    >
-                        Afficher Détails
-                    </button>
+                    <button type="button" onclick="showUnderTable(this, 'desc<?= $noteId ?>')">Afficher Détails</button>
                 </td>
             </tr>
 
