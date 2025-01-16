@@ -1616,4 +1616,11 @@ class Database
         return (int)$result['status'];
     }
 
+    public function setValidPreAgreement(int $id): void
+    {
+        $stmt = $this->connection->prepare("update Pre_Agreement set status = 1 where id = :id;");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
 }
