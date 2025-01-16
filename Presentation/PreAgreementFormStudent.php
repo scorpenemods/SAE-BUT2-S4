@@ -499,15 +499,16 @@ function getFieldValue($field, $inputs = null, $default = null) {
             <input type="text" id="enseignent_referent" name="enseignent_referent" value="<?php echo getFieldValue('enseignantReferent', $inputs); ?>" >
         </div>
 
-        <?php if ($role==1){ ?>
+        <?php
+        if ($status && $status!==1){
+            if ($role==1){ ?>
             <button type="submit" name="action" value="action1">Enregistrer et soumettre aux autres parties</button>
-        <?php } ?>
-
-        <?php if ($role==4 || $role==5){ ?>
+            <?php }
+            else if ($role==4 || $role==5){?>
             <button type="submit" name="action" value="action2">Enregistrer et soumettre aux autres parties</button>
             <button type="submit" name="action" value="action3">Valider définitivement ce formulaire de pré-convention</button>
-        <?php } ?>
-
+            <?php }
+        }?>
 
     </form>
 </div>
