@@ -53,20 +53,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Aucun compte n'est associé à cette adresse email.";
     }
 }
+
+// LANGAGE
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
+
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Mot de passe oublié</title>
+    <title><?= $translations['title_mdp'] ?></title>
     <link rel="stylesheet" href="../View/ForgotPassword/ForgotPswdStyles.css">
     <!-- Lien vers Font Awesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha256-DIym3sfZPMYqRkk8oWhZyEEo9xYKpIZo2Vafz3tbv94=" crossorigin="anonymous" />
 </head>
 <body>
 <div class="container">
-    <h2>Réinitialisation du mot de passe</h2>
+    <h2><?= $translations['reni_mdp'] ?></h2>
 
     <!-- Affiche un message d'erreur ou de succès selon le cas -->
     <?php if (!empty($error)) { ?>
@@ -84,18 +105,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Formulaire pour soumettre l'adresse email -->
     <form action="" method="POST">
         <div class="form-group">
-            <label for="email">Adresse email :</label>
+            <label for="email"><?= $translations['adresse_mail'] ?></label>
             <div class="input-icon">
-                <input type="email" id="email" name="email" placeholder="Entrez votre adresse email" required>
+                <input type="email" id="email" name="email" placeholder='<?= $translations['enter_email'] ?>' required>
                 <i class="fas fa-envelope"></i> <!-- Icône pour l'email -->
             </div>
         </div>
-        <button type="submit" class="btn">Envoyer le code de vérification</button>
+        <button type="submit" class="btn"><?= $translations['send_code'] ?></button>
     </form>
 
     <!-- Lien pour revenir à la page de connexion -->
     <div class="link">
-        <a href="../Index.php">Retour à la connexion</a>
+        <a href="../Index.php"><?= $translations['retour_connexion'] ?></a>
     </div>
 </div>
 

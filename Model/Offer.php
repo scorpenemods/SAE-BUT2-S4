@@ -1,7 +1,6 @@
 <?php
 require_once "Database.php";
 $db = Database::getInstance();
-
 //Class to manage offers
 class Offer {
     private int $id;
@@ -43,71 +42,139 @@ class Offer {
     }
 
 
+    /**
+     * Get the id of the offer
+     * @return int
+     */
     public function getId(): int {
         return $this->id;
     }
 
+    /**
+     * Get the id of the Company
+     * @return int
+     */
     public function getCompanyId(): int {
         return $this->company_id;
     }
 
+    /**
+     * Get the Company
+     * @return Company
+     */
     public function getCompany(): Company {
         return $this->company;
     }
 
+    /**
+     * Get the title
+     * @return string
+     */
     public function getTitle(): string {
         return $this->title;
     }
 
+    /**
+     * Get the description
+     * @return string
+     */
     public function getDescription(): string {
         return $this->description;
     }
 
+    /**
+     * Get the job
+     * @return string
+     */
     public function getJob(): string {
         return $this->job;
     }
 
+    /**
+     * Get the duration
+     * @return int
+     */
     public function getDuration(): int {
         return $this->duration;
     }
 
+    /**
+     * Get the date of start
+     * @return string
+     */
     public function getBeginDate(): string {
         return $this->begin_date;
     }
 
+    /**
+     * Get the salary
+     * @return int
+     */
     public function getSalary(): int {
         return $this->salary;
     }
 
+    /**
+     * Get the address
+     * @return string
+     */
     public function getAddress(): string {
         return $this->address;
     }
 
+    /**
+     * Get the study level
+     * @return string
+     */
     public function getStudyLevel(): string {
         return $this->study_level;
     }
 
+    /**
+     * Get the status of activation
+     * @return bool
+     */
     public function getIsActive(): bool {
         return $this->is_active;
     }
 
+    /**
+     * Get the email
+     * @return string
+     */
     public function getEmail(): string {
         return $this->email;
     }
 
+    /**
+     * Get the phone
+     * @return string
+     */
     public function getPhone(): string {
         return $this->phone;
     }
 
+    /**
+     * Get the date of creation
+     * @return string
+     */
     public function getCreatedAt(): string {
         return $this->created_at;
     }
 
+    /**
+     * Get the date of modification
+     * @return string
+     */
     public function getUpdatedAt(): string
     {
         return $this->updated_at;
     }
 
+    /**
+     * Get the tags
+     * @return array|null
+     */
     public function getTags(): ?array
     {
 
@@ -131,7 +198,23 @@ class Offer {
         return $tags;
     }
 
-    //Update an Offer
+    /**
+     * Update an Offer
+     * @param int $getId
+     * @param string $getTitle
+     * @param string $getDescription
+     * @param string $getJob
+     * @param int $getDuration
+     * @param int $getSalary
+     * @param string $getAddress
+     * @param string $getEducation
+     * @param string $getBeginDate
+     * @param array|null $getTags
+     * @param string $getEmail
+     * @param string $getPhone
+     * @param string $getWebsite
+     * @return Offer|null
+     */
     public static function update(int $getId, string $getTitle, string $getDescription, string $getJob, int $getDuration, int $getSalary, string $getAddress, string $getEducation, string $getBeginDate, ?array $getTags, string $getEmail, string $getPhone, string $getWebsite): ?Offer
     {
         global $db;
@@ -178,6 +261,10 @@ class Offer {
         return $offer;
     }
 
+    /**
+     * Get the domain
+     * @return string|null
+     */
     public function getDomain(): ?string {
         $fullDomain = parse_url($this->website, PHP_URL_HOST);
 
@@ -186,11 +273,19 @@ class Offer {
         return $matches[1] ?? null;
     }
 
+    /**
+     * Get the image
+     * @return string|null
+     */
     public function getImage(): ?string {
         $imagePath = 'https://cdn.brandfetch.io/' . $this->getDomain() . '/w/512/h/512';
         return $imagePath;
     }
 
+    /**
+     * Get the background color
+     * @return void
+     */
     public function getBackgroundColor() {
         $imagePath = $this->getImage();
         $image = imagecreatefromwebp($imagePath);
@@ -207,7 +302,11 @@ class Offer {
         imagedestroy($image);
     }
 
-    //Get an Offer by its id
+    /**
+     * Get an Offer by its id
+     * @param int $id
+     * @return Offer|null
+     */
     public static function getById(int $id): ?Offer
     {
         global $db;
@@ -248,7 +347,10 @@ class Offer {
         );
     }
 
-    //Get all offers
+    /**
+     * Get all offers
+     * @return array|null
+     */
     public static function getAll(): ?array
     {
         global $db;
@@ -294,7 +396,23 @@ class Offer {
         return $offers;
     }
 
-    //Create a new Offer
+    /**
+     * Create a new Offer
+     * @param int $company_id
+     * @param string $title
+     * @param string $description
+     * @param string $job
+     * @param int $duration
+     * @param int $salary
+     * @param string $address
+     * @param string $education
+     * @param string $begin_date
+     * @param array $tags
+     * @param string $email
+     * @param string $phone
+     * @param string $website
+     * @return Offer|null
+     */
     public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $website) {
         global $db;
 
@@ -353,7 +471,10 @@ class Offer {
         return $offer;
     }
 
-    //Get the real duration of the Offer using modulo
+    /**
+     * Get the real duration of the Offer using modulo
+     * @return string
+     */
     public function getRealDuration(): string
     {
         $duration = $this->getDuration();
@@ -385,7 +506,10 @@ class Offer {
         return rtrim($result, ', ');
     }
 
-    //Get all tags
+    /**
+     * Get all tags
+     * @return array
+     */
     public static function getAllTags(): array
     {
         global $db;
@@ -403,11 +527,19 @@ class Offer {
         return $tags;
     }
 
+    /**
+     * Get the website
+     * @return string
+     */
     public function getWebsite() {
         return $this->website;
     }
 
-    //Get all offers of a Company
+    /**
+     * Get all offers of a Company
+     * @param $companyId
+     * @return array|null
+     */
     public static function getCompanyOffers($companyId): ?array
     {
         global $db;
@@ -454,7 +586,12 @@ class Offer {
         return $offers;
     }
 
-    //Get all offers filtered by the filters
+    /**
+     * Get all offers filtered by the filters
+     * @param int $n
+     * @param array $filters
+     * @return array|null
+     */
     public static function getFilteredOffers(int $n, array $filters): ?array {
         global $db;
 
@@ -602,7 +739,11 @@ class Offer {
         return [$offers, ceil($count / 12)];
     }
 
-    //Hide an Offer
+    /**
+     * Hide an Offer
+     * @param $id
+     * @return true|null
+     */
     public static function hide($id) {
         $db = Database::getInstance();
 
@@ -617,6 +758,12 @@ class Offer {
         return true;
     }
 
+    /**
+     * Check if the company had offers
+     * @param int $id
+     * @param int $company_id
+     * @return bool|null
+     */
     public static function isCompanyOffer(int $id, int $company_id): ?bool {
         global $db;
 
@@ -638,7 +785,11 @@ class Offer {
         return true;
     }
 
-    // Verify if an Offer is already pending
+    /**
+     *  Verify if an Offer is already pending
+     * @param int $id
+     * @return bool|null
+     */
     public static function isAlreadyPending(int $id): ?bool {
         global $db;
 
@@ -659,7 +810,12 @@ class Offer {
         return true;
     }
 
-    // Add a favorite Offer for a user
+    /**
+     * Add a favorite Offer for a user
+     * @param int $id
+     * @param int $user_id
+     * @return bool|null
+     */
     public static function makeFavorite(int $id, int $user_id): ?bool {
         global $db;
 
@@ -675,7 +831,12 @@ class Offer {
         return true;
     }
 
-    // Remove a favorite Offer for a user
+    /**
+     * Remove a favorite Offer for a user
+     * @param int $id
+     * @param int $user_id
+     * @return bool|null
+     */
     public static function removeFavorite(int $id, int $user_id): ?bool {
         global $db;
 
@@ -691,7 +852,12 @@ class Offer {
         return true;
     }
 
-    // Verify if a user has a favorite Offer
+    /**
+     * Verify if a user has a favorite Offer
+     * @param int $id
+     * @param int $user_id
+     * @return bool|null
+     */
     public static function isFavorite(int $id, int $user_id): ?bool {
         global $db;
 
@@ -713,7 +879,11 @@ class Offer {
         return true;
     }
 
-    // Get all inactive offers
+    /**
+     * Get all inactive offers
+     * @param int $company_id
+     * @return array|null
+     */
     public static function getAllInactive(int $company_id = 0): ?array {
         global $db;
         if ($company_id != 0) {

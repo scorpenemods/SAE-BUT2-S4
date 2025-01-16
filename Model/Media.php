@@ -1,5 +1,4 @@
 <?php
-
 //Class to manage medias
 class Media {
     private int $id;
@@ -16,22 +15,42 @@ class Media {
         $this->displayOrder = $displayOrder;
     }
 
+    /**
+     * Get the id
+     * @return int
+     */
     public function getId(): int {
         return $this->id;
     }
 
+    /**
+     * Get the url
+     * @return string
+     */
     public function getUrl(): string {
         return $this->url;
     }
 
+    /**
+     * Get the type of media
+     * @return string
+     */
     public function getType(): string {
         return $this->type;
     }
 
+    /**
+     * Get the description of media
+     * @return string
+     */
     public function getDescription(): string {
         return $this->description;
     }
 
+    /**
+     * Get the display order of media
+     * @return int
+     */
     public function getDisplayOrder(): int {
         return $this->displayOrder;
     }

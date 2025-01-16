@@ -1,12 +1,39 @@
 <?php
 require_once '../Model/Database.php'; // Inclure la connexion à la base de données
+require_once '../Model/Person.php';
 
 // Récupérer l'instance de la classe Database
 $database = Database::getInstance();
 
-?>
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-<div style="display: block; width: 100%;">
+$person = unserialize($_SESSION['user']);
+$userRole = $person->getRole();
+
+
+//TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
+?>
+<div style="width: 100%;">
     <div>
         <!-- Section pour l'affichage des informations des participants (étudiant, professeur, maître de stage) -->
         <div style="display: flex; justify-content: center;" id="student-details">
@@ -26,7 +53,9 @@ $database = Database::getInstance();
                     echo "<p><strong>Nom :</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
                     echo "<p><strong>Prénom :</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
                     echo "<p><strong>Email :</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
-                    echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                    if ($studentInfo['telephone'] != null) {
+                        echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                    }
                     echo "<p><strong>Formation :</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
                     echo "</div>";
                 } else {
@@ -40,7 +69,9 @@ $database = Database::getInstance();
                     echo "<p><strong>Nom :</strong> " . htmlspecialchars($professorInfo['nom']) . "</p>";
                     echo "<p><strong>Prénom :</strong> " . htmlspecialchars($professorInfo['prenom']) . "</p>";
                     echo "<p><strong>Email :</strong> " . htmlspecialchars($professorInfo['email']) . "</p>";
-                    echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($professorInfo['telephone']) . "</p>";
+                    if ($professorInfo['telephone'] != null) {
+                        echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($professorInfo['telephone']) . "</p>";
+                    }
                     echo "<p><strong>Spécialité :</strong> " . htmlspecialchars($professorInfo['activite']) . "</p>";
                     echo "</div>";
                 } else {
@@ -54,7 +85,9 @@ $database = Database::getInstance();
                     echo "<p><strong>Nom :</strong> " . htmlspecialchars($mentorInfo['nom']) . "</p>";
                     echo "<p><strong>Prénom :</strong> " . htmlspecialchars($mentorInfo['prenom']) . "</p>";
                     echo "<p><strong>Email :</strong> " . htmlspecialchars($mentorInfo['email']) . "</p>";
-                    echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($mentorInfo['telephone']) . "</p>";
+                    if ($mentorInfo['telephone'] != null) {
+                        echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($mentorInfo['telephone']) . "</p>";
+                    }
                     echo "<p><strong>Activité professionnelle :</strong> " . htmlspecialchars($mentorInfo['activite']) . "</p>";
                     echo "</div>";
                 } else {
@@ -62,13 +95,19 @@ $database = Database::getInstance();
                 }
                 ?>
         </div><br>
-        <div>
+
+        <div class="livret-container">
             <!-- Création des différentes rencontres / dépôts : -->
             <?php include_once "LivretSuiviContenu.php"; ?>
+            <script src="../View/Documents/Documents.js"></script>
             <?php
 
             } else {
-                echo "<div class='participant-container'>Sélectionnez un étudiant pour voir les détails.</div>";
+                if ($userRole != 1) {
+                    echo "<div class='participant-container'>Sélectionnez un étudiant pour voir les détails.</div>";
+                } else{
+                    echo "<div class='participant-container'>Vous n'avez pas de livret de suivi ouvert pour le moment.</div>";
+                }
             }
             ?>
         </div>

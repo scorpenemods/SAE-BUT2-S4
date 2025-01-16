@@ -1,4 +1,5 @@
 <?php
+// Initialisation of Database objects
 date_default_timezone_set('Europe/Paris');
 
 class Database
@@ -10,6 +11,10 @@ class Database
     {
     }
 
+    /**
+     * Get the instance
+     * @return Database
+     */
     public static function getInstance(): Database
     {
         if (self::$instance === null) {
@@ -19,6 +24,10 @@ class Database
         return self::$instance;
     }
 
+    /**
+     * Connection to the database
+     * @return void
+     */
     private function connect(): void
     {
         try {
@@ -32,6 +41,14 @@ class Database
         }
     }
 
+    /**
+     * Add a file on database
+     * @param string $name
+     * @param string $path
+     * @param int $userId
+     * @param int $size
+     * @return bool
+     */
     public function addFile(string $name, string $path, int $userId, int $size): bool {
         $sql = "INSERT INTO File (name, path, user_id, size) VALUES (:name, :path, :user_id, :size)";
         $stmt = $this->connection->prepare($sql);
@@ -43,6 +60,32 @@ class Database
         ]);
     }
 
+    /**
+     * Add a booklet file to database
+     * @param string $name
+     * @param string $path
+     * @param int $userId
+     * @param int $size
+     * @param int $groupId
+     * @return bool
+     */
+    public function addLivretFile(string $name, string $path, int $userId, int $size, int $groupId): bool {
+        $sql = "INSERT INTO File (name, path, user_id, size, conv_id) VALUES (:name, :path, :user_id, :size, :groupId)";
+        $stmt = $this->connection->prepare($sql);
+        return $stmt->execute([
+            ':name' => $name,
+            ':path' => $path,
+            ':user_id' => $userId,
+            ':size' => $size,
+            ':groupId' => $groupId,
+        ]);
+    }
+
+    /**
+     * Delete a file to database
+     * @param int $fileId
+     * @return bool
+     */
     public function deleteFile(int $fileId): bool {
         $sql = "SELECT path FROM File WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
@@ -50,7 +93,7 @@ class Database
         $file = $stmt->fetch();
 
         if ($file && file_exists($file['path'])) {
-            unlink($file['path']); // Supprime le fichier du serveur
+            unlink($file['path']); // Delete file on server
         }
 
         $sql = "DELETE FROM File WHERE id = :id";
@@ -58,13 +101,37 @@ class Database
         return $stmt->execute([':id' => $fileId]);
     }
 
+    /**
+     * Get all files on database
+     * @param int $studentId
+     * @return array
+     */
     public function getFiles(int $studentId): array {
-        $sql = "SELECT * FROM File WHERE user_id = :studentId";
+        $sql = "SELECT * FROM File WHERE user_id = :studentId AND conv_id IS NULL";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([':studentId' => $studentId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+    /**
+     * Get booklet's file on database
+     * @param int $groupId
+     * @return array
+     */
+    public function getLivretFile(int $groupId): array {
+        $sql = "SELECT * FROM File WHERE conv_id = :groupId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([':groupId' => $groupId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Check if file exist on database
+     * @param string $name
+     * @param int $userId
+     * @return bool
+     */
     public function fileExists(string $name, int $userId): bool {
         $sql = "SELECT COUNT(*) FROM File WHERE name = :name AND user_id = :userId";
         $stmt = $this->connection->prepare($sql);
@@ -72,7 +139,13 @@ class Database
         return $stmt->fetchColumn() > 0;
     }
 
-    // User login verification
+
+    /**
+     * Check the user's login
+     * @param $email
+     * @param $password
+     * @return array
+     */
     public function verifyLogin($email, $password): array
     {
         $message = "";
@@ -106,7 +179,18 @@ class Database
     }
 
 
-    // Adding a new user
+    /**
+     * Add a new user to database
+     * @param $email
+     * @param $password
+     * @param $telephone
+     * @param $prenom
+     * @param $activite
+     * @param $role
+     * @param $nom
+     * @param $status
+     * @return bool
+     */
     public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom, $status)
     {
         // Hash the password
@@ -149,7 +233,11 @@ class Database
     }
 
 
-    // Getting user information
+    /**
+     * Getting user's informations
+     * @param $email
+     * @return Person|null
+     */
     public function getPersonByUsername($email)
     {
         $sql = "SELECT nom, prenom, telephone, email, role, activite, id as user_id FROM User WHERE email = :email";
@@ -183,12 +271,20 @@ class Database
 
     // ----------------------- Messenger realisation ------------------------------------------ //
 
+    /**
+     * Send a message to another user
+     * @param $senderId
+     * @param $receiverId
+     * @param $message
+     * @param $filePath
+     * @return false|string
+     */
     public function sendMessage($senderId, $receiverId, $message, $filePath = null)
     {
         try {
             $this->connection->beginTransaction();
 
-            // Insertion du message
+            // Message insertion
             $stmt = $this->connection->prepare("
                 INSERT INTO Message (sender_id, receiver_id, contenu, timestamp)
                 VALUES (:sender_id, :receiver_id, :contenu, NOW())
@@ -200,9 +296,9 @@ class Database
 
             $messageId = $this->connection->lastInsertId();
 
-            // Si un fichier est associé, insérer dans Document et Document_Message
+            // If a file is link, insert into Document and Document_message
             if ($filePath) {
-                // Insertion dans Document
+                // Insertion Into Document
                 $stmt = $this->connection->prepare("
                     INSERT INTO Document (filepath)
                     VALUES (:filepath)
@@ -211,7 +307,7 @@ class Database
                 $stmt->execute();
                 $documentId = $this->connection->lastInsertId();
 
-                // Insertion dans Document_Message
+                // Insertion into Document_Message
                 $stmt = $this->connection->prepare("
                     INSERT INTO Document_Message (document_id, message_id)
                     VALUES (:document_id, :message_id)
@@ -223,7 +319,7 @@ class Database
 
             $this->connection->commit();
 
-            return $messageId; // Retourne l'ID du message
+            return $messageId; // Return the message's id
         } catch (PDOException $e) {
             $this->connection->rollBack();
             error_log("Erreur lors de l'envoi du message : " . $e->getMessage());
@@ -232,6 +328,12 @@ class Database
     }
 
 
+    /**
+     * Get the messages send into 2 users
+     * @param $senderId
+     * @param $receiverId
+     * @return array|false
+     */
     public function getMessages($senderId, $receiverId)
     {
         $sql = "SELECT Message.*, Document.filepath FROM Message
@@ -255,6 +357,11 @@ class Database
     }
 
 
+    /**
+     * Delete a message by id
+     * @param $messageId
+     * @return bool
+     */
     public function deleteMessage($messageId)
     {
         $sql = "DELETE FROM Message WHERE id = :message_id";
@@ -268,6 +375,11 @@ class Database
         }
     }
 
+    /**
+     * Get a message by id
+     * @param $messageId
+     * @return false|mixed
+     */
     public function getMessageById($messageId)
     {
         try {
@@ -282,7 +394,11 @@ class Database
 
     // ====== Messagerie Contacts ======= //
 
-    // Récupérer les contacts du même groupe que l'utilisateur
+    /**
+     * Get the same group of user's contact
+     * @param $userId
+     * @return array|false
+     */
     public function getGroupContacts($userId)
     {
         $query = "
@@ -302,6 +418,12 @@ class Database
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Get all messages between 2 Users
+     * @param $userId1
+     * @param $userId2
+     * @return array|false
+     */
     public function getMessagesBetweenUsers($userId1, $userId2)
     {
         $stmt = $this->connection->prepare("
@@ -317,6 +439,11 @@ class Database
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+    /**
+     * Get the pending user's account
+     * @return array|false
+     */
     public function getPendingUsers()
     {
         $sql = "SELECT * FROM User WHERE status_user = 0";
@@ -330,6 +457,10 @@ class Database
         }
     }
 
+    /**
+     * Get the active user's account
+     * @return array|false
+     */
     public function getActiveUsers()
     {
         $sql = "SELECT * FROM User WHERE status_user = 1";
@@ -343,6 +474,11 @@ class Database
         }
     }
 
+    /**
+     * Approuve a user's account
+     * @param $userId
+     * @return bool
+     */
     public function approveUser($userId): bool
     {
         $sql = "UPDATE User SET status_user = 1 WHERE id = :id";
@@ -355,6 +491,11 @@ class Database
         }
     }
 
+    /**
+     * Reject a user's account
+     * @param $userId
+     * @return bool
+     */
     public function rejectUser($userId)
     {
         $sql = "DELETE FROM User WHERE id = :id";
@@ -367,11 +508,21 @@ class Database
         }
     }
 
+    /**
+     * Delete a user's account
+     * @param $userId
+     * @return bool
+     */
     public function deleteUser($userId)
     {
         return $this->rejectUser($userId); // test and reusing same method
     }
 
+    /**
+     * Get a user by id
+     * @param $userId
+     * @return mixed|null
+     */
     public function getUserById($userId)
     {
         $sql = "SELECT * FROM User WHERE id = :id";
@@ -385,6 +536,10 @@ class Database
         }
     }
 
+    /**
+     * Get a last message of user by id
+     * @return false|string
+     */
     public function getLastMessageId()
     {
         return $this->connection->lastInsertId();
@@ -392,6 +547,11 @@ class Database
 
     // ------------------------- Forgot password functions --------------- //
 
+    /**
+     * Get a user by his email
+     * @param $email
+     * @return false|mixed
+     */
     public function getUserByEmail($email)
     {
         $sql = "SELECT * FROM User WHERE email = :email";
@@ -405,6 +565,13 @@ class Database
         }
     }
 
+    /**
+     * Store in database the email verification code
+     * @param $userId
+     * @param $code
+     * @param $expires_at
+     * @return bool
+     */
     public function storeEmailVerificationCode($userId, $code, $expires_at)
     {
         try {
@@ -437,6 +604,12 @@ class Database
     }
 
 
+    /**
+     * Get the password reset request
+     * @param $email
+     * @param $verification_code
+     * @return false|mixed
+     */
     public function getPasswordResetRequest($email, $verification_code)
     {
         $sql = "SELECT * FROM password_resets WHERE email = :email AND verification_code = :verification_code";
@@ -450,6 +623,12 @@ class Database
         }
     }
 
+    /**
+     * Update a user's password by email
+     * @param $email
+     * @param $hashedPassword
+     * @return bool
+     */
     public function updateUserPasswordByEmail($email, $hashedPassword): bool
     {
         $sql = "UPDATE Password 
@@ -468,6 +647,11 @@ class Database
         }
     }
 
+    /**
+     * Delete a verification code with an id
+     * @param $userId
+     * @return bool
+     */
     public function deleteVerificationCode($userId): bool
     {
         $sql = "DELETE FROM Verification_Code WHERE user_id = :user_id";
@@ -487,6 +671,11 @@ class Database
 
     // -------------------- Email verification ------------------------------------------
 
+    /**
+     * Get a user's verification code by id
+     * @param $userId
+     * @return false|mixed
+     */
     public function getVerificationCode($userId)
     {
         $sql = "SELECT * FROM Verification_Code WHERE user_id = :user_id AND expires_at > :current_time";
@@ -508,6 +697,11 @@ class Database
     }
 
 
+    /**
+     * Check if email is validated
+     * @param $userId
+     * @return bool
+     */
     public function isEmailValidated($userId)
     {
         $query = "SELECT valid_email FROM User WHERE id = :id";
@@ -519,6 +713,13 @@ class Database
     }
 
     //-------------- Update user status if email has been validated ------------------------- //
+
+    /**
+     * Update the status of the email validation
+     * @param $userId
+     * @param $status
+     * @return bool
+     */
     public function updateEmailValidationStatus($userId, $status)
     {
         $sql = "UPDATE User SET valid_email = :status WHERE id = :user_id";
@@ -530,6 +731,11 @@ class Database
 
     // -------------------------------------------------------------------------------------- //
 
+    /**
+     * Get the user's id by email
+     * @param $email
+     * @return mixed|null
+     */
     public function getUserIdByEmail($email)
     {
         $query = "SELECT id FROM User WHERE email = :email";
@@ -540,6 +746,11 @@ class Database
         return $result['id'] ?? null;
     }
 
+    /**
+     * Get user's preference by id
+     * @param $userId
+     * @return false|mixed
+     */
     public function getUserPreferences($userId)
     {
         $sql = "SELECT notification, a2f, darkmode FROM Preference WHERE user_id = :user_id";
@@ -555,10 +766,18 @@ class Database
         }
     }
 
-    public function setUserPreferences($userId, $notification, $a2f, $darkmode): bool
+    /**
+     * Save the user's preference on database
+     * @param $userId
+     * @param $notification
+     * @param $a2f
+     * @param $darkmode
+     * @return bool
+     */
+    public function setUserPreferences($userId, $notification, $darkmode): bool
     {
-        $sql = "INSERT INTO Preference (user_id, notification, a2f, darkmode) 
-            VALUES (:user_id, :notification, :a2f, :darkmode)
+        $sql = "INSERT INTO Preference (notification, a2f, darkmode, user_id) 
+            VALUES (:notification, :a2f, :darkmode, :user_id)
             ON DUPLICATE KEY UPDATE notification = :notification, a2f = :a2f, darkmode = :darkmode";
 
         try {
@@ -566,7 +785,7 @@ class Database
             $stmt->execute([
                 ':user_id' => $userId,
                 ':notification' => $notification,
-                ':a2f' => $a2f,
+                ':a2f' => 0,
                 ':darkmode' => $darkmode
             ]);
             return true;
@@ -576,11 +795,19 @@ class Database
         }
     }
 
+    /**
+     * Get the actual connection
+     * @return PDO|null
+     */
     public function getConnection()
     {
         return $this->connection;
     }
 
+    /**
+     * Close the actual connection
+     * @return void
+     */
     public function closeConnection(): void
     {
         $this->connection = null;
@@ -590,6 +817,11 @@ class Database
 
 
     //========================     Gropes methods        ================================== //
+    /**
+     * Get all studients
+     * @param $validatedOnly
+     * @return array
+     */
     public function getAllStudents($validatedOnly = false): array
     {
         $query = "SELECT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id FROM User
@@ -614,7 +846,11 @@ class Database
         return $students;
     }
 
-    //Get the groups a user belongs to.
+    /**
+     * Get the groups a user belongs to.
+     * @param $userId
+     * @return array|false
+     */
     public function getUserGroups($userId)
     {
         $sql = "SELECT DISTINCT Groupe.conv_id AS id, Convention.convention
@@ -627,7 +863,34 @@ class Database
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // get a message from a group
+    /**
+     * Get the group where the 3 users belong to.
+     * @param $studentId
+     * @param $professorId
+     * @param $mentorId
+     * @return mixed
+     */
+    public function getGroup($studentId, $professorId, $mentorId)
+    {
+        $sql = "SELECT Groupe.conv_id
+                FROM Groupe
+                JOIN User ON Groupe.user_id = User.id
+                WHERE Groupe.user_id IN (:studentId, :professorId, :mentorId)
+                GROUP BY conv_id
+                HAVING COUNT(DISTINCT Groupe.user_id) = 3";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':studentId', $studentId, PDO::PARAM_INT);
+        $stmt->bindParam(':professorId', $professorId, PDO::PARAM_INT);
+        $stmt->bindParam(':mentorId', $mentorId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * Get a message from a group
+     * @param $groupId
+     * @return array|false
+     */
     public function getGroupMessages($groupId)
     {
         $sql = "SELECT MessageGroupe.*, Document.filepath, User.prenom, User.nom
@@ -643,7 +906,14 @@ class Database
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // message to a group
+    /**
+     * Send a message to a group
+     * @param $groupId
+     * @param $senderId
+     * @param $message
+     * @param $filePath
+     * @return bool
+     */
     public function sendGroupMessage($groupId, $senderId, $message, $filePath = null)
     {
         try {
@@ -692,7 +962,10 @@ class Database
         }
     }
 
-    // get all groups with their members
+    /**
+     * Get all groups with their members
+     * @return array
+     */
     public function getAllGroupsWithMembers()
     {
         $sql = "SELECT c.id AS group_id, c.convention AS group_name, u.id AS user_id, u.nom AS last_name, u.prenom AS first_name
@@ -723,6 +996,12 @@ class Database
         return $groups;
     }
 
+
+    /**
+     * Delete a group by id
+     * @param $groupId
+     * @return bool
+     */
 
     public function deleteGroup($groupId)
     {
@@ -765,6 +1044,12 @@ class Database
         }
     }
 
+    /**
+     * Update the member of a group
+     * @param $groupId
+     * @param $memberIds
+     * @return bool
+     */
     public function updateGroupMembers($groupId, $memberIds)
     {
         try {
@@ -790,6 +1075,11 @@ class Database
         }
     }
 
+    /**
+     * Get the member of one group
+     * @param $groupId
+     * @return array|false
+     */
     public function getGroupMembers($groupId)
     {
         $sql = "SELECT user_id FROM Groupe WHERE conv_id = :group_id";
@@ -802,6 +1092,12 @@ class Database
         }
     }
 
+    /**
+     * Get all group's messages since a specific date
+     * @param $groupId
+     * @param $lastTimestamp
+     * @return array|false
+     */
     public function getGroupMessagesSince($groupId, $lastTimestamp)
     {
         $sql = "SELECT mg.*, d.filepath, u.prenom, u.nom
@@ -820,6 +1116,12 @@ class Database
     }
 
     // -------------------- Student list in professor home ------------------------------------------ //
+
+    /**
+     * Get all students of a professor
+     * @param $professorId
+     * @return array
+     */
     public function getStudentsProf($professorId): array
     {
         $query = "SELECT User.id, User.nom, User.prenom
@@ -852,6 +1154,11 @@ class Database
         return $students;
     }
 
+    /**
+     * Get all students of a internship supervisor
+     * @param $maitreStageId
+     * @return array
+     */
     public function getStudentsMaitreDeStage($maitreStageId): array
     {
         $query = "SELECT  User.id ,User.nom, User.prenom
@@ -884,118 +1191,161 @@ class Database
         return $students;
     }
 
-    // -------------------- Add Note in Database ------------------------------------------ //
+    // --------------------  Note in Database ------------------------------------------ //
 
-    function addNotes($studentId, $notesData, $pdo): void
-    {
-        try {
-            // Vérification des données en entrée
-            if (!is_array($notesData)) {
-                throw new Exception("Les données fournies à addNotes doivent être un tableau.");
-            }
-
-            foreach ($notesData as $note) {
-                if (!isset($note['sujet'], $note['appreciation'], $note['note'], $note['coeff'])) {
-                    throw new Exception("Données manquantes dans une note : " . print_r($note, true));
-                }
-
-                if (empty($note['sujet']) || $note['note'] < 0 || $note['note'] > 20 || $note['coeff'] <= 0) {
-                    throw new Exception("Données invalides dans une note : " . print_r($note, true));
-                }
-            }
-
-            // Préparation de la requête d'insertion
-            $query = $pdo->prepare("INSERT INTO Note (sujet, appreciation, note, coeff, user_id)
-            VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
-
-            // Exécution pour chaque note
-            foreach ($notesData as $note) {
-                $query->execute([
-                    ':sujet' => $note['sujet'],
-                    ':appreciation' => $note['appreciation'],
-                    ':note' => floatval($note['note']),
-                    ':coeff' => floatval($note['coeff']),
-                    ':user_id' => $studentId
-                ]);
-            }
-        } catch (PDOException $e) {
-            // Gérer les erreurs de la base de données
-            echo "Erreur lors de l'insertion des notes : " . $e->getMessage();
-            error_log($e->getMessage());
-            throw $e;
-        } catch (Exception $e) {
-            // Gérer les autres erreurs
-            echo "Erreur : " . $e->getMessage();
-            error_log($e->getMessage());
-            throw $e;
-        }
-    }
-
-
-    public function updateNote($noteId, $userId, $sujet, $appreciation, $note, $coeff, $pdo)
-    {
-        try {
-            $pdo->beginTransaction();
-            $stmt = $pdo->prepare("
-            UPDATE Note
-            SET sujet = :sujet, appreciation = :appreciation, note = :note, coeff = :coeff
-            WHERE id = :id AND user_id = :user_id
-        ");
-
-            $stmt->execute([
-                ':sujet' => $sujet,
-                ':appreciation' => $appreciation,
-                ':note' => $note,
-                ':coeff' => $coeff,
-                ':id' => $noteId,
-                ':user_id' => $userId
-            ]);
-
-            if ($stmt->rowCount() === 0) {
-                throw new Exception("Aucune ligne modifiée. L'ID de la note est peut-être incorrect ou l'utilisateur n'a pas la permission.");
-            }
-
-            $pdo->commit();
-        } catch (PDOException $e) {
-            $pdo->rollBack();
-            throw new Exception("Erreur lors de la mise à jour de la note : " . $e->getMessage(), 0, $e);
-        }
-    }
-
-
-    public function deleteNote($noteId, $studentId, $pdo): void
-    {
-        try {
-            // Préparer la requête pour supprimer la note
-            $stmt = $pdo->prepare("DELETE FROM Note WHERE id = :id AND user_id = :user_id");
-
-            // Exécuter la requête avec les paramètres
-            $stmt->execute([
-                ':id' => $noteId,
-                ':user_id' => $studentId  // Utiliser l'ID de l'étudiant
-            ]);
-
-            // Vérification du nombre de lignes affectées
-            if ($stmt->rowCount() > 0) {
-                echo "Note supprimée avec succès";
-            } else {
-                echo "Aucune note trouvée avec cet ID et cet utilisateur. Annulation de la suppression.";
-            }
-        } catch (PDOException $e) {
-            echo "Erreur lors de la suppression de la note : " . $e->getMessage();
-            throw $e;
-        }
-    }
-
-
+    /**
+     * Get all notes of a student
+     * @param $studentId
+     * @return array
+     */
     public function getStudentNotes($studentId): array
     {
         $query = "SELECT * FROM Note WHERE user_id = :student_id";
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':student_id', $studentId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Retourne un tableau associatif
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Return an associative array
     }
+
+
+    /**
+     * Crée automatiquement les 4 lignes principales pour un étudiant
+     * @param int $studentId
+     */
+    public function createMainNotesForStudent(int $studentId): void {
+        if ($studentId <= 0) {
+            echo "Erreur : ID utilisateur invalide.";
+            return;
+        }
+
+        // Vérifiez si les lignes principales existent déjà
+        $sqlCheck = "SELECT COUNT(*) FROM Note WHERE user_id = :user_id";
+        $stmtCheck = $this->connection->prepare($sqlCheck);
+        $stmtCheck->bindParam(':user_id', $studentId, PDO::PARAM_INT);
+        $stmtCheck->execute();
+        $noteCount = $stmtCheck->fetchColumn();
+
+        if ($noteCount == 0) {
+            // Insérez les 4 lignes principales
+            $sqlInsert = "
+            INSERT INTO Note (sujet, note, coeff, user_id) VALUES
+            ('Rapport', 0, 4, :user_id),
+            ('Évaluation de l''entreprise', 0, 2, :user_id),
+            ('Soutenance', 0, 3, :user_id),
+            ('Technicité', 0, 1, :user_id)
+        ";
+            $stmtInsert = $this->connection->prepare($sqlInsert);
+            $stmtInsert->bindParam(':user_id', $studentId, PDO::PARAM_INT);
+
+            try {
+                $stmtInsert->execute();
+                echo "Les lignes principales ont été créées avec succès.";
+            } catch (PDOException $e) {
+                echo "Erreur lors de l'insertion : " . $e->getMessage();
+            }
+        }
+    }
+
+
+    public function saveSliderValue(int $noteId, string $description, int $value): void
+    {
+        try {
+            // Vérifie si la ligne existe déjà
+            $checkSql = "SELECT COUNT(*) FROM Sous_Note WHERE note_id = :note_id AND description = :description";
+            $checkStmt = $this->connection->prepare($checkSql);
+            $checkStmt->bindParam(':note_id', $noteId, PDO::PARAM_INT);
+            $checkStmt->bindParam(':description', $description, PDO::PARAM_STR);
+            $checkStmt->execute();
+            $exists = $checkStmt->fetchColumn() > 0;
+
+            if ($exists) {
+                // Mise à jour si la ligne existe
+                $updateSql = "UPDATE Sous_Note SET note = :note WHERE note_id = :note_id AND description = :description";
+                $updateStmt = $this->connection->prepare($updateSql);
+                $updateStmt->bindParam(':note_id', $noteId, PDO::PARAM_INT);
+                $updateStmt->bindParam(':description', $description, PDO::PARAM_STR);
+                $updateStmt->bindParam(':note', $value, PDO::PARAM_INT);
+                $updateStmt->execute();
+            } else {
+                // Insertion si la ligne n'existe pas
+                $insertSql = "INSERT INTO Sous_Note (note_id, description, note) VALUES (:note_id, :description, :note)";
+                $insertStmt = $this->connection->prepare($insertSql);
+                $insertStmt->bindParam(':note_id', $noteId, PDO::PARAM_INT);
+                $insertStmt->bindParam(':description', $description, PDO::PARAM_STR);
+                $insertStmt->bindParam(':note', $value, PDO::PARAM_INT);
+                $insertStmt->execute();
+            }
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de l'enregistrement : " . $e->getMessage());
+        }
+    }
+
+    public function getSliderValues(int $noteId): array {
+        $sql = "SELECT description, note FROM Sous_Note WHERE note_id = :note_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':note_id', $noteId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getMainNoteAverage(int $noteId): float|int|null
+    {
+        // Récupérer toutes les sous-notes liées à cette note
+        $stmt = $this->connection->prepare("SELECT note FROM Sous_Note WHERE note_id = :note_id");
+        $stmt->execute([':note_id' => $noteId]);
+        $sousNotes = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        // Si aucune sous-note n'est trouvée, retourner null
+        if (!$sousNotes || count($sousNotes) === 0) {
+            return null;
+        }
+
+        // Récupérer le coefficient principal de la note
+        $stmtCoeff = $this->connection->prepare("SELECT coeff FROM Note WHERE id = :id");
+        $stmtCoeff->execute([':id' => $noteId]);
+        $coeff = $stmtCoeff->fetchColumn();
+
+        // Vérification si le coefficient est valide
+        if ($coeff === false) {
+            return null;
+        }
+
+        $totalSumNote = 0;
+        $totalSumCoeff = 0;
+
+        // Calcul de la somme pondérée des sous-notes
+        foreach ($sousNotes as $note) {
+            $note = floatval($note); // Convertir la sous-note en float
+
+            $totalSumNote += $note * $coeff;
+            $totalSumCoeff += $coeff;
+        }
+
+        // Vérifier qu'il y a bien un coefficient total pour éviter une division par zéro
+        if ($totalSumCoeff === 0) {
+            return null;
+        }
+
+        // Calculer la moyenne pondérée et la ramener sur 20
+        $average = ($totalSumNote / $totalSumCoeff) * (20 / 5); // Ramener sur 20
+
+        // Mettre à jour la table Note avec la nouvelle moyenne
+        $updateStmt = $this->connection->prepare("UPDATE Note SET note = :moyenne WHERE id = :id");
+        $updateStmt->execute([
+            ':moyenne' => $average,
+            ':id' => $noteId,
+        ]);
+        return $average;
+    }
+
+    public function getNoteSujet(int $noteId): ?string {
+        $sql = "SELECT sujet FROM Note WHERE id = :note_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([':note_id' => $noteId]);
+        return $stmt->fetchColumn() ?: null;
+    }
+
+
 
 
 
@@ -1003,6 +1353,11 @@ class Database
 
     // ------------------------------------------------------------------------------------------------------- //
 
+    /**
+     * Get all professors
+     * @param $validatedOnly
+     * @return array
+     */
     public function getProfessor($validatedOnly = false): array
     {
         $query = "SELECT DISTINCT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id from User
@@ -1027,6 +1382,11 @@ class Database
         return $professor;
     }
 
+    /**
+     * Get all Tutors
+     * @param $validatedOnly
+     * @return array
+     */
     public function getTutor($validatedOnly = false): array
     {
         $query = "SELECT DISTINCT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id from User
@@ -1051,13 +1411,20 @@ class Database
         return $tutor;
     }
 
+    /**
+     * Save the verification code of a user
+     * @param $userId
+     * @param $code
+     * @param $expires_at
+     * @return bool
+     */
     public function storeVerificationCode($userId, $code, $expires_at): bool
     {
         try {
-            // Commence une transaction
+            // Start the transaction
             $this->connection->beginTransaction();
 
-            // Supprime les codes de vérification existants pour cet utilisateur (au cas où)
+            // Removes existing verification codes for this user (just in case)
             $sqlDelete = "DELETE FROM Verification_Code WHERE user_id = :user_id";
             $stmt = $this->connection->prepare($sqlDelete);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
@@ -1065,31 +1432,36 @@ class Database
                 error_log("Erreur lors de la suppression des anciens codes pour l'utilisateur $userId");
             }
 
-            // Insère un nouveau code de vérification
+            // Insert a new verification code
             $sqlInsert = "INSERT INTO Verification_Code (user_id, code, expires_at) VALUES (:user_id, :code, :expires_at)";
             $stmt = $this->connection->prepare($sqlInsert);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmt->bindParam(':code', $code, PDO::PARAM_STR);
             $stmt->bindParam(':expires_at', $expires_at, PDO::PARAM_STR);
 
-            // Ajout de logs pour vérifier l'exécution
+            // Added logs to check execution
             if ($stmt->execute()) {
                 error_log("Code de vérification $code inséré avec succès pour l'utilisateur $userId.");
             } else {
                 error_log("Erreur lors de l'insertion du code de vérification pour l'utilisateur $userId.");
             }
 
-            // Commit de la transaction
+            // Transaction commit
             $this->connection->commit();
             return true;
         } catch (PDOException $e) {
-            // Rollback en cas d'erreur
+            // Rollback in case of error
             $this->connection->rollBack();
             error_log("Erreur lors du stockage du code de vérification : " . $e->getMessage());
             return false;
         }
     }
 
+    /**
+     * Get the verification by a code
+     * @param $code
+     * @return false|mixed
+     */
     public function getVerificationByCode($code)
     {
         $sql = "SELECT Verification_Code.user_id, Verification_Code.expires_at, User.email 
@@ -1108,6 +1480,11 @@ class Database
         }
     }
 
+    /**
+     * Update the user last conection
+     * @param $userId
+     * @return bool
+     */
     public function updateLastConnexion($userId): bool
     {
         date_default_timezone_set('Europe/Paris');
@@ -1126,9 +1503,14 @@ class Database
         }
     }
 
+    /**
+     * Get the notes of one user
+     * @param $userId
+     * @return array
+     */
     public function getNotes($userId): array
     {
-        $sql = "SELECT Note.id, Note.sujet, Note.appreciation, Note.note, Note.coeff
+        $sql = "SELECT Note.id, Note.sujet, Note.note, Note.coeff
                 FROM Note
                 WHERE Note.user_id = :user_id";
 
@@ -1141,7 +1523,6 @@ class Database
             $notes[] = new Note(
                 $row['id'] ?? '',
                 $row['sujet'] ?? '',
-                $row['appreciation'] ?? '',
                 $row['note'] ?? '',
                 $row['coeff'] ?? ''
             );
@@ -1150,6 +1531,11 @@ class Database
     }
 
 
+    /**
+     * Count all notifications of one user
+     * @param $userId
+     * @return int
+     */
     public function getUnreadNotificationCount($userId): int
     {
         $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id AND seen = 0";
@@ -1163,6 +1549,11 @@ class Database
         }
     }
 
+    /**
+     * Check if user see the notifications
+     * @param $userId
+     * @return bool
+     */
     public function markAllNotificationsAsSeen($userId): bool
     {
         $sql = "UPDATE Notification SET seen = 1 WHERE user_id = :user_id AND seen = 0";
@@ -1180,6 +1571,11 @@ class Database
         }
     }
 
+    /**
+     * Get all notifications of one user
+     * @param $userId
+     * @return array
+     */
     public function getNotifications($userId): array
     {
         $sql = "SELECT content, type, seen, created_at FROM Notification WHERE user_id = :user_id ORDER BY created_at DESC";
@@ -1194,6 +1590,13 @@ class Database
         }
     }
 
+    /**
+     * Add a notification to one user
+     * @param int $userId
+     * @param string $content
+     * @param string $type
+     * @return bool
+     */
     public function addNotification(int $userId, string $content, string $type): bool
     {
         date_default_timezone_set('Europe/Paris');
@@ -1217,6 +1620,11 @@ class Database
         return true;
     }
 
+    /**
+     * Count all notifications of one user
+     * @param $userId
+     * @return int
+     */
     public function getTotalNotifications($userId): int
     {
         $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id";
@@ -1225,6 +1633,12 @@ class Database
         return (int)$stmt->fetchColumn();
     }
 
+    /**
+     * Delete old notifications
+     * @param $userId
+     * @param $numberToDelete
+     * @return void
+     */
     public function deleteOldNotifications($userId, $numberToDelete)
     {
         date_default_timezone_set('Europe/Paris');
@@ -1236,6 +1650,11 @@ class Database
     }
 
 
+    /**
+     * Check if user had new notification
+     * @param $userId
+     * @return bool
+     */
     public function hasNewNotifications($userId): bool
     {
         $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id AND seen = 0";
@@ -1250,6 +1669,11 @@ class Database
         }
     }
 
+    /**
+     * Check if email exist
+     * @param $email
+     * @return bool
+     */
     public function emailExists($email): bool
     {
         $sql = "SELECT COUNT(*) FROM User WHERE email = :email";
@@ -1258,6 +1682,11 @@ class Database
         return (bool)$stmt->fetchColumn();
     }
 
+    /**
+     * Get all stages of one user
+     * @param $userId
+     * @return array
+     */
     public function getStages($userId): array
     {
         $query = "SELECT User.account_creation, User.id
@@ -1274,6 +1703,11 @@ class Database
     }
 
     //---------------- Secretariat send a message to everyone --------------------------------- //
+
+    /**
+     * Get all valid users
+     * @return array|false
+     */
     public function getAllValidUsers()
     {
         $conn = $this->getConnection();
@@ -1284,141 +1718,280 @@ class Database
     }
     //---------------------- Livret de suvi --------------------------------- //
 
-    public function getStudentInfo($userId): array
-    {
-        $sql = "
-    SELECT 
-        u.id AS etudiant_id,
-        u.nom AS etudiant_nom,
-        u.prenom AS etudiant_prenom,
-        u.email AS etudiant_email,
-        u.telephone AS etudiant_phone,
-        u.activite AS etudiant_activity
-    FROM Groupe g
-    INNER JOIN User u ON g.user_id = u.id
-    WHERE u.role = 1
-    AND g.conv_id IN (
-        SELECT g1.conv_id
-        FROM Groupe g1
-        WHERE g1.user_id = :user_id
-    );
-    ";
-
+    /**
+     * Get a group by user_id (student's id)
+     * @param $userId
+     * @return mixed
+     */
+    public function getGroupByUserId($userId) {
+        $sql = "SELECT * FROM Groupe WHERE user_id = :uid LIMIT 1";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$data) {
-            return ['error' => 'Aucune information trouvée pour l\'étudiant'];
-        }
-
-        return [
-            'id' => $data['etudiant_id'],
-            'nom' => $data['etudiant_nom'],
-            'prenom' => $data['etudiant_prenom'],
-            'email' => $data['etudiant_email'],
-            'telephone' => $data['etudiant_phone'],
-            'activite' => $data['etudiant_activity'],
-        ];
+        $stmt->execute(['uid' => $userId]);
+        return $stmt->fetch();
     }
 
 
+    /**
+     * Get or created FollowUpBook for selected conv_id
+     * @param $conv_id
+     * @return false|mixed|string
+     */
+    public function getOrCreateFollowUpBook($conv_id) {
+        $stmt = $this->connection->prepare("SELECT id FROM FollowUpBook WHERE group_id = :cid");
+        $stmt->execute(['cid' => $conv_id]);
+        $f = $stmt->fetch();
+        if ($f) {
+            return $f['id'];
+        } else {
+            $start_date = date('Y-m-d');
+            $end_date = date('Y-m-d', strtotime('+3 months'));
+            $stmt = $this->connection->prepare("INSERT INTO FollowUpBook (status, start_date, end_date, group_id) 
+                                         VALUES ('En cours', :start, :end, :cid)");
+            $stmt->execute(['start' => $start_date, 'end' => $end_date, 'cid' => $conv_id]);
+            return $this->connection->lastInsertId();
+        }
+    }
+
+    /**
+     * Update a meeting book
+     * @param $meetingId
+     * @param $meetingDate
+     * @return bool
+     */
+    public function updateMeetingBook($meetingId, $meetingDate) {
+        $stmt = $this->connection->prepare("UPDATE MeetingBook SET meeting_date = :mdate WHERE id = :mid");
+        return $stmt->execute([
+            'mdate' => $meetingDate,
+            'mid'   => $meetingId
+        ]);
+    }
+
+    /**
+     * Delete meetings of a meeting book
+     * @param $meetingId
+     * @return bool
+     */
+    public function deleteMeeting($meetingId) {
+        // Since MeetingQCM and MeetingTexts link to MeetingBook,
+        // first delete the child entries
+        $stmt = $this->connection->prepare("DELETE FROM MeetingQCM WHERE meeting_id = :mid");
+        $stmt->execute(['mid' => $meetingId]);
+
+        $stmt = $this->connection->prepare("DELETE FROM MeetingTexts WHERE meeting_id = :mid");
+        $stmt->execute(['mid' => $meetingId]);
+
+        // Now we delete the meeting itself
+        $stmt = $this->connection->prepare("DELETE FROM MeetingBook WHERE id = :mid");
+        return $stmt->execute(['mid' => $meetingId]);
+    }
+
+    /**
+     * Update the meeting text of one metting
+     * @param $textId
+     * @param $newResponse
+     * @return bool
+     */
+    public function updateMeetingText($textId, $newResponse) {
+        $stmt = $this->connection->prepare("UPDATE MeetingTexts SET response = :resp WHERE id = :tid");
+        return $stmt->execute([
+            'resp' => $newResponse,
+            'tid'  => $textId
+        ]);
+    }
+
+    /**
+     * Update the meeting QCM of one meeting
+     * @param $qcmId
+     * @param $newOtherChoice
+     * @return bool
+     */
+    public function updateMeetingQCM($qcmId, $newOtherChoice) {
+        $stmt = $this->connection->prepare("UPDATE MeetingQCM SET other_choice = :oc WHERE id = :qid");
+        return $stmt->execute([
+            'oc' => $newOtherChoice,
+            'qid' => $qcmId
+        ]);
+    }
+
+    /**
+     * Getting FollowUpBook by id
+     * @param $id
+     * @return mixed
+     */
+    public function getFollowUpBook($id) {
+            $stmt = $this->connection->prepare("SELECT * FROM FollowUpBook WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch();
+    }
+
+    /**
+     * Insert new meeting in MeetingBook
+     * @param $followUpId
+     * @param $name
+     * @param $startDate
+     * @param $endDate
+     * @param $meetingDate
+     * @param $validation
+     * @return false|string
+     */
+    public function insertMeetingBook($followUpId, $name, $startDate, $endDate, $meetingDate, $validation) {
+        $stmt = $this->connection->prepare("INSERT INTO MeetingBook (followup_id, name, start_date, end_date, meeting_date, validation)
+                                     VALUES (:fid, :name, :start, :end, :mdate, :val)");
+        $stmt->execute([
+            'fid' => $followUpId,
+            'name' => $name,
+            'start' => $startDate,
+            'end' => $endDate,
+            'mdate' => $meetingDate,
+            'val' => $validation
+        ]);
+        return $this->connection->lastInsertId();
+    }
+
+    /**
+     * Get all meetings for a follow-up id
+     * @param $followUpId
+     * @return array|false
+     */
+    public function getMeetingsByFollowUp($followUpId) {
+        $stmt = $this->connection->prepare("SELECT * FROM MeetingBook WHERE followup_id = :fid");
+        $stmt->execute(['fid' => $followUpId]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Insert a new meeting QCM in a meeting
+     * @param $meetingId
+     * @param $title
+     * @param $choices
+     * @param $otherChoice
+     * @return void
+     */
+    public function insertMeetingQCM($meetingId, $title, $choices, $otherChoice) {
+        $stmt = $this->connection->prepare("INSERT INTO MeetingQCM (meeting_id, title, choices, other_choice) 
+                                     VALUES (:mid, :t, :c, :o)");
+        $stmt->execute([
+            'mid' => $meetingId,
+            't' => $title,
+            'c' => $choices,
+            'o' => $otherChoice
+        ]);
+    }
+
+    /**
+     * Get the meeting QCM by an id
+     * @param $meetingId
+     * @return array|false
+     */
+    public function getQCMByMeeting($meetingId) {
+        $stmt = $this->connection->prepare("SELECT * FROM MeetingQCM WHERE meeting_id = :mid");
+        $stmt->execute(['mid' => $meetingId]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Insert a new meeting text int a meeting
+     * @param $meetingId
+     * @param $title
+     * @param $response
+     * @return void
+     */
+    public function insertMeetingText($meetingId, $title, $response) {
+        $stmt = $this->connection->prepare("INSERT INTO MeetingTexts (meeting_id, title, response) VALUES (:mid, :t, :r)");
+        $stmt->execute([
+            'mid' => $meetingId,
+            't' => $title,
+            'r' => $response
+        ]);
+    }
+
+    /**
+     * Get the text of one metting
+     * @param $meetingId
+     * @return array|false
+     */
+    public function getTextsByMeeting($meetingId) {
+        $stmt = $this->connection->prepare("SELECT * FROM MeetingTexts WHERE meeting_id = :mid");
+        $stmt->execute(['mid' => $meetingId]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Get all info of one student
+     * @param $userId
+     * @return array|mixed
+     */
+    public function getStudentInfo($userId) {
+        $stmt = $this->connection->prepare("
+        SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.activite
+        FROM User u
+        WHERE u.id = :uid AND u.role = 1
+        LIMIT 1
+    ");
+        $stmt->execute(['uid' => $userId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result : [];
+    }
+
+    /**
+     * Get all info of one professor
+     * @param $userId
+     * @return array|mixed
+     */
     public function getProfessorInfo($userId) {
-        $sql = "
-        SELECT 
-            u.id AS professeur_id,
-            u.nom AS nom,
-            u.prenom AS prenom,
-            u.email AS email,
-            u.telephone AS telephone,
-            u.activite AS activite
-        FROM Groupe g
-        LEFT JOIN User u ON g.conv_id = g.conv_id AND u.role = 2
-        WHERE g.conv_id IN (
-            SELECT g1.conv_id
-            FROM Groupe g1
-            WHERE g1.user_id = :user_id
-        );
-    ";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-
-
-
-
-    public function getMentorInfo($userId): array
-    {
-        $sql = "
-    SELECT 
-        u.id AS maitre_stage_id,
-        u.nom AS maitre_stage_nom,
-        u.prenom AS maitre_stage_prenom,
-        u.email AS maitre_stage_email,
-        u.telephone AS maitre_stage_phone,
-        u.activite AS maitre_stage_activity
-    FROM Groupe g
-    LEFT JOIN User u ON g.user_id = u.id
-    WHERE u.role = 3
-    AND g.conv_id IN (
-        SELECT g1.conv_id
-        FROM Groupe g1
-        WHERE g1.user_id = :user_id
-    );
-    ";
-
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$data || empty($data['maitre_stage_id'])) {
-            return ['error' => 'Aucune information trouvée pour le maître de stage'];
+        // get associated student's group
+        $group = $this->getGroupByUserId($userId);
+        if ($group && $group['conv_id'] !== null) {
+            // Searching a professeur, connected with the same conv_id
+            $stmt = $this->connection->prepare("
+            SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.activite
+            FROM User u
+            JOIN Groupe g ON g.user_id = u.id
+            WHERE g.conv_id = :cid
+              AND u.role = 2
+            LIMIT 1
+        ");
+            $stmt->execute(['cid' => $group['conv_id']]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result : [];
         }
-
-        return [
-            'id' => $data['maitre_stage_id'],
-            'nom' => $data['maitre_stage_nom'],
-            'prenom' => $data['maitre_stage_prenom'],
-            'email' => $data['maitre_stage_email'],
-            'telephone' => $data['maitre_stage_phone'],
-            'activite' => $data['maitre_stage_activity'],
-        ];
+        return [];
     }
 
-
-
-
-
-
-    public function getFollowBookByUser($userId): array
-    {
-        $studentInfo = $this->getStudentInfo($userId);
-        $professorInfo = $this->getProfessorInfo($userId);
-        $mentorInfo = $this->getMentorInfo($userId);
-
-        return [
-            'etudiant' => $studentInfo,
-            'professeur' => $professorInfo,
-            'maitre_stage' => $mentorInfo,
-        ];
+    /**
+     * Get all info of one Mentor
+     * @param $userId
+     * @return array|mixed
+     */
+    public function getMentorInfo($userId) {
+        // get associated student's group
+        $group = $this->getGroupByUserId($userId);
+        if ($group && $group['conv_id'] !== null) {
+            // Searching a maître de stage, connected with the same conv_id
+            $stmt = $this->connection->prepare("
+            SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.activite 
+            FROM User u
+            JOIN Groupe g ON g.user_id = u.id
+            WHERE g.conv_id = :cid
+              AND u.role = 3
+            LIMIT 1
+        ");
+            $stmt->execute(['cid' => $group['conv_id']]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result : [];
+        }
+        return [];
     }
 
-    public function setEndStage($userId): void
-    {
-        $sql = "UPDATE Groupe AS g
-                SET g.onStage = 0
-                WHERE g.conv_id = (
-                    SELECT @test = conv_id
-                    FROM Groupe
-                    WHERE user_id = :user_id);";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
+    /**
+     * Set a stage to end
+     * @param $convId
+     * @return void
+     */
+    public function setEndStage($convId): void{
+        $sqlUpdate = "UPDATE Groupe SET Groupe.onStage = 0 WHERE Groupe.conv_id = :conv_id";
+        $stmt = $this->connection->prepare($sqlUpdate);
+        $stmt->execute([':conv_id' => $convId]);
     }
 
     public function getCompanyById(int $id){

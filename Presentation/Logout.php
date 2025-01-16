@@ -1,6 +1,23 @@
 <?php
 session_start(); // Démarre ou reprend la session
 
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
 // Efface toutes les données de session
 $_SESSION = array();
 
@@ -34,23 +51,23 @@ session_destroy();
 <nav class="navbar">
     <div class="navbar-left">
         <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/> <!-- Logo de l'application -->
-        <span class="app-name">Le Petit Stage</span> <!-- Nom de l'application -->
+        <span class="app-name"><?= $translations['titre_appli'] ?></span> <!-- Nom de l'application -->
     </div>
 </nav>
 
 <!-- Section contenant le message de déconnexion -->
 <article class="logout-container animate__animated animate__fadeIn">
-    <h1>Déconnexion effectuée</h1> <!-- Titre principal -->
-    <h3>Vous avez été déconnecté avec succès.</h3> <!-- Message de confirmation de déconnexion -->
+    <h1><?= $translations['deco_effec'] ?></h1> <!-- Titre principal -->
+    <h3><?= $translations['deco_success'] ?></h3> <!-- Message de confirmation de déconnexion -->
 
     <!-- Lien vers la page d'accueil avec un bouton stylisé -->
     <p class="text-center">
-        <a href="../Index.php" class="home-button">Retour à l'accueil</a>
+        <a href="../Index.php" class="home-button"><?= $translations['return_home'] ?></a>
     </p>
 
     <!-- Information pour fermer la page pour des raisons de sécurité -->
     <p class="security-note">
-        Si vous ne souhaitez pas revenir à l'accueil, pour des raisons de sécurité, veuillez fermer cette page.
+        <?= $translations['phrase_logout'] ?>
     </p>
 </article>
 </div>

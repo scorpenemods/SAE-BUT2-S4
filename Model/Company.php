@@ -1,5 +1,4 @@
 <?php
-
 require_once "Database.php";
 $db = Database::getInstance();
 //Class to manage companies
@@ -8,6 +7,9 @@ class Company {
     private string $name;
     private int $size;
     private string $address;
+
+
+    public function __construct(int $id, string $name, int $size, string $address, string $Siret, string $created_at, string $updated_at) {
     private string $siret;
     private string $phone_number;
     private int $postal_code;
@@ -19,6 +21,7 @@ class Company {
     private string $updated_at;
 
     public function __construct(int $id, int $postal_code, string $name, int $size, string $address, string $siret, string $created_at, string $updated_at, string $phone_number, string $city, string $country, string $ape_code,  string $legal_status) {
+
         $this->id = $id;
         $this->name = $name;
         $this->size = $size;
@@ -34,33 +37,69 @@ class Company {
         $this->legal_status = $legal_status;
     }
 
+    /**
+     * Get the id of the company
+     * @return int
+     */
     public function getId(): int {
         return $this->id;
     }
 
+    /**
+     * Get the name of the company
+     * @return string
+     */
     public function getName(): string {
         return $this->name;
     }
 
+    /**
+     * Get the size of the company
+     * @return int
+     */
     public function getSize(): int {
         return $this->size;
     }
 
+    /**
+     * Get the address of the company
+     * @return string
+     */
     public function getAddress(): string {
         return $this->address;
     }
+
+
+    /**
+     * Get the siret of the company
+     * @return string
+     */
 
     public function getSiret(): string {
         return $this->siret;
     }
 
+    /**
+     * Get the creation date of the company
+     * @return string
+     */
     public function getCreatedAt(): string {
         return $this->created_at;
     }
 
+    /**
+     * Get the modification date of the company
+     * @return string
+     */
     public function getUpdatedAt(): string {
         return $this->updated_at;
     }
+
+
+    /**
+     * Get a Company by his id
+     * @return Company
+     */
 
     public function getPhoneNumber(): string {
         return $this->phone_number;
@@ -88,6 +127,7 @@ class Company {
 
 
     //Get a Company by its id
+
     public static function getById(int $id): ?Company {
         global $db;
         $stmt = $db->getConnection()->prepare("SELECT * FROM Company WHERE id = :id");
@@ -107,7 +147,10 @@ class Company {
             $result["name"],
             $result["size"],
             $result["address"],
+
+
             $result["siret"],
+
             $result["created_at"],
             $result["updated_at"],
             $result["phone_number"],
@@ -119,7 +162,10 @@ class Company {
         );
     }
 
-    //Get all companies
+    /**
+     * Get all companies
+     * @return array
+     */
     public static function getAll(): ?array {
         global $db;
 
@@ -139,7 +185,10 @@ class Company {
                 $row["name"],
                 $row["size"],
                 $row["address"],
+
+
                 $row["siret"],
+
                 $row["created_at"],
                 $row["updated_at"],
                 $row["phone_number"],
@@ -154,6 +203,10 @@ class Company {
 
         return $companies;
     }
+    /**
+     * Create a new Company
+     * @return Company
+     */
 
     //Create a new Company
     public static function create(string $name, int $size, string $address, string $siret, string $phone_number, int $postal_code, string $city, string $country, string $ape_code, string $legal_status): ?Company {
@@ -170,6 +223,7 @@ class Company {
         $stmt->bindParam(":country", $country);
         $stmt->bindParam(":ape_code", $ape_code);
         $stmt->bindParam(":legal_status", $legal_status);
+
         $stmt->execute();
 
         if ($db->getConnection()->errorCode() != 0) {
@@ -185,6 +239,7 @@ class Company {
             $address,
             $siret,
             date("Y-m-d H:i:s"),
+
             date("Y-m-d H:i:s"),
             $postal_code,
             $phone_number,

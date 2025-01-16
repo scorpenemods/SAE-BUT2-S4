@@ -1,3 +1,15 @@
+// Vérifier au chargement si la classe doit être ajoutée
+document.addEventListener("DOMContentLoaded", function() {
+    if (sessionStorage.getItem("lastPage") === "index.php") {
+        sessionStorage.setItem("lastPage", "main");
+        widget(0);
+    }
+    else{
+        widget(localStorage.getItem('classAdded'));
+    }
+});
+
+
 // Code menu paramètre
 // Afficher
 function show(header) {
@@ -63,6 +75,8 @@ function widget(x) {
     now.classList.remove("Current");
     let span = document.querySelectorAll("section span");
     span[x].classList.add("Current")
+
+    localStorage.setItem('classAdded', x);
 }
 
 // Fonction pour envoyer un message
@@ -504,9 +518,9 @@ function addMeeting() {
     const formContainerId = `formContainer-${showcontent}`;
 
     newContent.innerHTML = `
-        <h3 style="padding: 10px">Formulaires</h3>
+        <h3 style="padding: 10px">Formulaire</h3>
         <div class="livret-header">
-            <h3>${meetingCounter}ère rencontre</h3>
+            <h3>${meetingCounter}ème rencontre</h3>
         </div>
 
         <!-- Formulaire -->
@@ -559,8 +573,8 @@ function addField(containerId) {
     const fieldWrapper = document.createElement('p');
 
     fieldWrapper.innerHTML = `
-        <select name="field_choice" id="field_choice">
-            <option value="">Sélectionnez le type du champ</option>
+        <select name="field_choice" id="field_choice" onchange="removeDefaultOption(this)">
+            <option value="" selected>Sélectionnez le type du champ</option>
             <option value="text">Text libre</option>
             <option value="qcm">QCM</option>
         </select>
@@ -715,14 +729,6 @@ function addFieldContent(containerId, type, title) {
     fieldContainer.insertBefore(fieldWrapper, addButton);
 }
 
-
-function validerModif(containerId, title){
-    const fieldWrapper = document.createElement('p');
-
-    fieldWrapper.checkVisibility();
-}
-
-
 //Supprime le formulaire
 function deleteField(button) {
     button.parentElement.remove();
@@ -756,6 +762,15 @@ function deleteMeeting() {
     // Enlève le contenu de la dernière rencontre
     if (lastContent) {
         contentContainer.removeChild(lastContent);
+    }
+}
+
+function removeDefaultOption(selectElement) {
+    const defaultOption = selectElement.querySelector('option[value=""]');
+    if (selectElement.value !== "") {
+        defaultOption.style.display = "none";
+    } else {
+        defaultOption.style.display = "block";
     }
 }
 
@@ -857,6 +872,7 @@ function selectStudent(element) {
     // Mise à jour de l'ID dans l'input caché du formulaire
     document.getElementById('student-id').value = studentId;
 
+
     // Mettre à jour le nom de l'étudiant affiché
     const studentNameElement = document.getElementById('selected-student-name');
     if (studentNameElement) {
@@ -864,8 +880,14 @@ function selectStudent(element) {
     } else {
         console.error("Impossible de trouver l'élément avec l'ID 'selected-student-name'");
     }
-
-
+    if (isNotesTabActive()) {
+        // Si l'onglet Notes est actif, soumettez le formulaire
+        document.getElementById('noteForm').submit();
+    } else {
+        // Sinon, traitez la sélection sans recharger la page
+        console.log(`Étudiant ${studentId} sélectionné hors de l'onglet Notes.`);
+        // Ajoutez ici d'autres actions si nécessaire
+    }
     // Charger les notes de l'étudiant sélectionné
     fetchStudentInfo(studentId);
     fetchStudentInfoManage(studentId);
@@ -873,6 +895,10 @@ function selectStudent(element) {
 
 }
 
+function isNotesTabActive() {
+    const notesTab = document.getElementById('content-6');
+    return notesTab && notesTab.classList.contains('Visible');
+}
 
 document.getElementById('studentForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Empêche le rechargement de la page
@@ -900,9 +926,6 @@ function fetchNotes(studentId) {
             console.error('Erreur lors de la récupération des notes :', error);
         });
 }
-
-
-
 
 // -----------------------------------------------------------------------//
 // send a message only by clicking the button

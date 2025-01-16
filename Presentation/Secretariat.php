@@ -153,6 +153,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Fetch all groups with their members
 $groupsWithMembers = $database->getAllGroupsWithMembers();
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "./locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../Locales/fr.php";
+}
+
+
+//TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
 ?>
 
 
@@ -166,10 +201,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <!-- Lien vers le script JavaScript principal -->
     <script src="../View/Principal/Principal.js"></script>
-    <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <link rel="stylesheet" href="../View/Principal/Modals.css">
-    <link rel="stylesheet" href="/View/css/Footer.css">
-    <script src="/View/Principal/Notif.js"></script>
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <link rel="stylesheet" href="../View/Agreement/SecretariatConsultPreAgreementForm.css">
     <!-- Include jQuery -->
@@ -185,77 +217,30 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
 
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
-<header class="navbar">
-    <div class="navbar-left">
-        <!-- Affichage du logo et du nom de l'application -->
-        <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
-        <span class="app-name">Le Petit Stage - Secrétariat</span>
-    </div>
-    <div class="navbar-right">
-
-        <div id="notification-icon" onclick="toggleNotificationPopup()">
-            <img id="notification-icon-img" src="../Resources/Notif.png" alt="Notifications">
-            <span id="notification-count" style="display: none;"></span>
-        </div>
-
-        <!-- Notification Popup -->
-        <div id="notification-popup" class="notification-popup">
-            <div class="notification-popup-header">
-                <h3>Notifications</h3>
-                <button onclick="closeNotificationPopup()">X</button>
-            </div>
-            <div class="notification-popup-content">
-                <ul id="notification-list">
-                    <!-- Notifications will be loaded here via JavaScript -->
-                </ul>
-            </div>
-        </div>
-
-
-
-        <!-- Affichage du nom de l'utilisateur connecté et contrôles pour changer la langue et le thème -->
-        <p><?php echo $userName; ?></p>
-        <label class="switch">
-            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-            <span class="slider round">
-                <span class="switch-sticker">🇫🇷</span>
-                <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-            </span>
-        </label>
-        <!-- Bouton pour ouvrir le menu des paramètres -->
-        <button class="mainbtn" onclick="toggleMenu()">
-            <img src="../Resources/Param.png" alt="Settings">
-        </button>
-        <div class="hide-list" id="settingsMenu">
-            <!-- Liens vers les pages d'informations et de déconnexion -->
-            <a href="Settings.php">Information</a>
-            <a href="Logout.php">Deconnexion</a>
-        </div>
-    </div>
-</header>
+<?php include_once("../View/Header.php");?>
 
 <!-- Section principale contenant les différents modules de l'application -->
 <section class="Menus">
     <nav>
+
         <!-- Boutons de navigation entre les différents contenus de la section -->
-        <span onclick="window.location.href='Secretariat.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>" id="content-0">Accueil</span>
+        <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
         <?php if ($userRole == 5) { ?>
-        <span onclick="window.location.href='Secretariat.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>" id="content-1">Gestion Secrétariat</span>
-        <span onclick="window.location.href='Secretariat.php?section=8'" class="widget-button <?php echo $activeSection == '8' ? 'Current' : ''; ?>" id="content-8">Logs</span>
+        <span onclick="widget(1)" class="widget-button"><?= $translations['gestion secrétariat']?></span>
+        <span onclick="widget(2)" class="widget-button"><?= $translations['gestion utilisateurs']?></span>
         <?php } ?>
-        <span onclick="window.location.href='Secretariat.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>" id="content-2">Gestion Utilisateurs</span>
-        <span onclick="window.location.href='Secretariat.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>" id="content-3">Rapports</span>
-        <span onclick="window.location.href='Secretariat.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>" id="content-4">Documents</span>
-        <span onclick="window.location.href='Secretariat.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>" id="content-5">Messagerie</span>
-        <span onclick="window.location.href='Secretariat.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>" id="content-6">Groupes</span>
-        <span onclick="window.location.href='Secretariat.php?section=7'" class="widget-button <?php echo $activeSection == '7' ? 'Current' : ''; ?>" id="content-7">Offres</span>
+        <span onclick="widget(3)" class="widget-button"><?= $translations['rapports']?></span>
+        <span onclick="widget(4)" class="widget-button"><?= $translations['documents']?></span>
+        <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
+        <span onclick="widget(6)" class="widget-button"><?= $translations['groupes']?></span>
+        <span onclick="widget(7)" class="widget-button"><?= $translations['offres']?></span>
 
     </nav>
     <div class="Contenus">
         <!-- Contenu de la section Accueil -->
         <div class="Contenu <?php echo $activeSection == '0' ? 'Visible' : ''; ?>" id="content-0">
-            <h2>Bienvenue sur la plateforme Secrétariat!</h2><br>
-            <p>Gérez les utilisateurs, consultez les documents et accédez aux rapports des stages.</p><br>
+            <h2><?= $translations['welcome_admin']?></h2><br>
+            <p><?= $translations['info_admin']?></p><br>
 
         </div>
 
@@ -265,7 +250,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <div class="user-management">
                 <!-- Section pour la création de nouveau secrétaire -->
                 <div class="pending-requests">
-                    <button id="showButton" onclick="showForm()"">Nouveau secrétaire</button>
+                    <button id="showButton" onclick="showForm()""><?= $translations['nouveau secrétaire']?></button>
                     <!-- Form -->
                     <div id="secretariatCreation" style="display: none;">
                         <form action="Secretariat.php" method="POST">
@@ -479,7 +464,41 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
 
             <h2>Vos documents :</h2>
             <?php include_once("Documents/Documents.php");?>
-            <script src="../View/Documents/Documents.js"></script>
+
+            <h2>Gestion des Fichiers</h2>
+            <form class="box" method="post" action="" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                <input type="hidden" name="form_id" value="uploader_fichier">
+                <input type="hidden" name="upload_type" value="file">
+                <div class="box__input">
+                    <input type="file" name="files[]" id="file-doc" multiple>
+                    <button class="box__button" type="submit">Uploader Fichier</button>
+                </div>
+            </form>
+
+            <div class="file-list">
+                <h2>Fichiers Uploadés</h2>
+                <div class="file-grid">
+                    <?php foreach ($files as $file): ?>
+                        <div class="file-card">
+                            <div class="file-info">
+                                <strong><?= htmlspecialchars($file['name']) ?></strong>
+                                <p><?= round($file['size'] / 1024, 2) ?> KB</p>
+                            </div>
+                            <form method="get" action="Documents/Download.php">
+                                <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
+                                <button type="submit" class="download-button">Télécharger</button>
+                            </form>
+                            <form method="post" action="" class="delete-form">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                <input type="hidden" name="form_id" value="delete_rapport">
+                                <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
+                                <button type="submit" class="delete-button">Supprimer</button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </div>
 
 
@@ -521,6 +540,7 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
                                     <div class="group-actions">
                                         <button onclick="openEditGroupModal(<?php echo $group['group_id']; ?>)">Modifier</button>
                                         <button onclick="deleteGroup(<?php echo $group['group_id']; ?>)">Supprimer</button>
+                                        <button onclick="endStage(<?php echo $group['group_id']; ?>)">Terminer</button>
                                     </div>
                                 </div>
                                 <ul class="member-list">
@@ -641,14 +661,15 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
         <span class="close-modal">&times;</span>
     </div>
 </div>
+<footer>
+    <?php include '../View/Footer.php'; ?>
+</footer>
 
 <!-- Script JavaScript pour la gestion des utilisateurs -->
 <script src="../View/Principal/userManagement.js"></script>
 <script src="../View/Principal/GroupCreation.js"></script>
 <script src="/View/Principal/GroupMessenger.js"></script>
-<footer>
-    <?php include '../View/Footer.php'; ?>
-</footer>
+
 <script>
     // Ajouter une classe d'animation
     document.querySelectorAll('.form-control, .form-control-file').forEach(element => {

@@ -26,22 +26,37 @@ class PendingOffer extends Offer
     }
 
 
+    /**
+     * Get the id
+     * @return int
+     */
     public function getId(): int
     {
         return $this->id;
     }
 
+    /**
+     * Get the Company id
+     * @return int
+     */
     public function getCompanyId(): int
     {
         return $this->company_id;
     }
 
+    /**
+     * Get the type
+     * @return string
+     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    // Get all Tag for a pending Offer
+    /**
+     * Get all Tag for a pending Offer
+     * @return array|null
+     */
     public function getTag(): ?array
     {
         global $db;
@@ -64,17 +79,27 @@ class PendingOffer extends Offer
         return $Tag;
     }
 
+    /**
+     * Get an offer id
+     * @return int
+     */
     public function getOfferId(): int {
         return $this->offfer_id;
     }
 
+    /**
+     * Get status
+     * @return string
+     */
     public function getStatus(): string {
         return $this->status;
     }
 
-
-
-    //Get pending Offer by is id
+    /**
+     * Get pending Offer by is id
+     * @param int $id
+     * @return PendingOffer|null
+     */
     public static function getByOfferId(int $id): ?PendingOffer
     {
         global $db;
@@ -117,7 +142,11 @@ class PendingOffer extends Offer
         );
     }
 
-    // Get pending offers by Offer id
+    /**
+     * Get pending offers by Offer id
+     * @param int $id
+     * @return array|null
+     */
     public static function getByOffer(int $id): ?array {
         global $db;
         $stmt = $db->getConnection()->prepare("SELECT * FROM Pending_Offer WHERE offer_id = :id");
@@ -165,7 +194,10 @@ class PendingOffer extends Offer
         return $offers;
     }
 
-    //Get all pending offers
+    /**
+     * Get all pending offers
+     * @return array|null
+     */
     public static function getAll(): ?array
     {
         global $db;
@@ -212,7 +244,10 @@ class PendingOffer extends Offer
         return $offers;
     }
 
-    // Get all new offers
+    /**
+     * Get all new offers
+     * @return array|null
+     */
     public static function getAllNew(): ?array {
         global $db;
 
@@ -258,7 +293,10 @@ class PendingOffer extends Offer
         return $offers;
     }
 
-    // Get all updated offers
+    /**
+     * Get all updated offers
+     * @return array|null
+     */
     public static function getAllUpdated(): ?array {
         global $db;
 
@@ -304,8 +342,25 @@ class PendingOffer extends Offer
         return $offers;
     }
 
-
-    //Create a new pending Offer
+    /**
+     * Create a new pending Offer
+     * @param int $company_id
+     * @param string $title
+     * @param string $description
+     * @param string $job
+     * @param int $duration
+     * @param int $salary
+     * @param string $address
+     * @param string $education
+     * @param string $startDate
+     * @param array $Tag
+     * @param string $email
+     * @param string $phone
+     * @param string $website
+     * @param int $user_id
+     * @param int $offer_id
+     * @return PendingOffer|null
+     */
     public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $Tag, string $email, string $phone, string $website, int $user_id, int $offer_id): ?PendingOffer
     {
         global $db;
@@ -377,7 +432,10 @@ class PendingOffer extends Offer
         return $offer;
     }
 
-    //Get the real duration of the Offer using modulo
+    /**
+     * Get the real duration of the Offer using modulo
+     * @return string
+     */
     public function getRealDuration(): string
     {
         $duration = $this->getDuration();
@@ -409,7 +467,10 @@ class PendingOffer extends Offer
         return rtrim($result, ', ');
     }
 
-    // Get all Tag
+    /**
+     * Get all Tag
+     * @return array
+     */
     public static function getAllTag(): array
     {
         global $db;
@@ -427,7 +488,12 @@ class PendingOffer extends Offer
         return $Tag;
     }
 
-    //Set the status of an Offer
+    /**
+     * Set the status of an Offer
+     * @param int $getId
+     * @param string $string
+     * @return void
+     */
     public static function setStatus(int $getId, string $string) {
         global $db;
 
