@@ -520,6 +520,7 @@ function getFieldValue($field, $inputs = null, $default = null): string
             <button type="submit" name="action" value="action1">Enregistrer et soumettre aux autres parties</button>
             <?php }
             else if ($role==4 || $role==5){?>
+
             <button type="submit" name="action" value="action2">Enregistrer et soumettre aux autres parties</button>
             <button type="submit" name="action" value="action3">Valider définitivement ce formulaire de pré-convention</button>
             <?php }

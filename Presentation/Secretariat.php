@@ -257,6 +257,10 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
             <h2>Bienvenue sur la plateforme Secrétariat!</h2><br>
             <p>Gérez les utilisateurs, consultez les documents et accédez aux rapports des stages.</p><br>
 
+            <?php
+            $professors = $database->getProfessor(); // Récupère la liste des professeurs
+            var_dump($professors);
+            ?>
         </div>
 
 
