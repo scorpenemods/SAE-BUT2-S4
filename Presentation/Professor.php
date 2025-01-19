@@ -94,6 +94,7 @@ $userId = $person->getId();
     <script src="/View/Principal/Notif.js"></script>
     <script src="/View/Principal/Note.js"></script>
     <link rel="stylesheet" href="../View/Documents/Documents.css">
+    <link rel="stylesheet" href="../View/Agreement/SecretariatConsultPreAgreementForm.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include EmojiOneArea -->
@@ -191,10 +192,24 @@ $userId = $person->getId();
             <!-- Affichage du livret de suivi -->
             <?php include_once("LivretSuivi.php");?>
         </div>
+
+        <!--Documents-->
         <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">
+            <h2>Espace conventions :</h2>
+
+            <button id="PreAgreement">Consulter un formulaire de pré-convention</button>
+            <?php
+            include_once("ProfessorConsultPreAgreementForm.php"); ?>
+            <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
+
+
             <?php include_once("Documents/Documents.php");?>
             <script src="../View/Documents/Documents.js"></script>
         </div>
+
+
+
+
         <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : 'Contenu'; ?>" id="content-5">
             <!-- Messagerie Content -->
             <div class="messenger">

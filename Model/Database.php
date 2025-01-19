@@ -1128,7 +1128,7 @@ class Database
 
     public function getNotes($userId): array
     {
-        $sql = "SELECT Note.id, Note.sujet, Note.appreciation, Note.note, Note.coeff
+        $sql = "SELECT Note.id, Note.sujet, Note.note, Note.coeff
                 FROM Note
                 WHERE Note.user_id = :user_id";
 
@@ -1141,7 +1141,6 @@ class Database
             $notes[] = new Note(
                 $row['id'] ?? '',
                 $row['sujet'] ?? '',
-                $row['appreciation'] ?? '',
                 $row['note'] ?? '',
                 $row['coeff'] ?? ''
             );
@@ -1486,22 +1485,22 @@ class Database
     }
 
 
-    public function insertInputsPreAgreementStudent($json, int $idStudent, int $idMentor, int $idProfessor = null): void {
+    public function insertInputsPreAgreementStudent($json, int $idStudent, int $idMentor = null, int $idProfessor = null): void {
         if (is_array($json)) {
             $json = json_encode($json);
         }
 
         if ($idProfessor !== null && $idMentor !== -1) {
-            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent, idMentor, idProfessor) VALUES (DEFAULT, 0, :inputs, :idStudent, :idMentor, :idProfessor)";
+            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent, idMentor, idProfessor, missions_status, created_at) VALUES (DEFAULT, 0, :inputs, :idStudent, :idMentor, :idProfessor, 0, NOW())";
         }
         else if ($idProfessor == null && $idMentor == -1) {
-            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent) VALUES (DEFAULT, 0, :inputs, :idStudent)";
+            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent, missions_status, created_at) VALUES (DEFAULT, 0, :inputs, :idStudent, 0,NOW())";
         }
         else if ($idProfessor == null && $idMentor != -1){
-            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent, idMentor) VALUES (DEFAULT, 0, :inputs, :idStudent, :idMentor)";
+            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent, idMentor, missions_status, created_at) VALUES (DEFAULT, 0, :inputs, :idStudent, :idMentor, 0,NOW())";
         }
         else {
-            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent, idProfessor) VALUES (DEFAULT, 0, :inputs, :idStudent, :idProfessor)";
+            $sql = "INSERT INTO Pre_Agreement (id, status, inputs, idStudent, idProfessor, missions_status, created_at) VALUES (DEFAULT, 0, :inputs, :idStudent, :idProfessor, 0,NOW())";
         }
 
         $stmt = $this->connection->prepare($sql);
@@ -1532,23 +1531,24 @@ class Database
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    public function getPreAgreementFormStudent($idPerson){
+    public function getPreAgreementFormStudent($idPerson): false|array
+    {
         $stmt = $this->connection->prepare("SELECT id FROM Pre_Agreement WHERE idStudent = :idPerson;");
         $stmt -> bindParam('idPerson', $idPerson);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getPreAgreementFormMentor($idPerson){
-        $stmt = $this->connection->prepare("SELECT id FROM Pre_Agreement WHERE idMentor = :idPerson;");
+        $stmt = $this->connection->prepare("select Pre_Agreement.id, Pre_Agreement.created_at, User.nom, User.prenom from Pre_Agreement JOIN User ON Pre_Agreement.idStudent = User.id where idMentor= :idPerson;");
         $stmt -> bindParam('idPerson', $idPerson);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getPreAgreementFormProfessor($idPerson){
-        $stmt = $this->connection->prepare("SELECT id FROM Pre_Agreement WHERE idProfessor = :idPerson;");
+        $stmt = $this->connection->prepare("select Pre_Agreement.id, Pre_Agreement.created_at, User.nom, User.prenom from Pre_Agreement JOIN User ON Pre_Agreement.idStudent = User.id where idProfessor= :idPerson;");
         $stmt -> bindParam('idPerson', $idPerson);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getInputsPreAgreementForm($idPreAgreementForm){
@@ -1557,12 +1557,6 @@ class Database
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
-    /*public function getAllPreAgreementForm(){
-        $stmt = $this->connection->prepare("select id from Pre_Agreement;");
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }*/
 
     public function getStudentsWithPreAgreementFormValid(): false|array
     {
@@ -1621,6 +1615,30 @@ class Database
         $stmt = $this->connection->prepare("update Pre_Agreement set status = 1 where id = :id;");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
+    }
+
+    public function setValidMissionsPreAgreement(int $id): void
+    {
+        $stmt = $this->connection->prepare("update Pre_Agreement set missions_status = 1 where id = :id;");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function getMissionsValidPreAgreement(int $id): int
+    {
+        $stmt = $this->connection->prepare("select missions_status from Pre_Agreement where id = :id;");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)$result['missions_status'];
+    }
+
+    public function getCreationDatePreAgrement(int $id){
+        $stmt = $this->connection->prepare("select created_at from Pre_Agreement where id = :id;");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['created_at'];
     }
 
 }

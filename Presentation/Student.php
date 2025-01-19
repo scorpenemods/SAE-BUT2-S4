@@ -82,6 +82,7 @@ if (isset($_POST['go'])) {
     <script src="/View/Principal/Principal.js" defer></script>
     <script src="/View/Principal/Notif.js"></script>
     <link rel="stylesheet" href="../View/Documents/Documents.css">
+    <link rel="stylesheet" href="../View/Agreement/SecretariatConsultPreAgreementForm.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include EmojiOneArea -->
@@ -259,7 +260,50 @@ if (isset($_POST['go'])) {
 
         <!-- Documents Content -->
         <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
+            <h2>Espace Conventions : </h2>
+            <?php
+            $group = $database->getUserGroupByIdUser($senderId);
+            $group = (int)$group;
+            $agreement = $database->getAgreementByGroupId($group);
+            if ($group == null || $agreement == null ){
+                echo "<p>Vous n'avez pas encore de convention</p>";
+            }
+            else{
+                //afficher les conventions de la personne
+                if (file_exists($agreement)) {
+                    echo "<a href='$agreement' download='$agreement'>Télécharger la convention</a>";
+                } else {
+                    echo "<p>Le fichier n'existe pas.</p>";
+                }
+            }
+            ?>
 
+
+            <!-- Bouton qui affiche la fenêtre modale -->
+            <button id="PreAgreement">Consulter vos formulaire de pré-convention</button>
+
+            <?php //premier bouton
+            include_once("StudentConsultPreAgreement.php");
+            ?>
+            <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
+
+            <!--afficher la préconv-->
+            <?php /*
+            $idPreAgreementForm = $database->getPreAgreementFormStudent($senderId);
+            if (!$idPreAgreementForm == null) {
+                foreach ($idPreAgreementForm as $idPreAgreementForms) {
+                    echo '<a href="PreAgreementFormStudent.php?id=' . htmlspecialchars($idPreAgreementForms['id']) . '">Pré-convention du ' . htmlspecialchars($database->getCreationDatePreAgrement($idPreAgreementForms['id'])) . ' ' . '</a>';
+                }
+            }*/
+            ?>
+
+
+
+
+
+            <h2>Vos documents : </h2>
+            <?php include_once("Documents/Documents.php");?>
+            <script src="../View/Documents/Documents.js"></script>
         </div>
 
         <!-- Livret de suivi Content -->
@@ -288,7 +332,6 @@ if (isset($_POST['go'])) {
                         foreach ($notes as $note):
                             echo '<tr>';
                                 echo '<td>' . htmlspecialchars($note->getSujet()); '</td>';
-                                echo '<td>' . htmlspecialchars($note->getAppreciation()); '</td>';
                                 echo '<td>' . htmlspecialchars($note->getNote()) . " / 20"; '</td>';
                                 echo '<td>' . htmlspecialchars($note->getCoeff()); '</td>';
                             echo '</tr>';

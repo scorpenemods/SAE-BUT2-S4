@@ -187,6 +187,7 @@ $notes = $database->getNotes($userId);
     <link rel="stylesheet" href="/View/Principal/Notifs.css">
     <link rel="stylesheet" href="/View/css/Footer.css">
     <link rel="stylesheet" href="../View/Documents/Documents.css">
+    <link rel="stylesheet" href="../View/Agreement/SecretariatConsultPreAgreementForm.css">
     <script src="/View/Principal/Notif.js"></script>
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -296,7 +297,18 @@ $notes = $database->getNotes($userId);
 
 
         </div>
+
+        <!--Documents-->
         <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">
+            <h2>Espace conventions :</h2>
+
+            <button id="PreAgreement">Consulter un formulaire de pré-convention</button>
+            <?php
+            include_once("MentorConsultPreAgreementForm.php"); ?>
+            <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
+
+
+
             <?php include_once("Documents/Documents.php");?>
             <script src="../View/Documents/Documents.js"></script>
             <a href="../View/Agreement/PreAgreementFormCompany.php">Accès au formulaire de pré-convention</a>

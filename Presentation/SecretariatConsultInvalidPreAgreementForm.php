@@ -3,7 +3,7 @@ $database = (Database::getInstance());
 ?>
 
 <div id="preAgreementToValidateModal" class="modal" style="display: none">
-    <div class="modal-content">
+    <div class="modal-content-student">
         <span class="close-button">&times;</span>
         <h2>Recherche de pré-conventions à valider</h2>
         <input type="text" id="searchBarToValidate" placeholder="Rechercher un élève...">
