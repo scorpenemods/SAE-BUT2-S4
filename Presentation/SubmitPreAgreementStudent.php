@@ -62,6 +62,11 @@ $fonctionLegal = $_POST['fonction_legal'] ?? null;
 $mailLegal = $_POST['mail_legal'] ?? null;
 
 $nomTuteur = $_POST['nom_tuteur'] ?? null;
+
+if ($nomTuteur !== null){
+    $database->setMentorPreAgreement($idPreConv, $nomTuteur);
+}
+
 $civiliteTuteur = $_POST['civilite_tuteur'] ?? null;
 $fonctionTuteur = $_POST['fonction_tuteur'] ?? null;
 $telTuteur = $_POST['tel_tuteur'] ?? null;
@@ -103,7 +108,11 @@ $responsableNom = $_POST['responsable_nom'] ?? null;
 $responsablePrenom = $_POST['responsable_prenom'] ?? null;
 
 // Enseignant référent
-$enseignantReferent = $_POST['enseignent_referent'] ?? null;
+$enseignantReferent = $_POST['enseignant_referent'] ?? null;
+
+if ($enseignantReferent !== null){
+    $database->setProfessorPreAgreement($idPreConv,$enseignantReferent);
+}
 
 
 $form_data = [

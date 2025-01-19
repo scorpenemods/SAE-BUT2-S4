@@ -1641,4 +1641,18 @@ class Database
         return $result['created_at'];
     }
 
+    public function setMentorPreAgreement(int $idPreAgreement, int $id): void{
+        $stmt = $this->connection->prepare("update Pre_Agreement set idMentor = :id where id = :idPreAgreement;");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':idPreAgreement', $idPreAgreement, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function setProfessorPreAgreement(int $idPreAgreement, int $id): void{
+        $stmt = $this->connection->prepare("update Pre_Agreement set idProfessor = :id where id = :idPreAgreement;");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':idPreAgreement', $idPreAgreement, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
 }

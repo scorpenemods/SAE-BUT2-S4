@@ -267,14 +267,26 @@ function getFieldValue($field, $inputs = null, $default = null): string
                 </div>
             </div>
 
-            <!-- Section 2 : Tuteur Entreprise -->
+<!-- Section 2 : Tuteur Entreprise -->
             <div class="form-group">
                 <h3>2/ Tuteur Entreprise</h3>
                 <div class="form-item">
-                    <label for="nom_tuteur">Nom :</label>
-                    <input type="text" id="nom_tuteur" name="nom_tuteur" value="<?php echo getFieldValue('nomTuteur', $inputs); ?>"  <?php echo $readonly ?>>
+                    <label for="nom_tuteur">Selectionnez le tuteur entreprise :</label>
+                    <select id="nom_tuteur" name="nom_tuteur">
+                        <option value="">Sélectionnez un maître de stage</option>
+                        <?php
+                        $selectedTuteur = getFieldValue('nomTuteur', $inputs); // Récupère la valeur par défaut
+                        foreach ($maitres as $maitre):
+                            ?>
+                            <option value="<?php echo $maitre->getId(); ?>"
+                                <?php echo $maitre->getId() == $selectedTuteur ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()) . ' ' . htmlspecialchars($maitre->getActivite()); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
             </div>
+
             <div class="form-group">
                 <div class="form-item radio-group">
                     <label>Civilité :</label>
@@ -509,9 +521,20 @@ function getFieldValue($field, $inputs = null, $default = null): string
             <input type="text" id="responsable_prenom" name="responsable_prenom" value="<?php echo getFieldValue('responsablePrenom', $inputs); ?>"  <?php echo $readonly ?>>
         </div>
 
+        <?php
+        $selectedValue = getFieldValue('enseignantReferent', $inputs);
+        ?>
         <div class="form-group">
             <label for="enseignant_referent">Enseignant référent :</label>
-            <input type="text" id="enseignent_referent" name="enseignent_referent" value="<?php echo getFieldValue('enseignantReferent', $inputs); ?>"  <?php echo $readonly ?> >
+            <select id="enseignant_referent" name="enseignant_referent">
+                <option value="">Sélectionnez un professeur</option>
+                <?php foreach ($professors as $professor): ?>
+                    <option value="<?php echo $professor->getId(); ?>"
+                        <?php echo $professor->getId() == $selectedValue ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom().' '.htmlspecialchars($professor->getActivite())); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
         </div>
 
         <?php
@@ -520,7 +543,6 @@ function getFieldValue($field, $inputs = null, $default = null): string
             <button type="submit" name="action" value="action1">Enregistrer et soumettre aux autres parties</button>
             <?php }
             else if ($role==4 || $role==5){?>
-
             <button type="submit" name="action" value="action2">Enregistrer et soumettre aux autres parties</button>
             <button type="submit" name="action" value="action3">Valider définitivement ce formulaire de pré-convention</button>
             <?php }

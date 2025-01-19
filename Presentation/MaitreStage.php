@@ -308,10 +308,8 @@ $notes = $database->getNotes($userId);
             <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
 
 
-
             <?php include_once("Documents/Documents.php");?>
             <script src="../View/Documents/Documents.js"></script>
-            <a href="../View/Agreement/PreAgreementFormCompany.php">Accès au formulaire de pré-convention</a>
         </div>
 
         <!-- Contenu de la Messagerie -->

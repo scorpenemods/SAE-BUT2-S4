@@ -256,11 +256,6 @@ $groupsWithMembers = $database->getAllGroupsWithMembers();
         <div class="Contenu <?php echo $activeSection == '0' ? 'Visible' : ''; ?>" id="content-0">
             <h2>Bienvenue sur la plateforme Secrétariat!</h2><br>
             <p>Gérez les utilisateurs, consultez les documents et accédez aux rapports des stages.</p><br>
-
-            <?php
-            $professors = $database->getProfessor(); // Récupère la liste des professeurs
-            var_dump($professors);
-            ?>
         </div>
 
 
