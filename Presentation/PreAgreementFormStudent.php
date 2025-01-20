@@ -9,7 +9,8 @@ $database = Database::getInstance();
 session_start();
 
 if (isset($_SESSION['personne'])){
-
+    $professors = $database->getProfessor(true) ?? [];
+    $maitres = $database->getTutor(true) ?? [];
     $readonly = "";
     $checked = "";
     $readonly_missions = "";
