@@ -198,7 +198,10 @@ if (isset($_POST['go'])) {
 
 
         <!-- Missions Content -->
-        <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">Contenu Missions</div>
+        <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">
+            Contenu Mission:
+            <?php include('./MissionStage.php')?>
+        </div>
 
         <!-- Messagerie Content -->
         <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">
