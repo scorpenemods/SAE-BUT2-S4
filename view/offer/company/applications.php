@@ -1,17 +1,15 @@
 <?php
-require '../../../models/Applications.php';
 session_start();
+error_reporting(E_ALL ^ E_DEPRECATED);
 
+require '../../../models/Applications.php';
 require dirname(__FILE__) . '/../../../models/Offer.php';
 require dirname(__FILE__) . '/../../../presenter/offer/filter.php';
 
 $returnUrl = "/view/offer/list.php";
-if (isset($_SERVER["HTTP_REFERER"])) {
-    $returnUrl = $_SERVER["HTTP_REFERER"];
-}
+if (isset($_SERVER["HTTP_REFERER"])) $returnUrl = $_SERVER["HTTP_REFERER"];
 
-
-error_reporting(E_ALL ^ E_DEPRECATED);
+// Parameters validation
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? 'Pending';
 if (!$offerId) {
@@ -19,7 +17,7 @@ if (!$offerId) {
     die();
 }
 
-// Verification de qui est l'utilisateur
+// Verification of the user
 $groupeSecretariat = $_SESSION['secretariat'] ?? false;
 $company_id = $_SESSION['company_id'] ?? 0;
 
@@ -90,6 +88,7 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
     <?php include '../../footer.php'; ?>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        // Function to download the cv and motivation of users
         function getFile(id_user, id_offer, type_str) {
             $.ajax({
                 url: '../../../presenter/offer/getfile.php',
@@ -103,19 +102,14 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
                     let matches = /"([^"]*)"/.exec(disposition);
                     let filename = (matches != null && matches[1] ? matches[1] : fileName + '.pdf');
 
-                    // Create blob link to download
                     let blob = new Blob([data], { type: 'application/pdf' });
                     let link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
                     link.download = filename;
 
-                    // Append to html link element page
                     document.body.appendChild(link);
 
-                    // Start download
                     link.click();
-
-                    // Clean up and remove the link
                     link.parentNode.removeChild(link);
                 },
                 error: function(xhr, _status, _error) {

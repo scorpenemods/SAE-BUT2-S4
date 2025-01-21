@@ -26,7 +26,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Le Petit Stage - Modifier une offre</title>
+        <title>Modifier une offre</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/view/css/create.css">
         <link rel="stylesheet" href="/view/css/header.css">

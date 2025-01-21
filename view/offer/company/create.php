@@ -4,11 +4,13 @@ session_start();
 require dirname(__FILE__) . '/../../../models/Company.php';
 global $tags;
 
+// Verification of the user
 if (isset($_SESSION['secretariat']) || isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
     $groupeSecretariat = $_SESSION['secretariat'];
 }
 
+// Check if the user is allowed to create a company
 if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
     $companies = Company::getAll();
 }
@@ -18,7 +20,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Le Petit Stage - Proposer une offre</title>
+        <title>Créer une entreprise</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/view/css/create.css">
         <link rel="stylesheet" href="/view/css/header.css">

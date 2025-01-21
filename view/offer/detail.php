@@ -1,29 +1,29 @@
 <?php
 session_start();
+error_reporting(E_ALL ^ E_DEPRECATED);
 
 require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
-$returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-
-error_reporting(E_ALL ^ E_DEPRECATED);
+// Parameters validation
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? "all";
-
 if (!$offerId) {
+    $returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     header("Location: " . $returnUrl);
     die();
 }
 
+// Verification of the user
 $company_id = $_SESSION['company_id'] ?? 0;
 if ($company_id != 0 && Offer::isCompanyOffer($offerId, $company_id)) {
-    //header("Location: ../offer/list.php");
-    //die();
-    echo !Offer::isCompanyOffer($offerId, $company_id);
+    header("Location: ../offer/list.php");
+    die();
 }
 $secretariat_group = $_SESSION['secretariat'] ?? false;
 
+// Get offers for the right type
 switch ($type) {
     case 'updated':
         $offer = PendingOffer::getByOfferId($offerId);
@@ -37,6 +37,7 @@ switch ($type) {
         break;
 }
 
+// Check if an offer is "supressed"
 if ($offer->getSupress() && !$secretariat_group) {
     //Make a 403 error
     header("HTTP/1.1 403 Forbidden");

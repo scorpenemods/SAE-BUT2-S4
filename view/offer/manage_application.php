@@ -6,15 +6,15 @@ require dirname(__FILE__) . '/../../models/Offer.php';
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
-$returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-
-error_reporting(E_ALL ^ E_DEPRECATED);
+// Verification of the user
 $user = $_SESSION["user"] ?? null;
 if ($user === null) {
+    $returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     header("Location: " . $returnUrl);
     exit();
 }
 
+// Load all the application for a user
 $applications = Applications::getAllForUser($user);
 ?>
 <!DOCTYPE html>

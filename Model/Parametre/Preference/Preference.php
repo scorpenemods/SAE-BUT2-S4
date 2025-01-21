@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Petit Stage - Préférences</title>
+    <title>Préférences</title>
     <link rel="stylesheet" href="../Parametre/Preference.css">
 </head>
 <body>

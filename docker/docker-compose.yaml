@@ -1,0 +1,19 @@
+services:
+  php:
+    build:
+      context: ../
+      dockerfile: ./docker/frankenphp/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQL_DATABASE
+    volumes:
+      - ./mysql/data:/var/lib/mysql

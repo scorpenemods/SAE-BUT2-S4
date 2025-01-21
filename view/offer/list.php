@@ -3,18 +3,20 @@ session_start();
 
 require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../models/PendingOffer.php';
-
 require dirname(__FILE__) . '/../../presenter/utils.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
+// Definition of the user (standalone version)
 $_SESSION['user'] = 1;
 $_SESSION['company_id'] = 0;
 $_SESSION['secretariat'] = true;
 
+// Verification of the user
 $user_id = $_SESSION['user'] ?? 0;
 $company_id = $_SESSION['company_id'] ?? 0;
 $secretariat_group = $_SESSION['secretariat'] ?? false;
 
+// Parameters validation
 $pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT) ?? 1;
 $currentURL = $_SERVER["REQUEST_URI"];
 
@@ -55,7 +57,6 @@ $latitude = filter_input(INPUT_GET, 'latitude', FILTER_VALIDATE_INT);
 $longitude = filter_input(INPUT_GET, 'longitude', FILTER_VALIDATE_INT);
 $distance = filter_input(INPUT_GET, 'distance', FILTER_VALIDATE_INT);
 
-
 if (isset($title)) { $filters["title"] = $title; }
 if (isset($sort)) { $filters["sort"] = $sort; }
 if (isset($startDate)) { $filters["startDate"] = $startDate; }
@@ -81,7 +82,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Le Petit Stage - Offres">
-        <title>Le Petit Stage - Advanced</title>
+        <title>Advanced</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/view/css/header.css">
         <link rel="stylesheet" href="/view/css/footer.css">

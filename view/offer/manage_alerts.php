@@ -3,10 +3,17 @@ session_start();
 
 require $_SERVER['DOCUMENT_ROOT'] . '/models/Database.php';
 
-$userId = $_SESSION['user'];
+// Verification of the user
+$user = $_SESSION["user"] ?? null;
+if ($user === null) {
+    $returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    header("Location: " . $returnUrl);
+    exit();
+}
 
+// Load database instance & data from it
 $database = (Database::getInstance());
-$alerts = $database->getAlertByUser($userId);
+$alerts = $database->getAlertByUser($user);
 ?>
 <!DOCTYPE html>
     <html lang="fr">
