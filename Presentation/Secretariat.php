@@ -79,8 +79,8 @@ $conn = $database->getConnection();
 
 $errorMessage = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_id']) && $_POST['form_id'] === 'create_secretary') {
+    error_log("Secretariat.php POSTED");
     // Initialise l'activité du user
     $function = isset($_POST['function']) ? htmlspecialchars(trim($_POST['function'])) : '';
 
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($stmtPass->execute()) {
                 $_SESSION['user_email'] = $email;
-                $_SESSION['user_id'] = $userID;
+                $userID = $_SESSION['user_id'];
                 $_SESSION['user_name'] = $name . " " . $firstname;
 
                 // Ajout de log pour vérifier que l'étape est atteinte
@@ -417,7 +417,10 @@ $translations = include $langFile;
                     <button id="showButton" onclick="showForm()"><?= $translations['nouveau_secretaire']?></button>
                     <!-- Form -->
                     <div id="secretariatCreation" style="display: none;">
-                        <form action="Secretariat.php" method="POST">
+                        <form action="" method="POST">
+
+                            <input type="hidden" name="form_id" value="create_secretary">
+
                             <!-- Hidden role input field (for secretariat role) -->
                             <input type="hidden" name="choice" value="secretariat">
 

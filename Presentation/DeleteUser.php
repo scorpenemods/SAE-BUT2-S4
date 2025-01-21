@@ -12,11 +12,8 @@ require "../Model/Email.php";
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-error_log($_SESSION['user_role']);
-
 // Vérification du rôle utilisateur pour restreindre l'accès
 if (!isset($_SESSION['user_role']) || !in_array($_SESSION['user_role'], [4, 5])) {
-    error_log("verif.php");
     // Si l'utilisateur n'a pas les rôles requis (4 ou 5), on bloque l'accès
     header('location: AccessDenied.php');
     exit();
