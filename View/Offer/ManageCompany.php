@@ -76,10 +76,12 @@ $companies = Company::get_all();
                         company_id: id
                     },
                     success: function (data) {
-                        if (data.status === 'success') {
-                            $('#notification').showNotification('success', 'La société a bien été supprimée');
+                        if (JSON.parse(data).status === 'success') {
                             sendNotification("success", "Succés", "La société a bien été supprimée");
-                            location.reload();
+                            //Wait for the page to reload
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000);
                         } else {
                             sendNotification("failure", "Erreur", "La société n'a pas pu être supprimée");
                         }

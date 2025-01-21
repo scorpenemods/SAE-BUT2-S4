@@ -5,7 +5,7 @@ session_start();
 
 require dirname(__FILE__) . "/../../../Model/Company.php";
 
-$userId = $_SESSION['user'] ?? false;
+$userId = $_SESSION['user_id'] ?? false;
 $httpReferer = $_SERVER['HTTP_REFERER'] ?? false;
 if (!$userId && !$httpReferer) {
     header("Location: ../../../View/Offer/List.php");
@@ -20,6 +20,7 @@ if (isset($_POST['name']) && isset($_POST['size']) && isset($_POST['address']) &
     $siren = filter_input(INPUT_POST, 'siren', FILTER_SANITIZE_STRING) ?? false;
 
     if (!$name || !$size || !$address || !$siren) {
+        $errors[] = "Veuillez remplir tous les champs requis ou mettre une valeur valide.";
         header("Location: ../../../View/Offer/Company/Create.php");
         die();
     }

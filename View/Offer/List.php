@@ -10,9 +10,13 @@ require dirname(__FILE__) . '/../../Presentation/Utils.php';
 require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 
 
-$secretariat_group = false;
+$_SESSION['user_id'] = 1;
+$_SESSION['company_id'] = 0;
 $_SESSION['secretariat'] = false;
+$_SESSION['user_role'] = 1;
 
+$secretariat_group = true;
+$_SESSION['secretariat'] = true;
 
 if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
@@ -230,7 +234,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
 
                         <label for="distance">Distance</label>
                         <input type="range" id="distance" name="distance" min="0" max="10000" step="1" value="0">
-                        <span id="distance-value">100</span>
+                        <span id="distance-value">0</span>
                     </div>
 
                     <div class="filter-section">

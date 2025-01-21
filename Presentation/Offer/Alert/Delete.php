@@ -5,12 +5,12 @@ session_start();
 
 require_once dirname(__FILE__) . "/../../../Model/Database.php";
 $db = Database::getInstance();
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['user_id'])) {
     echo json_encode(["status" => "error", "message" => "Utilisateur non connecté."]);
     exit;
 }
 
-$userId = $_SESSION['user'];
+$userId = $_SESSION['user_id'];
 
 $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 

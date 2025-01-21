@@ -18,7 +18,7 @@ if (!$offer_id) {
     die();
 }
 
-$companyId = $_SESSION['companyId'] ?? 0;
+$companyId = $_SESSION['company_id'] ?? 0;
 if ($companyId != 0 && Offer::is_company_offer($offer_id, $companyId)) {
     //header("Location: ../Offer/List.php");
     //die();
@@ -151,8 +151,8 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                         </div>
                         <div class='apply-button-container'>
                             <?php
-                                if ($type != 'updated') {
-                                    echo "<div class='apply-button-container'>";
+                                echo "<div class='apply-button-container'>";
+                                if ($type != 'updated' && $type != 'suppressed') {
                                     echo "<input type='hidden' name='id' value='" . $offer->get_id() . "'>";
 
                                     if (!$secretariatGroup && $companyId == 0) {
@@ -169,6 +169,10 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                                         echo "<form action='../../Presentation/Offer/Company/Hide.php' method='post' id='hide-form'>";
                                             echo "<input type='hidden' name='id' value='" . $offer->get_id() . "'>";
                                             echo "<button class='apply-button-edit'>Cacher " . ($offer->get_is_active() ? "(Actif)" : "(Inactif)") . "</button>";
+                                        echo "</form>";
+                                        echo "<form action='../../Presentation/Offer/Delete.php' method='post' id='hide-form'>";
+                                        echo "<input type='hidden' name='id' value='" . $offer->get_id() . "'>";
+                                            echo "<button class='apply-button-edit'>Supprimer</button>";
                                         echo "</form>";
                                     }
                                 }

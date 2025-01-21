@@ -23,7 +23,7 @@ if (!$offerId) {
 
 // Verification de qui est l'utilisateur
 $groupeSecretariat = $_SESSION['secretariat'] ?? false;
-$companyId = $_SESSION['companyId'] ?? 0;
+$companyId = $_SESSION['company_id'] ?? 0;
 
 if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, $companyId))) {
     $applications = Application::get_all_for_offer($offerId, $type) ?? [];

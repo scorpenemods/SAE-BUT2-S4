@@ -8,7 +8,7 @@ require dirname(__FILE__) . '/../../Model/Offer.php';
 $http_referer = $_SERVER["HTTP_REFERER"];
 $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
 
-if (isset($_SESSION['user']) && isset($id)) {
+if (isset($_SESSION['user_id']) && isset($id)) {
     $userId = $_SESSION['user_id'];
     if (Offer::is_favorite($_POST['id'], $userId)) {
         Offer::remove_favorite($_POST['id'], $userId);

@@ -8,8 +8,8 @@ require dirname(__FILE__) . '/../../../Model/Offer.php';
 require dirname(__FILE__) . '/../../../Model/Company.php';
 
 // Check if user has a Company
-if (isset($_SESSION['secretariat']) || (isset($_SESSION['companyId']) && isset($_GET['id']))) {
-    $companyId = $_SESSION['companyId'];
+if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset($_GET['id']))) {
+    $companyId = $_SESSION['company_id'];
     $offer = Offer::get_by_id($_GET['id']);
     if ($companyId!= null && !Offer::is_company_offer($_GET['id'], $companyId)) {
         header("Location: ../../Offer/List.php");
@@ -41,7 +41,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['companyId']) && isset($
             <h1>Modifier une offre de stage</h1>
             <form action="../../../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $offer->get_id(); ?>">
-                <input type="hidden" name="companyId" id="companyId" value="<?php echo $offer->get_company_id(); ?>">
+                <input type="hidden" name="company_id" id="companyId" value="<?php echo $offer->get_company_id(); ?>">
                 <div class="form-group">
                     <label for="title">Titre de l'offre</label>
                     <input type="text" id="title" name="title" value="<?php echo $offer->get_title(); ?>" placeholder="Ex: Développeur Web Junior">
@@ -87,7 +87,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['companyId']) && isset($
                     </div>
                     <div class="form-group">
                         <label for="startDate">Date de début</label>
-                        <input type="date" id="startDate" name="startDate" value="<?php echo $offer->get_begin_date(); ?>">
+                        <input type="date" id="start_date" name="start_date" value="<?php echo $offer->get_begin_date(); ?>">
                     </div>
                 </div>
 

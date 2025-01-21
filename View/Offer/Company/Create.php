@@ -6,12 +6,12 @@ session_start();
 require dirname(__FILE__) . '/../../../Model/Company.php';
 global $tags;
 
-if (isset($_SESSION['secretariat']) || isset($_SESSION['companyId'])) {
-    $company_id = $_SESSION['companyId'];
+if (isset($_SESSION['secretariat']) || isset($_SESSION['company_id'])) {
+    $company_id = $_SESSION['company_id'];
     $groupeSecretariat = $_SESSION['secretariat'];
 }
 
-if (!(isset($_SESSION['companyId'])) || $_SESSION['companyId'] == 0) {
+if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
     $companies = Company::get_all();
 }
 ?>
@@ -31,6 +31,15 @@ if (!(isset($_SESSION['companyId'])) || $_SESSION['companyId'] == 0) {
         <?php include dirname(__FILE__) . '/../../Header.php'; ?>
         <main class="container-principal">
             <h1>Créer une entreprise</h1>
+            <?php if (!empty($errors)): ?>
+                <div class="error-messages">
+                    <ul>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?php echo htmlspecialchars($error); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
             <form action="../../../Presentation/Offer/Company/Create.php" method="post" enctype="multipart/form-data">
 
                 <div class="form-group">

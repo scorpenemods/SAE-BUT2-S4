@@ -210,6 +210,7 @@ class Company {
         $stmt->execute();
 
         if ($db->errorCode()) {
+            return $db->errorCode();
             return false;
         }
 

@@ -6,7 +6,7 @@ session_start();
 require_once dirname(__DIR__) . '/../Model/Database.php';
 $db = Database::getInstance()->getConnection();
 
-$idUser = $_SESSION["user"];
+$idUser = $_SESSION["user_id"];
 $uploadDir = 'uploads/';
 
 if (!is_dir($uploadDir)) {
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $offer = $_POST['offer'];
 
-    if (!isset($_SESSION["user"])) {
+    if (!isset($_SESSION["user_id"])) {
         echo json_encode(array("status" => "not_logged"));
     } else {
         $stmt = $db->prepare("select * from Application where idUser = :idUser and idOffer = :idOffre");

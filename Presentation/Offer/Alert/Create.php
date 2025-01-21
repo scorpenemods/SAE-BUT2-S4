@@ -7,12 +7,12 @@ session_start();
 require_once dirname(__FILE__) . '/../../../Model/Offer.php';
 $db = Database::getInstance()->getConnection();
 
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['user_id'])) {
     echo json_encode(["status" => "error", "message" => "Utilisateur non connecté."]);
     exit;
 }
 
-$userId = $_SESSION['user'];
+$userId = $_SESSION['user_id'];
 
 $duration = filter_input(INPUT_POST, 'duration', FILTER_VALIDATE_INT);
 $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_SPECIAL_CHARS);
