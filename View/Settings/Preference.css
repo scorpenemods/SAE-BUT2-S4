@@ -1,73 +1,51 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    height: 120vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    animation: lightGradientAnimation 15s ease infinite; /* fluid anim */
-    transition: background 1s ease, color 1s ease;
-    color: var(--text-color); /* Font color */
-}
-
-/* Principal Preferences Section */
-main {
-    text-align: center;
-    margin-top: 50px;
-}
-
-h2 {
-    font-size: 28px;
-    margin-top: 150px;
-    margin-bottom: 30px;
-}
-
-.preferences {
+section.preferences {
     display: inline-block;
-    text-align: left;
+    text-align: center;
     z-index: 1;
     padding: 20px;
     max-width: 800px;
-    margin-left: auto;
+    margin-left: 40%;
+    margin-top: 13%;
+    margin-bottom: 13%;
     margin-right: auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    background: white;
+    color: black;
+    background: var(--container-bg); /* dynamic background */
     flex-direction: column;
     align-items: center;
     transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-.preference-item {
+section.preferences h2 {
+    font-size: 28px;
+    margin-top: 25px;
+    margin-bottom: 30px;
+}
+
+section.preferences .preference-item {
     margin-bottom: 20px;
 }
 
-.preference-item span {
+section.preferences .preference-item span {
     margin-right: 10px;
 }
 
 /* Toggle Switch */
-.switch {
+section.preferences .switch {
     position: relative;
     display: inline-block;
     width: 50px;
     height: 20px;
 }
 
-.switch input {
+section.preferences .switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.slider {
+section.preferences .slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -79,7 +57,7 @@ h2 {
     border-radius: 10px;
 }
 
-.slider:before {
+section.preferences .slider:before {
     position: absolute;
     content: "";
     height: 14px;
@@ -91,11 +69,19 @@ h2 {
     border-radius: 50%;
 }
 
-input:checked + .slider {
+section.preferences input{
+    background-color: transparent;
+    padding: 3%;
+    border-radius: 30px;
+    border: solid 1px;
+    box-shadow: 1px 1px 3px black;
+}
+
+section.preferences input:checked + .slider {
     background-color: #4CAF50;
 }
 
-input:checked + .slider:before {
+section.preferences input:checked + .slider:before {
     transform: translateX(20px);
 }
 

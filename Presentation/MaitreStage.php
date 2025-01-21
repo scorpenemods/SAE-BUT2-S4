@@ -1,4 +1,7 @@
 <?php
+global $files;
+ob_start();
+
 // Démarre une session pour gérer les informations de l'utilisateur connecté
 session_start();
 
@@ -83,96 +86,25 @@ if (isset($_GET['section'])) {
 // Définit la section active par défaut (Accueil) si aucune n'est spécifiée
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
 
-if (isset($_POST['submit_notes'])) {
-    if (isset($_POST['sujet'], $_POST['appreciations'], $_POST['note'], $_POST['coeff'])) {
-        $allFieldsFilled = true;
-        $notesData = [];
 
-        foreach ($_POST['sujet'] as $index => $sujet) {
-            if (empty($_POST['sujet'][$index]) || empty($_POST['appreciations'][$index]) || empty($_POST['note'][$index]) || empty($_POST['coeff'][$index])) {
-                $allFieldsFilled = false;
-                break;
-            }
-            $notesData[] = [
-                'sujet' => $_POST['sujet'][$index],
-                'appreciation' => $_POST['appreciations'][$index],
-                'note' => $_POST['note'][$index],
-                'coeff' => $_POST['coeff'][$index],
-            ];
-        }
+//TRADUCTION
 
-        if ($allFieldsFilled) {
-            try {
-                $database->addNotes($studentId, $notesData, $pdo);
-                header("Location: MaitreStage.php");
-                exit();
-            } catch (PDOException $e) {
-                echo "Erreur lors de l'ajout des notes : " . $e->getMessage();
-            }
-        } else {
-            echo "Veuillez remplir tous les champs.";
-        }
-    } else {
-        echo "Erreur lors de la soumission du formulaire. Veuillez réessayer.";
-    }
-}
-
-if (isset($_POST['saveNote'])) {
-    if (isset($_POST['note_id'], $_POST['sujet'], $_POST['appreciations'], $_POST['note'], $_POST['coeff'])) {
-        $noteId = $_POST['note_id'];
-        $sujet = $_POST['sujet'];
-        $appreciation = $_POST['appreciations'];
-        $note = $_POST['note'];
-        $coeff = $_POST['coeff'];
-
-        // Vérifier que les valeurs sont correctes avant de continuer
-        if (!empty($sujet) && !empty($appreciation) && is_numeric($note) && is_numeric($coeff)) {
-            try {
-                $result = $database->updateNote(
-                    $noteId,
-                    $userId,
-                    $sujet,
-                    $appreciation,
-                    $note,
-                    $coeff,
-                    $pdo
-                );
-
-                if ($result) {
-                    echo "success";
-                } else {
-                    echo "Aucune ligne modifiée. Vérifiez l'ID ou les permissions.";
-                }
-                exit();
-            } catch (PDOException $e) {
-                echo "Erreur lors de la mise à jour des notes : " . $e->getMessage();
-                exit();
-            }
-        } else {
-            echo "Veuillez remplir tous les champs correctement.";
-            exit();
-        }
-    } else {
-        echo "Erreur lors de la soumission du formulaire. Veuillez réessayer.";
-        exit();
-    }
-}
-
-
-
-if (!empty($students)) {
-    $student = $students[0];
-    $studentId = htmlspecialchars($student->getId());
-    $studentName = htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom());
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
 } else {
-    $student = null;
-    $studentId = null;
-    $studentName = "Vous n'avez pas d'étudiants";
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
 }
 
-$hasStudents = !empty($students);
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
 
-$notes = $database->getNotes($userId);
+// Charger les traductions
+$translations = include $langFile;
 
 ?>
 
@@ -181,11 +113,12 @@ $notes = $database->getNotes($userId);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Petit Stage - Maitre de Stage</title>
+    <title>Le Petit Stage - <?= $translations['maitre stage']?></title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js" defer></script>
-    <link rel="stylesheet" href="/View/Principal/Notifs.css">
-    <link rel="stylesheet" href="/View/css/Footer.css">
+    <script src="../View/Principal/LivretSuivi.js"></script>
+    <script src="/View/Principal/Note.js"></script>
+
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <link rel="stylesheet" href="../View/Agreement/SecretariatConsultPreAgreementForm.css">
     <script src="/View/Principal/Notif.js"></script>
@@ -196,59 +129,7 @@ $notes = $database->getNotes($userId);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>"> <!-- Ajout de la classe 'dark-mode' si activée -->
-
-<!-- Barre de navigation -->
-<header class="navbar">
-    <div class="navbar-left">
-        <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
-        <span class="app-name">Le Petit Stage - Maitre de Stage</span>
-    </div>
-    <div class="navbar-right">
-
-
-        <div id="notification-icon" onclick="toggleNotificationPopup()">
-            <img id="notification-icon-img" src="../Resources/Notif.png" alt="Notifications">
-            <span id="notification-count" style="display: none;"></span>
-        </div>
-
-        <!-- Notification Popup -->
-        <div id="notification-popup" class="notification-popup">
-            <div class="notification-popup-header">
-                <h3>Notifications</h3>
-                <button onclick="closeNotificationPopup()">X</button>
-            </div>
-            <div class="notification-popup-content">
-                <ul id="notification-list">
-                    <!-- Notifications will be loaded here via JavaScript -->
-                </ul>
-            </div>
-        </div>
-
-
-
-        <p><?php echo $userName; ?></p> <!-- Affichage du nom de l'utilisateur -->
-
-        <!-- Commutateur de langue -->
-        <label class="switch">
-            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-            <span class="slider round">
-                    <span class="switch-sticker">🇫🇷</span>
-                    <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-                </span>
-        </label>
-
-        <!-- Bouton de paramètres -->
-        <button class="mainbtn" onclick="toggleMenu()">
-            <img src="../Resources/Param.png" alt="Settings">
-        </button>
-
-        <!-- Menu des paramètres caché par défaut -->
-        <div class="hide-list" id="settingsMenu">
-            <a href="Settings.php">Information</a>
-            <a href="Logout.php">Déconnexion</a>
-        </div>
-    </div>
-</header>
+<?php include_once("../View/Header.php");?>
 <div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
 <div class="sidebar" id="sidebar">
     <div class="search">
@@ -256,35 +137,33 @@ $notes = $database->getNotes($userId);
     </div>
     <div class="students">
         <?php foreach ($students as $student): ?>
-            <?php ($student->getId()); ?>
-            <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>" onclick="selectStudent(this)">
+            <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>"
+                 onclick="selectStudent(this)">
                 <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
             </div>
         <?php endforeach; ?>
-
     </div>
-
 </div>
 
 <!-- Section contenant les différents menus -->
 <section class="Menus" id="Menus">
     <nav>
-        <span onclick="window.location.href='MaitreStage.php?section=0'" class="widget-button <?php echo $activeSection == '0' ? 'Current' : ''; ?>">Accueil</span>
-        <span onclick="window.location.href='MaitreStage.php?section=1'" class="widget-button <?php echo $activeSection == '1' ? 'Current' : ''; ?>">Mission de stage</span>
-        <span onclick="window.location.href='MaitreStage.php?section=2'" class="widget-button <?php echo $activeSection == '2' ? 'Current' : ''; ?>">Gestion Stagiaire</span>
-        <span onclick="window.location.href='MaitreStage.php?section=3'" class="widget-button <?php echo $activeSection == '3' ? 'Current' : ''; ?>">Livret de Suivi</span>
-        <span onclick="window.location.href='MaitreStage.php?section=4'" class="widget-button <?php echo $activeSection == '4' ? 'Current' : ''; ?>">Documents</span>
-        <span onclick="window.location.href='MaitreStage.php?section=5'" class="widget-button <?php echo $activeSection == '5' ? 'Current' : ''; ?>">Messagerie</span>
-        <span onclick="window.location.href='MaitreStage.php?section=6'" class="widget-button <?php echo $activeSection == '6' ? 'Current' : ''; ?>">Notes</span>
-        <span onclick="window.location.href='MaitreStage.php?section=7'" class="widget-button <?php echo $activeSection == '7' ? 'Current' : ''; ?>">Offres</span>
+        <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
+        <span onclick="widget(1)" class="widget-button"><?= $translations['mission stage']?></span>
+        <span onclick="widget(2)" class="widget-button"><?= $translations['gestion stagiaire']?></span>
+        <span onclick="widget(3)" class="widget-button"><?= $translations['livret suivi']?></span>
+        <span onclick="widget(4)" class="widget-button"><?= $translations['documents']?></span>
+        <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
+        <span onclick="widget(6)" class="widget-button"><?= $translations['notes']?></span>
+        <span onclick="widget(7)" class="widget-button"><?= $translations['offres']?></span>
     </nav>
 
 
     <div class="Contenus">
         <!-- Contenu de l'Accueil -->
         <div class="<?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">
-            <h2>Bienvenue sur la plateforme pour les Maitres de Stage!</h2><br>
-            <p>Gérez vos stagiaires, communiquez facilement et suivez l'évolution de leurs compétences.</p><br>
+            <h2><?= $translations['welcome_intsup']?></h2><br>
+            <p></p><br>
         </div>
 
         <!-- Contenu des autres sections -->
@@ -309,7 +188,44 @@ $notes = $database->getNotes($userId);
 
 
             <?php include_once("Documents/Documents.php");?>
+            <h2>Gestion des Fichiers</h2>
+            <form class="box" method="post" action="" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                <input type="hidden" name="form_id" value="uploader_fichier">
+                <input type="hidden" name="upload_type" value="file">
+                <div class="box__input">
+                    <input type="file" name="files[]" id="file-doc" multiple>
+                    <button class="box__button" type="submit">Uploader Fichier</button>
+                </div>
+            </form>
+
+            <div class="file-list">
+                <h2>Fichiers Uploadés</h2>
+                <div class="file-grid">
+                    <?php foreach ($files as $file): ?>
+                        <div class="file-card">
+                            <div class="file-info">
+                                <strong><?= htmlspecialchars($file['name']) ?></strong>
+                                <p><?= round($file['size'] / 1024, 2) ?> KB</p>
+                            </div>
+                            <form method="get" action="Documents/Download.php">
+                                <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
+                                <button type="submit" class="download-button">Télécharger</button>
+                            </form>
+                            <form method="post" action="" class="delete-form">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                <input type="hidden" name="form_id" value="delete_rapport">
+                                <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
+                                <button type="submit" class="delete-button">Supprimer</button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
             <script src="../View/Documents/Documents.js"></script>
+            <a href="../View/Agreement/PreAgreementFormCompany.php">Accès au formulaire de pré-convention</a>
+
         </div>
 
         <!-- Contenu de la Messagerie -->
@@ -317,11 +233,11 @@ $notes = $database->getNotes($userId);
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
-                        <input type="text" id="search-input" placeholder="Search contacts..." onkeyup="searchContacts()">
+                        <input type="text" id="search-input" placeholder="<?= $translations['search_contact']?>" onkeyup="searchContacts()">
                     </div>
-                    <h3>Contacts</h3>
+                    <h3><?= $translations['contacts']?></h3>
                     <!-- Bouton pour contacter le secrétariat -->
-                    <button id="contact-secretariat-btn" class="contact-secretariat-btn">Contacter le secrétariat</button>
+                    <button id="contact-secretariat-btn" class="contact-secretariat-btn"><?= $translations['contacter secrétariat']?></button>
                     <ul id="contacts-list">
                         <?php include_once("ContactList.php");?>
                         <?php include_once("GroupContactList.php");?>
@@ -350,8 +266,8 @@ $notes = $database->getNotes($userId);
                             <!-- Hidden fields for receiver_id and group_id -->
                             <input type="hidden" name="receiver_id" id="receiver_id" value="">
                             <input type="hidden" name="group_id" id="group_id" value="">
-                            <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="submit">Envoyer</button>
+                            <input type="text" id="message-input" name="message" placeholder="<?= $translations['tapez message']?>">
+                            <button type="submit"><?= $translations['send']?></button>
                         </form>
                     </div>
                 </div>
@@ -359,44 +275,7 @@ $notes = $database->getNotes($userId);
         </div>
 
         <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : ' '; ?>" id="content-6">
-            <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
-            <h2 id="selected-student-name"><?php echo isset($studentName) && !empty($studentName) ? htmlspecialchars($studentName) : 'Sélectionnez un étudiant'; ?></h2>
-            <form method="POST" action="MaitreStage.php">
-                <input type="hidden" id="student-id" name="student_id" value="<?php echo $studentId; ?>">
-                <div class="notes-container">
-                    <table id="notesTable" class="notes-table">
-                        <thead>
-                        <tr>
-                            <th>Sujet</th>
-                            <th>Appréciations</th>
-                            <th>Note /20</th>
-                            <th>Coefficient</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Boutons pour la gestion des notes -->
-                <div class="notes-buttons">
-                    <button type="button" id="addNoteButton" class="mainbtn" onclick="addNoteRow()" disabled>Ajouter une note</button>
-                    <button type="submit" name="submit_notes" class="mainbtn" onclick="validateNotes()" id="validateBtn" disabled>Valider les notes</button>
-                    <button type="button" class="mainbtn" onclick="cancelNotes()" id="cancelBtn" disabled>Annuler</button>
-                </div>
-            </form>
-            <div id="validationMessage" class="validation-message"></div>
-            <div id="confirmation-message" class="confirmation-message" style="display: none;"></div>
-        </div>
-
-        <!-- Offres Content -->
-        <div class="Contenu <?php echo ($activeSection == '7') ? 'Visible' : ' '; ?>" id="content-7">
-            Contenu Offres
-            <a href="../View/List.php?type=all">
-                <button type="button">Voir les offres</button>
-            </a>
-        </div>
+            <?php include_once("GetNotesMaitreStage.php");?>
     </div>
 </section>
 
@@ -404,22 +283,22 @@ $notes = $database->getNotes($userId);
 <div id="contact-secretariat-modal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h3>Envoyer un message au secrétariat</h3>
+        <h3><?= $translations['send_admin']?></h3>
         <form id="contactSecretariatForm" enctype="multipart/form-data" method="POST" action="ContactSecretariat.php">
             <div class="form-group">
-                <label for="subject">Sujet :</label>
-                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="Sujet de votre message">
+                <label for="subject"><?= $translations['sujet']?> :</label>
+                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="<?= $translations['sujet_message']?>">
             </div>
             <div class="form-group">
-                <label for="message">Message :</label>
-                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
+                <label for="message"><?= $translations['message']?> :</label>
+                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="<?= $translations['write_mess']?>" required></textarea>
             </div>
             <div class="form-group position-relative">
-                <label for="file" class="form-label">Joindre un fichier :</label>
+                <label for="file" class="form-label"><?= $translations['joindre fichier']?> :</label>
                 <input type="file" class="form-control-file animated-file-input" id="file" name="file">
                 <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné" style="display: none;">✖️</button>
             </div>
-            <button type="submit" class="btn btn-primary btn-block animated-button">Envoyer au secrétariat</button>
+            <button type="submit" class="btn btn-primary btn-block animated-button"><?= $translations['mess_admin']?></button>
         </form>
     </div>
 </div>
@@ -489,3 +368,6 @@ $notes = $database->getNotes($userId);
 
 
 </html>
+<?php
+ob_end_flush();
+?>

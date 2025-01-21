@@ -5,15 +5,13 @@ $database = Database::getInstance();
 <section>
     <div id="student-infos">
         <?php
-            if (isset($_GET['endStage'])){
-                $userId = intval($_GET['user_id']);
-                $database->setEndStage($userId);
-            }
             if (isset($_GET['user_id'])) {
                 $userId = intval($_GET['user_id']); // Assurez-vous que l'ID est un entier
 
                 // Appeler les méthodes pour obtenir les informations nécessaires
                 $studentInfo = $database->getStudentInfo($userId);
+
+                $studentId = $studentInfo['id'];
 
                 // Vérifier si des informations ont été trouvées pour l'étudiant
                 if (!empty($studentInfo) && !isset($studentInfo['error'])) {
@@ -24,11 +22,10 @@ $database = Database::getInstance();
                     echo "<p><strong>Email :</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
                     echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
                     echo "<p><strong>Activité :</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
-                    echo "<form action='#' method='POST'>";
-                    echo "<button type='submit' value='true' name='endStage'>Mettre fin au stage</button>";
+                    echo "<form method='POST' action='Professor.php'>";
+                    echo "<button type='submit' name='stage' value=$studentId>Mettre fin au stage</button>";
                     echo "</form>";
                     echo "</div>";
-
                 } else {
                     echo "<p>Aucune information trouvée pour l'étudiant.</p>";
                 }

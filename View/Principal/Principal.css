@@ -33,174 +33,6 @@ body.dark-mode {
     animation: darkGradientAnimation 15s ease infinite;
 }
 
-/* Навигационная панель */
-header.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background-color: #2c3e50;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    height: 80px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-}
-
-header .navbar-left {
-    display: flex;
-    align-items: center;
-}
-
-header .logo {
-    height: 50px;
-    margin-right: 15px;
-}
-
-header .navbar-left .app-name {
-    font-size: 24px;
-    font-weight: bold;
-    color: white;
-}
-
-/* Правая часть навигации */
-header .navbar-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding-right: 40px;
-}
-
-/* Блок с именем пользователя и настройками */
-header .navbar-right p {
-    color: white;
-    margin: 0;
-    padding: 8px 20px;
-    background-color: #3498db;
-    border-radius: 30px;
-    text-align: center;
-    font-weight: bold;
-}
-
-/* Свитчеры */
-header .switch {
-    position: relative;
-    display: inline-block;
-    width: 80px;
-    height: 40px;
-}
-
-header .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-header .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 5px;
-}
-
-header .switch-sticker {
-    color: black;
-    position: absolute;
-    width: 30px;
-    text-align: center;
-    font-size: 18px;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-header .switch-sticker-right {
-    right: 5px;
-    opacity: 0;
-}
-
-header input:checked + .slider {
-    background-color: #3498db;
-}
-
-header input:checked + .slider .switch-sticker {
-    opacity: 0;
-}
-
-header input:checked + .slider .switch-sticker-right {
-    opacity: 1;
-}
-
-header .slider:before {
-    position: absolute;
-    content: "";
-    height: 34px;
-    width: 34px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-header input:checked + .slider:before {
-    transform: translateX(40px);
-}
-
-/* Кнопка настроек с изображением */
-header .navbar-right .mainbtn {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    position: relative;
-}
-
-header .navbar-right  img {
-    width: 35px;
-    height: 35px;
-}
-
-/* Выпадающий список */
-header div.show-list {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    background-color: lightgray;
-    color: black;
-    box-shadow: 0 5px 5px -3px #888, 5px 5px 5px -4px #888;
-    z-index: 15;
-    right: 0;
-    top: 100%;
-    text-align: initial;
-    visibility: visible;
-    opacity: 1;
-}
-
-header .show-list a {
-    color: black;
-    padding: 15px;
-    text-decoration: none;
-    border-bottom: 1px solid #ddd;
-}
-/* Скрытый список */
-header .hide-list {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    right: 2%;
-}
-
 
 /* Messenger interface */
 .messenger {
@@ -265,6 +97,7 @@ section.Menus {
     width: 90%;
     margin: 100px auto;
     margin-bottom: 0;
+    margin-top: 50px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -316,24 +149,6 @@ section .Contenus .Visible {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Исправление футера */
-footer.PiedDePage {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #2c3e50;
-    color: white;
-    padding: 20px;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    z-index: 50;
-}
-
-footer a {
-    color: white;
-    text-decoration: none;
-}
 /*  --------------     Users management ----------             */
 .user-management {
     display: flex;
@@ -628,7 +443,7 @@ button:hover,
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 80px;
+    top: 110px;
     left: 0;
     transition: transform 0.3s ease;
     z-index: 3;
@@ -698,8 +513,8 @@ body.dark-mode .sidebar {
 .sidebar-toggle {
     cursor: pointer;
     font-size: 45px;
-    position: absolute;
-    top: 69px;
+    position: fixed;
+    top: 100px;
     left: 5px;
     z-index: 4;
     transition: left 0.3s ease, transform 0.3s ease;
@@ -728,6 +543,7 @@ body.dark-mode .sidebar {
 .livret-container {
     clear: both;
     margin-top: 20px;
+    display: flex;
 }
 
 .livretbar {
@@ -752,7 +568,6 @@ body.dark-mode .sidebar {
 }
 
 .content-section {
-    display: none;
     margin-top: 30px;
 }
 
@@ -800,6 +615,53 @@ body.dark-mode .vignette{
 
 .validation{
     margin-top: 10px;
+}
+
+
+.tableau {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+.tableau, .thEdit, .tdEdit {
+    border: 1px solid #ddd;
+}
+.thEdit, .tdEdit {
+    padding: 10px;
+    text-align: center;
+}
+.thEdit {
+    background-color: #2c3e50;
+    color: #fff;
+}
+.trEdit:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.tableInput {
+    width: 100%;
+    border: none;
+    padding: 8px;
+    font-size: 14px;
+    background-color: transparent;
+}
+
+.tableInput:focus {
+    outline: none;
+    background-color: #f9f9f9;
+}
+
+.selection {
+     width: 100%;
+     border: none;
+     padding: 8px;
+     background-color: transparent;
+    text-align: center;
+ }
+
+.selection:focus {
+    outline: none;
+    background-color: #f9f9f9;
 }
 
 /****************************  DARK MODE MESSAGES  *******************************************************/
@@ -1121,33 +983,6 @@ button:hover {
     border-radius: 50%;
     border: 0;
     margin-left: 5px;
-}
-
-/*---------------------- Notes ------------------*/
-
-.notes-container {
-    margin-top: 20px;
-}
-
-.notes-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.notes-table th, .notes-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-.notes-table th {
-    background-color: #f4f4f4;
-}
-
-.notes-buttons {
-    margin-top: 20px;
-    display: flex;
-    justify-content: right;
 }
 
 .mainbtn {
@@ -1690,9 +1525,115 @@ section.Menus div.Contenus div.Contenu p.noNotes{
     }
 }
 
+/* ----------------- Style du tableau des notes -------------------- */
 
+.notes-container {
+    margin-top: 20px;
+}
 
+.notes-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: transparent;
+}
 
+.notes-table th, .notes-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
 
+.notes-table th {
+    background-color: #f4f4f4;
+}
 
+.notes-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: right;
+}
 
+table.notes-table .slider-container {
+    width: 300px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+table.notes-table .slider-wrapper {
+    position: relative;
+}
+
+table.notes-table input[type="range"] {
+    width: 100%;
+    margin: 20px 0;
+    appearance: none;
+    background: #ccc;
+    height: 6px;
+    border-radius: 3px;
+    position: relative;
+}
+
+table.notes-table input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 40px;
+    background-color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transform: translateY(-17px);
+    top: 17px; /* Center the thumb with the track */
+}
+
+table.notes-table input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 40px;
+    background-color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    top: 17px; /* Center the thumb with the track */
+}
+
+table.notes-table input[type="range"]::-ms-thumb {
+    width: 20px;
+    height: 40px;
+    background-color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    top: 17px; /* Center the thumb with the track */
+}
+
+table.notes-table .ticks {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 50px; /* Lower the numbers */
+    width: 100%;
+}
+
+table.notes-table .tick {
+    text-align: center;
+    font-size: 16px; /* Enlarge the numbers */
+    transform: translateX(-50%); /* Center align each number */
+}
+
+table.notes-table .value-display {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+table.notes-table table.UnderNotes{
+    width: 100%;
+}
+
+table.notes-table table.UnderNotes td{
+    width: 50%;
+}
+table.notes-table table.UnderNotes input{
+    color: red;
+}

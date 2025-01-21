@@ -50,17 +50,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Le mot de passe est incorrect.";
     }
 }
+
+// TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Vérification du code</title>
+    <title><?= $translations['vérification du code'] ?></title>
     <link rel="stylesheet" href="../View/ForgotPassword/ForgotPswdStyles.css">
 </head>
 <body>
 <div class="container">
-    <h2>Changement du mot de passe</h2>
+    <h2><?= $translations['changement du mot de passe'] ?></h2>
     <?php if (!empty($error)) { ?>
         <div class="notification error-notification">
             <i class="fas fa-exclamation-circle"></i>
@@ -75,22 +95,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php if (empty($success)) { ?>
         <form action="ChangePassword.php" method="POST">
             <div class="form-group">
-                <label for="verification_mdp">Ancien mot de passe :</label>
+                <label for="verification_mdp"><?= $translations['ancien mot de passe'] ?> :</label>
                 <input type="password" id="verification_mdp" name="verification_mdp" placeholder="Mot de passe" required>
             </div>
             <div class="form-group">
-                <label for="new_password">Nouveau mot de passe :</label>
+                <label for="new_password"><?= $translations['nouveau mot de passe'] ?> :</label>
                 <input type="password" id="new_password" name="new_password" placeholder="Nouveau mot de passe" required>
             </div>
             <div class="form-group">
-                <label for="confirm_password">Confirmer le mot de passe :</label>
+                <label for="confirm_password"><?= $translations['confirmer le mot de passe'] ?> :</label>
                 <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmez le mot de passe" required>
             </div>
-            <button type="submit" class="btn">Réinitialiser le mot de passe</button>
+            <button type="submit" class="btn"><?= $translations['réinitialiser le mot de passe'] ?></button>
         </form>
     <?php } ?>
     <div class="link">
-        <a href="Settings.php">retour</a>
+        <a href="Settings.php"><?= $translations['retour'] ?></a>
     </div>
 </div>
 </body>

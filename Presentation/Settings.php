@@ -2,6 +2,7 @@
 
 session_start(); // Assurez-vous que la session est démarrée
 require_once "../Model/Person.php"; // Ensure Person class is correctly included
+require_once "../Model/Database.php";
 
 // Vérifie si l'utilisateur est connecté en consultant la variable 'user' dans $_SESSION
 if (!isset($_SESSION['user'])) {
@@ -10,9 +11,16 @@ if (!isset($_SESSION['user'])) {
     exit(); // Termine l'exécution du script
 }
 
+
 $person = unserialize($_SESSION['user']);
 $userName = $person->getPrenom() . ' ' . $person->getNom();
 $userRole = $person->getRole();
+
+// Récupération des préférences de l'utilisateur depuis la base de données
+$senderId = $person->getId(); // Récupère l'ID de l'utilisateur pour les requêtes de base de données
+$database = (Database::getInstance());
+$preferences = $database->getUserPreferences($senderId);
+$darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
 
 // Détermine la page d'accueil en fonction du rôle de l'utilisateur
 $homePage = '';
@@ -44,30 +52,10 @@ if (!in_array($activeSection, $allowedSections)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings Le Petit Stage</title>
     <link rel="stylesheet" href="../View/Settings/Settings.css">
-    <link rel="stylesheet" href="/View/css/Footer.css">
     <script type="text/javascript" src="../View/Settings/Settings.js"></script>
 </head>
-<body>
-<header class="navbar">
-    <div class="navbar-left">
-        <a href="<?php echo $homePage; ?>">
-            <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
-        </a>
-        <span class="app-name">Le Petit Stage</span>
-    </div>
-
-    <div class="navbar-right">
-        <p><?php echo $userName; ?></p>
-        <!-- Language Switch -->
-        <label class="switch">
-            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-            <span class="slider round">
-                    <span class="switch-sticker">🇫🇷</span>
-                    <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-                </span>
-        </label>
-    </div>
-</header>
+<body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
+<?php include_once("../View/Header.php");?>
 
 <div class="container">
     <div class="vertical-menu">
@@ -91,16 +79,9 @@ if (!in_array($activeSection, $allowedSections)) {
         } elseif ($activeSection == 'preferences') {
             include './Preference.php';
         }
-
         ?>
-        <a href='<?php echo $homePage; ?>' style="margin-left: 45%">
-            Retour à la page d'accueil
-        </a>
     </div>
 </div>
+<?php include "../View/Footer.php" ?>
 </body>
-
-<footer class="PiedDePage">
-    <?php include_once "../View/Footer.php" ?>
-</footer>
 </html>

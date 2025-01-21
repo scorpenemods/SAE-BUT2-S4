@@ -1,5 +1,5 @@
 <?php
-
+// Mail managment
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -7,6 +7,10 @@ class Email
 {
     private PHPMailer $mail;
 
+    /**
+     * Get the mail
+     * @return PHPMailer
+     */
     public function getMail(): PHPMailer
     {
         return $this->mail;
@@ -27,6 +31,16 @@ class Email
         $this->mail->Port = 587; // SMTP port
     }
 
+
+    /**
+     * Send a new mail
+     * @param $to
+     * @param $toName
+     * @param $subject
+     * @param $body
+     * @param $isHtml
+     * @return bool
+     */
     public function sendEmail($to, $toName, $subject, $body, $isHtml = false): bool
     {
         try {

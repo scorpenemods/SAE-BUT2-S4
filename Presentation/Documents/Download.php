@@ -8,13 +8,13 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if (isset($_GET['file'])) {
-    // Récupération du chemin à partir de la requête GET
+    // Getting path from GET request
     $filePath = $_GET['file'];
 
-    // Ajouter dynamiquement ../ pour le chemin réel
+    // Dynamically add ../ for actual path
     $realPath = '../' . $filePath;
 
-    // Vérifiez si le fichier existe et appartient à l'utilisateur
+    // Check if the file exists and is owned by the user
     $db = Database::getInstance();
     $userId = $_SESSION['user_id'];
     $files = $db->getFiles($userId);
@@ -27,12 +27,12 @@ if (isset($_GET['file'])) {
         }
     }
 
-    if ($validFile && file_exists($realPath)) { // Vérification avec ../
-        // Empêcher tout contenu avant l'envoi
+    if ($validFile && file_exists($realPath)) { // Verification with ../
+        // Block all content before sending
         ob_clean();
         flush();
 
-        // Envoyer les en-têtes pour le téléchargement
+        // Send headers for download
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
@@ -41,7 +41,7 @@ if (isset($_GET['file'])) {
         header('Pragma: public');
         header('Content-Length: ' . filesize($realPath));
 
-        // Envoyer le fichier
+        // send the file
         readfile($realPath);
         exit;
     } else {

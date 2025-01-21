@@ -74,6 +74,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $database->closeConnection();
 }
+
+
+
+
+// LANGAGE NOAH
+
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = __DIR__ . "/locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = __DIR__ . "/locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -131,6 +158,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .password-container i {
             color: #005c97;
         }
+
     </style>
 </head>
 <body>
@@ -139,17 +167,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Partie gauche avec logo et nom de l'application -->
     <div class="navbar-left">
         <img src="Resources/LPS 1.0.png" alt="Logo" class="logo"/>
-        <span class="app-name">Le Petit Stage</span>
+        <span class="app-name"><?= $translations['titre_appli'] ?></span>
     </div>
     <!-- Partie droite avec contrôles pour les préférences de l'utilisateur -->
     <div class="navbar-right">
-        <label class="switch">
-            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-            <span class="slider round">
-                <span class="switch-sticker">🇫🇷</span>
-                <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-            </span>
-        </label>
+        <?php
+        include 'Model/LanguageSelection.php';
+        ?>
         <label class="switch">
             <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
             <span class="slider round">
@@ -163,13 +187,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <article>
     <!-- Contenu principal avec une introduction et formulaire de connexion -->
     <div class="main-content">
-        <h1 class="main-heading">Vous êtes un étudiant en stage à UPHF?<br> Nous avons la solution!</h1>
+
+        <h1 class="main-heading"><?= $translations['welcome_message'] ?><br> <?= $translations['welcome_message2'] ?></h1>
         <p class="sub-text">
-            Une application innovante pour les étudiants, enseignants et personnel de l'UPHF. Gérez vos stages et restez connectés avec toutes les parties prenantes facilement et efficacement.
+            <?= $translations['description_index'] ?>
         </p>
         <!-- Formulaire de connexion -->
         <div class="login-container">
-            <h2>Connexion</h2>
+            <h2><?= $translations['connexion_index'] ?></h2>
             <?php if (!empty($errorMessage)): ?>
                 <div class="error-message">
                     <i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($errorMessage); ?>
@@ -177,41 +202,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php endif; ?>
             <form action="" method="POST">
                 <div class="form-group">
-                    <label for="email">Email :</label>
+                    <label for="email"><?= $translations['email_index'] ?></label>
                     <input type="text" id="email" name="email" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">Mot de passe :</label>
+                    <label for="password"><?= $translations['mdp_index'] ?></label>
                     <div class="password-container">
                         <input type="password" id="password" name="password" required>
                         <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
                     </div>
                 </div>
-                <button class="primary-button" type="submit">Se connecter</button>
-                <p>Un problème pour se connecter ?</p>
-                <a href="Presentation/ForgotPasswordMail.php">Changer le mot de passe</a>
+                <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
+                <p><?= $translations['connexion_problem']?></p>
+                <a href="Presentation/ForgotPasswordMail.php"><?= $translations['changed_mdp_index'] ?></a>
             </form>
         </div>
         <!-- Liens pour les utilisateurs non connectés -->
         <div class="button-group">
-            <p style="font-size: large"><b>ou</b></p>
-            <button class="secondary-button"><a class="login-link" href="Presentation/AccountCreation.php">S’enregistrer</a></button>
+            <p style="font-size: large"><b><?= $translations['ou']?></b></p>
+            <button class="secondary-button"><a class="login-link" href="Presentation/AccountCreation.php"><?= $translations['register_button_index'] ?></a></button>
         </div>
     </div>
 </article>
 
 <!-- Уведомление -->
 <div class="notification" id="emailVerificationNotification">
-    Votre adresse email n'est pas validée. <a href="Presentation/EmailValidationNotice.php">Valider maintenant</a>
+    <?= $translations['validate_email_index'] ?> <a href="Presentation/EmailValidationNotice.php"><?= $translations['register_button_index_button'] ?></a>
     <button onclick="closeNotification()">&times;</button>
 </div>
-
-<footer class="PiedDePage">
-    <!-- Pied de page avec logo additionnel et liens -->
-    <img src="Resources/Logo_UPHF.png" alt="Logo uphf" width="10%">
-    <a href="Presentation/Redirection.php">Informations</a>
-    <a href="Presentation/Redirection.php">A propos</a>
-</footer>
+<?php include './View/Footer.php'; ?>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -245,6 +264,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         var notification = document.getElementById('emailVerificationNotification');
         notification.classList.remove('show');
     }
+
+    sessionStorage.setItem("lastPage", "index.php");
 
 </script>
 </body>

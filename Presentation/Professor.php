@@ -1,4 +1,5 @@
 <?php
+global $files;
 ob_start();
 global $database;
 session_start();
@@ -53,6 +54,173 @@ if ($userRole != 2) {
     exit();
 }
 
+// -- Actions AJAX de gestion des rencontres --
+if (isset($_GET['action']) && $_GET['action'] === 'get_meetings') {
+    // On récupère le followUpId
+    $fid = isset($_GET['followup_id']) ? (int)$_GET['followup_id'] : 0;
+    if (!$fid) {
+        echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+        exit();
+    }
+    $followUpBook = $database->getFollowUpBook($fid);
+    if (!$followUpBook) {
+        echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+        exit();
+    }
+    $meetings = $database->getMeetingsByFollowUp($fid);
+    $result = [];
+    foreach($meetings as $m) {
+        $mId = $m['id'];
+        $qcm = $database->getQCMByMeeting($mId);
+        $txt = $database->getTextsByMeeting($mId);
+        $result[] = [
+            'id'           => $mId,
+            'name'         => $m['name'],
+            'meeting_date' => $m['meeting_date'],
+            'end_date'     => $m['end_date'],
+            'qcm'          => $qcm,
+            'texts'        => $txt
+        ];
+    }
+    echo json_encode(['status'=>'success','meetings'=>$result]);
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action'])) {
+    $action = $_POST['action'];
+    if ($action === 'save_meeting') {
+        $followUpId  = isset($_POST['followup_id']) ? (int)$_POST['followup_id'] : 0;
+        if (!$followUpId) {
+            echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+            exit();
+        }
+        $meetingDate  = $_POST['meeting'] ?? null;
+        $endMeeting   = $_POST['end_meeting'] ?? null;
+        $meetingName  = $_POST['meeting_name'] ?? 'Nouvelle rencontre';
+        $lieu         = $_POST['Lieu'] ?? '';
+        $validation   = 0;
+
+        $followUpBook = $database->getFollowUpBook($followUpId);
+        if (!$followUpBook) {
+            echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+            exit();
+        }
+        $startDate = $followUpBook['start_date'];
+        $endDate   = $endMeeting ? $endMeeting : $followUpBook['end_date'];
+
+        // Insert MeetingBook
+        $meetingId = $database->insertMeetingBook($followUpId, $meetingName, $startDate, $endDate, $meetingDate, $validation);
+
+        // Lieu => MeetingQCM
+        if (!empty($lieu)) {
+            $database->insertMeetingQCM($meetingId, 'Lieu', '', $lieu);
+        }
+        // QCM dynamiques
+        if (isset($_POST['qcm']) && is_array($_POST['qcm'])) {
+            foreach($_POST['qcm'] as $q) {
+                $title   = $q['title'] ?? '';
+                $choices = $q['choices'] ?? '';
+                $other   = $q['other_choice'] ?? '';
+                if (!empty($title)) {
+                    $database->insertMeetingQCM($meetingId, $title, $choices, $other);
+                }
+            }
+        }
+        // Textes
+        if (isset($_POST['texts']) && is_array($_POST['texts'])) {
+            foreach($_POST['texts'] as $t) {
+                $tTitle = $t['title'] ?? '';
+                $tResp  = $t['response'] ?? '';
+                if (!empty($tTitle)) {
+                    $database->insertMeetingText($meetingId, $tTitle, $tResp);
+                }
+            }
+        }
+        // Commentaires
+        if (isset($_POST['commentaires']) && is_array($_POST['commentaires'])) {
+            foreach($_POST['commentaires'] as $c) {
+                $cTitle = $c['title'] ?? '';
+                $cResp  = $c['response'] ?? '';
+                if (!empty($cTitle)) {
+                    $database->insertMeetingText($meetingId, $cTitle, $cResp);
+                }
+            }
+        }
+        // Questions/Réponses
+        if (isset($_POST['questrep']) && is_array($_POST['questrep'])) {
+            foreach($_POST['questrep'] as $qr) {
+                $qrTitle = $qr['title'] ?? '';
+                $qrResp  = $qr['response'] ?? '';
+                if (!empty($qrTitle)) {
+                    $database->insertMeetingText($meetingId, $qrTitle, $qrResp);
+                }
+            }
+        }
+
+        echo json_encode(['status'=>'success','message'=>'Rencontre sauvegardée avec succès']);
+        exit();
+    }
+
+    if ($action === 'save_bilan') {
+        $followUpId = isset($_POST['followup_id']) ? (int)$_POST['followup_id'] : 0;
+        if (!$followUpId) {
+            echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+            exit();
+        }
+        $followUpBook = $database->getFollowUpBook($followUpId);
+        if (!$followUpBook) {
+            echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+            exit();
+        }
+        $meetings = $database->getMeetingsByFollowUp($followUpId);
+        $bilanMeetingId = null;
+        foreach($meetings as $m) {
+            if ($m['name']==='Finalisation du livret') {
+                $bilanMeetingId = $m['id'];
+                break;
+            }
+        }
+        if(!$bilanMeetingId) {
+            $bilanMeetingId = $database->insertMeetingBook(
+                $followUpId,
+                'Finalisation du livret',
+                $followUpBook['start_date'],
+                $followUpBook['end_date'],
+                date('Y-m-d'),
+                0
+            );
+        }
+        // competences
+        $competences = [
+            ["nom"=>"Adaptation à l'entreprise", "option"=>"option1", "comment"=>"table1"],
+            ["nom"=>"Ponctualité", "option"=>"option2", "comment"=>"table2"],
+            ["nom"=>"Motivation pour le travail", "option"=>"option3", "comment"=>"table3"],
+            ["nom"=>"Initiatives personnelles", "option"=>"option4", "comment"=>"table4"],
+            ["nom"=>"Qualité du travail", "option"=>"option5", "comment"=>"table5"],
+            ["nom"=>"Intérêt pour la découverte de l'entreprise", "option"=>"option6", "comment"=>"table6"]
+        ];
+        $bilanTexts = $database->getTextsByMeeting($bilanMeetingId);
+        $existingTexts = [];
+        foreach($bilanTexts as $bt) {
+            $existingTexts[$bt['title']] = $bt;
+        }
+        foreach($competences as $comp) {
+            $compName    = $comp['nom'];
+            $niveau      = $_POST[$comp['option']] ?? '';
+            $commentaire = $_POST[$comp['comment']] ?? '';
+            $response    = "Niveau: $niveau | Commentaire: $commentaire";
+            if (isset($existingTexts[$compName])) {
+                $tid = $existingTexts[$compName]['id'];
+                $database->updateMeetingText($tid, $response);
+            } else {
+                $database->insertMeetingText($bilanMeetingId, $compName, $response);
+            }
+        }
+        echo json_encode(['status'=>'success','message'=>'Bilan sauvegardé avec succès.']);
+        exit();
+    }
+}
+
 $students = $database->getStudentsProf($senderId);
 
 // Récupérer les préférences de l'utilisateur
@@ -77,6 +245,26 @@ $pdo = $database->getConnection();
 $person = unserialize($_SESSION['user']);
 $userId = $person->getId();
 
+// get actual section for Livret Suivi
+$section = $_GET['section'] ?? '0';
+//TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
 
 ?>
 
@@ -86,12 +274,10 @@ $userId = $person->getId();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Petit Stage - Professeur</title>
+    <title>Le Petit Stage - <?= $translations['professeur']?></title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
-    <link rel="stylesheet" href="/View/css/Footer.css">
     <script src="../View/Principal/Principal.js" defer></script>
-    <link rel="stylesheet" href="/View/Principal/Notifs.css">
-    <script src="/View/Principal/Notif.js"></script>
+    <script src="../View/Principal/LivretSuivi.js"></script>
     <script src="/View/Principal/Note.js"></script>
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <link rel="stylesheet" href="../View/Agreement/SecretariatConsultPreAgreementForm.css">
@@ -103,52 +289,7 @@ $userId = $person->getId();
 </head>
 
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
-<header class="navbar">
-
-
-
-    <div class="navbar-left">
-        <img src="../Resources/LPS%201.0.png" alt="Logo" class="logo"/>
-        <span class="app-name">Le Petit Stage - Professeur</span>
-    </div>
-    <div class="navbar-right">
-
-        <div id="notification-icon" onclick="toggleNotificationPopup()">
-            <img id="notification-icon-img" src="../Resources/Notif.png" alt="Notifications">
-            <span id="notification-count" style="display: none;"></span>
-        </div>
-
-        <!-- Notification Popup -->
-        <div id="notification-popup" class="notification-popup">
-            <div class="notification-popup-header">
-                <h3>Notifications</h3>
-                <button onclick="closeNotificationPopup()">X</button>
-            </div>
-            <div class="notification-popup-content">
-                <ul id="notification-list">
-                    <!-- Notifications will be loaded here via JavaScript -->
-                </ul>
-            </div>
-        </div>
-
-        <p><?php echo $userName; ?></p>
-        <label class="switch">
-            <input type="checkbox" id="language-switch" onchange="toggleLanguage()">
-            <span class="slider round">
-                <span class="switch-sticker">🇫🇷</span>
-                <span class="switch-sticker switch-sticker-right">🇬🇧</span>
-            </span>
-        </label>
-        <button class="mainbtn" onclick="toggleMenu()">
-            <img src="../Resources/Param.png" alt="Settings">
-        </button>
-        <div class="hide-list" id="settingsMenu">
-            <a href="Settings.php">Information</a>
-            <a href="Logout.php">Deconnexion</a>
-        </div>
-    </div>
-</header>
-
+<?php include_once("../View/Header.php");?>
 <div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
 <div class="sidebar" id="sidebar">
     <div class="search">
@@ -156,7 +297,8 @@ $userId = $person->getId();
     </div>
     <div class="students">
         <?php foreach ($students as $student): ?>
-            <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>" onclick="selectStudent(this)">
+            <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>"
+                 onclick="selectStudent(this)">
                 <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
             </div>
         <?php endforeach; ?>
@@ -165,22 +307,21 @@ $userId = $person->getId();
 
 <section class="Menus" id="Menus">
     <nav>
-        <span onclick="widget(0)" class="widget-button Current">Accueil</span>
-        <span onclick="widget(1)" class="widget-button">Mission de stage</span>
-        <span onclick="widget(2)" class="widget-button">Gestion Étudiants</span>
-        <span onclick="widget(3)" class="widget-button">Livret de suivi</span>
-        <span onclick="widget(4)" class="widget-button">Documents</span>
-        <span onclick="widget(5)" class="widget-button">Messagerie</span>
-        <span onclick="widget(6)" class="widget-button">Notes</span>
-        <span onclick="widget(7)" class="widget-button">Offres</span>
-
+        <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
+        <span onclick="widget(1)" class="widget-button"><?= $translations['mission stage']?></span>
+        <span onclick="widget(2)" class="widget-button"><?= $translations['gestion étudiants']?></span>
+        <span onclick="widget(3)" class="widget-button"><?= $translations['livret suivi']?></span>
+        <span onclick="widget(4)" class="widget-button"><?= $translations['documents']?></span>
+        <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
+        <span onclick="widget(6)" class="widget-button"><?= $translations['notes']?></span>
+        <span onclick="widget(7)" class="widget-button"><?= $translations['offres']?></span>
     </nav>
 
 
     <div class="Contenus">
         <div class="<?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">
-            <h2>Bienvenue sur la plateforme pour Professeurs!</h2><br>
-            <p>Gérez les étudiants, suivez leur progression et communiquez facilement avec eux.</p><br>
+            <h2><?= $translations['welcome_prof']?></h2><br>
+            <p><?= $translations['info_prof']?></p><br>
         </div>
         <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">Contenu des missions de stage</div>
         <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">
@@ -204,7 +345,42 @@ $userId = $person->getId();
 
 
             <?php include_once("Documents/Documents.php");?>
-            <script src="../View/Documents/Documents.js"></script>
+
+            <h2>Gestion des Fichiers</h2>
+            <form class="box" method="post" action="" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                <input type="hidden" name="form_id" value="uploader_fichier">
+                <input type="hidden" name="upload_type" value="file">
+                <div class="box__input">
+                    <input type="file" name="files[]" id="file-doc" multiple>
+                    <button class="box__button" type="submit">Uploader Fichier</button>
+                </div>
+            </form>
+
+            <div class="file-list">
+                <h2>Fichiers Uploadés</h2>
+                <div class="file-grid">
+                    <?php foreach ($files as $file): ?>
+                        <div class="file-card">
+                            <div class="file-info">
+                                <strong><?= htmlspecialchars($file['name']) ?></strong>
+                                <p><?= round($file['size'] / 1024, 2) ?> KB</p>
+                            </div>
+                            <form method="get" action="Documents/Download.php">
+                                <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
+                                <button type="submit" class="download-button">Télécharger</button>
+                            </form>
+                            <form method="post" action="" class="delete-form">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                <input type="hidden" name="form_id" value="delete_rapport">
+                                <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
+                                <button type="submit" class="delete-button">Supprimer</button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
         </div>
 
 
@@ -216,11 +392,11 @@ $userId = $person->getId();
                 <div class="contacts">
                     <div class="search-bar">
                         <label for="search-input"></label>
-                        <input type="text" id="search-input" placeholder="Rechercher des contacts..." onkeyup="searchContacts()">
+                        <input type="text" id="search-input" placeholder="<?= $translations['search_contact']?>" onkeyup="searchContacts()">
                     </div>
-                    <h3>Contacts</h3>
+                    <h3><?= $translations['contacts']?></h3>
                     <!-- Bouton pour contacter le secrétariat -->
-                    <button id="contact-secretariat-btn" class="contact-secretariat-btn">Contacter le secrétariat</button>
+                    <button id="contact-secretariat-btn" class="contact-secretariat-btn"><?= $translations['contacter secrétariat']?></button>
                     <ul id="contacts-list">
                         <?php include_once("ContactList.php");?>
                         <?php include_once("GroupContactList.php");?>
@@ -252,22 +428,22 @@ $userId = $person->getId();
                             <!-- Hidden fields for receiver_id and group_id -->
                             <input type="hidden" name="receiver_id" id="receiver_id" value="">
                             <input type="hidden" name="group_id" id="group_id" value="">
-                            <input type="text" id="message-input" name="message" placeholder="Tapez un message...">
-                            <button type="submit">Envoyer</button>
+                            <input type="text" id="message-input" name="message" placeholder="<?= $translations['tapez message']?>">
+                            <button type="submit"><?= $translations['send']?></button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
         <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : 'Contenu'; ?>" id="content-6">
-            <?php  include_once "GetNotes.php"?>
+            <?php include_once "GetNotesProf.php" ?>
         </div>
 
     <!-- Offres Content -->
     <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
-        Contenu Offres
+        <?= $translations['contenu offres']?>
         <a href="../View/List.php?type=all">
-            <button type="button">Voir les offres</button>
+            <button type="button"><?= $translations['voir offres']?></button>
         </a>
     </div>
 </section>
@@ -276,22 +452,22 @@ $userId = $person->getId();
 <div id="contact-secretariat-modal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h3>Envoyer un message au secrétariat</h3>
+        <h3><?= $translations['send_admin']?></h3>
         <form id="contactSecretariatForm" enctype="multipart/form-data" method="POST" action="ContactSecretariat.php">
             <div class="form-group">
-                <label for="subject">Sujet :</label>
-                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="Sujet de votre message">
+                <label for="subject"><?= $translations['sujet']?> :</label>
+                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="<?= $translations['sujet_message']?>">
             </div>
             <div class="form-group">
-                <label for="message">Message :</label>
-                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
+                <label for="message"><?= $translations['message']?> :</label>
+                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="<?= $translations['write_mess']?>" required></textarea>
             </div>
             <div class="form-group position-relative">
-                <label for="file" class="form-label">Joindre un fichier :</label>
+                <label for="file" class="form-label"><?= $translations['joindre fichier']?> :</label>
                 <input type="file" class="form-control-file animated-file-input" id="file" name="file">
                 <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné" style="display: none;">✖️</button>
             </div>
-            <button type="submit" class="btn btn-primary btn-block animated-button">Envoyer au secrétariat</button>
+            <button type="submit" class="btn btn-primary btn-block animated-button"><?= $translations['mess_admin']?></button>
         </form>
     </div>
 </div>

@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once '../Model/Database.php'; // Classe pour gérer la connexion à la base de données
 require_once '../Model/Person.php';
 
@@ -37,11 +36,10 @@ $db = (Database::getInstance());
 // Si la requête est envoyée via POST, traiter la mise à jour
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $notif_value = isset($_POST['notif']) ? 1 : 0;
-    $a2f_value = isset($_POST['a2f']) ? 1 : 0;
     $darkmode_value = isset($_POST['darkmode']) ? 1 : 0; // Nouveau pour darkmode
 
     // Mettre à jour ou insérer les préférences de l'utilisateur
-    if ($db->setUserPreferences($userId, $notif_value, $a2f_value, $darkmode_value)) {
+    if ($db->setUserPreferences($userId, $notif_value, $darkmode_value)) {
         // Définir le message de succès dans la session
         $_SESSION['success_message'] = "Les préférences ont été mises à jour avec succès.";
         header("Location: Settings.php");
@@ -100,23 +98,14 @@ $darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? '
     </script>
 <?php endif; ?>
 
-<main>
+<section id="pref" class="preferences  <?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
     <h2>Préférences</h2>
-    <form class="preferences" method="POST" action="preference.php">
+    <form method="POST" action="./Settings.php?section=preferences">
         <div class="preference-item">
             <span>Notification :</span>
             <span>Off</span>
             <label class="switch">
                 <input type="checkbox" name="notif" <?php echo $notif; ?>>
-                <span class="slider"></span>
-            </label>
-            <span>On</span>
-        </div>
-        <div class="preference-item">
-            <span>A2F :</span>
-            <span>Off</span>
-            <label class="switch">
-                <input type="checkbox" name="a2f" <?php echo $a2f; ?>>
                 <span class="slider"></span>
             </label>
             <span>On</span>
@@ -132,7 +121,7 @@ $darkmode = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? '
         </div>
         <input type="submit" value="Enregistrer les préférences">
     </form>
-</main>
+</section>
 
 </body>
 </html>

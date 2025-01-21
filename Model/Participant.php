@@ -1,4 +1,5 @@
 <?php
+//Class to manage Participant
 class Participant {
     private $name;
     private $speciality;
@@ -12,6 +13,11 @@ class Participant {
         $this->telephone = $telephone;
     }
 
+    /**
+     * Shows information of participant
+     * @param $role
+     * @return string
+     */
     public function render($role) {
         return "
             <div class='participants'>

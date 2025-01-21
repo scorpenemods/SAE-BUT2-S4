@@ -15,7 +15,6 @@ article{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
 }
 
 /* Default Light theme */
@@ -65,6 +64,23 @@ body.dark-mode {
 .app-name {
     position: absolute;
     top: 27px;
+}
+.navbar select {
+    background-color: transparent;
+    color: #fff;
+    width: 8.5em;
+    height: 2.9em;
+    border: white 0.2em solid;
+    border-radius: 11px;
+    text-align: center;
+    transition: all 0.6s ease;
+}
+
+.navbar select:hover {
+    cursor: pointer;
+}
+.navbar select option {
+    background-color: #2c3e50;
 }
 .navbar-right {
     display: flex;
@@ -231,25 +247,6 @@ a:hover{
     box-shadow: 0 0 20px rgba(0, 102, 204, 0.5);
 }
 
-/* Style du pied de page */
-footer {
-    background-color: #2c3e50;
-    color: #fff;
-    border-top: solid 1px;
-    display: flex;
-    padding-right: 5%;
-    margin-top: 5%;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    bottom: -20vh;
-    width: 95%;
-    padding-bottom: 1%;
-}
-footer a{
-    text-decoration: none;
-    color: #fff;
-}
 /* Background animation */
 @keyframes gradientAnimation {
     0% {
