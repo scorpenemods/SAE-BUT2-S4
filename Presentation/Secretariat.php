@@ -69,9 +69,9 @@ $preferences = $database->getUserPreferences($person->getId());
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
 
 // Creation des groupes recup les utilisateurs
-$students = $database->getAllStudents(true) ?? [];
-$professors = $database->getProfessor(true) ?? [];
-$maitres = $database->getTutor(true) ?? [];
+$studentsGroupe = $database->getAllStudents(true);
+$professorsGroupe = $database->getProfessor(true);
+$maitresGroupe = $database->getTutor(true);
 
 
 //------------------------------- Création de compte secrétaire -------------------------------//
@@ -277,7 +277,7 @@ $translations = include $langFile;
 
             <h2>Gestion des Fichiers</h2>
             <form class="box" method="post" action="" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="<?php $_SESSION['csrf_token'] ?>">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 <input type="hidden" name="form_id" value="uploader_fichier">
                 <input type="hidden" name="upload_type" value="file">
                 <div class="box__input">
@@ -289,24 +289,24 @@ $translations = include $langFile;
             <div class="file-list">
                 <h2>Fichiers Uploadés</h2>
                 <div class="file-grid">
-                    <!--                    --><?php //foreach ($files as $file): ?>
-                    <!--                        <div class="file-card">-->
-                    <!--                            <div class="file-info">-->
-                    <!--                                <strong>--><?php //= htmlspecialchars($file['name']) ?><!--</strong>-->
-                    <!--                                <p>--><?php //= round($file['size'] / 1024, 2) ?><!-- KB</p>-->
-                    <!--                            </div>-->
-                    <!--                            <form method="get" action="Documents/Download.php">-->
-                    <!--                                <input type="hidden" name="file" value="--><?php //= htmlspecialchars($file['path']) ?><!--">-->
-                    <!--                                <button type="submit" class="download-button">Télécharger</button>-->
-                    <!--                            </form>-->
-                    <!--                            <form method="post" action="" class="delete-form">-->
-                    <!--                                <input type="hidden" name="csrf_token" value="--><?php //= $_SESSION['csrf_token'] ?><!--">-->
-                    <!--                                <input type="hidden" name="form_id" value="delete_rapport">-->
-                    <!--                                <input type="hidden" name="fileId" value="--><?php //= $file['id'] ?><!--">-->
-                    <!--                                <button type="submit" class="delete-button">Supprimer</button>-->
-                    <!--                            </form>-->
-                    <!--                        </div>-->
-                    <!--                    --><?php //endforeach; ?>
+                    <?php foreach ($files as $file): ?>
+                        <div class="file-card">
+                            <div class="file-info">
+                                <strong><?= htmlspecialchars($file['name']) ?></strong>
+                                <p><?= round($file['size'] / 1024, 2) ?> KB</p>
+                            </div>
+                            <form method="get" action="Documents/Download.php">
+                                <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
+                                <button type="submit" class="download-button">Télécharger</button>
+                            </form>
+                            <form method="post" action="" class="delete-form">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                <input type="hidden" name="form_id" value="delete_rapport">
+                                <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
+                                <button type="submit" class="delete-button">Supprimer</button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
@@ -585,8 +585,8 @@ $translations = include $langFile;
             <!-- Selection of students -->
             <label for="student-select">Étudiant(s):</label>
             <select id="student-select" name="student_ids[]" multiple required>
-                <?php foreach ($students as $student): ?>
-                    <option value="<?php echo $student->getId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                <?php foreach ($studentsGroupe as $studentGroupe): ?>
+                    <option value="<?php echo $studentGroupe->getId(); ?>"><?php echo htmlspecialchars($studentGroupe->getPrenom()) . ' ' . htmlspecialchars($studentGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -594,8 +594,8 @@ $translations = include $langFile;
             <label for="professor-select">Professeur :</label>
             <select id="professor-select" name="professor_id" required>
                 <option value="">Sélectionnez un professeur</option>
-                <?php foreach ($professors as $professor): ?>
-                    <option value="<?php echo $professor->getId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                <?php foreach ($professorsGroupe as $professorGroupe): ?>
+                    <option value="<?php echo $professorGroupe->getId(); ?>"><?php echo htmlspecialchars($professorGroupe->getPrenom()) . ' ' . htmlspecialchars($professorGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -603,8 +603,8 @@ $translations = include $langFile;
             <label for="maitre-select">Maître de stage :</label>
             <select id="maitre-select" name="maitre_id" required>
                 <option value="">Sélectionnez un maître de stage</option>
-                <?php foreach ($maitres as $maitre): ?>
-                    <option value="<?php echo $maitre->getId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                <?php foreach ($maitresGroupe as $maitreGroupe): ?>
+                    <option value="<?php echo $maitreGroupe->getId(); ?>"><?php echo htmlspecialchars($maitreGroupe->getPrenom()) . ' ' . htmlspecialchars($maitreGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -632,24 +632,24 @@ $translations = include $langFile;
             <!-- Fields for selecting new members -->
             <label for="edit-student-select">Étudiant(s):</label>
             <select id="edit-student-select" name="student_ids[]" multiple required>
-                <?php foreach ($students as $student): ?>
-                    <option value="<?php echo $student->getId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                <?php foreach ($studentsGroupe as $studentGroupe): ?>
+                    <option value="<?php echo $studentGroupe->getId(); ?>"><?php echo htmlspecialchars($studentGroupe->getPrenom()) . ' ' . htmlspecialchars($studentGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
             <label for="edit-professor-select">Professeur :</label>
             <select id="edit-professor-select" name="professor_id" required>
                 <option value="">Sélectionnez un professeur</option>
-                <?php foreach ($professors as $professor): ?>
-                    <option value="<?php echo $professor->getId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                <?php foreach ($professorsGroupe as $professorGroupe): ?>
+                    <option value="<?php echo $professorGroupe->getId(); ?>"><?php echo htmlspecialchars($professorGroupe->getPrenom()) . ' ' . htmlspecialchars($professorGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
             <label for="edit-maitre-select">Maître de stage :</label>
             <select id="edit-maitre-select" name="maitre_id" required>
                 <option value="">Sélectionnez un maître de stage</option>
-                <?php foreach ($maitres as $maitre): ?>
-                    <option value="<?php echo $maitre->getId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                <?php foreach ($maitresGroupe as $maitreGroupe): ?>
+                    <option value="<?php echo $maitreGroupe->getId(); ?>"><?php echo htmlspecialchars($maitreGroupe->getPrenom()) . ' ' . htmlspecialchars($maitreGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
