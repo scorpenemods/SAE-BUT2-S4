@@ -9,14 +9,8 @@ require dirname(__FILE__) . '/../../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../../Presentation/Utils.php';
 require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 
-
-$_SESSION['user_id'] = 1;
-$_SESSION['company_id'] = 0;
+$secretariat_group = false;
 $_SESSION['secretariat'] = false;
-$_SESSION['user_role'] = 1;
-
-$secretariat_group = true;
-$_SESSION['secretariat'] = true;
 
 if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
@@ -25,7 +19,6 @@ else{
     $company_id = 0;
     $_SESSION["company_id"] = $company_id;
 }
-
 
 if ($_SESSION["user_role"]==4 || $_SESSION["user_role"]==5) {
     $secretariat_group = true;
