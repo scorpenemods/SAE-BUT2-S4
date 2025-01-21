@@ -3,7 +3,7 @@ $database = (Database::getInstance());
 ?>
 
 <div id="preAgreementToValidateModal" class="modal" style="display: none">
-    <div class="modal-content">
+    <div class="modal-content-student">
         <span class="close-button">&times;</span>
         <h2>Recherche de pré-conventions à valider</h2>
         <input type="text" id="searchBarToValidate" placeholder="Rechercher un élève...">
@@ -11,7 +11,9 @@ $database = (Database::getInstance());
             <?php
             $students = $database->getStudentsWithPreAgreementFormInvalid();
             foreach ($students as $student) {
-                echo '<li><a href="PreAgreementFormStudent.php?id=' . htmlspecialchars($student['id']) . '">' . htmlspecialchars($student['nom']) . ' ' . htmlspecialchars($student['prenom']) . '</a></li>';
+                echo '<li>';
+                echo '<a href="PreAgreementFormStudent.php?id=' . htmlspecialchars($student['id']) . '">'. htmlspecialchars($student['nom']) . ' ' . htmlspecialchars($student['prenom']) . '</a>';
+                echo '</li>';
             }
             ?>
         </ul>
