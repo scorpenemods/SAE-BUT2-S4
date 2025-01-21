@@ -43,29 +43,29 @@ if (isset($_SESSION['personne'])){
     <h1>Formulaire de Pré-Convention de Stage</h1>
     <form action="submit_preconvention.php" method="POST">
 
-    <!-- partie entreprise uniquement ici -->
+        <!-- partie entreprise uniquement ici -->
         <h2>Entreprise</h2>
 
         <!-- Choix du type de stage : France ou à l'étranger -->
         <?php
         if ($company['country'] == "France"){
-        ?>
+            ?>
 
-        <div class="form-group">
-            <div class="radio-group">
-                <!-- Stage en France -->
-                <input type="radio" id="france-int" name="internship-type" value="france-int"/>
-                <label for="france-int">Stage en France</label>
+            <div class="form-group">
+                <div class="radio-group">
+                    <!-- Stage en France -->
+                    <input type="radio" id="france-int" name="internship-type" value="france-int"/>
+                    <label for="france-int">Stage en France</label>
 
-                <!-- Stage à l'étranger -->
-                <input type="radio" id="abroad-int" name="internship-type" value="abroad-int"/>
-                <label for="abroad-int">Stage à l'étranger</label>
+                    <!-- Stage à l'étranger -->
+                    <input type="radio" id="abroad-int" name="internship-type" value="abroad-int"/>
+                    <label for="abroad-int">Stage à l'étranger</label>
+                </div>
             </div>
-        </div>
 
         <?php }
         else{
-        ?>
+            ?>
 
             <div class="form-group">
                 <div class="radio-group">
@@ -86,7 +86,7 @@ if (isset($_SESSION['personne'])){
                 <input type="text" id="country" name="country" value="<?php echo $company['country']; ?>">
             </div>
 
-        <?php
+            <?php
         }
         ?>
 
@@ -112,36 +112,36 @@ if (isset($_SESSION['personne'])){
 
         <?php
         if ($company['country'] == "France"){
-        ?>
-        <div class="intership-location" id="intership-location">
-            <div class="encadre">
-                <!-- Informations obligatoires pour un stage en France uniquement -->
-                <h2>À compléter obligatoirement pour établir la convention – pour un stage en France UNIQUEMENT</h2>
+            ?>
+            <div class="intership-location" id="intership-location">
+                <div class="encadre">
+                    <!-- Informations obligatoires pour un stage en France uniquement -->
+                    <h2>À compléter obligatoirement pour établir la convention – pour un stage en France UNIQUEMENT</h2>
 
-                <!-- Section dédiée aux stages en France -->
-                <div class="french-internship-only">
-                    <!-- Numéro SIRET -->
-                    <div class="form-group">
-                        <label for="siret">N° SIRET</label>
-                        <input type="text" id="siret" name="siret" maxlength="14" minlength="14" required placeholder="14 chiffres" value="<?php echo $company['siret']?>"   />
+                    <!-- Section dédiée aux stages en France -->
+                    <div class="french-internship-only">
+                        <!-- Numéro SIRET -->
+                        <div class="form-group">
+                            <label for="siret">N° SIRET</label>
+                            <input type="text" id="siret" name="siret" maxlength="14" minlength="14" required placeholder="14 chiffres" value="<?php echo $company['siret']?>"   />
 
-                        <!-- Informations complémentaires : APE, Effectif, et Statut juridique -->
-                        <!-- Code APE -->
-                        <label for="ape">Code APE</label>
-                        <input type="text" id="ape" name="ape" maxlength="5" placeholder="Ex : 12345" value="<?php echo $company['APE_code']?>"  />
+                            <!-- Informations complémentaires : APE, Effectif, et Statut juridique -->
+                            <!-- Code APE -->
+                            <label for="ape">Code APE</label>
+                            <input type="text" id="ape" name="ape" maxlength="5" placeholder="Ex : 12345" value="<?php echo $company['APE_code']?>"  />
 
-                        <!-- Effectif de l'entreprise -->
-                        <label for="workforce">Effectif</label>
-                        <input type="text" id="workforce" name="workforce" value="<?php echo $company['size']?>"  />
+                            <!-- Effectif de l'entreprise -->
+                            <label for="workforce">Effectif</label>
+                            <input type="text" id="workforce" name="workforce" value="<?php echo $company['size']?>"  />
 
-                        <!-- Statut juridique -->
-                        <label for="legal-status">Statut juridique</label>
-                        <input type="text" id="legal-status" name="legal-status" placeholder="Ex : SARL, SAS, etc." value="<?php echo $company['legal_status']?>"  />
+                            <!-- Statut juridique -->
+                            <label for="legal-status">Statut juridique</label>
+                            <input type="text" id="legal-status" name="legal-status" placeholder="Ex : SARL, SAS, etc." value="<?php echo $company['legal_status']?>"  />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <?php
+            <?php
         }
         ?>
 

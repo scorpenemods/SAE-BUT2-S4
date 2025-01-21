@@ -268,7 +268,7 @@ function getFieldValue($field, $inputs = null, $default = null): string
                 </div>
             </div>
 
-<!-- Section 2 : Tuteur Entreprise -->
+            <!-- Section 2 : Tuteur Entreprise -->
             <div class="form-group">
                 <h3>2/ Tuteur Entreprise</h3>
                 <div class="form-item">
@@ -372,7 +372,7 @@ function getFieldValue($field, $inputs = null, $default = null): string
 
         <?php
         if ($role == 2){
-        ?>
+            ?>
             <button type="submit" name="action" value="action4">Valider définitivement le sujet, les fonctions et tâches du stage</button>
             <br>
         <?php }?>
@@ -541,11 +541,11 @@ function getFieldValue($field, $inputs = null, $default = null): string
         <?php
         if ($status!==1){
             if ($role==1 || $role==2 || $role==3){ ?>
-            <button type="submit" name="action" value="action1">Enregistrer et soumettre aux autres parties</button>
+                <button type="submit" name="action" value="action1">Enregistrer et soumettre aux autres parties</button>
             <?php }
             else if ($role==4 || $role==5){?>
-            <button type="submit" name="action" value="action2">Enregistrer et soumettre aux autres parties</button>
-            <button type="submit" name="action" value="action3">Valider définitivement ce formulaire de pré-convention</button>
+                <button type="submit" name="action" value="action2">Enregistrer et soumettre aux autres parties</button>
+                <button type="submit" name="action" value="action3">Valider définitivement ce formulaire de pré-convention</button>
             <?php }
         }?>
 
