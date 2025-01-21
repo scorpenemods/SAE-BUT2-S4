@@ -2,7 +2,7 @@
 const modal = document.getElementById("preAgreementModal");
 const openModalButton = document.getElementById("PreAgreement");
 const closeModalButton = document.querySelector(".close-button");
-const searchBar = document.getElementById("searchBar");
+const searchBar = document.getElementById("searchBar-student");
 const studentList = document.getElementById("studentList");
 
 // Fonction pour afficher le modal

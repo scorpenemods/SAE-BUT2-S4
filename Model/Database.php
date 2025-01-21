@@ -2203,7 +2203,8 @@ class Database
         return $result ? $result['path_convention'] : null;
     }
 
-    public function PreAgreementIsValid(int $id){
+    public function PreAgreementIsValid(int $id): int
+    {
         $stmt = $this->connection->prepare("select status from Pre_Agreement where id = :id;");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();

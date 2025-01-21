@@ -234,6 +234,7 @@ $translations = include $langFile;
         <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
         <span onclick="widget(6)" class="widget-button"><?= $translations['groupes']?></span>
         <span onclick="widget(7)" class="widget-button"><?= $translations['offres']?></span>
+        <span onclick="widget(8)" class="widget-button">Logs</span>
 
     </nav>
     <div class="Contenus">
@@ -250,7 +251,7 @@ $translations = include $langFile;
             <div class="user-management">
                 <!-- Section pour la création de nouveau secrétaire -->
                 <div class="pending-requests">
-                    <button id="showButton" onclick="showForm()""><?= $translations['nouveau secrétaire']?></button>
+                    <button id="showButton" onclick="showForm()"><?php $translations['nouveau secrétaire']?></button>
                     <!-- Form -->
                     <div id="secretariatCreation" style="display: none;">
                         <form action="Secretariat.php" method="POST">
@@ -444,11 +445,7 @@ $translations = include $langFile;
         <!-- Section Documents -->
         <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4" data-section="documents">
             <h2>Espace conventions :</h2>
-            <!--
-            <?php //include_once("Documents/Convention.php");?>
-            <script src="../View/Documents/Conventions.js"></script>
-            <br>
-            -->
+
 
             <button id="PreAgreement">Consulter un formulaire de pré-convention</button>
             <button id="PreAgreementToValidate">Consulter les pré-conventions à valider</button>
@@ -456,9 +453,9 @@ $translations = include $langFile;
             <?php //premier bouton
             include_once("SecretariatConsultValidPreAgreementForm.php");
             //second bouton
-            include_once("SecretariatConsultInvalidPreAgreementForm.php"); ?>
+            include_once("SecretariatConsultInvalidPreAgreementForm.php");
+            ?>
             <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
-
 
 
 
@@ -467,7 +464,7 @@ $translations = include $langFile;
 
             <h2>Gestion des Fichiers</h2>
             <form class="box" method="post" action="" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                <input type="hidden" name="csrf_token" value="<?php $_SESSION['csrf_token'] ?>">
                 <input type="hidden" name="form_id" value="uploader_fichier">
                 <input type="hidden" name="upload_type" value="file">
                 <div class="box__input">
@@ -479,24 +476,24 @@ $translations = include $langFile;
             <div class="file-list">
                 <h2>Fichiers Uploadés</h2>
                 <div class="file-grid">
-                    <?php foreach ($files as $file): ?>
-                        <div class="file-card">
-                            <div class="file-info">
-                                <strong><?= htmlspecialchars($file['name']) ?></strong>
-                                <p><?= round($file['size'] / 1024, 2) ?> KB</p>
-                            </div>
-                            <form method="get" action="Documents/Download.php">
-                                <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
-                                <button type="submit" class="download-button">Télécharger</button>
-                            </form>
-                            <form method="post" action="" class="delete-form">
-                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                <input type="hidden" name="form_id" value="delete_rapport">
-                                <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
-                                <button type="submit" class="delete-button">Supprimer</button>
-                            </form>
-                        </div>
-                    <?php endforeach; ?>
+<!--                    --><?php //foreach ($files as $file): ?>
+<!--                        <div class="file-card">-->
+<!--                            <div class="file-info">-->
+<!--                                <strong>--><?php //= htmlspecialchars($file['name']) ?><!--</strong>-->
+<!--                                <p>--><?php //= round($file['size'] / 1024, 2) ?><!-- KB</p>-->
+<!--                            </div>-->
+<!--                            <form method="get" action="Documents/Download.php">-->
+<!--                                <input type="hidden" name="file" value="--><?php //= htmlspecialchars($file['path']) ?><!--">-->
+<!--                                <button type="submit" class="download-button">Télécharger</button>-->
+<!--                            </form>-->
+<!--                            <form method="post" action="" class="delete-form">-->
+<!--                                <input type="hidden" name="csrf_token" value="--><?php //= $_SESSION['csrf_token'] ?><!--">-->
+<!--                                <input type="hidden" name="form_id" value="delete_rapport">-->
+<!--                                <input type="hidden" name="fileId" value="--><?php //= $file['id'] ?><!--">-->
+<!--                                <button type="submit" class="delete-button">Supprimer</button>-->
+<!--                            </form>-->
+<!--                        </div>-->
+<!--                    --><?php //endforeach; ?>
                 </div>
             </div>
         </div>
