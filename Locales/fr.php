@@ -159,7 +159,7 @@ return array(
     'tapez message' => 'Tapez un message...',
     'welcome_admin' => "Bienvenue sur la plateforme Secrétariat!",
     'info_admin' => "Gérez les utilisateurs, consultez les documents et accédez aux rapports des stages.",
-    'nouveau secrétaire' => "Nouveau secrétaire",
+    'nouveau_secretaire' => "Nouveau secrétaire",
 
     // CONTACT SECRETARIAT
     'send_admin' => "Envoyer un message au secrétariat",

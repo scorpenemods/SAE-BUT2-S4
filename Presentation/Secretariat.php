@@ -214,6 +214,10 @@ $translations = include $langFile;
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script JavaScript pour la gestion des utilisateurs -->
+    <script src="../View/Principal/userManagement.js"></script>
+    <script src="../View/Principal/GroupCreation.js"></script>
+    <script src="/View/Principal/GroupMessenger.js"></script>
 
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
@@ -251,7 +255,7 @@ $translations = include $langFile;
             <div class="user-management">
                 <!-- Section pour la création de nouveau secrétaire -->
                 <div class="pending-requests">
-                    <button id="showButton" onclick="showForm()"><?php $translations['nouveau secrétaire']?></button>
+                    <button id="showButton" onclick="showForm()"><?= $translations['nouveau_secretaire']?></button>
                     <!-- Form -->
                     <div id="secretariatCreation" style="display: none;">
                         <form action="Secretariat.php" method="POST">
@@ -311,7 +315,7 @@ $translations = include $langFile;
         </div>
 
         <!-- Logs Section -->
-        <div class="Contenu <?php echo $activeSection == '8' ? 'Visible' : ''; ?>" id="content-8">
+        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
             <h2>Journal des activités</h2>
             <div class="logs-container">
                 <?php
@@ -342,7 +346,7 @@ $translations = include $langFile;
         </div>
 
         <!-- Section Gestion des utilisateurs -->
-        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
+        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
             <div class="user-management">
                 <!-- Section pour déposer un fichier CSV -->
                 <div class="csv-upload" style="padding-top: 25px">
@@ -435,7 +439,7 @@ $translations = include $langFile;
             </div>
         </div>
         <!-- Section Rapports -->
-        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
+        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
             Contenu Rapports
         </div>
 
@@ -443,7 +447,7 @@ $translations = include $langFile;
 
 
         <!-- Section Documents -->
-        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4" data-section="documents">
+        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5" data-section="documents">
             <h2>Espace conventions :</h2>
 
 
@@ -501,7 +505,7 @@ $translations = include $langFile;
 
 
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?> animate__animated animate__fadeIn" id="content-5">
+        <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?> animate__animated animate__fadeIn" id="content-6">
             <!-- Messenger Contents -->
             <div class="messenger">
                 <div class="container mt-5">
@@ -523,7 +527,7 @@ $translations = include $langFile;
         </div>
 
         <!-- Section Groupes -->
-        <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">
+        <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
             <!-- List of existing groups -->
             <div class="group-list">
                 <h3>Groupes existants</h3>
@@ -558,7 +562,7 @@ $translations = include $langFile;
         </div>
 
         <!-- Offres Content -->
-        <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
+        <div class="Contenu <?php echo $activeSection == '8' ? 'Visible' : ''; ?>" id="content-8">
             Contenu Offres
             <a href="../View/List.php?type=all">
                 <button type="button">Voir les offres</button>
@@ -662,12 +666,8 @@ $translations = include $langFile;
     <?php include '../View/Footer.php'; ?>
 </footer>
 
-<!-- Script JavaScript pour la gestion des utilisateurs -->
-<script src="../View/Principal/userManagement.js"></script>
-<script src="../View/Principal/GroupCreation.js"></script>
-<script src="/View/Principal/GroupMessenger.js"></script>
-
 <script>
+
     // Ajouter une classe d'animation
     document.querySelectorAll('.form-control, .form-control-file').forEach(element => {
         element.addEventListener('focus', () => {

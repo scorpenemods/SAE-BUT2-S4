@@ -156,7 +156,7 @@ return array(
     'tapez message' => 'Type a message...',
     'welcome_admin' => "Welcome to the Administration platform!",
     'info_admin' => "Manage users, view documents, and access internship reports.",
-    'nouveau secrétaire' => "New administrator",
+    'nouveau_secretaire' => "New administrator",
 
     // CONTACT SECRETARIAT
     'send_admin' => "Send a message to the administration",
