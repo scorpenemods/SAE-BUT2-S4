@@ -224,7 +224,6 @@ $translations = include $langFile;
         </div>
     </div>
 </article>
-
 <!-- Уведомление -->
 <div class="notification" id="emailVerificationNotification">
     <?= $translations['validate_email_index'] ?> <a href="Presentation/EmailValidationNotice.php"><?= $translations['register_button_index_button'] ?></a>

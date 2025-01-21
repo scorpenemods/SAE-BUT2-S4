@@ -17,6 +17,7 @@ return array(
     'register_button_index' => 'Зареєструватися',
     'validate_email_index' => "Вашу електронну пошту не підтверджено.",
     'validate_email_index_button' => 'Підтвердити зараз',
+    'register_button_index_button' => 'Підтвердіть вашу електронну пошту',
 
     // STUDENT/PRINCIPAL
 

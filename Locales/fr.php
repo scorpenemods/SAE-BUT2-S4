@@ -17,7 +17,7 @@ return array(
     'register_button_index' => 'S’enregistrer',
     'validate_email_index' => "Votre adresse email n'est pas validée.",
     'validate_email_index_button' => 'Valider maintenant',
-
+    'register_button_index_button' => 'Valider votre Email',
 
     //STUDENT/PINCIPAL
 
