@@ -515,7 +515,7 @@ class Database
      */
     public function deleteUser($userId)
     {
-        return $this->rejectUser($userId); // test and reusing same method
+        return $this->rejectUser($userId);
     }
 
     /**
