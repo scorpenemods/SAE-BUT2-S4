@@ -107,173 +107,153 @@ $translations = include $langFile;
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
-    <?php include_once("../View/Header.php");?>
-    <div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
-    <div class="sidebar" id="sidebar">
-        <form method="post" action="#" class="students">
-            <?php foreach ($stages as $stage): ?>
-                <div class="student">
-                    <button type="submit" value="<?php echo $stage[1];?>" name="go"><?php echo "Stage de l'année : $stage[0]";?></button>
-                </div>
-            <?php endforeach; ?>
-        </form>
-    </div>
-    <section class="Menus" id="Menus">
-        <nav>
-
-            <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
-            <span onclick="widget(1)" class="widget-button"><?= $translations['mission stage']?></span>
-            <span onclick="widget(2)" class="widget-button"><?= $translations['livret suivi']?></span>
-            <span onclick="widget(3)" class="widget-button"><?= $translations['offres']?></span>
-            <span onclick="widget(4)" class="widget-button"><?= $translations['documents']?></span>
-            <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
-            <span onclick="widget(6)" class="widget-button"><?= $translations['notes']?></span>
-        </nav>
-        <div class="Contenus">
-            <!-- Accueil Content -->
-            <div class="Contenu <?php echo $activeSection == '0' ? 'Visible' : ''; ?>" id="content-0">
-                <h2><?= $translations['welcome_message']?></h2><br>
-                <p>
-                    <?= $translations['info_stud']?>
-                </p><br>
-                <ul>
-                    <li><strong><?= $translations['livret suivi']?>:</strong> <?= $translations['livret_info']?></li><br>
-                    <li><strong><?= $translations['offres']?>:</strong> <?= $translations['offres_info']?></li><br>
-                    <li><strong><?= $translations['documents']?>:</strong> <?= $translations['documents_info']?></li><br>
-                    <li><strong><?= $translations['messagerie']?>:</strong> <?= $translations['messagerie_info']?></li><br>
-                </ul><br>
+<?php include_once("../View/Header.php");?>
+<div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
+<div class="sidebar" id="sidebar">
+    <form method="post" action="#" class="students">
+        <?php foreach ($stages as $stage): ?>
+            <div class="student">
+                <button type="submit" value="<?php echo $stage[1];?>" name="go"><?php echo "Stage de l'année : $stage[0]";?></button>
             </div>
+        <?php endforeach; ?>
+    </form>
+</div>
+<section class="Menus" id="Menus">
+    <nav>
 
-
-            <!-- Missions Content -->
-            <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">Contenu Missions</div>
-
-            <!-- Livret de suivi Content -->
-            <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-5">
-                <!-- Affichage du livret de suivi -->
-
-                <?php include_once("LivretSuivi.php");?>
-            </div>
-
-            <!-- Offres Content -->
-            <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
-                <?= $translations['contenu offres']?>
-                <a href="../View/List.php?type=all">
-                    <button type="button"><?= $translations['voir offres']?></button>
-                </a>
-            </div>
-
-            <!-- Documents Content -->
-            <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
-                <?php include_once("Documents/Documents.php");?>
-
-                <h2>Gestion des Fichiers</h2>
-                <form class="box" method="post" action="" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                    <input type="hidden" name="form_id" value="uploader_fichier">
-                    <input type="hidden" name="upload_type" value="file">
-                    <div class="box__input">
-                        <input type="file" name="files[]" id="file-doc" multiple>
-                        <button class="box__button" type="submit">Uploader Fichier</button>
-                    </div>
-                </form>
-
-                <div class="file-list">
-                    <h2>Fichiers Uploadés</h2>
-                    <div class="file-grid">
-                        <?php foreach ($files as $file): ?>
-                            <div class="file-card">
-                                <div class="file-info">
-                                    <strong><?= htmlspecialchars($file['name']) ?></strong>
-                                    <p><?= round($file['size'] / 1024, 2) ?> KB</p>
-                                </div>
-                                <form method="get" action="Documents/Download.php">
-                                    <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
-                                    <button type="submit" class="download-button">Télécharger</button>
-                                </form>
-                                <form method="post" action="" class="delete-form">
-                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                    <input type="hidden" name="form_id" value="delete_rapport">
-                                    <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
-                                    <button type="submit" class="delete-button">Supprimer</button>
-                                </form>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- Messagerie Content -->
-            <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-2">
-                <div class="messenger">
-                    <div class="contacts">
-                        <div class="search-bar">
-                            <label for="search-input"></label>
-                            <input type="text" id="search-input" placeholder="<?= $translations['search_contact']?>" onkeyup="searchContacts()">
-                        </div>
-                        <h3><?= $translations['contacts']?></h3>
-                        <!-- Bouton pour contacter le secrétariat -->
-                        <button id="contact-secretariat-btn" class="contact-secretariat-btn"><?= $translations['contacter secrétariat']?></button>
-                        <ul id="contacts-list">
-                            <?php include_once("ContactList.php");?>
-                            <?php include_once("GroupContactList.php");?>
-                        </ul>
-                    </div>
-
-                    <!-- Right click for delete -->
-                    <div id="context-menu" class="context-menu">
-                        <ul>
-                            <li id="copy-text">Copy</li>
-                            <li id="delete-message">Delete</li>
-                        </ul>
-                    </div>
-
-                    <div class="chat-window">
-                        <div class="chat-header">
-                            <h3 id="chat-header-title">Chat avec Contact </h3>
-                        </div>
-                        <div class="chat-body" id="chat-body">
-                            <!-- Les messages seront chargés dynamiquement via JavaScript -->
-                        </div>
-
-                        <div class="chat-footer">
-                            <form id="messageForm" enctype="multipart/form-data" method="POST">
-                                <input type="file" id="file-input" name="file" style="display:none">
-                                <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
-                                <!-- Hidden fields for receiver_id and group_id -->
-                                <input type="hidden" name="receiver_id" id="receiver_id" value="">
-                                <input type="hidden" name="group_id" id="group_id" value="">
-                                <input type="text" id="message-input" name="message" placeholder="<?= $translations['tapez message']?>">
-                                <button type="submit"><?= $translations['send']?></button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- Notes Content -->
-            <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">
-                <div class="notes-container">
-                    <table class="notes-table">
-                        <?php
-                        $noter = "";
-
-        <!-- Documents Content -->
-        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
-
+        <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
+        <span onclick="widget(1)" class="widget-button"><?= $translations['mission stage']?></span>
+        <span onclick="widget(2)" class="widget-button"><?= $translations['livret suivi']?></span>
+        <span onclick="widget(3)" class="widget-button"><?= $translations['offres']?></span>
+        <span onclick="widget(4)" class="widget-button"><?= $translations['documents']?></span>
+        <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
+        <span onclick="widget(6)" class="widget-button"><?= $translations['notes']?></span>
+    </nav>
+    <div class="Contenus">
+        <!-- Accueil Content -->
+        <div class="Contenu <?php echo $activeSection == '0' ? 'Visible' : ''; ?>" id="content-0">
+            <h2><?= $translations['welcome_message']?></h2><br>
+            <p>
+                <?= $translations['info_stud']?>
+            </p><br>
+            <ul>
+                <li><strong><?= $translations['livret suivi']?>:</strong> <?= $translations['livret_info']?></li><br>
+                <li><strong><?= $translations['offres']?>:</strong> <?= $translations['offres_info']?></li><br>
+                <li><strong><?= $translations['documents']?>:</strong> <?= $translations['documents_info']?></li><br>
+                <li><strong><?= $translations['messagerie']?>:</strong> <?= $translations['messagerie_info']?></li><br>
+            </ul><br>
         </div>
 
+
+        <!-- Missions Content -->
+        <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">Contenu Missions</div>
+
         <!-- Livret de suivi Content -->
-        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
+        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-5">
             <!-- Affichage du livret de suivi -->
 
             <?php include_once("LivretSuivi.php");?>
         </div>
 
+        <!-- Offres Content -->
+        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
+            <?= $translations['contenu offres']?>
+            <a href="../View/List.php?type=all">
+                <button type="button"><?= $translations['voir offres']?></button>
+            </a>
+        </div>
+
+        <!-- Documents Content -->
+        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
+            <?php include_once("Documents/Documents.php");?>
+
+            <h2>Gestion des Fichiers</h2>
+            <form class="box" method="post" action="" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                <input type="hidden" name="form_id" value="uploader_fichier">
+                <input type="hidden" name="upload_type" value="file">
+                <div class="box__input">
+                    <input type="file" name="files[]" id="file-doc" multiple>
+                    <button class="box__button" type="submit">Uploader Fichier</button>
+                </div>
+            </form>
+
+            <div class="file-list">
+                <h2>Fichiers Uploadés</h2>
+                <div class="file-grid">
+                    <?php foreach ($files as $file): ?>
+                        <div class="file-card">
+                            <div class="file-info">
+                                <strong><?= htmlspecialchars($file['name']) ?></strong>
+                                <p><?= round($file['size'] / 1024, 2) ?> KB</p>
+                            </div>
+                            <form method="get" action="Documents/Download.php">
+                                <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
+                                <button type="submit" class="download-button">Télécharger</button>
+                            </form>
+                            <form method="post" action="" class="delete-form">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                <input type="hidden" name="form_id" value="delete_rapport">
+                                <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
+                                <button type="submit" class="delete-button">Supprimer</button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Messagerie Content -->
+        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-2">
+            <div class="messenger">
+                <div class="contacts">
+                    <div class="search-bar">
+                        <label for="search-input"></label>
+                        <input type="text" id="search-input" placeholder="<?= $translations['search_contact']?>" onkeyup="searchContacts()">
+                    </div>
+                    <h3><?= $translations['contacts']?></h3>
+                    <!-- Bouton pour contacter le secrétariat -->
+                    <button id="contact-secretariat-btn" class="contact-secretariat-btn"><?= $translations['contacter secrétariat']?></button>
+                    <ul id="contacts-list">
+                        <?php include_once("ContactList.php");?>
+                        <?php include_once("GroupContactList.php");?>
+                    </ul>
+                </div>
+
+                <!-- Right click for delete -->
+                <div id="context-menu" class="context-menu">
+                    <ul>
+                        <li id="copy-text">Copy</li>
+                        <li id="delete-message">Delete</li>
+                    </ul>
+                </div>
+
+                <div class="chat-window">
+                    <div class="chat-header">
+                        <h3 id="chat-header-title">Chat avec Contact </h3>
+                    </div>
+                    <div class="chat-body" id="chat-body">
+                        <!-- Les messages seront chargés dynamiquement via JavaScript -->
+                    </div>
+
+                    <div class="chat-footer">
+                        <form id="messageForm" enctype="multipart/form-data" method="POST">
+                            <input type="file" id="file-input" name="file" style="display:none">
+                            <button type="button" class="attach-button" onclick="document.getElementById('file-input').click();">📎</button>
+                            <!-- Hidden fields for receiver_id and group_id -->
+                            <input type="hidden" name="receiver_id" id="receiver_id" value="">
+                            <input type="hidden" name="group_id" id="group_id" value="">
+                            <input type="text" id="message-input" name="message" placeholder="<?= $translations['tapez message']?>">
+                            <button type="submit"><?= $translations['send']?></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Notes Content -->
-        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
+        <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">
             <div class="notes-container">
                 <table class="notes-table">
                     <?php
@@ -283,120 +263,110 @@ $translations = include $langFile;
                     endforeach;
                     if($noter != ""){
                         echo '<tr class="lsttitlenotes">';
-                            echo '<th>Sujet</th>';
-                            echo '<th>Appréciation</th>';
-                            echo '<th>Note</th>';
-                            echo '<th>Coefficient</th>';
+                        echo '<th>'.$translations['sujet'].'</th>';
+                        echo '<th>'.$translations['note'].'</th>';
+                        echo '<th>'.$translations['coef'].'</th>';
                         echo '</tr>';
                         foreach ($notes as $note):
-                            $noter = $note->getNote();
-                        endforeach;
-                        if($noter != ""){
-                            echo '<tr class="lsttitlenotes">';
-                                echo '<th>'.$translations['sujet'].'</th>';
-                                echo '<th>'.$translations['note'].'</th>';
-                                echo '<th>'.$translations['coef'].'</th>';
+                            echo '<tr>';
+                            echo '<td>' . htmlspecialchars($note->getSujet()); '</td>';
+                            echo '<td>' . htmlspecialchars($note->getNote()) . " / 20"; '</td>';
+                            echo '<td>' . htmlspecialchars($note->getCoeff()); '</td>';
                             echo '</tr>';
-                            foreach ($notes as $note):
-                                echo '<tr>';
-                                    echo '<td>' . htmlspecialchars($note->getSujet()); '</td>';
-                                    echo '<td>' . htmlspecialchars($note->getNote()) . " / 20"; '</td>';
-                                    echo '<td>' . htmlspecialchars($note->getCoeff()); '</td>';
-                                echo '</tr>';
-                                endforeach;
+                        endforeach;
 
-                        }
-                        else {
-                            echo '<p class="noNotes">' . $translations['aucune note'] . '</p>';
-                        }
-                        ?>
-                    </table>
-                </div>
+                    }
+                    else {
+                        echo '<p class="noNotes">' . $translations['aucune note'] . '</p>';
+                    }
+                    ?>
+                </table>
             </div>
         </div>
-    </section>
-    <?php include '../View/Footer.php'; ?>
-
-    <!-- Fenêtre modale pour contacter le secrétariat -->
-    <div id="contact-secretariat-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3><?= $translations['send_admin']?></h3>
-            <form id="contactSecretariatForm" enctype="multipart/form-data" method="POST" action="ContactSecretariat.php">
-                <div class="form-group">
-                    <label for="subject"><?= $translations['sujet']?> :</label>
-                    <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="<?= $translations['sujet_message']?>">
-                </div>
-                <div class="form-group">
-                    <label for="message"><?= $translations['message']?> :</label>
-                    <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="<?= $translations['write_mess']?>" required></textarea>
-                </div>
-                <div class="form-group position-relative">
-                    <label for="file" class="form-label"><?= $translations['joindre fichier']?> :</label>
-                    <input type="file" class="form-control-file animated-file-input" id="file" name="file">
-                    <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné" style="display: none;">✖️</button>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block animated-button"><?= $translations['mess_admin']?></button>
-            </form>
-        </div>
     </div>
+</section>
+<?php include '../View/Footer.php'; ?>
 
-    <script src="/View/Principal/deleteMessage.js"></script>
-    <script src="/View/Principal/GroupMessenger.js"></script>
-    <script>
-        // Obtenir la modale
-        var modal = document.getElementById("contact-secretariat-modal");
+<!-- Fenêtre modale pour contacter le secrétariat -->
+<div id="contact-secretariat-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3><?= $translations['send_admin']?></h3>
+        <form id="contactSecretariatForm" enctype="multipart/form-data" method="POST" action="ContactSecretariat.php">
+            <div class="form-group">
+                <label for="subject"><?= $translations['sujet']?> :</label>
+                <input type="text" class="form-control animated-input" id="subject" name="subject" placeholder="<?= $translations['sujet_message']?>">
+            </div>
+            <div class="form-group">
+                <label for="message"><?= $translations['message']?> :</label>
+                <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="<?= $translations['write_mess']?>" required></textarea>
+            </div>
+            <div class="form-group position-relative">
+                <label for="file" class="form-label"><?= $translations['joindre fichier']?> :</label>
+                <input type="file" class="form-control-file animated-file-input" id="file" name="file">
+                <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné" style="display: none;">✖️</button>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block animated-button"><?= $translations['mess_admin']?></button>
+        </form>
+    </div>
+</div>
 
-        // Obtenir le bouton qui ouvre la modale
-        var btn = document.getElementById("contact-secretariat-btn");
+<script src="/View/Principal/deleteMessage.js"></script>
+<script src="/View/Principal/GroupMessenger.js"></script>
+<script>
+    // Obtenir la modale
+    var modal = document.getElementById("contact-secretariat-modal");
 
-        // Obtenir l'élément <span> qui ferme la modale
-        var span = document.getElementsByClassName("close")[0];
+    // Obtenir le bouton qui ouvre la modale
+    var btn = document.getElementById("contact-secretariat-btn");
 
-        // Quand l'utilisateur clique sur le bouton, ouvrir la modale
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
+    // Obtenir l'élément <span> qui ferme la modale
+    var span = document.getElementsByClassName("close")[0];
 
-        // Quand l'utilisateur clique sur <span> (x), fermer la modale
-        span.onclick = function() {
+    // Quand l'utilisateur clique sur le bouton, ouvrir la modale
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // Quand l'utilisateur clique sur <span> (x), fermer la modale
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Quand l'utilisateur clique en dehors de la modale, fermer la modale
+    window.onclick = function(event) {
+        if (event.target == modal) {
             modal.style.display = "none";
         }
+    }
 
-        // Quand l'utilisateur clique en dehors de la modale, fermer la modale
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
+    // Animation du gradient sur le champ de saisie
+    document.querySelectorAll('.form-control.animated-input').forEach(element => {
+        element.addEventListener('focus', () => {
+            element.classList.add('gradient-border');
+        });
+
+        element.addEventListener('blur', () => {
+            element.classList.remove('gradient-border');
+        });
+    });
+
+    // Gestion du bouton d'annulation du fichier
+    document.getElementById('file').addEventListener('change', function() {
+        if (this.files.length > 0) {
+            // Afficher le bouton d'annulation
+            document.getElementById('resetFileBtn').style.display = 'block';
+        } else {
+            document.getElementById('resetFileBtn').style.display = 'none';
         }
+    });
 
-        // Animation du gradient sur le champ de saisie
-        document.querySelectorAll('.form-control.animated-input').forEach(element => {
-            element.addEventListener('focus', () => {
-                element.classList.add('gradient-border');
-            });
-
-            element.addEventListener('blur', () => {
-                element.classList.remove('gradient-border');
-            });
-        });
-
-        // Gestion du bouton d'annulation du fichier
-        document.getElementById('file').addEventListener('change', function() {
-            if (this.files.length > 0) {
-                // Afficher le bouton d'annulation
-                document.getElementById('resetFileBtn').style.display = 'block';
-            } else {
-                document.getElementById('resetFileBtn').style.display = 'none';
-            }
-        });
-
-        document.getElementById('resetFileBtn').addEventListener('click', function() {
-            const fileInput = document.getElementById('file');
-            fileInput.value = ''; // Réinitialise le champ de fichier
-            this.style.display = 'none'; // Cache le bouton d'annulation
-        });
-    </script>
+    document.getElementById('resetFileBtn').addEventListener('click', function() {
+        const fileInput = document.getElementById('file');
+        fileInput.value = ''; // Réinitialise le champ de fichier
+        this.style.display = 'none'; // Cache le bouton d'annulation
+    });
+</script>
 </body>
 </html>
 
