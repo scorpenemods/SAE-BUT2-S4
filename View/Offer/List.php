@@ -29,11 +29,6 @@ if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 }
 
-
-
-
-
-
 $pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT) ?? 1;
 $currentURL = $_SERVER["REQUEST_URI"];
 
