@@ -1,7 +1,7 @@
 <header>
     <a href="/view/offer/list.php" class="logo-link">
         <div class="logo">
-            <img src="../../Ressources/LPS%201.0.png" alt="Le Petit Stage Logo">
+            <img src="/Ressources/LPS%201.0.png" alt="Le Petit Stage Logo">
             <h1>Le Petit Stage</h1>
         </div>
     </a>
