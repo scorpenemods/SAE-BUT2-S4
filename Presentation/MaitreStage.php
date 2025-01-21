@@ -1,4 +1,5 @@
 <?php
+global $files;
 ob_start();
 
 // Démarre une session pour gérer les informations de l'utilisateur connecté
@@ -115,6 +116,7 @@ $translations = include $langFile;
     <title>Le Petit Stage - <?= $translations['maitre stage']?></title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js" defer></script>
+    <script src="../View/Principal/LivretSuivi.js"></script>
     <script src="/View/Principal/Note.js"></script>
 
     <link rel="stylesheet" href="../View/Documents/Documents.css">
@@ -133,8 +135,8 @@ $translations = include $langFile;
     </div>
     <div class="students">
         <?php foreach ($students as $student): ?>
-            <?php ($student->getId()); ?>
-            <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>" onclick="selectStudent(this)">
+            <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>"
+                 onclick="selectStudent(this)">
                 <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
             </div>
         <?php endforeach; ?>

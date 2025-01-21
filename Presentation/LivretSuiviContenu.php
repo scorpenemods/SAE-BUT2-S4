@@ -1,5 +1,4 @@
 <?php
-
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';
 
@@ -16,12 +15,25 @@ $userRole = $person->getRole();
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
-if (empty($_SESSION['csrf_rapport'])) {
-    $_SESSION['csrf_rapport'] = bin2hex(random_bytes(16));
+
+// We get from $GLOBALS
+$studentInfo   = $GLOBALS['studentInfo'] ?? null;
+$professorInfo = $GLOBALS['professorInfo'] ?? null;
+$mentorInfo    = $GLOBALS['mentorInfo'] ?? null;
+$followUpId    = $GLOBALS['followUpId'] ?? 0;
+$existingMeetingsCount = $GLOBALS['meetingsCount'] ?? 0;
+
+// compute groupId:
+$groupId = 0;
+if (!empty($studentInfo) && !empty($professorInfo) && !empty($mentorInfo)) {
+    $groupId = $database->getGroup(
+        $studentInfo['id'],
+        $professorInfo['id'],
+        $mentorInfo['id']
+    );
 }
 
-$groupId = $database->getGroup($studentInfo['id'], $professorInfo['id'], $mentorInfo['id']);
-$_SESSION['group_id'] = $groupId;
+
 //TRADUCTION
 
 // Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
@@ -40,92 +52,46 @@ if (!file_exists($langFile)) {
 
 // Charger les traductions
 $translations = include $langFile;
+$file = $database->getLivretFile($groupId);
+
 
 ?>
-<!-- Changer le style pour que les formulaires s'affichent à côté des rencontres  -->
 <aside class="livretbar">
-    <h3 style="text-decoration: underline;"><?= $translations['rencontres']?> / <?= $translations['dépôts']?></h3><br>
-    <span class="vignette" onclick="showContent(0)"><?= $translations['rencontre']?> 1</span><br>
-
-    <span class="vignette" onclick="showContent(1)"><?= $translations['finalisation livret']?></span><br>
-
-    <button onclick="addMeeting()" type="button">+ <?= $translations['ajouter rencontre']?></button>
-
-    <button onclick="deleteMeeting()" type="button">- <?= $translations['supprimer rencontre']?></button>
+    <h3 style="text-decoration: underline;"><?= $translations['rencontres']?> / <?= $translations['dépôts']?></h3>
+    <br>
+    <button onclick="addMeeting()" type="button" style="margin-bottom:10px;">
+        + <?= $translations['ajouter rencontre']?>
+    </button>
+    <button onclick="deleteMeeting()" type="button" style="margin-bottom:10px;">
+        - <?= $translations['supprimer rencontre']?>
+    </button>
 </aside>
 
-<!-- Affichage des informations des participants : -->
+<!-- Contenu dynamique généré par JS (Rencontres) + Bilan -->
+<div class="content-livret" style="flex:1; padding:10px;">
+    <!-- Изначально пусто, всё генерирует LivretSuivi.js (функция loadExistingMeetings()).
+         Плюс блок "Bilan" (id=BilanSection) для finalisation. -->
 
-<div class="content-livret">
-
-    <!-- Les différents formulaire pour chaque rencontre : -->
-
-    <!-- Rencontre 1 -->
-    <div class="content-section" id="0">
-        <h3 style="padding: 10px"><?= $translations['formulaire']?></h3>
-        <div class="livret-header">
-            <h3><?= $translations['rencontre']?> 1</h3>
-        </div>
-
-        <!-- Formulaire -->
-        <div class="participants">
-            <form method="post" id="formContainer-0">
-                <p>
-                    <?= $translations['date'] . $translations['rencontre']?> : <label style="color: red">*</label> <br>
-
-                    <input type="date" name="meeting"/>
-                </p>
-
-                <br><br>
-
-                <p>
-                    <?= $translations['lieu'] . $translations['rencontre']?> : <label style="color: red">*</label> <br>
-
-                    <input type="radio" id="Entreprise" name="Lieu"><label> <?= $translations['en entreprise']?></label> <br>
-                    <input type="radio" id="Tél" name="Lieu"><label> <?= $translations['par téléphone']?></label> <br>
-                    <input type="radio" id="Visio" name="Lieu"><label> <?= $translations['en visio']?></label> <br>
-                    <input type="radio" id="Autre" name="Lieu"><label> <?= $translations['autre']?></label> <input type="text" name="Lieu">
-                </p>
-
-                <br><br>
-
-                <button onclick="addField('formContainer-0')" type="button">+ <?= $translations['ajouter champ']?></button>
-
-            </form>
-        </div>
-        <div style="display: flex; ">
-            <!-- Validation du formulaire -->
-            <div class="validation">
-                <h3 style="padding: 10px">Validation du formulaire</h3>
-
-                <button>Valider modifications</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bilan -->
-    <div class="content-section" id="1">
-        <h3 style="padding: 10px">Bilan/dépôt du rapport</h3>
-        <div class="livret-header">
-            <h3>Finalisation du livret</h3>
-        </div>
-
+    <!-- BILAN / Finalisation -->
+    <div class="content-section" id="BilanSection">
+        <h3 style="padding: 10px">Bilan / Dépôt du rapport</h3>
         <div class="participants">
             <h2>Tableau des Compétences Acquises</h2>
-            <form method="post" id="formContainer-1">
+            <form method="post" id="formContainer-bilan">
+                <input type="hidden" name="followup_id" value="<?php echo (int)$followUpId; ?>">
                 <table class="tableau">
                     <thead>
-                    <tr class="trEdit">
-                        <th class="thEdit">Compétence</th>
-                        <th class="thEdit">Niveau de Maîtrise</th>
-                        <th class="thEdit">Commentaires</th>
+                    <tr>
+                        <th>Compétence</th>
+                        <th>Niveau de Maîtrise</th>
+                        <th>Commentaires</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr class="trEdit">
-                        <td class="tdEdit">Adaptation à l'entreprise</td>
-                        <td class="tdEdit">
-                            <select class="selection" name="option1" onchange="removeDefaultOption(this)">
+                    <tr>
+                        <td>Adaptation à l'entreprise</td>
+                        <td>
+                            <select name="option1" onchange="removeDefaultOption(this)">
                                 <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
@@ -133,12 +99,12 @@ $translations = include $langFile;
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td class="tdEdit"><input class="tableInput" type="text" name="table1"></td>
+                        <td><input type="text" name="table1"></td>
                     </tr>
-                    <tr class="trEdit">
-                        <td class="tdEdit">Ponctualité</td>
-                        <td class="tdEdit">
-                            <select class="selection" name="option2" onchange="removeDefaultOption(this)">
+                    <tr>
+                        <td>Ponctualité</td>
+                        <td>
+                            <select name="option2" onchange="removeDefaultOption(this)">
                                 <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
@@ -146,12 +112,12 @@ $translations = include $langFile;
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td class="tdEdit"><input class="tableInput" type="text" name="table2"></td>
+                        <td><input type="text" name="table2"></td>
                     </tr>
-                    <tr class="trEdit">
-                        <td class="tdEdit">Motivation pour le travail</td>
-                        <td class="tdEdit">
-                            <select class="selection" name="option3" onchange="removeDefaultOption(this)">
+                    <tr>
+                        <td>Motivation pour le travail</td>
+                        <td>
+                            <select name="option3" onchange="removeDefaultOption(this)">
                                 <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
@@ -159,12 +125,12 @@ $translations = include $langFile;
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td class="tdEdit"><input class="tableInput" type="text" name="table3"></td>
+                        <td><input type="text" name="table3"></td>
                     </tr>
-                    <tr class="trEdit">
-                        <td class="tdEdit">Initiatives personnelles</td>
-                        <td class="tdEdit">
-                            <select class="selection" name="option4" onchange="removeDefaultOption(this)">
+                    <tr>
+                        <td>Initiatives personnelles</td>
+                        <td>
+                            <select name="option4" onchange="removeDefaultOption(this)">
                                 <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
@@ -172,12 +138,12 @@ $translations = include $langFile;
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td class="tdEdit"><input class="tableInput" type="text" name="table4"></td>
+                        <td><input type="text" name="table4"></td>
                     </tr>
-                    <tr class="trEdit">
-                        <td class="tdEdit">Qualité du travail</td>
-                        <td class="tdEdit">
-                            <select class="selection" name="option5" onchange="removeDefaultOption(this)">
+                    <tr>
+                        <td>Qualité du travail</td>
+                        <td>
+                            <select name="option5" onchange="removeDefaultOption(this)">
                                 <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
@@ -185,12 +151,12 @@ $translations = include $langFile;
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td class="tdEdit"><input class="tableInput" type="text" name="table5"></td>
+                        <td><input type="text" name="table5"></td>
                     </tr>
-                    <tr class="trEdit">
-                        <td class="tdEdit">Intérêt pour la découverte de l'entreprise</td>
-                        <td class="tdEdit">
-                            <select class="selection" name="option6" onchange="removeDefaultOption(this)">
+                    <tr>
+                        <td>Intérêt pour la découverte de l'entreprise</td>
+                        <td>
+                            <select name="option6" onchange="removeDefaultOption(this)">
                                 <option value="" selected>Aucun niveau sélectionné</option>
                                 <option value="beginner">Débutant</option>
                                 <option value="mid">Intermédiaire</option>
@@ -198,17 +164,31 @@ $translations = include $langFile;
                                 <option value="expert">Expert</option>
                             </select>
                         </td>
-                        <td class="tdEdit"><input class="tableInput" type="text" name="table6"></td>
+                        <td><input type="text" name="table6"></td>
                     </tr>
                     </tbody>
-                </table><br>
-
-                <strong>Commentaires du professeur tuteur : </strong>
+                </table>
+                <br>
+                <strong>Commentaires du professeur tuteur :</strong><br>
+                <textarea name="remarque[]" class="textareaLivret"></textarea> <br><br>
+                <strong>Commentaires du maitre de stage :</strong><br>
                 <textarea name="remarque[]" class="textareaLivret"></textarea> <br><br>
 
-                <strong>Commentaires du maitre de stage : </strong>
-                <textarea name="remarque[]" class="textareaLivret"></textarea> <br><br>
+                <button type="button" class="validate-bilan-btn" style="background: #38761d; color:white; padding:6px 12px;">
+                    Valider le Bilan
+                </button>
             </form>
+
+            <?php if ($userRole == 1): // Étudiant ?>
+                <h3 style="margin-top: 30px;">Veuillez déposer votre rapport de stage ci-dessous :</h3>
+                <form class="box" method="post" enctype="multipart/form-data">
+                    <p>Seuls les formats .pdf sont autorisés (max 50 Mo).</p>
+                    <div class="box__input">
+                        <input type="file" name="file" id="fileUpload">
+                        <button class="box__button" type="submit">Uploader</button>
+                    </div>
+                </form>
+            <?php endif; ?>
 
             <?php include_once("Documents/Documents.php");?>
 
@@ -222,8 +202,6 @@ $translations = include $langFile;
                     <button class="box__button" type="submit">Uploader Rapport</button>
                 </div>
             </form>
-
-
 
             <?php
             $db = Database::getInstance();
@@ -252,17 +230,6 @@ $translations = include $langFile;
                     <?php endforeach; ?>
                 </div>
             </div>
-
-
-
         </div>
-        <div style="display: flex; ">
-            <!-- Validation du formulaire -->
-            <div class="validation">
-                <h3 style="padding: 10px">Validation</h3>
-
-                <button>Finaliser le livret de suivi</button>
-            </div>
-        </div>
-    </div>
+    </div> <!-- fin #BilanSection -->
 </div>

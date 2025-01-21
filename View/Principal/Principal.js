@@ -477,339 +477,6 @@ function hideNewMessageIndicator(contactId) {
 }
 
 
-// ---------------------------------- Livret de suivi -----------------------------------//
-
-// Montre le contenu d'une rencontre
-function showContent(x) {
-    // Hide all content sections
-    document.querySelectorAll('.content-section').forEach((section) => {
-        section.classList.remove('active');
-    });
-
-    // Show the selected content section
-    document.getElementById(`${x}`).classList.add('active');
-}
-
-let meetingCounter = 2;
-let showcontent = 2;
-
-// Ajoute une rencontre
-function addMeeting() {
-    const aside = document.querySelector(".livretbar");
-    const depositSpan = aside.querySelector('span[onclick="showContent(1)"]');
-
-    // Create a new meeting button
-    const newMeeting = document.createElement("span");
-    newMeeting.className = "vignette";
-    newMeeting.textContent = `${meetingCounter}ème rencontre`;
-    newMeeting.setAttribute("onclick", `showContent(${showcontent})`);
-
-    // Insert the new meeting button before the deposit span
-    aside.insertBefore(newMeeting, depositSpan);
-
-    const lineBreak = document.createElement("br");
-    aside.insertBefore(lineBreak, depositSpan);
-
-    // Create the new content section for the meeting
-    const contentContainer = document.querySelector(".content-livret");
-    const newContent = document.createElement("div");
-    newContent.className = "content-section";
-    newContent.id = showcontent;
-    const formContainerId = `formContainer-${showcontent}`;
-
-    newContent.innerHTML = `
-        <h3 style="padding: 10px">Formulaire</h3>
-        <div class="livret-header">
-            <h3>${meetingCounter}ème rencontre</h3>
-        </div>
-
-        <!-- Formulaire -->
-            <div class="participants">
-                <form method="post" id="${formContainerId}">
-                    <p>
-                    Date de rencontre : <label style="color: red">*</label> <br>
-
-                    <input type="date" name="meeting"/>
-                    </p>
-
-                    <br><br>
-
-                    <p>
-                    Lieu de la rencontre : <label style="color: red">*</label> <br>
-
-                    <input type="radio" id="Entreprise" name="Lieu"><label> En entreprise</label> <br>
-                    <input type="radio" id="Tél" name="Lieu"><label> Par téléphone</label> <br>
-                    <input type="radio" id="Visio" name="Lieu"><label> En visio</label> <br>
-                    <input type="radio" id="Autre" name="Lieu"><label> Autre</label> <input type="text">
-                    </p>
-
-                    <br><br>
-
-                    <button onclick="addField('${formContainerId}')" type="button">+ Ajouter un champ</button>
-
-                </form>
-            </div>
-            <div style="display: flex; ">
-                <!-- Validation du formulaire -->
-                <div class="validation">
-                    <h3 style="padding: 10px">Validation du formulaire</h3>
-
-                    <button>Valider modifications</button>
-                </div>
-
-            </div>
-    `;
-
-    contentContainer.appendChild(newContent);
-
-    meetingCounter++;
-    showcontent++;
-
-}
-
-
-// créer un champ dans une rencontre
-function addField(containerId) {
-    const fieldWrapper = document.createElement('p');
-
-    fieldWrapper.innerHTML = `
-        <select name="field_choice" id="field_choice" onchange="removeDefaultOption(this)">
-            <option value="" selected>Sélectionnez le type du champ</option>
-            <option value="text">Text libre</option>
-            <option value="qcm">QCM</option>
-        </select>
-        <button class="select-button" onclick="handleFieldSelection(this, '${containerId}')" type="button">Sélectionner</button> 
-        <a class="cancel-link" onclick="deleteField(this)"> Annuler </a>
-    `;
-
-    const fieldContainer = document.getElementById(containerId);
-    const addButton = fieldContainer.querySelector(`button[onclick="addField('${containerId}')"]`);
-    fieldContainer.insertBefore(fieldWrapper, addButton);
-}
-
-//Permet de choisir un titre au nouveau champ
-function handleFieldSelection(button, containerId) {
-    const fieldWrapper = button.parentElement;
-    const selectElement = button.previousElementSibling;
-    const selectedType = selectElement.value;
-
-    if (!selectedType) {
-        alert("Veuillez sélectionner un type !");
-        return;
-    } else {
-        const fieldText = document.createElement('form');
-        fieldText.method = 'post';
-        fieldText.innerHTML = `
-            <label for="userText">Titre :</label>
-            <input type="text" id="userText" name="userText" />
-            <button type="submit">Valider</button>
-            <a onclick="deleteField(this)"> Annuler </a>
-        `;
-
-        fieldText.addEventListener('submit', function(event) {
-            event.preventDefault(); // Empêche le comportement par défaut (rechargement de la page)
-
-            // Récupère la valeur de l'input
-            const title = fieldText.querySelector('input[name="userText"]').value;
-
-            // Ajoute le contenu en fonction du type choisi
-            addFieldContent(containerId, selectedType, title);
-
-            // Supprime le formulaire après validation
-            fieldText.remove();
-        });
-
-        // Ajoute le formulaire dans le conteneur parent
-        fieldWrapper.appendChild(fieldText);
-    }
-
-    // Supprime uniquement les éléments précédents créés par addField
-    const elementsToRemove = fieldWrapper.querySelectorAll('select, .select-button, .cancel-link');
-    elementsToRemove.forEach(element => element.remove());
-}
-
-// Créer le champ sélectionné par l'utilisateur (QCM ou text libre)
-function addFieldContent(containerId, type, title) {
-    const fieldWrapper = document.createElement('p');
-
-    if (type === 'qcm') {
-        fieldWrapper.innerHTML = `
-            ${title} :
-            <button class="edit-qcm" style="display: none;">Modifier</button>
-            <button onclick="deleteField(this)" type="button">Supprimer</button> <br>
-            <div class="radio-group">
-            </div> <br class="last">
-            <button type="button" class="add-option">+ Ajouter une réponse</button>
-            <a class="save-qcm"> Enregistrer </a>
-        `;
-
-        // ajoute l'option de pouvoir ajouter une réponse
-        fieldWrapper.querySelector('.add-option').addEventListener('click', function() {
-            const radioGroup = fieldWrapper.querySelector('.radio-group');
-
-            // Create a temporary form for user input
-            const tempForm = document.createElement('div');
-            tempForm.classList.add('temp-form');
-            tempForm.innerHTML = `
-                <input type="text" placeholder="Nom de l'option" class="new-option-input">
-                <button type="button" class="confirm-option">Valider</button>
-                <a class="cancel-option">Annuler</a>
-            `;
-
-            // Ajoute le forme
-            const addOptionButton = fieldWrapper.querySelector('.add-option');
-            fieldWrapper.insertBefore(tempForm, addOptionButton);
-
-            // Validation du bouton d'ajout de réponse
-            tempForm.querySelector('.confirm-option').addEventListener('click', function() {
-                const inputValue = tempForm.querySelector('.new-option-input').value.trim();
-                if (inputValue) {
-                    const newOption = document.createElement('div');
-                    newOption.innerHTML = `
-                        <input type="radio" name=${title}>
-                        <label>${inputValue}</label>
-                        <a class="delete-option" style="color: red"> - Supprimer </a> <br> <br class="last">
-                    `;
-
-
-                    // Ajoute un event pour supprimer la réponse
-                    newOption.querySelector('.delete-option').addEventListener('click', function() {
-                        newOption.remove();
-                    });
-
-                    fieldWrapper.querySelector('br[class="last"]').remove();
-
-                    radioGroup.appendChild(newOption);
-                    tempForm.remove();
-                } else {
-                    alert('Veuillez entrer un nom pour l\'option.');
-                }
-            });
-
-            // Ajoute l'option d'annuler la création d'une réponse
-            tempForm.querySelector('.cancel-option').addEventListener('click', function() {
-                tempForm.remove();
-            });
-
-            fieldWrapper.querySelector('.save-qcm').addEventListener('click', function () {
-                // Désactive les boutons d'ajout et de modification
-                fieldWrapper.querySelector('.add-option').style.display = 'none';
-                fieldWrapper.querySelector('.save-qcm').style.display = 'none';
-
-                // Supprime les liens "Supprimer" associés à chaque réponse
-                fieldWrapper.querySelectorAll('.delete-option').forEach(option => option.style.display = 'none');
-
-                // Bouton pour modifier
-                const editButton = fieldWrapper.querySelector('.edit-qcm');
-                editButton.style.display = 'inline-block';
-
-                // Réactiver la possibilité de modifier le qcm
-                editButton.addEventListener('click', function (event) {
-                    event.preventDefault()
-                    // Réactive les boutons de suppression et d'ajout
-                    fieldWrapper.querySelector('.add-option').style.display = 'inline-block';
-                    fieldWrapper.querySelector('.save-qcm').style.display = 'inline-block';
-                    fieldWrapper.querySelectorAll('.delete-option').forEach(option => option.style.display = 'inline-block');
-
-                    // Supprime le bouton "Modifier"
-                    editButton.style.display = 'none';
-                });
-            });
-        });
-    } else if (type === 'text') {
-        fieldWrapper.innerHTML = `
-            ${title} :
-            <button onclick="deleteField(this)" type="button">Supprimer</button> <br>
-            <textarea name="remarque[]" class="textareaLivret"></textarea> <br><br>
-        `;
-    }
-
-    const fieldContainer = document.getElementById(containerId);
-    const addButton = fieldContainer.querySelector(`button[onclick="addField('${containerId}')"]`);
-    fieldContainer.insertBefore(fieldWrapper, addButton);
-}
-
-//Supprime le formulaire
-function deleteField(button) {
-    button.parentElement.remove();
-}
-
-function deleteMeeting() {
-
-    if (meetingCounter <= 2) {
-        alert("Vous ne pouvez pas supprimer cette rencontre");
-        return;
-    }
-
-    meetingCounter--;
-    showcontent--;
-
-    // enlève la dernière rencontre
-    const aside = document.querySelector(".livretbar");
-    const lastMeetingButton = aside.querySelector(`.vignette[onclick="showContent(${showcontent})"]`);
-    const lastLineBreak = lastMeetingButton.nextElementSibling;
-
-    if (lastMeetingButton) {
-        aside.removeChild(lastMeetingButton);
-    }
-    if (lastLineBreak && lastLineBreak.tagName === "BR") {
-        aside.removeChild(lastLineBreak);
-    }
-
-    const contentContainer = document.querySelector(".content-livret");
-    const lastContent = document.getElementById(showcontent);
-
-    // Enlève le contenu de la dernière rencontre
-    if (lastContent) {
-        contentContainer.removeChild(lastContent);
-    }
-}
-
-function removeDefaultOption(selectElement) {
-    const defaultOption = selectElement.querySelector('option[value=""]');
-    if (selectElement.value !== "") {
-        defaultOption.style.display = "none";
-    } else {
-        defaultOption.style.display = "block";
-    }
-}
-
-function fetchStudentInfoManage(userId) {
-    fetch(`StudentManagment.php?user_id=${userId}`)
-        .then(response => response.text())
-        .then(data => {
-            // Mettre à jour le contenu de la section d'information de l'étudiant avec les données reçues
-            const studentDetails = document.querySelector('#student-infos');
-            if (studentDetails) {
-                studentDetails.innerHTML = data;
-            } else {
-                console.error("Impossible de trouver la section des détails de l'étudiant.");
-            }
-        })
-        .catch(error => {
-            console.error('Erreur lors de la récupération des informations de l\'étudiant :', error);
-        });
-    console.log("ID de l'étudiant pour le livret de suivi : ", userId);
-}
-function fetchStudentInfo(userId) {
-    fetch(`livretSuiviParticipant.php?user_id=${userId}`)
-        .then(response => response.text())
-        .then(data => {
-            // Mettre à jour le contenu de la section d'information de l'étudiant avec les données reçues
-            const studentDetails = document.querySelector('#student-details');
-            if (studentDetails) {
-                studentDetails.innerHTML = data;
-            } else {
-                console.error("Impossible de trouver la section des détails de l'étudiant.");
-            }
-        })
-        .catch(error => {
-            console.error('Erreur lors de la récupération des informations de l\'étudiant :', error);
-        });
-    console.log("ID de l'étudiant pour le livret de suivi : ", userId);
-}
-
-
 // ---------------------------------- Add Secretariat ----------------------------------//
 
 function showForm() {
@@ -848,7 +515,40 @@ function searchStudents() {
     });
 }
 
-
+function fetchStudentInfoManage(userId) {
+    fetch(`StudentManagment.php?user_id=${userId}`)
+        .then(response => response.text())
+        .then(data => {
+            // Mettre à jour le contenu de la section d'information de l'étudiant avec les données reçues
+            const studentDetails = document.querySelector('#student-infos');
+            if (studentDetails) {
+                studentDetails.innerHTML = data;
+            } else {
+                console.error("Impossible de trouver la section des détails de l'étudiant.");
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération des informations de l\'étudiant :', error);
+        });
+    console.log("ID de l'étudiant pour le livret de suivi : ", userId);
+}
+function fetchStudentInfo(userId) {
+    fetch(`livretSuiviParticipant.php?user_id=${userId}`)
+        .then(response => response.text())
+        .then(data => {
+            // Mettre à jour le contenu de la section d'information de l'étudiant avec les données reçues
+            const studentDetails = document.querySelector('#student-details');
+            if (studentDetails) {
+                studentDetails.innerHTML = data;
+            } else {
+                console.error("Impossible de trouver la section des détails de l'étudiant.");
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération des informations de l\'étudiant :', error);
+        });
+    console.log("ID de l'étudiant pour le livret de suivi : ", userId);
+}
 
 function selectStudent(element) {
     console.log("Élément sélectionné : ", element);

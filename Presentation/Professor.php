@@ -1,4 +1,5 @@
 <?php
+global $files;
 ob_start();
 global $database;
 session_start();
@@ -53,6 +54,173 @@ if ($userRole != 2) {
     exit();
 }
 
+// -- Actions AJAX de gestion des rencontres --
+if (isset($_GET['action']) && $_GET['action'] === 'get_meetings') {
+    // On récupère le followUpId
+    $fid = isset($_GET['followup_id']) ? (int)$_GET['followup_id'] : 0;
+    if (!$fid) {
+        echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+        exit();
+    }
+    $followUpBook = $database->getFollowUpBook($fid);
+    if (!$followUpBook) {
+        echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+        exit();
+    }
+    $meetings = $database->getMeetingsByFollowUp($fid);
+    $result = [];
+    foreach($meetings as $m) {
+        $mId = $m['id'];
+        $qcm = $database->getQCMByMeeting($mId);
+        $txt = $database->getTextsByMeeting($mId);
+        $result[] = [
+            'id'           => $mId,
+            'name'         => $m['name'],
+            'meeting_date' => $m['meeting_date'],
+            'end_date'     => $m['end_date'],
+            'qcm'          => $qcm,
+            'texts'        => $txt
+        ];
+    }
+    echo json_encode(['status'=>'success','meetings'=>$result]);
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action'])) {
+    $action = $_POST['action'];
+    if ($action === 'save_meeting') {
+        $followUpId  = isset($_POST['followup_id']) ? (int)$_POST['followup_id'] : 0;
+        if (!$followUpId) {
+            echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+            exit();
+        }
+        $meetingDate  = $_POST['meeting'] ?? null;
+        $endMeeting   = $_POST['end_meeting'] ?? null;
+        $meetingName  = $_POST['meeting_name'] ?? 'Nouvelle rencontre';
+        $lieu         = $_POST['Lieu'] ?? '';
+        $validation   = 0;
+
+        $followUpBook = $database->getFollowUpBook($followUpId);
+        if (!$followUpBook) {
+            echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+            exit();
+        }
+        $startDate = $followUpBook['start_date'];
+        $endDate   = $endMeeting ? $endMeeting : $followUpBook['end_date'];
+
+        // Insert MeetingBook
+        $meetingId = $database->insertMeetingBook($followUpId, $meetingName, $startDate, $endDate, $meetingDate, $validation);
+
+        // Lieu => MeetingQCM
+        if (!empty($lieu)) {
+            $database->insertMeetingQCM($meetingId, 'Lieu', '', $lieu);
+        }
+        // QCM dynamiques
+        if (isset($_POST['qcm']) && is_array($_POST['qcm'])) {
+            foreach($_POST['qcm'] as $q) {
+                $title   = $q['title'] ?? '';
+                $choices = $q['choices'] ?? '';
+                $other   = $q['other_choice'] ?? '';
+                if (!empty($title)) {
+                    $database->insertMeetingQCM($meetingId, $title, $choices, $other);
+                }
+            }
+        }
+        // Textes
+        if (isset($_POST['texts']) && is_array($_POST['texts'])) {
+            foreach($_POST['texts'] as $t) {
+                $tTitle = $t['title'] ?? '';
+                $tResp  = $t['response'] ?? '';
+                if (!empty($tTitle)) {
+                    $database->insertMeetingText($meetingId, $tTitle, $tResp);
+                }
+            }
+        }
+        // Commentaires
+        if (isset($_POST['commentaires']) && is_array($_POST['commentaires'])) {
+            foreach($_POST['commentaires'] as $c) {
+                $cTitle = $c['title'] ?? '';
+                $cResp  = $c['response'] ?? '';
+                if (!empty($cTitle)) {
+                    $database->insertMeetingText($meetingId, $cTitle, $cResp);
+                }
+            }
+        }
+        // Questions/Réponses
+        if (isset($_POST['questrep']) && is_array($_POST['questrep'])) {
+            foreach($_POST['questrep'] as $qr) {
+                $qrTitle = $qr['title'] ?? '';
+                $qrResp  = $qr['response'] ?? '';
+                if (!empty($qrTitle)) {
+                    $database->insertMeetingText($meetingId, $qrTitle, $qrResp);
+                }
+            }
+        }
+
+        echo json_encode(['status'=>'success','message'=>'Rencontre sauvegardée avec succès']);
+        exit();
+    }
+
+    if ($action === 'save_bilan') {
+        $followUpId = isset($_POST['followup_id']) ? (int)$_POST['followup_id'] : 0;
+        if (!$followUpId) {
+            echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+            exit();
+        }
+        $followUpBook = $database->getFollowUpBook($followUpId);
+        if (!$followUpBook) {
+            echo json_encode(['status'=>'error','message'=>'NoFollowUpID']);
+            exit();
+        }
+        $meetings = $database->getMeetingsByFollowUp($followUpId);
+        $bilanMeetingId = null;
+        foreach($meetings as $m) {
+            if ($m['name']==='Finalisation du livret') {
+                $bilanMeetingId = $m['id'];
+                break;
+            }
+        }
+        if(!$bilanMeetingId) {
+            $bilanMeetingId = $database->insertMeetingBook(
+                $followUpId,
+                'Finalisation du livret',
+                $followUpBook['start_date'],
+                $followUpBook['end_date'],
+                date('Y-m-d'),
+                0
+            );
+        }
+        // competences
+        $competences = [
+            ["nom"=>"Adaptation à l'entreprise", "option"=>"option1", "comment"=>"table1"],
+            ["nom"=>"Ponctualité", "option"=>"option2", "comment"=>"table2"],
+            ["nom"=>"Motivation pour le travail", "option"=>"option3", "comment"=>"table3"],
+            ["nom"=>"Initiatives personnelles", "option"=>"option4", "comment"=>"table4"],
+            ["nom"=>"Qualité du travail", "option"=>"option5", "comment"=>"table5"],
+            ["nom"=>"Intérêt pour la découverte de l'entreprise", "option"=>"option6", "comment"=>"table6"]
+        ];
+        $bilanTexts = $database->getTextsByMeeting($bilanMeetingId);
+        $existingTexts = [];
+        foreach($bilanTexts as $bt) {
+            $existingTexts[$bt['title']] = $bt;
+        }
+        foreach($competences as $comp) {
+            $compName    = $comp['nom'];
+            $niveau      = $_POST[$comp['option']] ?? '';
+            $commentaire = $_POST[$comp['comment']] ?? '';
+            $response    = "Niveau: $niveau | Commentaire: $commentaire";
+            if (isset($existingTexts[$compName])) {
+                $tid = $existingTexts[$compName]['id'];
+                $database->updateMeetingText($tid, $response);
+            } else {
+                $database->insertMeetingText($bilanMeetingId, $compName, $response);
+            }
+        }
+        echo json_encode(['status'=>'success','message'=>'Bilan sauvegardé avec succès.']);
+        exit();
+    }
+}
+
 $students = $database->getStudentsProf($senderId);
 
 // Récupérer les préférences de l'utilisateur
@@ -77,7 +245,8 @@ $pdo = $database->getConnection();
 $person = unserialize($_SESSION['user']);
 $userId = $person->getId();
 
-
+// get actual section for Livret Suivi
+$section = $_GET['section'] ?? '0';
 //TRADUCTION
 
 // Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
@@ -108,6 +277,7 @@ $translations = include $langFile;
     <title>Le Petit Stage - <?= $translations['professeur']?></title>
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <script src="../View/Principal/Principal.js" defer></script>
+    <script src="../View/Principal/LivretSuivi.js"></script>
     <script src="/View/Principal/Note.js"></script>
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <!-- Include jQuery -->
@@ -126,7 +296,8 @@ $translations = include $langFile;
     </div>
     <div class="students">
         <?php foreach ($students as $student): ?>
-            <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>" onclick="selectStudent(this)">
+            <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>"
+                 onclick="selectStudent(this)">
                 <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
             </div>
         <?php endforeach; ?>

@@ -1765,6 +1765,28 @@ class Database
             'mid'   => $meetingId
         ]);
     }
+    public function updateMeetingFields($meetingId, $texts, $qcms)
+    {
+        // We iterate each text data and update or insert
+        foreach ($texts as $t) {
+            // If we have an existing text id -> update
+            if (!empty($t['id'])) {
+                $this->updateMeetingText($t['id'], $t['response']);
+            } else {
+                // Insert as new text row
+                $this->insertMeetingText($meetingId, $t['title'], $t['response']);
+            }
+        }
+        // Same logic for QCM
+        foreach ($qcms as $q) {
+            if (!empty($q['id'])) {
+                $this->updateMeetingQCM($q['id'], $q['other_choice']);
+            } else {
+                $this->insertMeetingQCM($meetingId, $q['title'], '', $q['other_choice']);
+            }
+        }
+        return true;
+    }
 
     /**
      * Delete meetings of a meeting book

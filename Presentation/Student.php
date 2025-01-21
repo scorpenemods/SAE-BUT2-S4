@@ -99,6 +99,7 @@ $translations = include $langFile;
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="/View/Principal/Principal.css">
     <script src="/View/Principal/Principal.js" defer></script>
+    <script src="../View/Principal/LivretSuivi.js"></script>
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
