@@ -98,6 +98,7 @@ $translations = include $langFile;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Petit Stage</title>
     <link rel="stylesheet" href="/View/Principal/Principal.css">
+    <link rel="stylesheet" href="../View/Agreement/SecretariatConsultPreAgreementForm.css">
     <script src="/View/Principal/Principal.js" defer></script>
     <script src="../View/Principal/LivretSuivi.js"></script>
     <link rel="stylesheet" href="../View/Documents/Documents.css">
@@ -166,6 +167,16 @@ $translations = include $langFile;
 
         <!-- Documents Content -->
         <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
+            <h2>Espace convention :</h2>
+            <!-- Bouton qui affiche la fenêtre modale -->
+            <button id="PreAgreement">Consulter vos formulaire de pré-convention</button>
+
+            <?php //premier bouton
+            include_once("StudentConsultPreAgreement.php");
+            ?>
+            <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
+
+
             <?php include_once("Documents/Documents.php");?>
 
             <h2>Gestion des Fichiers</h2>
@@ -370,7 +381,6 @@ $translations = include $langFile;
 </script>
 </body>
 </html>
-
 
 
 
