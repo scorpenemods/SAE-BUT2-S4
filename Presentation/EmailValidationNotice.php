@@ -1,4 +1,5 @@
 <?php
+// Vérification adresse email
 // Démarre la session pour gérer l'authentification de l'utilisateur
 session_start();
 

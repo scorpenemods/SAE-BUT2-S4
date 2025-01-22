@@ -1,4 +1,5 @@
 <?php
+// Manage student page
 date_default_timezone_set('Europe/Paris');
 // Démarre la session au début du script pour gérer les informations utilisateur
 session_start();

@@ -1,4 +1,5 @@
 <?php
+//Contacte le secretariat
 global $userRole;
 session_start();
 

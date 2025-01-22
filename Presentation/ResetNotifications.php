@@ -1,4 +1,5 @@
 <?php
+// Manage to reset notification when readed
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 

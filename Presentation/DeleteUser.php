@@ -1,4 +1,5 @@
 <?php
+// Supprime un utilisateur
 error_log("DeleteUser.php");
 // Démarre une session pour gérer l'authentification et les données de session utilisateur
 session_start();

@@ -1,5 +1,5 @@
 <?php
-
+// manage pre agreement form for professor
 $database = (Database::getInstance());
 $senderId = $_SESSION['user_id'];
 ?>

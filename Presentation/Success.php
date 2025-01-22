@@ -1,4 +1,5 @@
 <?php
+// manage mail validation
 session_start();
 
 // Removing session variables related to verification

@@ -1,4 +1,5 @@
 <?php
+// manage to send a message
 session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";

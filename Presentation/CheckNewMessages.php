@@ -1,4 +1,5 @@
 <?php
+// vérifie s'il y a des nouveaux messages non lus
 session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";

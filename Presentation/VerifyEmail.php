@@ -1,4 +1,5 @@
 <?php
+// manage right email
 session_start();
 require "../Model/Database.php";
 

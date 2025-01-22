@@ -1,4 +1,5 @@
 <?php
+// manage accepted offers
 session_start();
 
 require '../Model/PendingOffer.php';

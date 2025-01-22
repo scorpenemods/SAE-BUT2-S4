@@ -1,4 +1,5 @@
 <?php
+// manage to get new messages
 session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";

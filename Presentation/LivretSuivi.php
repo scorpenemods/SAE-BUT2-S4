@@ -1,5 +1,5 @@
 <?php
-
+// manage internship book
 
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';

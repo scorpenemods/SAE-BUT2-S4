@@ -1,4 +1,5 @@
 <?php
+// manage rejected users
 session_start();
 require "../Model/Database.php";
 require '../vendor/autoload.php';

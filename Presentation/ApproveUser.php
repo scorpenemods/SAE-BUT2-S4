@@ -1,4 +1,5 @@
 <?php
+// Permet l'acceptation d'un utilisateur
 // Démarre une session pour gérer l'authentification des utilisateurs
 session_start();
 

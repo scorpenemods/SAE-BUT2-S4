@@ -1,4 +1,5 @@
 <?php
+// manage mail verification code
 session_start();
 require "../Model/Database.php";
 

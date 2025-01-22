@@ -1,6 +1,5 @@
-
-
 <?php
+// Gérer les objets "Offer"
 require_once dirname(__FILE__) . '/Database.php';
 $db = Database::getInstance()->getConnection();
 

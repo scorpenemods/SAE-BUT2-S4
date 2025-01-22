@@ -1,5 +1,5 @@
 <?php
-
+// manage internship quest section
 require_once "../Model/Database.php";
 // Instanciation de l'objet Database (singleton pour une seule instance de connexion)
 $database = (Database::getInstance());

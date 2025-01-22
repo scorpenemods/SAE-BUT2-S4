@@ -1,4 +1,6 @@
 <?php
+// Toutes les fonctions en rapport avec la base de donnée
+
 // Initialisation of Database objects
 date_default_timezone_set('Europe/Paris');
 

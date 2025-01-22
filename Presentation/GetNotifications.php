@@ -1,4 +1,5 @@
 <?php
+// Manage notifications
 // Démarre la session pour accéder aux informations de l'utilisateur
 session_start();
 

@@ -1,6 +1,5 @@
-
-
 <?php
+// Gérer les objets "FileHandler"
 class FileHandler
 {
     private $db;

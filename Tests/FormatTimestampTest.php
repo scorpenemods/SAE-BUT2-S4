@@ -1,5 +1,5 @@
 <?php
-
+// Test of timestamp format
 require_once "../vendor/autoload.php";
 require_once "..\Model\Utils.php";
 use PHPUnit\Framework\TestCase;

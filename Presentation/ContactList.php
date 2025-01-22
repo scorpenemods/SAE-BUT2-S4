@@ -1,5 +1,5 @@
 <?php
-
+// établit la liste des contacts
 $roleMapping = [
     1 => "Etudiant",
     2 => "Professeur",

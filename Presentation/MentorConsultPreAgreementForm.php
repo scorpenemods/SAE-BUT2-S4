@@ -1,4 +1,5 @@
 <?php
+// manage pre agreement form for mentor
 
 $database = (Database::getInstance());
 $senderId = $_SESSION['user_id'];

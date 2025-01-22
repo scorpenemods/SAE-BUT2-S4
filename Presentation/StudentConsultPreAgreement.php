@@ -1,5 +1,5 @@
 <?php
-
+// manage final pre agreement form for studend
 $database = (Database::getInstance());
 $senderId = $_SESSION['user_id'];
 ?>

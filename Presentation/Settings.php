@@ -1,5 +1,5 @@
 <?php
-
+// manage setting section
 session_start(); // Assurez-vous que la session est démarrée
 require_once "../Model/Person.php"; // Ensure Person class is correctly included
 require_once "../Model/Database.php";

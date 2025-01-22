@@ -1,4 +1,5 @@
 <?php
+// réinitialisation de mot de passe
 // Démarre une session pour gérer l'état utilisateur
 session_start();
 

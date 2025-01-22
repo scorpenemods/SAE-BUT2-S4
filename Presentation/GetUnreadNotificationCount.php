@@ -1,4 +1,5 @@
 <?php
+// Manage count of unread notifications
 // Démarre la session pour accéder aux variables de session utilisateur
 session_start();
 

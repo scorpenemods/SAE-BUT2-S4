@@ -1,4 +1,5 @@
 <?php
+// manage internship supervisor's page
 global $files;
 ob_start();
 
