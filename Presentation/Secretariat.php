@@ -80,78 +80,6 @@ $conn = $database->getConnection();
 
 $errorMessage = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_id']) && $_POST['form_id'] === 'create_secretary') {
-    error_log("Secretariat.php POSTED");
-    // Initialise l'activité du user
-    $function = isset($_POST['function']) ? htmlspecialchars(trim($_POST['function'])) : '';
-
-    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $name = htmlspecialchars(trim($_POST['name']));
-    $firstname = htmlspecialchars(trim($_POST['firstname']));
-    $phone = htmlspecialchars(trim($_POST['phone']));
-    $password = $_POST['password'];
-    $confirmPassword = $_POST['confirm_password'];
-
-    // Valide l'email
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errorMessage = 'Adresse email invalide.';
-    }
-
-    // Valide mdp
-    if ($password !== $confirmPassword) {
-        $errorMessage = 'Les mots de passe ne correspondent pas!';
-    }
-
-    // Check si l'email exist déjà
-    $queryCheckEmail = "SELECT COUNT(*) FROM User WHERE email = :email";
-    $stmtCheck = $conn->prepare($queryCheckEmail);
-    $stmtCheck->bindParam(':email', $email);
-    $stmtCheck->execute();
-    $emailExists = $stmtCheck->fetchColumn();
-
-    if ($emailExists > 0) {
-        $errorMessage = 'Cet email est déjà enregistré. Veuillez utiliser un autre email.';
-    }
-
-    if (!$errorMessage) {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        // Inserer user
-        $query = "INSERT INTO User (nom, prenom, email, telephone, role, activite, valid_email, status_user, last_connexion, account_creation) 
-                  VALUES (:nom, :prenom, :email, :telephone, 4, :activite, 0, 1, NOW(), NOW())";
-        $stmt = $conn->prepare($query);
-        $stmt->bindValue(':nom', $name);
-        $stmt->bindValue(':prenom', $firstname);
-        $stmt->bindValue(':email', $email);
-        $stmt->bindValue(':telephone', $phone);
-        $stmt->bindValue(':activite', $function);
-
-        if ($stmt->execute()) {
-            $userID = $conn->lastInsertId();
-
-            // Inserer mdp
-            $queryPass = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, 1)";
-            $stmtPass = $conn->prepare($queryPass);
-            $stmtPass->bindValue(':user_id', $userID);
-            $stmtPass->bindValue(':password_hash', $hashedPassword);
-
-            if ($stmtPass->execute()) {
-                $_SESSION['user_email'] = $email;
-                $userID = $_SESSION['user_id'];
-                $_SESSION['user_name'] = $name . " " . $firstname;
-
-                // Ajout de log pour vérifier que l'étape est atteinte
-                echo "<script>window.location.reload();</script>";
-                exit();
-            } else {
-                $errorMessage = 'Erreur lors de l\'insertion du mot de passe.';
-            }
-        } else {
-            $errorMessage = 'Erreur lors de la création de l\'utilisateur.';
-        }
-    }
-}
-
 // Fetch all groups with their members
 $groupsWithMembers = $database->getAllGroupsWithMembers();
 
@@ -164,7 +92,7 @@ if (isset($_GET['lang'])) {
 }
 
 // Vérification si le fichier de langue existe, sinon charger le français par défaut
-$langFile = "./locales/{$lang}.php";
+$langFile = "./Locales/{$lang}.php";
 if (!file_exists($langFile)) {
     $langFile = "../Locales/fr.php";
 }
@@ -181,9 +109,9 @@ if (isset($_GET['lang'])) {
 }
 
 // Vérification si le fichier de langue existe, sinon charger le français par défaut
-$langFile = "../locales/{$lang}.php";
+$langFile = "../Locales/{$lang}.php";
 if (!file_exists($langFile)) {
-    $langFile = "../locales/fr.php";
+    $langFile = "../Locales/fr.php";
 }
 
 // Charger les traductions
@@ -418,8 +346,8 @@ $translations = include $langFile;
                     <button id="showButton" onclick="showForm()"><?= $translations['nouveau_secretaire']?></button>
                     <!-- Form -->
                     <div id="secretariatCreation" style="display: none;">
-                        <form action="" method="POST">
-
+                        <form action="NewSecretaraitGestion.php" method="POST">
+                            <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                             <input type="hidden" name="form_id" value="create_secretary">
 
                             <!-- Hidden role input field (for secretariat role) -->

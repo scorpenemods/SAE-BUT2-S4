@@ -66,9 +66,9 @@ if (isset($_GET['lang'])) {
 }
 
 // Vérification si le fichier de langue existe, sinon charger le français par défaut
-$langFile = "../locales/{$lang}.php";
+$langFile = "../Locales/{$lang}.php";
 if (!file_exists($langFile)) {
-    $langFile = "../locales/fr.php";
+    $langFile = "../Locales/fr.php";
 }
 
 // Charger les traductions
