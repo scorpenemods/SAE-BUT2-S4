@@ -1,7 +1,7 @@
 // Récupération des éléments du DOM
 const modal = document.getElementById("preAgreementModal");
 const openModalButton = document.getElementById("PreAgreement");
-const closeModalButton = document.querySelector(".close-button");
+const closeModalButton = document.querySelector(".close-button-m");
 const searchBar = document.getElementById("searchBar-student");
 const studentList = document.getElementById("studentList");
 
@@ -36,7 +36,7 @@ item.style.display = text.toLowerCase().includes(filter) ? "" : "none";
 // Gestion du second modal
 const modalToValidate = document.getElementById("preAgreementToValidateModal");
 const openModalButtonToValidate = document.getElementById("PreAgreementToValidate");
-const closeModalButtonToValidate = modalToValidate.querySelector(".close-button");
+const closeModalButtonToValidate = modalToValidate.querySelector(".close-button-m");
 const searchBarToValidate = document.getElementById("searchBarToValidate");
 const studentListToValidate = document.getElementById("studentListToValidate");
 

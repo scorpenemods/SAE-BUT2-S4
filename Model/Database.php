@@ -2137,7 +2137,7 @@ class Database
         $stmt = $this->connection->prepare("SELECT id FROM Pre_Agreement WHERE idStudent = :idPerson;");
         $stmt -> bindParam('idPerson', $idPerson);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getPreAgreementFormMentor($idPerson){
         $stmt = $this->connection->prepare("SELECT id FROM Pre_Agreement WHERE idMentor = :idPerson;");
@@ -2257,6 +2257,14 @@ class Database
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return (int)$result['status'];
+    }
+
+    public function getCreationDatePreAgreement(int $id){
+        $stmt = $this->connection->prepare("select created_at from Pre_Agreement where id = :id;");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['created_at'];
     }
 
     public function setValidPreAgreement(int $id): void
