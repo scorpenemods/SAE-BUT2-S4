@@ -1,3 +1,5 @@
+//c'est le fichier qui contient la classe Company qui permet de gérer les entreprises
+
 <?php
 require_once dirname(__FILE__) . '/Database.php';
 $db = Database::getInstance()->getConnection();

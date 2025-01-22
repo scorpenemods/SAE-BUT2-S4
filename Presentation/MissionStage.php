@@ -34,7 +34,7 @@ function getFieldValue($field, $inputs = null, $default = 'Pas défini'): string
             echo 'Aucune mission trouvée pour cet accord préalable';
         }
     } else {
-        echo 'Aucune variable stage_id';
+        echo 'Aucun élève choisi';
     }
     ?>
 

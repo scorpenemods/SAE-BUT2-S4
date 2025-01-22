@@ -1,3 +1,5 @@
+//Ce fichier contient la classe Media qui permet de gérer les médias
+
 <?php
 //Class to manage medias
 class Media {

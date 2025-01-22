@@ -1,3 +1,5 @@
+//Ce fichier permet formater les dates en fonction de leur éloignement par rapport à la date actuelle
+
 <?php
 // Initializing of timestamp format
 // Sets the default time zone to "Europe/Paris"

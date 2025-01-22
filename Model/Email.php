@@ -1,3 +1,5 @@
+//Ce fichier contient la classe Email qui permet de gérer l'envoi des mails
+
 <?php
 // Mail managment
 use PHPMailer\PHPMailer\PHPMailer;

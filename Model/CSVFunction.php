@@ -1,3 +1,5 @@
+//Ce fichier permet d'importer les données d'un fichier CSV dans la base de données
+
 <?php
 require_once 'Database.php';
 // Enable error reporting

@@ -1,3 +1,5 @@
+//Ce fichier permet de créer un lot d'utilisateurs à partir d'un fichier CSV.
+
 <?php
 // Import users by CSV file
 // Includes the Database class to handle database interactions.

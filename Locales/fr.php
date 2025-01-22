@@ -1,3 +1,5 @@
+// ça permet de traduire les textes en français
+
 <?php
 return array(
     'titre_appli' => 'Le Petit Stage',

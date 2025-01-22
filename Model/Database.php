@@ -1,3 +1,5 @@
+//Ce fichier contient les fonctions de la base de données
+
 <?php
 // Initialisation of Database objects
 date_default_timezone_set('Europe/Paris');
