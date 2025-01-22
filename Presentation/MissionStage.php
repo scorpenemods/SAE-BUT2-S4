@@ -19,27 +19,19 @@ function getFieldValue($field, $inputs = null, $default = 'Pas défini'): string
     <?php
     if (isset($_GET['stage_id'])) {
         $userId = intval($_GET['stage_id']);
-        $group = $database->getUserGroupByIdUser($userId);
-        $preAgreement = $database->getPreAgreementByIdGroup($group);
-        if ($preAgreement !== null) { // Check if $preAgreement is valid
-            print_r($database->getInputsPreAgreementForm($preAgreement));
-            $missions = $database->getInputsPreAgreementForm($preAgreement);
-            if ($missions && isset($missions['inputs'])) { // Check if $missions is valid
-                $inputs = json_decode($missions['inputs'], true);
-                try {
-                    echo '<br>';
-                    echo $userId;
-                    echo getFieldValue('intershipSubject', $inputs);
-                    echo '<br>';
-                    echo getFieldValue('tasksFunctions', $inputs);
-                } catch (ErrorException $e) {
-                    echo 'Impossible de récupérer les données';
-                }
-            } else {
-                echo 'Aucune mission trouvée pour cet accord préalable';
+        $missions = $database->getInputsPreAgreementFormByUserId($userId);
+        if ($missions && isset($missions['inputs'])) { // Check if $missions is valid
+            $inputs = json_decode($missions['inputs'], true);
+            try {
+                echo '<br>';
+                echo getFieldValue('intershipSubject', $inputs);
+                echo '<br>';
+                echo getFieldValue('tasksFunctions', $inputs);
+            } catch (ErrorException $e) {
+                echo 'Impossible de récupérer les données';
             }
         } else {
-            echo 'Aucun accord préalable trouvé pour le groupe';
+            echo 'Aucune mission trouvée pour cet accord préalable';
         }
     } else {
         echo 'Aucune variable stage_id';
