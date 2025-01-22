@@ -19,7 +19,7 @@ function closeNotificationPopup() {
 // Fonction pour charger les notifications dans la fenêtre popup
 // Utilisez le nouveau chemin pour accéder à GetNotifications.php dans le dossier 'notifications'
 function loadNotifications() {
-    fetch('getNotifications.php')
+    fetch('GetNotifications.php')
         .then(response => response.json())
         .then(data => {
             const notificationList = document.getElementById('notification-list');
