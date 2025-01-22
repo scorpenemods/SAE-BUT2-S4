@@ -2342,5 +2342,13 @@ class Database
         ]);
     }
 
+    public function deleteMeetingQCM($qcmId) {
+        $stmt = $this->connection->prepare("
+        DELETE FROM MeetingQCM 
+        WHERE id = :qcmId
+    ");
+        return $stmt->execute(['qcmId' => $qcmId]);
+    }
+
 
 }
