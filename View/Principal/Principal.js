@@ -533,7 +533,7 @@ function fetchStudentInfoManage(userId) {
     console.log("ID de l'étudiant pour le livret de suivi : ", userId);
 }
 function fetchStudentInfo(userId) {
-    fetch(`livretSuiviParticipant.php?user_id=${userId}`)
+    fetch(`LivretSuiviParticipant.php?user_id=${userId}`)
         .then(response => response.text())
         .then(data => {
             // Mettre à jour le contenu de la section d'information de l'étudiant avec les données reçues
