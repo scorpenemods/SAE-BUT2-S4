@@ -1,4 +1,5 @@
 <?php
+// manage to send a message to everyone
 session_start();
 
 require "../Model/Database.php";

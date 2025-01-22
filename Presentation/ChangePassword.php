@@ -1,4 +1,5 @@
 <?php
+//Modification du mot de passe
 session_start(); // Start the session
 
 require "../Model/Database.php";// Fichier nécessaire pour accéder à la base de données

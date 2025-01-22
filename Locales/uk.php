@@ -1,6 +1,6 @@
-
-
 <?php
+// Traduction Ukrainienne du site
+
 return array(
     'titre_appli' => 'Le Petit Stage',
 

@@ -1,4 +1,5 @@
 <?php
+// Ajoute des utilisateurs via un fichier CSV
 include_once("../Model/CreationBatch.php");
 
 ini_set('display_errors', 1);

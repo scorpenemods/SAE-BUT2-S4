@@ -1,4 +1,5 @@
 <?php
+// manage student
 require_once '../Model/Database.php';
 $database = Database::getInstance();
 ?>

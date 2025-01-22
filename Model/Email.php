@@ -1,5 +1,3 @@
-
-
 <?php
 // Mail managment
 use PHPMailer\PHPMailer\PHPMailer;

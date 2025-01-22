@@ -1,4 +1,6 @@
 <?php
+// manage preferences section
+
 require_once '../Model/Database.php'; // Classe pour gérer la connexion à la base de données
 require_once '../Model/Person.php';
 

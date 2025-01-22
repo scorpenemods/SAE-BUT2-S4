@@ -1,4 +1,5 @@
 <?php
+//Supprime des messages dans la base de donnée
 require "../Model/Database.php";
 require "../Model/Person.php";
 

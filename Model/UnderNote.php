@@ -1,5 +1,3 @@
-
-
 <?php
 // Under-notes managment
 class Sous_Note

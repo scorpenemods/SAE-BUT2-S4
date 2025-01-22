@@ -1,4 +1,5 @@
 <?php
+// Manage notes for internship supervisor
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';
 require_once '../Model/Note.php';

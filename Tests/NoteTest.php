@@ -1,5 +1,5 @@
 <?php
-
+// Test of notes
 require_once "../vendor/autoload.php";
 require_once "..\Model\Note.php";
 use PHPUnit\Framework\TestCase;

@@ -1,3 +1,4 @@
+// Gère les conventions
 <?php
 
 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];

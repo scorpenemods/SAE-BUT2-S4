@@ -1,6 +1,5 @@
-
-
 <?php
+// Traduction francaise du site
 return array(
     'titre_appli' => 'Le Petit Stage',
 

@@ -1,4 +1,5 @@
 <?php
+// reject an offer
 session_start();
 
 require '../Model/PendingOffer.php';

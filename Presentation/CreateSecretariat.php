@@ -1,5 +1,5 @@
 <?php
-//------------------------------- Création de compte secrétaire -------------------------------//
+// Création de compte secrétaire
 // Création d'une nouvelle instance de la classe Database
 $database = (Database::getInstance());
 $conn = $database->getConnection();

@@ -1,5 +1,5 @@
 <?php
-
+// manage of pre agreement submit for student
 require_once '../Model/Database.php';
 $database = Database::getInstance();
 

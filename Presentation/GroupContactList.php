@@ -1,4 +1,5 @@
 <?php
+// Get contact list of Group
 global $person, $database;
 $userId = $person->getId();
 

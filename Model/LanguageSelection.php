@@ -1,5 +1,3 @@
-
-
 <!-- Choose the website language -->
 <form method="GET" action="">
     <select id="language-select" name="lang" onchange="this.form.submit()">

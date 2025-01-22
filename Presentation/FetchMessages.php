@@ -1,4 +1,5 @@
 <?php
+// Envoie un message
 // Démarre la session pour accéder aux données utilisateur
 session_start();
 

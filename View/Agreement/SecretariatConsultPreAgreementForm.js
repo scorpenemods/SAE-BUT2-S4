@@ -1,3 +1,4 @@
+// Functions of secretariat to consult the pre agreement form
 // Récupération des éléments du DOM
 const modal = document.getElementById("preAgreementModal");
 const openModalButton = document.getElementById("PreAgreement");

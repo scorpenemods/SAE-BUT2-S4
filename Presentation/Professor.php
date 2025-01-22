@@ -1,4 +1,5 @@
 <?php
+// manage professor's page
 global $files;
 ob_start();
 global $database;

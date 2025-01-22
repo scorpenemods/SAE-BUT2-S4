@@ -1,4 +1,5 @@
 <?php
+// manage logout
 session_start(); // Démarre ou reprend la session
 
 // Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut

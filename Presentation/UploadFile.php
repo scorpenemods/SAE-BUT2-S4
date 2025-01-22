@@ -1,4 +1,5 @@
 <?php
+// manage for upload files
 session_start();
 require "../Model/Database.php";
 

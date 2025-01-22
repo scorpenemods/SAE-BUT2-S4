@@ -1,5 +1,5 @@
 <?php
-
+// manage pre agrement send to the company
 // On va dabord envoyer la préconvention à l'entreprise
 
 require_once '../../Model/Company.php';

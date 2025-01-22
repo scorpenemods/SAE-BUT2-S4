@@ -1,3 +1,4 @@
+// Gère les documents
 <?php
 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
 

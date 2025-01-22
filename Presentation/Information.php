@@ -1,5 +1,5 @@
 <?php
-
+// Manage information section
 require_once "../Model/Person.php"; // Inclusion de la classe Person pour gérer les informations de l'utilisateur
 
 // Vérifie si l'utilisateur est connecté

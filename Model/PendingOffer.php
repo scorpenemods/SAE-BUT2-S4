@@ -1,6 +1,5 @@
-
-
 <?php
+// Gérer les objets "PendingOffer"
 
 require_once dirname(__FILE__) . '/Database.php';
 require_once dirname(__FILE__) . '/../Model/Offer.php';

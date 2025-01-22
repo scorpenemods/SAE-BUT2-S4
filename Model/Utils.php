@@ -1,5 +1,3 @@
-
-
 <?php
 // Initializing of timestamp format
 // Sets the default time zone to "Europe/Paris"

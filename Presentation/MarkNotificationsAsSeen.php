@@ -1,4 +1,6 @@
 <?php
+// manage notification as seen
+
 // Démarre la session au début du script pour accéder aux variables de session
 session_start();
 

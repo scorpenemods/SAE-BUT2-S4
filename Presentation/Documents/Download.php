@@ -1,3 +1,4 @@
+// gère les téléchargements de fichiers du site
 <?php
 session_start();
 require_once '../../Model/Database.php';

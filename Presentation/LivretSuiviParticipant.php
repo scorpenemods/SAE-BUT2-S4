@@ -1,4 +1,6 @@
 <?php
+// get people internship book
+
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';
 

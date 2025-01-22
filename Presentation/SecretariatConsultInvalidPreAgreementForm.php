@@ -1,4 +1,5 @@
 <?php
+// manage invalid pre agreement form for secretariat
 $database = (Database::getInstance());
 ?>
 

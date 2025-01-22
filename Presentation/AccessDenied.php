@@ -1,3 +1,4 @@
+<?php //Page d'accès refusé qui s'affiche quand l'utilisateur n'a pas les droits pour une page?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

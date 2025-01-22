@@ -1,4 +1,5 @@
 <?php
+// manage secretariat's page
 // Démarre une nouvelle session ou reprend une session existante
 session_start();
 

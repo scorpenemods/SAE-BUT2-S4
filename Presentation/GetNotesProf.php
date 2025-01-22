@@ -1,4 +1,6 @@
 <?php
+// Manage notes for professor
+
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';
 require_once '../Model/Note.php';

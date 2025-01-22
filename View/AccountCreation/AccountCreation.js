@@ -1,3 +1,4 @@
+//Js of Account creation page
 // Switcher entre les 2 en changeant la classe du body
 function turn() {
     var header = document.querySelector('div.hide-list');
