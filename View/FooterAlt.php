@@ -12,10 +12,10 @@
                 <div class="logo-container">
                     <img src="../../Resources/iut.jpg" alt="Logo" class="logo">
                 <nav class="nav-footer">
-                    <a href="../View/MentionLegale.php?mention=informations">Informations</a>
-                    <a href="../View/MentionLegale.php?mention=a-propos">À propos</a>
-                    <a href="../View/MentionLegale.php?mention=confidentialite">Confidentialité</a>
-                    <a href="../View/MentionLegale.php?mention=conditions-utilisation">Conditions d'utilisation</a>
+                    <a href="../../View/MentionLegale.php?mention=informations">Informations</a>
+                    <a href="../../View/MentionLegale.php?mention=a-propos">À propos</a>
+                    <a href="../../View/MentionLegale.php?mention=confidentialite">Confidentialité</a>
+                    <a href="../../View/MentionLegale.php?mention=conditions-utilisation">Conditions d'utilisation</a>
 
                 </nav>
                 <div class="logo-container">
