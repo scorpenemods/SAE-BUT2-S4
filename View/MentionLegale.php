@@ -69,8 +69,8 @@ function afficherInformations() {
     echo "<p>Nom des alternants(sous-traitant) :</p>";
     echo "<ul>";
     echo"<li>Terrier Margot</li>";
-    echo"<li>Massy Thibault</li>";
-    echo"<li>Wargnier Lorenzo</li>";
+    echo"<li>Massy Thibaut</li>";
+    echo"<li>Warnier Lorenzo</li>";
     echo"</ul>";
     echo "<p>Adresse : IUT Maubeuge, Bd Charles de Gaulle, 59600 Maubeuge</p>";
     echo "<p>Email : remy.boulet@iut.fr</p>";
