@@ -1,3 +1,5 @@
+//Ce fichier permet de gérer les utilisateurs de l'application
+
 <?php
 //Class to manage Person
 class Person

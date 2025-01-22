@@ -1,3 +1,5 @@
+//Ce fichier contient la classe Sous_Note qui permet de gérer les sous-notes d'une note
+
 <?php
 // Under-notes managment
 class Sous_Note
