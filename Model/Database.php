@@ -2379,6 +2379,15 @@ class Database
     ");
         return $stmt->execute(['qcmId' => $qcmId]);
     }
+    public function getCompanyidbyUserId($userid)
+    {
+        $query = "SELECT company_id FROM User_Company WHERE user_id = :userid";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindValue(':userid', $userid);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['company_id'] ?? null;
+    }
 
 
 }

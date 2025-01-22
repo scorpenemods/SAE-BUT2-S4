@@ -34,20 +34,20 @@ $translations = include $langFile;
 </div>
 <?php
 session_start();
-
-if($_SESSION["user_role"] == 4 || $_SESSION["user_role"] == 5){
+$role = $_SESSION['personne']->getRole();
+if($role == 4 || $role == 5){
     header('Location: Secretariat.php?section=0');
     die();
 }
-if($_SESSION["user_role"] == 3 ){
+if($role == 3 ){
     header('Location: MaitreStage.php?section=1');
 
 }
-if($_SESSION["user_role"] == 2 ){
+if($role == 2 ){
     header('Location: Professor.php?section=1');
 
 }
-if($_SESSION["user_role"] == 1){
+if($role == 1){
     header('Location: Student.php?section=1');
 
 }
