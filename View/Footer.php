@@ -1,3 +1,4 @@
+<!-- affichage du footer -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>

@@ -1,4 +1,5 @@
 <?php
+// Affichage menu de connexion
 // Démarrage d'une nouvelle session ou reprise d'une session existante
 session_start();
 define('BASE_PATH', dirname(__DIR__));

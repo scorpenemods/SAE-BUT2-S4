@@ -1,4 +1,5 @@
 <?php
+// Affichage des mentions legales
 // Démarre une nouvelle session ou reprend une session existante
 session_start();
 // Inclusion des fichiers nécessaires pour la base de données et les objets Person

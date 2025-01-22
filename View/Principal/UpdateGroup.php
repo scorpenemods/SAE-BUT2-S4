@@ -1,4 +1,5 @@
 <?php
+// update group
 session_start();
 require "../../Model/Database.php";
 require "../../Model/Person.php";

@@ -1,4 +1,5 @@
 <?php
+// Manage end stage
 session_start();
 require_once "../../Model/Database.php";
 require_once "../../Model/Person.php";

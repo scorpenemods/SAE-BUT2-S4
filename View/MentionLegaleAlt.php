@@ -1,4 +1,5 @@
 <?php
+// Affichage des mentions legales alternants
 session_start();
 
 include_once'Header.php';

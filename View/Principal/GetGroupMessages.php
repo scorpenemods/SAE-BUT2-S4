@@ -1,4 +1,5 @@
 <?php
+// get message of one group
 session_start();
 require "../../Model/Database.php";
 require "../../Model/Person.php";

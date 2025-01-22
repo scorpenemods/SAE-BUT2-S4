@@ -1,4 +1,5 @@
 <?php
+// Get group details
 session_start();
 require_once '../../Model/Database.php';
 

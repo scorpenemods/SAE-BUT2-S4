@@ -1,4 +1,5 @@
 <?php
+// get all messages
 session_start();
 require "../../Model/Database.php";
 require "../../Model/Person.php";

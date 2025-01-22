@@ -1,4 +1,5 @@
 <?php
+// Affichage du Header
 // Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
 if (isset($_GET['lang'])) {
     $lang = $_GET['lang'];

@@ -1,4 +1,4 @@
-
+<!-- Affichage du header alternant -->
 <header>
     <a href="/View/Offer/List.php" class="logo-link">
         <div class="logo">

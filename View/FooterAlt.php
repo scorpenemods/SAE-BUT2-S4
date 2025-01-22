@@ -1,3 +1,4 @@
+<!-- affichage du footer alternants -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>

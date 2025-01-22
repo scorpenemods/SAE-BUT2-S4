@@ -1,4 +1,5 @@
 <?php
+// Manage group creation
 session_start();
 require_once "../../Model/Database.php";
 require_once "../../Model/Person.php";
