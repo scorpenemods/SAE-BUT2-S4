@@ -185,27 +185,27 @@ $translations = include $langFile;
 
         </div>
         <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">
-            <h2>Espace conventions :</h2>
+            <h2><?= $translations['place']?></h2>
 
-            <button id="PreAgreement">Consulter un formulaire de pré-convention</button>
+            <button id="PreAgreement"><?= $translations['consult']?></button>
             <?php
             include_once("MentorConsultPreAgreementForm.php"); ?>
             <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
 
             <?php include_once("Documents/Documents.php");?>
-            <h2>Gestion des Fichiers</h2>
+            <h2><?= $translations['manage']?></h2>
             <form class="box" method="post" action="" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 <input type="hidden" name="form_id" value="uploader_fichier">
                 <input type="hidden" name="upload_type" value="file">
                 <div class="box__input">
                     <input type="file" name="files[]" id="file-doc" multiple>
-                    <button class="box__button" type="submit">Uploader Fichier</button>
+                    <button class="box__button" type="submit"><?= $translations['uploadFile']?></button>
                 </div>
             </form>
 
             <div class="file-list">
-                <h2>Fichiers Uploadés</h2>
+                <h2><?= $translations['uploadedFile']?></h2>
                 <div class="file-grid">
                     <?php foreach ($files as $file): ?>
                         <div class="file-card">
@@ -215,13 +215,13 @@ $translations = include $langFile;
                             </div>
                             <form method="get" action="Documents/Download.php">
                                 <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
-                                <button type="submit" class="download-button">Télécharger</button>
+                                <button type="submit" class="download-button"><?= $translations['download']?></button>
                             </form>
                             <form method="post" action="" class="delete-form">
                                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                 <input type="hidden" name="form_id" value="delete_rapport">
                                 <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
-                                <button type="submit" class="delete-button">Supprimer</button>
+                                <button type="submit" class="delete-button"><?= $translations['delete']?></button>
                             </form>
                         </div>
                     <?php endforeach; ?>
@@ -229,7 +229,7 @@ $translations = include $langFile;
             </div>
 
             <script src="../View/Documents/Documents.js"></script>
-            <a href="../View/Agreement/PreAgreementFormCompany.php">Accès au formulaire de pré-convention</a>
+            <a href="../View/Agreement/PreAgreementFormCompany.php"><?= $translations['accessForm']?></a>
 
         </div>
 
@@ -252,14 +252,14 @@ $translations = include $langFile;
                 <!-- Context menu for message actions -->
                 <div id="context-menu" class="context-menu">
                     <ul>
-                        <li id="copy-text">Copy</li>
-                        <li id="delete-message">Delete</li>
+                        <li id="copy-text"><?= $translations['copy']?></li>
+                        <li id="delete-message"><?= $translations['delete']?></li>
                     </ul>
                 </div>
 
                 <div class="chat-window">
                     <div class="chat-header">
-                        <h3 id="chat-header-title">Select a chat to start messaging.</h3>
+                        <h3 id="chat-header-title"><?= $translations['selectChat']?></h3>
                     </div>
                     <div class="chat-body" id="chat-body">
                         <!-- Messages will be loaded here dynamically via JavaScript -->
@@ -284,9 +284,8 @@ $translations = include $langFile;
     </div>
         <!-- Offres Content -->
         <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-5">
-            Contenu Offres
             <a href="../View/Offer/List.php?type=all">
-                <button type="button">Voir les offres</button>
+                <button type="button"><?= $translations['seeOffers']?></button>
             </a>
         </div>
 </section>
@@ -308,7 +307,7 @@ $translations = include $langFile;
             <div class="form-group position-relative">
                 <label for="file" class="form-label"><?= $translations['joindre fichier']?> :</label>
                 <input type="file" class="form-control-file animated-file-input" id="file" name="file">
-                <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné" style="display: none;">✖️</button>
+                <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title=<?= $translations['cancelFile']?> style="display: none;">✖️</button>
             </div>
             <button type="submit" class="btn btn-primary btn-block animated-button"><?= $translations['mess_admin']?></button>
         </form>

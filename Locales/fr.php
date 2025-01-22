@@ -179,4 +179,52 @@ return array(
     'fichiers upload' => "Fichiers Envoyés",
     'download' => "Télécharger",
     'delete' => "Supprimer",
+
+
+
+    // INFORMATION
+    'maison' => "Retour à la page d'accueil :",
+
+    // MAITRE STAGE
+    'place' => "Espace conventions :",
+    'consult' => "Consulter un formulaire de pré-convention",
+    'manage' => "Gestion des Fichiers",
+    'uploadFile' => "Uploader Fichier",
+    'uploadedFile' => "Fichiers Uploadés",
+    'accessForm' => "Accès au formulaire de pré-convention",
+    'copy' => "Copier",
+    'selectChat' => "Sélectionner un chat pour commencer.",
+    'seeOffers' => "Voir les offres",
+    'cancelFile' => "Annuler le fichier sélectionné",
+
+    // MISSION STAGE
+    'impossible' => "Impossible de récupérer les données",
+    'noMission' => "Aucune mission trouvée pour cet accord préalable",
+    'noStudent' => "Aucun élève choisi",
+
+    // STUDENT MANAGMENT
+    'infoStudent' => "Informations sur l'étudiant :",
+    'lastname' => " Nom :",
+    'firstname' => " Prénom :",
+    'mail' => " Email :",
+    'phone' => " Téléphone :",
+    'activity' => " Activité :",
+    'endStage' => "Mettre fin au stage",
+    'noInfo' => "Aucune information trouvée pour l'étudiant.",
+    'selectStudent' => "Sélectionnez un étudiant pour le gérer.",
+
+
+    // STUDENT MANAGMENT
+    'noCreated' => "Le livret de suivi n'est pas encore créé pour vous. Aucune rencontre n'est disponible.",
+    'noConv' => "Aucune convention ou groupe associé. Le livret n'est pas disponible.",
+    'student' => "Etudiant :",
+    'form' => "Formation :",
+    'prof' => "Professeur tuteur :",
+    'specie' => "Spécialité :",
+    'noProfInfo' => "Aucune information sur le professeur n'a été trouvée.",
+    'master' => "Maitre de stage :",
+    'profActivitie' => "Activité professionnelle :",
+    'noMasterInfo' => "Aucune information sur le maître de stage n'a été trouvée.",
+    'selectStudDetails' => "Sélectionnez un étudiant pour voir les détails.",
+    'noBook' => "Vous n'avez pas de livret de suivi ouvert pour le moment.",
 );

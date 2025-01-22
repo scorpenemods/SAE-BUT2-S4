@@ -83,7 +83,7 @@ $translations = include $langFile;
         </tr>
     </table>
     <a class="home-button" href='<?php echo $homePage; ?>'>
-        Retour à la page d'accueil
+        <?= $translations['maison']?>
     </a>
 </section>
 </body>

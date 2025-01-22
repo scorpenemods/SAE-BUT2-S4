@@ -28,13 +28,13 @@ function getFieldValue($field, $inputs = null, $default = 'Pas défini'): string
                 echo '<br>';
                 echo getFieldValue('tasksFunctions', $inputs);
             } catch (ErrorException $e) {
-                echo 'Impossible de récupérer les données';
+                echo $translations['impossible'];
             }
         } else {
-            echo 'Aucune mission trouvée pour cet accord préalable';
+            echo $translations['noMission'];
         }
     } else {
-        echo 'Aucun élève choisi';
+        echo $translations['noStudent'];
     }
     ?>
 

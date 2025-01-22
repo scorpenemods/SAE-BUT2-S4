@@ -28,19 +28,39 @@ if ($userRole === 1) {
 
         // Если у студента совсем нет rencontres — выводим сообщение (как в вашем старом коде)
         if (count($meetings) === 0) {
-            echo "<div class='participant-container' style='color:red;'>
-                    Le livret de suivi n'est pas encore créé pour vous. Aucune rencontre n'est disponible.
-                  </div>";
+            echo "<div class='participant-container' style='color:red;'>";
+                    echo $translations['noCreated'];
+            echo "</div>";
             return;
         }
     } else {
         // Нет conv_id => значит нет livret
-        echo "<div class='participant-container' style='color:red;'>
-                Aucune convention ou groupe associé. Le livret n'est pas disponible.
-              </div>";
+        echo "<div class='participant-container' style='color:red;'>";
+            echo $translations['noConv'];
+        echo "</div>";
         return;
     }
 }
+
+//TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../Locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../Locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
 ?>
 <div style="width: 100%;">
     <div>
@@ -71,43 +91,85 @@ if ($userRole === 1) {
                 // Affichage étudiant
                 if (!empty($studentInfo) && !isset($studentInfo['error'])) {
                     echo "<div class='participant-info student-info'>";
-                    echo "<h3>Etudiant :</h3>";
-                    echo "<p><strong>Nom :</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
-                    echo "<p><strong>Prénom :</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
-                    echo "<p><strong>Email :</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
-                    echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
-                    echo "<p><strong>Formation :</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
+                    echo "<h3>";
+                        echo $translations['student'];
+                    echo "</h3>";
+                    echo "<p><strong>";
+                        echo $translations['lastname'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
+                    echo "<p><strong>";
+                        echo $translations['firstname'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
+                    echo "<p><strong>";
+                        echo $translations['mail'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
+                    echo "<p><strong>";
+                        echo $translations['phone'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                    echo "<p><strong>";
+                        echo $translations['form'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
                     echo "</div>";
                 } else {
-                    echo "<p>Aucune information trouvée pour l'étudiant.</p>";
+                    echo "<p>";
+                        echo $translations['noInfo'];
+                    echo "</p>";
                 }
 
                 // Affichage prof
                 if (!empty($professorInfo) && !isset($professorInfo['error'])) {
                     echo "<div class='participant-info professor-info'>";
-                    echo "<h3>Professeur tuteur :</h3>";
-                    echo "<p><strong>Nom :</strong> " . htmlspecialchars($professorInfo['nom']) . "</p>";
-                    echo "<p><strong>Prénom :</strong> " . htmlspecialchars($professorInfo['prenom']) . "</p>";
-                    echo "<p><strong>Email :</strong> " . htmlspecialchars($professorInfo['email']) . "</p>";
-                    echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($professorInfo['telephone']) . "</p>";
-                    echo "<p><strong>Spécialité :</strong> " . htmlspecialchars($professorInfo['activite']) . "</p>";
+                    echo "<h3>";
+                    echo $translations['prof'];
+                    echo "</h3>";
+                    echo "<p><strong>";
+                    echo $translations['lastname'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
+                    echo "<p><strong>";
+                    echo $translations['firstname'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
+                    echo "<p><strong>";
+                    echo $translations['mail'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
+                    echo "<p><strong>";
+                    echo $translations['phone'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                    echo "<p><strong>";
+                    echo $translations['specie'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
                     echo "</div>";
                 } else {
-                    echo "<p>Aucune information sur le professeur n'a été trouvée.</p>";
+                    echo "<p>";
+                    echo $translations['noProfInfo'];
+                    echo "</p>";
                 }
 
                 // Affichage maître de stage
                 if (!empty($mentorInfo) && !isset($mentorInfo['error'])) {
                     echo "<div class='participant-info mentor-info'>";
-                    echo "<h3>Maître de stage :</h3>";
-                    echo "<p><strong>Nom :</strong> " . htmlspecialchars($mentorInfo['nom']) . "</p>";
-                    echo "<p><strong>Prénom :</strong> " . htmlspecialchars($mentorInfo['prenom']) . "</p>";
-                    echo "<p><strong>Email :</strong> " . htmlspecialchars($mentorInfo['email']) . "</p>";
-                    echo "<p><strong>Téléphone :</strong> " . htmlspecialchars($mentorInfo['telephone']) . "</p>";
-                    echo "<p><strong>Activité professionnelle :</strong> " . htmlspecialchars($mentorInfo['activite']) . "</p>";
+                    echo "<h3>";
+                    echo $translations['master'];
+                    echo "</h3>";
+                    echo "<p><strong>";
+                    echo $translations['lastname'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
+                    echo "<p><strong>";
+                    echo $translations['firstname'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
+                    echo "<p><strong>";
+                    echo $translations['mail'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
+                    echo "<p><strong>";
+                    echo $translations['phone'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                    echo "<p><strong>";
+                    echo $translations['profActivitie'];
+                    echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
                     echo "</div>";
                 } else {
-                    echo "<div class='participant-container'>Aucune information sur le maître de stage n'a été trouvée.</div>";
+                    echo "<div class='participant-container'>";
+                    echo $translations['noMasterInfo'];
+                    echo "</div>";
                 }
 
                 // Transmettre pour LivretSuiviContenu
@@ -120,10 +182,14 @@ if ($userRole === 1) {
             } else {
                 // Si user_id=0 => peut-être c'est un prof/maître qui n'a pas encore cliqué sur un étudiant
                 if ($userRole != 1) {
-                    echo "<div class='participant-container'>Sélectionnez un étudiant pour voir les détails.</div>";
+                    echo "<div class='participant-container'>";
+                    echo $translations['selectStudDetails'];
+                    echo "</div>";
                 } else {
                     // Étudiant, mais pas de GET user_id => «pas de livret» ?
-                    echo "<div class='participant-container'>Vous n'avez pas de livret de suivi ouvert pour le moment.</div>";
+                    echo "<div class='participant-container'>";
+                    echo $translations['selectStudDetails'];
+                    echo "</div>";
                 }
             } echo "<script>window.followUpId = ".(int)$followUpId.";</script>";
             ?>
