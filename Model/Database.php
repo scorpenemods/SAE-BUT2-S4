@@ -2179,7 +2179,7 @@ class Database
 
     public function insertCompetenceBilan($followup_id, $competence, $niveau, $commentaire) {
         $stmt = $this->connection->prepare("
-        INSERT INTO CompetencesBilan (followup_id, competence, niveau, commentaire) 
+        INSERT INTO Skill_Assessment (followup_id, competence, niveau, commentaire) 
         VALUES (:followup_id, :competence, :niveau, :commentaire)
     ");
         return $stmt->execute([
@@ -2192,7 +2192,7 @@ class Database
 
     public function getCompetencesByFollowUpId($followup_id) {
         $stmt = $this->connection->prepare("
-        SELECT * FROM CompetencesBilan WHERE followup_id = :followup_id
+        SELECT * FROM Skill_Assessment WHERE followup_id = :followup_id
     ");
         $stmt->execute(['followup_id' => $followup_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -2200,7 +2200,7 @@ class Database
 
     public function deleteCompetencesByFollowUpId($followup_id) {
         $stmt = $this->connection->prepare("
-        DELETE FROM CompetencesBilan WHERE followup_id = :followup_id
+        DELETE FROM Skill_Assessment WHERE followup_id = :followup_id
     ");
         return $stmt->execute(['followup_id' => $followup_id]);
     }
@@ -2335,7 +2335,7 @@ class Database
 
     public function updateCompetenceBilan($competenceId, $niveau, $commentaire) {
         $stmt = $this->connection->prepare("
-        UPDATE CompetencesBilan 
+        UPDATE Skill_Assessment 
         SET niveau = :niveau, commentaire = :commentaire 
         WHERE id = :competenceId
     ");
