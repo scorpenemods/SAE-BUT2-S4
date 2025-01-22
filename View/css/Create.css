@@ -1,3 +1,6 @@
+html{
+    height: 100%;
+}
 :root {
     --primary-color: #3498db;
     --secondary-color: #2c3e50;
@@ -20,8 +23,9 @@ body {
 }
 section.mentionsLegales{
     text-align: center;
-    padding-top: 3%;
-    padding-bottom: 2%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    height: 68%;
 }
 section.mentionsLegales .nom{
     font-size: x-large;
@@ -291,4 +295,7 @@ section.mentionsLegales .dropdown2 {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: none;
     z-index: 1000;
+}
+a.home-button{
+    padding-left: 5%;
 }

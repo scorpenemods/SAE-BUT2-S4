@@ -1,9 +1,14 @@
+
+body{
+    height: 100%;
+}
 :root {
     --text-color: #333;
     --container-bg: white;
     --text-gradient: #005c97, #00c6ff;
 }
 footer{
+    position: relative;
     margin-top: auto;
     background: var(--container-bg); /* dynamic background */
     border: solid 1px;

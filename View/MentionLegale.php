@@ -95,6 +95,18 @@ function afficherConditionsUtilisation() {
     echo "<p>Tout usage non autorisé est interdit. Ce site est un projet étudiant.</p></div>";
 }
 
+// Détermine la page d'accueil en fonction du rôle de l'utilisateur
+$homePage = '';
+if ($userRole == 1) {
+    $homePage = '../Presentation/Student.php';
+} elseif ($userRole == 2) {
+    $homePage = '../Presentation/Professor.php';
+} elseif ($userRole == 3) {
+    $homePage = '../Presentation/MaitreStage.php';
+} elseif ($userRole == 4 or $userRole == 5) {
+    $homePage = '../Presentation/Secretariat.php';
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -112,6 +124,11 @@ function afficherConditionsUtilisation() {
     echo "<section class='mentionsLegales'>";
     afficherMentionLegale();
     echo "</section>";
+    ?>
+    <a class="home-button" href='<?php echo $homePage; ?>'>
+        Retour à la page d'accueil
+    </a>
+    <?php
     echo "</body>";
     echo "<footer>";
     include_once "Footer.php";

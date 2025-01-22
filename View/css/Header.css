@@ -14,8 +14,11 @@ header.navbar {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
+header.navbar a.logo {
+    width:100%;
+}
 
-header.navbar .logo {
+header.navbar img.logo {
     height: 50px;
 }
 

@@ -12,7 +12,7 @@ $langFile = "../Locales/{$lang}.php";
 if (!file_exists($langFile)) {
     $langFile = "../Locales/fr.php";
 }
-
+$pagename = basename($_SERVER['PHP_SELF']);
 // Charger les traductions
 $translations = include $langFile;
 ?>
@@ -72,7 +72,6 @@ $translations = include $langFile;
 
         <!-- Bouton pour ouvrir le menu des paramètres -->
         <?php
-        $pagename = basename($_SERVER['PHP_SELF']);
         if ($pagename != "Settings.php") {
             echo '<button class="mainbtn" onclick="toggleMenu()">';
             echo '<img src="../Resources/Param.png" alt="Settings">';
