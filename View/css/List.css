@@ -89,16 +89,17 @@ main {
 .search-bar button:hover {
     background-color: #9ED871;
 }
-.Company-listings {
+.company-listings {
     display: grid;
     grid-template-columns: repeat(2, minmax(300px, 1fr));
     gap: 2rem;
 }
-.Company-link {
+
+.company-link {
     text-decoration: None;
     color: inherit;
 }
-.Company-card {
+.company-card {
     background-color: var(--card-color);
     border-radius: 8px;
     overflow: hidden;
@@ -106,7 +107,7 @@ main {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     position: relative; /* Ensure the icon is positioned relative to the card */
 }
-.Company-card .heart {
+.company-card .heart {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -116,23 +117,23 @@ main {
     background-color: transparent;
     border: none;
 }
-.Company-card .fa-heart {
+.company-card .fa-heart {
     color: #F9564F;
 }
-.Company-card .fa-heart:hover {
+.company-card .fa-heart:hover {
     color: #ff6b6b;
 }
-.Company-card:hover {
+.company-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
-.Company-header {
+.company-header {
     position: relative;
     height: 100px;
     background-color: #4e94ab;
     overflow: hidden;
 }
-.Company-header img {
+.company-header img {
     width: 70px;
     height: 70px;
     object-fit: cover;
@@ -149,26 +150,26 @@ main {
     margin-left: 100px;
     color: white;
 }
-.Company {
+.company {
     margin-top: 0;
     margin-left: 100px;
     color: #f1f1f1;
 }
-.Company-info {
+.company-info {
     padding: 0.5rem 1.5rem 1.5rem;
 }
-.Company-info h3 {
+.company-info h3 {
     margin-top: 0;
     color: var(--primary-color);
 }
-.Company-info p {
+.company-info p {
     margin-bottom: 0.5rem;
     line-height: 1.6;
 }
-.Company-info a {
+.company-info a {
     text-decoration: none;
 }
-.Company-meta {
+.company-meta {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
@@ -292,7 +293,7 @@ main {
         width: 100%;
         margin-bottom: 1rem;
     }
-    .Company-listings {
+    .company-listings {
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     }
     .filter-panel {
@@ -327,10 +328,10 @@ main {
     }
 }
 @media (max-width: 480px) {
-    .Company-listings {
+    .company-listings {
         grid-template-columns: 1fr;
     }
-    .Company-card {
+    .company-card {
         margin: 5px 0;
     }
     .filter-panel {
@@ -440,15 +441,59 @@ input[type=number] {
     justify-content: center;
     flex-direction: row;
     gap: 10px;
-    padding-bottom: 20px;
-    padding-top: 20px;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1800px) {
     .button-group {
         flex-direction: column;
         gap: 10px;
-        padding-bottom: 20px;
-        padding-top: 20px;
+        margin-bottom: 20px;
     }
+
+    .button-group div {
+        margin-bottom: 15px;
+    }
+}
+
+#distance {
+    width: 100%;
+}
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+}
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+.loading {
+    margin-top: 10px;
+    color: #666;
+}
+.container {
+    width: 100%;
+    max-width: 400px;
+}
+.search-container {
+    position: relative;
+}
+.search-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.dropdown {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: none;
+    z-index: 1000;
 }

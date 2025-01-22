@@ -496,7 +496,7 @@ class Database
      * @param $userId
      * @return bool
      */
-    public function rejectUser($userId)
+    public function rejectUser($userId): bool
     {
         $sql = "DELETE FROM User WHERE id = :id";
         try {
@@ -2171,6 +2171,41 @@ class Database
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }*/
 
+    public function getMeetingByName($followUpId, $name) {
+        $stmt = $this->connection->prepare("SELECT * FROM MeetingBook WHERE followup_id = :fid AND name = :nm LIMIT 1");
+        $stmt->execute(['fid' => $followUpId, 'nm' => $name]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function insertCompetenceBilan($followup_id, $competence, $niveau, $commentaire) {
+        $stmt = $this->connection->prepare("
+        INSERT INTO CompetencesBilan (followup_id, competence, niveau, commentaire) 
+        VALUES (:followup_id, :competence, :niveau, :commentaire)
+    ");
+        return $stmt->execute([
+            'followup_id'  => $followup_id,
+            'competence'   => $competence,
+            'niveau'       => $niveau,
+            'commentaire'  => $commentaire
+        ]);
+    }
+
+    public function getCompetencesByFollowUpId($followup_id) {
+        $stmt = $this->connection->prepare("
+        SELECT * FROM CompetencesBilan WHERE followup_id = :followup_id
+    ");
+        $stmt->execute(['followup_id' => $followup_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteCompetencesByFollowUpId($followup_id) {
+        $stmt = $this->connection->prepare("
+        DELETE FROM CompetencesBilan WHERE followup_id = :followup_id
+    ");
+        return $stmt->execute(['followup_id' => $followup_id]);
+    }
+
+
     public function getStudentsWithPreAgreementFormValid(): false|array
     {
         $stmt = $this->connection->prepare("select PA.id, User.nom, User.prenom from User Join sae.Pre_Agreement PA on User.id = PA.idStudent where PA.status=1;");
@@ -2229,6 +2264,95 @@ class Database
         $stmt = $this->connection->prepare("update Pre_Agreement set status = 1 where id = :id;");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function addAlert($userId, $duration, $address, $study_level, $salary, $begin_date)
+    {
+
+        $query = 'insert into Alert (user_id, duration, address, study_level, salary, begin_date) VALUES (:user_id, :duration, :address, :study_level, :salary, :begin_date);';
+        $stmt = $this->getConnection()->prepare($query);
+        $stmt->bindParam(':user_id', $userId);
+        $stmt->bindParam(':duration', $duration, is_null($duration) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':study_level', $study_level);
+        $stmt->bindParam(':salary', $salary, is_null($salary) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindParam(':begin_date', $begin_date);
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de l'insertion : " . $e->getMessage());
+        }
+    }
+
+
+
+    /**
+     * @throws Exception
+     */
+    public function deleteAlert($id): void
+    {
+
+        $query = 'delete from Alert where id = :id;';
+        $stmt = $this->getConnection()->prepare($query);
+        $stmt->bindParam(':id', $id);
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de la suppression : " . $e->getMessage());
+        }
+    }
+
+    public function getAlert(): array
+    {
+
+        $stmt = $this->getConnection()->prepare('select * from Alert;');
+        $stmt->execute();
+        $alerts = [];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $alerts[] = $row;
+        }
+
+        return $alerts;
+    }
+
+    public function getAlertByUser($user_id): array
+    {
+        $stmt = $this->getConnection()->prepare('select * from Alert where user_id = :user_id;');
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $alerts = [];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $alerts[] = $row;
+        }
+        return $alerts;
+    }
+
+
+    public function updateCompetenceBilan($competenceId, $niveau, $commentaire) {
+        $stmt = $this->connection->prepare("
+        UPDATE CompetencesBilan 
+        SET niveau = :niveau, commentaire = :commentaire 
+        WHERE id = :competenceId
+    ");
+
+        return $stmt->execute([
+            'niveau'       => $niveau,
+            'commentaire'  => $commentaire,
+            'competenceId' => $competenceId
+        ]);
+    }
+
+    public function deleteMeetingQCM($qcmId) {
+        $stmt = $this->connection->prepare("
+        DELETE FROM MeetingQCM 
+        WHERE id = :qcmId
+    ");
+        return $stmt->execute(['qcmId' => $qcmId]);
     }
 
 

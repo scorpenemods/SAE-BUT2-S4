@@ -1,5 +1,8 @@
 <?php
-function truncateUTF8($string, $length) {
+// File: Utils.php
+// Utility functions
+
+function truncate_UTF8($string, $length) {
     if (strlen($string) <= $length) {
         return $string;
     }
