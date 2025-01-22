@@ -2166,6 +2166,41 @@ class Database
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }*/
 
+    public function getMeetingByName($followUpId, $name) {
+        $stmt = $this->connection->prepare("SELECT * FROM MeetingBook WHERE followup_id = :fid AND name = :nm LIMIT 1");
+        $stmt->execute(['fid' => $followUpId, 'nm' => $name]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function insertCompetenceBilan($followup_id, $competence, $niveau, $commentaire) {
+        $stmt = $this->connection->prepare("
+        INSERT INTO CompetencesBilan (followup_id, competence, niveau, commentaire) 
+        VALUES (:followup_id, :competence, :niveau, :commentaire)
+    ");
+        return $stmt->execute([
+            'followup_id'  => $followup_id,
+            'competence'   => $competence,
+            'niveau'       => $niveau,
+            'commentaire'  => $commentaire
+        ]);
+    }
+
+    public function getCompetencesByFollowUpId($followup_id) {
+        $stmt = $this->connection->prepare("
+        SELECT * FROM CompetencesBilan WHERE followup_id = :followup_id
+    ");
+        $stmt->execute(['followup_id' => $followup_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteCompetencesByFollowUpId($followup_id) {
+        $stmt = $this->connection->prepare("
+        DELETE FROM CompetencesBilan WHERE followup_id = :followup_id
+    ");
+        return $stmt->execute(['followup_id' => $followup_id]);
+    }
+
+
     public function getStudentsWithPreAgreementFormValid(): false|array
     {
         $stmt = $this->connection->prepare("select PA.id, User.nom, User.prenom from User Join sae.Pre_Agreement PA on User.id = PA.idStudent where PA.status=1;");
@@ -2224,6 +2259,20 @@ class Database
         $stmt = $this->connection->prepare("update Pre_Agreement set status = 1 where id = :id;");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
+    }
+
+    public function updateCompetenceBilan($competenceId, $niveau, $commentaire) {
+        $stmt = $this->connection->prepare("
+        UPDATE CompetencesBilan 
+        SET niveau = :niveau, commentaire = :commentaire 
+        WHERE id = :competenceId
+    ");
+
+        return $stmt->execute([
+            'niveau'       => $niveau,
+            'commentaire'  => $commentaire,
+            'competenceId' => $competenceId
+        ]);
     }
 
 
