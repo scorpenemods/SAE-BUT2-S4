@@ -79,7 +79,7 @@ $file = $database->getLivretFile($groupId);
         <div class="participants">
 
             <?php
-            require_once "livretnoah.php";
+            require_once "Livretnoah.php";
             ?>
 
 
@@ -106,7 +106,7 @@ $file = $database->getLivretFile($groupId);
                 <!-- Formulaire : Ajouter une rencontre -->
                 <div id="addRencontre" class="hidden">
                     <h3>Ajouter une nouvelle rencontre</h3>
-                    <form method="post" action="livretnoah.php">
+                    <form method="post" action="Livretnoah.php">
                         <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                         <input type="hidden" name="action" value="create_meeting">
                         <label>Nom de la rencontre :</label>
@@ -126,7 +126,7 @@ $file = $database->getLivretFile($groupId);
                 <!-- Formulaire : Ajouter une compétence -->
                 <div id="addCompetenceForm" class="hidden">
                     <h3>Ajouter une Compétence</h3>
-                    <form method="post" action="livretnoah.php">
+                    <form method="post" action="Livretnoah.php">
                         <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                         <input type="hidden" name="action" value="add_competence">
                         <label>Nom de la compétence :</label>
@@ -150,7 +150,7 @@ $file = $database->getLivretFile($groupId);
 
                                 <?php if ($role == 2): ?>
                                     <!-- Supprimer la rencontre (professeur) -->
-                                    <form method="post" style="display:inline;" action="livretnoah.php">
+                                    <form method="post" style="display:inline;" action="Livretnoah.php">
                                         <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                                         <input type="hidden" name="action" value="delete_meeting">
                                         <input type="hidden" name="meeting_id" value="<?= $m['id'] ?>">
@@ -181,7 +181,7 @@ $file = $database->getLivretFile($groupId);
                                             <!-- Boutons éditer / supprimer (optionnel, selon role) -->
                                             <?php if ($role == 2): ?>
                                                 <!-- Mettre à jour le texte -->
-                                                <form method="post" style="display:inline;" action="livretnoah.php">
+                                                <form method="post" style="display:inline;" action="Livretnoah.php">
                                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                                                     <input type="hidden" name="action" value="update_text">
                                                     <input type="hidden" name="text_id" value="<?= $text['id'] ?>">
@@ -190,7 +190,7 @@ $file = $database->getLivretFile($groupId);
                                                 </form>
 
                                                 <!-- Supprimer le texte -->
-                                                <form method="post" style="display:inline;" action="livretnoah.php">
+                                                <form method="post" style="display:inline;" action="Livretnoah.php">
                                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                                                     <input type="hidden" name="action" value="delete_text">
                                                     <input type="hidden" name="text_id" value="<?= $text['id'] ?>">
@@ -202,7 +202,7 @@ $file = $database->getLivretFile($groupId);
                                 <?php endif; ?>
 
                                 <!-- Formulaire d'ajout d'un nouveau texte -->
-                                <form method="post" action="livretnoah.php">
+                                <form method="post" action="Livretnoah.php">
                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                                     <input type="hidden" name="action" value="add_text">
                                     <input type="hidden" name="meeting_id" value="<?= $m['id'] ?>">
@@ -229,7 +229,7 @@ $file = $database->getLivretFile($groupId);
 
                                             <?php if ($role == 2): ?>
                                                 <!-- Update QCM -->
-                                                <form method="post" style="display:inline;" action="livretnoah.php">
+                                                <form method="post" style="display:inline;" action="Livretnoah.php">
                                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                                                     <input type="hidden" name="action" value="update_qcm">
                                                     <input type="hidden" name="qcm_id" value="<?= $qcm['id'] ?>">
@@ -238,7 +238,7 @@ $file = $database->getLivretFile($groupId);
                                                 </form>
 
                                                 <!-- Delete QCM -->
-                                                <form method="post" style="display:inline;" action="livretnoah.php">
+                                                <form method="post" style="display:inline;" action="Livretnoah.php">
                                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                                                     <input type="hidden" name="action" value="delete_qcm">
                                                     <input type="hidden" name="qcm_id" value="<?= $qcm['id'] ?>">
@@ -250,7 +250,7 @@ $file = $database->getLivretFile($groupId);
                                 <?php endif; ?>
 
                                 <!-- Formulaire d'ajout d'un nouveau QCM -->
-                                <form method="post" action="livretnoah.php">
+                                <form method="post" action="Livretnoah.php">
                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                                     <input type="hidden" name="action" value="add_qcm">
                                     <input type="hidden" name="meeting_id" value="<?= $m['id'] ?>">
@@ -268,7 +268,7 @@ $file = $database->getLivretFile($groupId);
                 <!-- Gestion des compétences (Bilan) -->
                 <div class="content-section">
                     <h3>Bilan des Compétences</h3>
-                    <form method="post" action="livretnoah.php">
+                    <form method="post" action="Livretnoah.php">
                         <input type="hidden" name="action" value="valider_bilan">
                         <table class="tableau">
                             <thead>
