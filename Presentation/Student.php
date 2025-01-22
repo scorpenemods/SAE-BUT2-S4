@@ -176,6 +176,10 @@ $translations = include $langFile;
             ?>
             <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
 
+            <form action="PreAgreementFormStudent.php" method="post">
+                <button type="submit">Demander un nouveau formulaire de pré-convention</button>
+            </form>
+
 
             <?php include_once("Documents/Documents.php");?>
 

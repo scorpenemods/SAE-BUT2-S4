@@ -63,7 +63,7 @@ $mailLegal = $_POST['mail_legal'] ?? null;
 
 $nomTuteur = $_POST['nom_tuteur'] ?? null;
 
-if ($nomTuteur !== null){
+if ($nomTuteur !== ""){
     $database->setMentorPreAgreement($idPreConv, $nomTuteur);
 }
 
@@ -110,7 +110,7 @@ $responsablePrenom = $_POST['responsable_prenom'] ?? null;
 // Enseignant référent
 $enseignantReferent = $_POST['enseignant_referent'] ?? null;
 
-if ($enseignantReferent !== null){
+if ($enseignantReferent !== ""){
     $database->setProfessorPreAgreement($idPreConv,$enseignantReferent);
 }
 
