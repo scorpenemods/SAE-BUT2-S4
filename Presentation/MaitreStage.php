@@ -270,6 +270,13 @@ $translations = include $langFile;
         <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : ' '; ?>" id="content-6">
             <?php include_once("GetNotesMaitreStage.php");?>
     </div>
+        <!-- Offres Content -->
+        <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-5">
+            Contenu Offres
+            <a href="../View/Offer/List.php?type=all">
+                <button type="button">Voir les offres</button>
+            </a>
+        </div>
 </section>
 
 <!-- Fenêtre modale pour contacter le secrétariat -->
