@@ -5,7 +5,7 @@ session_start();
 
 require $_SERVER['DOCUMENT_ROOT'] . '/Model/Database.php';
 
-$userId = $_SESSION['user'];
+$userId = $_SESSION['user_id'];
 
 $database = (Database::getInstance());
 $alerts = $database->getAlertByUser($userId);
@@ -70,11 +70,10 @@ $alerts = $database->getAlertByUser($userId);
                         id: id
                     },
                     success: function (data) {
-                        if (data.status === 'success') {
+                        if (JSON.parse(data).status === 'success') {
                             sendNotification("success", "Succés", "L'alerte a bien été supprimée.");
-                            location.reload();
+                            setTimeout(location.)
                         } else {
-                            console.log(data)
                             sendNotification("failure", "Erreur", "L'alerte n'a pas pu être supprimée.");
                         }
                     }
