@@ -121,7 +121,7 @@ $translations = include $langFile;
     <script src="../View/Principal/Principal.js" defer></script>
     <script src="../View/Principal/LivretSuivi.js"></script>
     <script src="/View/Principal/Note.js"></script>
-
+    <link rel="stylesheet" href="../View/Agreement/SecretariatConsultPreAgreementForm.css">
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -180,6 +180,13 @@ $translations = include $langFile;
 
         </div>
         <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">
+            <h2>Espace conventions :</h2>
+
+            <button id="PreAgreement">Consulter un formulaire de pré-convention</button>
+            <?php
+            include_once("MentorConsultPreAgreementForm.php"); ?>
+            <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
+
             <?php include_once("Documents/Documents.php");?>
             <h2>Gestion des Fichiers</h2>
             <form class="box" method="post" action="" enctype="multipart/form-data">
