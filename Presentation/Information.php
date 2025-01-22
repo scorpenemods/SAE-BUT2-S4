@@ -63,7 +63,6 @@ $translations = include $langFile;
         <tr>
             <td><?= $translations['email_index']?></td>
             <td><?php echo $email; ?></td> <!-- Affiche l'adresse email de l'utilisateur -->
-            <td><a href="../rebase/Modely/MailChange/MailChange.php"><button><?= $translations['modifier adresse email']?></button></a></td> <!-- Lien pour modifier l'email -->
         </tr>
         <tr>
             <td><?= $translations['prenom_register']?></td>
@@ -76,7 +75,6 @@ $translations = include $langFile;
         <tr>
             <td><?= $translations['telephone_register']?></td>
             <td><?php echo $telephone; ?></td> <!-- Affiche le numéro de téléphone de l'utilisateur -->
-            <td><a href="../rebase/Modely/ChangePhoneNumber/ChangePhoneNumber.php"><button><?= $translations['modifier numéro de téléphone']?></button></a></td> <!-- Lien pour modifier le numéro de téléphone -->
         </tr>
         <tr>
             <td><?= $translations['mdp_index']?></td>
