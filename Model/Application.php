@@ -1,4 +1,4 @@
-//c'est le fichier qui contient la classe Application qui permet de gérer les candidatures
+
 
 <?php
 require_once dirname(__FILE__) . '/Database.php';

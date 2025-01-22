@@ -1,4 +1,4 @@
-//Ce fichier permet de gérer les notes
+
 
 <?php
 //Class to manage Notes

@@ -1,4 +1,4 @@
-//Ce fichier permet de représenter une offre en attente dans la base de données
+
 
 <?php
 

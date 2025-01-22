@@ -1,4 +1,3 @@
-// Créer un fichier CSV
 
 <?php
 // Create a CSV file

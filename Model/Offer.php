@@ -1,4 +1,4 @@
-//Ce fichier permet de représenter une offre dans la base de données
+
 
 <?php
 require_once dirname(__FILE__) . '/Database.php';

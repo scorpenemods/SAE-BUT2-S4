@@ -1,4 +1,4 @@
-//ça permet de traduire les textes de l'application en anglais
+
 
 <?php
 return array(

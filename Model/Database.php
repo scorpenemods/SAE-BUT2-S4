@@ -1,5 +1,3 @@
-//Ce fichier contient les fonctions de la base de données
-
 <?php
 // Initialisation of Database objects
 date_default_timezone_set('Europe/Paris');
@@ -1130,34 +1128,37 @@ class Database
     public function getStudentsProf($professorId): array
     {
         $query = "SELECT User.id, User.nom, User.prenom
-                    FROM User
-                    JOIN Groupe ON User.id = Groupe.user_id
-                    JOIN Convention ON Groupe.conv_id = Convention.id
-                    WHERE Groupe.conv_id IN (
-                        SELECT Groupe.conv_id
-                        FROM Groupe
-                        JOIN User AS Professor ON Groupe.user_id = Professor.id
-                        WHERE Professor.id = :professor_id
-                        AND Professor.role = 2
-                    )
-                    AND User.role = 1";
-        $stmt = $this->connection->prepare($query);
-        $stmt->bindParam(':professor_id', $professorId, PDO::PARAM_INT);
-        $stmt->execute();
-        $students = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $students[] = new Person(
-                $row['nom'] ?? '',
-                $row['prenom'] ?? '',
-                $row['telephone'] ?? 0,
-                $row['role'] ?? '',
-                $row['activite'] ?? '',
-                $row['email'] ?? '',
-                $row['id'] ?? 0
-            );
-        }
-        return $students;
+              FROM User
+              JOIN Groupe ON User.id = Groupe.user_id
+              JOIN Convention ON Groupe.conv_id = Convention.id
+              WHERE Groupe.conv_id IN (
+                  SELECT Groupe.conv_id
+                  FROM Groupe
+                  JOIN User AS Professor ON Groupe.user_id = Professor.id
+                  WHERE Professor.id = :professor_id
+                  AND Professor.role = 2
+              )
+              AND User.role = 1
+              AND Groupe.onStage = 1";
+
+    $stmt = $this->connection->prepare($query);
+    $stmt->bindParam(':professor_id', $professorId, PDO::PARAM_INT);
+    $stmt->execute();
+    $students = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $students[] = new Person(
+            $row['nom'] ?? '',
+            $row['prenom'] ?? '',
+            $row['telephone'] ?? 0,
+            $row['role'] ?? '',
+            $row['activite'] ?? '',
+            $row['email'] ?? '',
+            $row['id'] ?? 0
+        );
     }
+    return $students;
+}
+
 
     /**
      * Get all students of a internship supervisor
@@ -2389,6 +2390,14 @@ class Database
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['company_id'] ?? null;
+    }
+
+    public function deleteMeetingText($textId) {
+        $stmt = $this->connection->prepare("
+        DELETE FROM MeetingTexts
+        WHERE id = :textId
+    ");
+        return $stmt->execute(['textId' => $textId]);
     }
 
 

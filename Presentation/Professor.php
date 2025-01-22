@@ -29,6 +29,7 @@ $userName = "Guest";
 $senderId = $_SESSION['user_id'] ?? null;
 
 $studentId = $_POST['student_id'] ?? null;
+
 // Vérification de la session utilisateur
 if (isset($_SESSION['user'])) {
     $person = unserialize($_SESSION['user']);
@@ -287,6 +288,36 @@ $translations = include $langFile;
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
 </head>
 
+<script>
+    document.querySelector("#addMeetingForm form").addEventListener("submit", function(event) {
+        event.preventDefault(); // Empêche le rechargement de la page
+
+        const formData = new FormData(this);
+
+        fetch('livretnoah.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.text())
+            .then(result => {
+                alert("Rencontre ajoutée avec succès !");
+                document.getElementById('addMeetingForm').style.display = 'none';
+                window.location.reload(); // Recharger la page après succès
+            })
+            .catch(error => console.error('Erreur:', error));
+    });
+
+    function toggleDetails(meetingId) {
+        let detailsDiv = document.getElementById('meeting-details-' + meetingId);
+        if (detailsDiv.classList.contains('hidden')) {
+            detailsDiv.classList.remove('hidden');
+        } else {
+            detailsDiv.classList.add('hidden');
+        }
+    }
+</script>
+
+
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
 <?php include_once("../View/Header.php");?>
 <div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>
@@ -298,7 +329,7 @@ $translations = include $langFile;
         <?php foreach ($students as $student): ?>
             <div class="student" data-student-id="<?php echo htmlspecialchars($student->getId()); ?>"
                  onclick="selectStudent(this)">
-                <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></span>
+                <span><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom());?></span>
             </div>
         <?php endforeach; ?>
     </div>

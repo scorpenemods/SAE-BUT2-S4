@@ -1,4 +1,4 @@
-//ça permet de traduire le site en ukrainien
+
 
 <?php
 return array(

@@ -1,4 +1,4 @@
-//Ce fichier contient les informations de connexion à la base de données et les constantes utilisées dans le projet.
+
 
 <?php
 // Configuration of the database connection

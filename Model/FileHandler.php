@@ -1,4 +1,4 @@
-//Ce fichier permet de gérer le gestionnnaires de fichiers
+
 
 <?php
 class FileHandler

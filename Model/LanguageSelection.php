@@ -1,4 +1,4 @@
-//Ce fichier permet de selectionner la langue du site
+
 
 <!-- Choose the website language -->
 <form method="GET" action="">
