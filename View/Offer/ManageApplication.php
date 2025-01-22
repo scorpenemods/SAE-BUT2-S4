@@ -2,8 +2,7 @@
 // File: ManageApplication.php
 // Manage applications
 session_start();
-$person = unserialize($_SESSION['user']);
-$userRole = $person->getRole();
+
 require dirname(__FILE__) . '/../../Model/Application.php';
 require dirname(__FILE__) . '/../../Model/Offer.php';
 require dirname(__FILE__) . '/../../Model/Company.php';

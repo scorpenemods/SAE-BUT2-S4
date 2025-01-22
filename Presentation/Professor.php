@@ -427,7 +427,7 @@ $translations = include $langFile;
     <!-- Offres Content -->
     <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
         <?= $translations['contenu offres']?>
-        <a href="../View/List.php?type=all">
+        <a href="../View/Offer/List.php?type=all">
             <button type="button"><?= $translations['voir offres']?></button>
         </a>
     </div>
