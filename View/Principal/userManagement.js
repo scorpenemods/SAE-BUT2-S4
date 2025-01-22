@@ -1,7 +1,7 @@
 function approveUser(userId) {
     if (confirm("Êtes-vous sûr de vouloir approuver cet utilisateur ?")) {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "approveUser.php", true);
+        xhr.open("POST", "ApproveUser.php", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onload = function() {
             if (xhr.status === 200 && xhr.responseText.trim() === 'success') {
@@ -18,7 +18,7 @@ function approveUser(userId) {
 function rejectUser(userId) {
     if (confirm("Êtes-vous sûr de vouloir refuser cet utilisateur ?")) {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "rejectUser.php", true);
+        xhr.open("POST", "RejectUser.php", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onload = function() {
             if (xhr.status === 200 && xhr.responseText.trim() === 'success') {
@@ -35,7 +35,7 @@ function rejectUser(userId) {
 function deleteUser(userId) {
     if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "deleteUser.php", true);
+        xhr.open("POST", "DeleteUser.php", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onload = function() {
             if (xhr.status === 200) {
