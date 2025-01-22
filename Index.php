@@ -92,9 +92,9 @@ if (isset($_GET['lang'])) {
 }
 
 // Vérification si le fichier de langue existe, sinon charger le français par défaut
-$langFile = __DIR__ . "/locales/{$lang}.php";
+$langFile = __DIR__ . "/Locales/{$lang}.php";
 if (!file_exists($langFile)) {
-    $langFile = __DIR__ . "/locales/fr.php";
+    $langFile = __DIR__ . "/Locales/fr.php";
 }
 
 // Charger les traductions

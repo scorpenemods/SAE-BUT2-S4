@@ -8,7 +8,6 @@ require "../Model/Person.php";
 $database = (Database::getInstance());
 $conn = $database->getConnection();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_id']) && $_POST['form_id'] === 'create_secretary') {
-    error_log("Secretariat.php POSTED");
     // Initialise l'activité du user
     $function = isset($_POST['function']) ? htmlspecialchars(trim($_POST['function'])) : '';
 
