@@ -397,7 +397,7 @@ class PendingOffer extends Offer {
      * @param int $offer_id
      * @return PendingOffer|null
      */
-    public static function createPending(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $startDate, array $tags, string $email, string $phone, string $website, int $user_id, int $offer_id): ?PendingOffer {
+    public static function createPending(int $company_id, string $title, string $address, string $description, string $job, int $duration, int $salary, string $education, string $startDate, array $tags, string $email, string $phone, string $website, int $user_id, int $offer_id, float $latitude, float $longtitude): ?PendingOffer {
         global $db;
 
         if ($offer_id == 0) {
@@ -406,8 +406,8 @@ class PendingOffer extends Offer {
             $type = "updated offer";
         }
 
-        $stmt = $db->prepare("INSERT INTO pending_offers (user_id, type, offer_id, company_id, title, address, job, description, duration, salary,
-                            study_level, email, phone, website, begin_date) VALUES (:user_id, :type, :offer_id, :company_id, :title, :address, :job, :description, :duration, :salary,
+        $stmt = $db->prepare("INSERT INTO pending_offers (user_id, type, offer_id, company_id, title, address, latitude, longitude, job, description, duration, salary,
+                            study_level, email, phone, website, begin_date) VALUES (:user_id, :type, :offer_id, :company_id, :title, :address, :latitude, :longitude, :job, :description, :duration, :salary,
                             :study_level, :email, :phone, :website, :begin_date)");
         $stmt->bindParam(":user_id", $user_id);
         $stmt->bindParam(":type", $type);
@@ -415,6 +415,8 @@ class PendingOffer extends Offer {
         $stmt->bindParam(":company_id", $company_id);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":address", $address);
+        $stmt->bindParam(":latitude", $latitude);
+        $stmt->bindParam(":longitude", $longtitude);
         $stmt->bindParam(":job", $job);
         $stmt->bindParam(":description", $description);
         $stmt->bindParam(":duration", $duration);

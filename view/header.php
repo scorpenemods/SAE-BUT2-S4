@@ -1,15 +1,11 @@
 <header>
     <a href="/view/offer/list.php" class="logo-link">
         <div class="logo">
-            <img src="/Ressources/LPS%201.0.png" alt="Le Petit Stage Logo">
+            <img src="/view/media/lepetitstage.png" alt="Le Petit Stage Logo">
             <h1>Le Petit Stage</h1>
         </div>
     </a>
     <div class="header-right">
-        <select class="language-select">
-            <option value="fr">Français</option>
-            <option value="en">English</option>
-        </select>
         <div class="user-profile">
             <img src="/placeholder.svg" alt="User Profile">
             <span>John Doe</span>

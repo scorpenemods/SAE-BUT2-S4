@@ -933,6 +933,25 @@ class Offer {
     }
 
     /**
+     * getFavorites
+     * Returns all the favorite offers
+     * @return array|null
+     */
+    public static function getFavorites(int $user_id): ?array {
+        global $db;
+
+        $stmt = $db->prepare("SELECT * FROM offers INNER JOIN favorite_offers ON offers.id = favorite_offers.offer_id WHERE favorite_offers.user_id = :user_id");
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->execute();
+
+        if ($db->errorCode() != 0) {
+            return null;
+        }
+
+        return self::instantiateRows($stmt);
+    }
+
+    /**
      * getAllInactive
      * Returns all the inactive offers
      * @param int $company_id

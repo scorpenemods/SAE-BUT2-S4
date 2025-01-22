@@ -1,7 +1,10 @@
 <?php
-
-
-
+/**
+ * Database class
+ * Handles database connection and queries to the database
+ *
+ * NOTE: Imported from the OTHER group, used only for integration purpose
+ */
 
 class Database {
     private $connection;
@@ -73,39 +76,6 @@ class Database {
             return false;
         }
     }
-
-    public function getPersonByUsername($username) {
-        // Requête SQL pour récupérer les données d'une personne par son username
-        $sql = "SELECT nom, prenom, telephone, login, role, activite, email, user_id FROM a_usersae WHERE login = :login";
-
-        try {
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindParam(':login', $username, PDO::PARAM_STR); // Lie le username à la requête
-            $stmt->execute();
-
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($result) {
-                require_once "Personne.php";
-                // Créer une instance de Personne avec les données récupérées
-                return new Personne(
-                    $result['nom'],
-                    $result['prenom'],
-                    $result['telephone'],
-                    $result['login'],
-                    $result['role'],
-                    $result['activite'],
-                    $result['email'],
-                    $result['user_id'] // Utiliser user_id récupéré de la base de données
-                );
-            }
-            return null; // Retourne null si aucun utilisateur n'est trouvé
-        } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
-            return null;
-        }
-    }
-
-
 
     public function closeConnection() {
         $this->connection = null;

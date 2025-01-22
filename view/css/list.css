@@ -440,10 +440,16 @@ input[type=number] {
     display: flex;
     justify-content: center;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
-@media (max-width: 1800px) {
+.button {
+    white-space: nowrap;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 160px) {
     .button-group {
         flex-direction: column;
         gap: 10px;

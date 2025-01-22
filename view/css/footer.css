@@ -20,35 +20,36 @@ footer {
 }
 .footer-row {
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
 }
 .nav-footer {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-evenly;
+    flex: 1;
+    max-width: 75%;
 }
 nav a {
     color: #4b5563;
     text-decoration: none;
     transition: color 150ms ease-in-out;
-    margin: 0 0.75rem;
+    margin: 0 2rem;
 }
 nav a:hover {
     color: #111827;
 }
-.logo-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: center;
+.logo-left {
+    flex: 0 0 auto;
+    margin-left: 10px;
 }
-.logo-container img {
-    max-width: 100px;
+.logo-right {
+    flex: 0 0 auto;
+    margin-right: 10px;
+}
+.logo-left img, .logo-right img {
+    max-width: 120px;
     height: auto;
-    margin: 0.5rem;
 }
 .copyright {
     text-align: center;
@@ -61,16 +62,12 @@ nav a:hover {
         flex-direction: column;
         align-items: center;
     }
-    .nav-footer, .logo-container {
-        width: 100%;
-        justify-content: center;
-        margin-bottom: 1rem;
-    }
     .nav-footer {
         margin-bottom: 1rem;
+        max-width: 100%;
     }
-    .logo-container {
-        justify-content: center;
+    .logo-left, .logo-right {
+        margin-bottom: 1rem;
     }
 }
 @media (max-width: 480px) {
@@ -78,9 +75,9 @@ nav a:hover {
         padding: 1rem 0;
     }
     nav a {
-        margin: 0.5rem 0;
+        margin: 0.5rem;
     }
-    .logo-container img {
+    .logo-left img, .logo-right img {
         max-width: 80px;
     }
     .copyright {

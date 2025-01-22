@@ -2,8 +2,8 @@
     <div class="container">
         <div class="footer-content">
             <div class="footer-row">
-                <div class="logo-container">
-                    <img src="/Ressources/iut.jpg" alt="IUT Logo" width="120" height="60" />
+                <div class="logo-left">
+                    <img src="/view/media/iut.jpg" alt="IUT Logo" />
                 </div>
 
                 <nav class="nav-footer">
@@ -12,8 +12,9 @@
                     <a href="/confidentialite">Confidentialité</a>
                     <a href="/conditions-utilisation">Conditions d'utilisation</a>
                 </nav>
-                <div class="logo-container">
-                    <img src="/Ressources/uphf.png" alt="Université Polytechnique Logo" width="120" height="60" />
+
+                <div class="logo-right">
+                    <img src="/view/media/uphf.png" alt="Université Polytechnique Logo" />
                 </div>
             </div>
             <div class="copyright">

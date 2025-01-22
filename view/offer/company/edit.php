@@ -51,9 +51,9 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
                         <input type="text" id="searchInput" class="search-input" placeholder="Entrez une adresse exemple : 123 Rue de la Paix, 75000 Paris" value="<?php echo $offer->getAddress(); ?>" required>
                         <div id="dropdown" class="dropdown2"></div>
                     </div>
-                    <input type="hidden" id="latitude" name="latitude">
-                    <input type="hidden" id="longitude" name="longitude">
-
+                    <input type="hidden" id="address" name="address" value="<?php echo $offer->getAddress(); ?>">
+                    <input type="hidden" id="latitude" name="latitude" value="<?php echo $offer->getLatitude(); ?>">
+                    <input type="hidden" id="longitude" name="longitude" value="<?php echo $offer->getLongitude(); ?>">
                 </div>
 
                 <div class="form-group">
@@ -171,6 +171,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
             const dropdown2 = document.getElementById('dropdown');
             const latitudeInput = document.getElementById('latitude');
             const longitudeInput = document.getElementById('longitude');
+            const addressInput = document.getElementById('address');
 
             let debounceTimer;
 
@@ -205,6 +206,8 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
                             searchInput.value = result.display_name;
                             latitudeInput.value = result.lat;
                             longitudeInput.value = result.lon;
+                            addressInput.value = result.display_name;
+
                             dropdown2.style.display = 'none';
                         });
                         dropdown2.appendChild(item);
