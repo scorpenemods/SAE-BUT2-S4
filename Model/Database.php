@@ -2068,20 +2068,19 @@ class Database
     }
 
     public function getPreAgreementByIdGroup(int $id){
-        $sql = "SELECT Convention.id FROM Pre_Agreement 
-            JOIN Convention ON Pre_Agreement.id = Convention.id_pre_agreement 
+        $sql = "SELECT Convention.id FROM Convention
             WHERE Convention.id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ?: null; // Return null if no rows are found
+        return $result; // Return null if no rows are found
     }
 
 
     public function getAllMentor(): false|array
     {
-        $sql = "select id, nom, prenom from User where role = 3";
+        $sql = "select id, nom, prenom from User where role = 3   ";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -2156,6 +2155,12 @@ class Database
     public function getInputsPreAgreementForm($idPreAgreementForm){
         $stmt = $this->connection->prepare("SELECT inputs FROM Pre_Agreement WHERE id = :idPreAgreementForm;");
         $stmt->bindParam(':idPreAgreementForm', $idPreAgreementForm, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function getInputsPreAgreementFormByUserId($idUser){
+        $stmt = $this->connection->prepare("SELECT inputs FROM Pre_Agreement WHERE idStudent = :idUser and status = 1;");
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
