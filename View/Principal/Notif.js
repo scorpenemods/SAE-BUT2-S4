@@ -46,7 +46,7 @@ function loadNotifications() {
 
 // Fonction pour vérifier les nouvelles notifications toutes les 10 secondes
 function checkNewNotifications() {
-    fetch('getUnreadNotificationCount.php')
+    fetch('GetUnreadNotificationCount.php')
         .then(response => response.json())
         .then(data => {
             updateNotificationIcon(data.unreadCount);
@@ -92,7 +92,7 @@ function displayPopupNotification(message) {
 
 // Fonction pour marquer toutes les notifications comme vues
 function markNotificationsAsSeen() {
-    fetch('markNotificationsAsSeen.php')
+    fetch('MarkNotificationsAsSeen.php')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
