@@ -151,12 +151,11 @@ $translations = include $langFile;
     <nav>
         <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
         <span onclick="widget(1)" class="widget-button"><?= $translations['mission stage']?></span>
-        <span onclick="widget(2)" class="widget-button"><?= $translations['gestion stagiaire']?></span>
-        <span onclick="widget(3)" class="widget-button"><?= $translations['livret suivi']?></span>
-        <span onclick="widget(4)" class="widget-button"><?= $translations['documents']?></span>
-        <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
-        <span onclick="widget(6)" class="widget-button"><?= $translations['notes']?></span>
-        <span onclick="widget(7)" class="widget-button"><?= $translations['offres']?></span>
+        <span onclick="widget(2)" class="widget-button"><?= $translations['livret suivi']?></span>
+        <span onclick="widget(3)" class="widget-button"><?= $translations['documents']?></span>
+        <span onclick="widget(4)" class="widget-button"><?= $translations['messagerie']?></span>
+        <span onclick="widget(5)" class="widget-button"><?= $translations['notes']?></span>
+        <span onclick="widget(6)" class="widget-button"><?= $translations['offres']?></span>
     </nav>
 
 
@@ -171,15 +170,14 @@ $translations = include $langFile;
         <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : ''; ?>" id="content-1">
             <?php include('./MissionStage.php')?>
         </div>
-        <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : ''; ?>" id="content-2">Contenu Gestion Stagiaires</div>
-        <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : ''; ?>" id="content-3">
+        <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : ''; ?>" id="content-3">
             <!-- Affichage du livret de suivi -->
 
             <?php include_once("LivretSuivi.php");?>
 
 
         </div>
-        <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : 'Contenu'; ?>" id="content-4">
+        <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : 'Contenu'; ?>" id="content-4">
             <?php include_once("Documents/Documents.php");?>
             <h2>Gestion des Fichiers</h2>
             <form class="box" method="post" action="" enctype="multipart/form-data">
@@ -222,7 +220,7 @@ $translations = include $langFile;
         </div>
 
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : ''; ?>" id="content-5">
+        <div class="Contenu <?php echo ($activeSection == '4') ? 'Visible' : ''; ?>" id="content-5">
             <div class="messenger">
                 <div class="contacts">
                     <div class="search-bar">
@@ -267,11 +265,11 @@ $translations = include $langFile;
             </div>
         </div>
 
-        <div class="Contenu <?php echo ($activeSection == '6') ? 'Visible' : ' '; ?>" id="content-6">
+        <div class="Contenu <?php echo ($activeSection == '5') ? 'Visible' : ' '; ?>" id="content-6">
             <?php include_once("GetNotesMaitreStage.php");?>
     </div>
         <!-- Offres Content -->
-        <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-5">
+        <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-5">
             Contenu Offres
             <a href="../View/Offer/List.php?type=all">
                 <button type="button">Voir les offres</button>
