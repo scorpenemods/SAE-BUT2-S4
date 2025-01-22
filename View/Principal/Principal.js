@@ -592,7 +592,26 @@ function selectStudent(element) {
     fetchStudentInfo(studentId);
     fetchStudentInfoManage(studentId);
     fetchNotes(studentId);
+    fetchStage(studentId)
 
+}
+
+function fetchStage(stageId){
+    fetch(`MissionStage.php?stage_id=${stageId}`)
+        .then(response => response.text())
+        .then(data => {
+// Mettre à jour le contenu de la section d'information de l'étudiant avec les données reçues
+            const mission = document.querySelector('#mission-details');
+            if (mission) {
+                mission.innerHTML = data;
+            } else {
+                console.error("Impossible de trouver la section des détails de l'étudiant.");
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération des informations de l\'étudiant :', error);
+        });
+    console.log("ID de l'étudiant pour le livret de suivi : ", stageId);
 }
 
 function isNotesTabActive() {

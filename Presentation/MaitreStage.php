@@ -70,6 +70,9 @@ if (!in_array($userRole, $allowedRoles)) {
 // Récupération de l'ID du destinataire (statiquement défini ici à 1 pour l'exemple)
 $receiverId = $_POST['receiver_id'] ?? 1;
 
+// Récupération de l'id de l'élève
+$studentId = $_POST['stage_id'] ?? null;
+
 
 // Récupération de la liste des étudiants associés au maître de stage
 $students = $database->getStudentsMaitreDeStage($senderId);
@@ -165,7 +168,9 @@ $translations = include $langFile;
         </div>
 
         <!-- Contenu des autres sections -->
-        <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : ''; ?>" id="content-1">Missions de stage</div>
+        <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : ''; ?>" id="content-1">
+            <?php include('./MissionStage.php')?>
+        </div>
         <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : ''; ?>" id="content-2">Contenu Gestion Stagiaires</div>
         <div class="Contenu <?php echo ($activeSection == '3') ? 'Visible' : ''; ?>" id="content-3">
             <!-- Affichage du livret de suivi -->

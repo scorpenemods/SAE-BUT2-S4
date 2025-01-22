@@ -2065,12 +2065,16 @@ class Database
     }
 
     public function getPreAgreementByIdGroup(int $id){
-        $sql = "select id from Pre_Agreement where idGroup = :id";
+        $sql = "SELECT Convention.id FROM Pre_Agreement 
+            JOIN Convention ON Pre_Agreement.id = Convention.id_pre_agreement 
+            WHERE Convention.id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null; // Return null if no rows are found
     }
+
 
     public function getAllMentor(): false|array
     {
@@ -2218,5 +2222,6 @@ class Database
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
     }
+
 
 }
