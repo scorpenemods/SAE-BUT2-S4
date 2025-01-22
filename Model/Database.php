@@ -2144,17 +2144,20 @@ class Database
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getPreAgreementFormMentor($idPerson){
-        $stmt = $this->connection->prepare("SELECT id FROM Pre_Agreement WHERE idMentor = :idPerson;");
+        $stmt = $this->connection->prepare("select Pre_Agreement.id, Pre_Agreement.created_at, User.nom, User.prenom from Pre_Agreement JOIN User ON Pre_Agreement.idStudent = User.id where idMentor= :idPerson;");
         $stmt -> bindParam('idPerson', $idPerson);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getPreAgreementFormProfessor($idPerson){
-        $stmt = $this->connection->prepare("SELECT id FROM Pre_Agreement WHERE idProfessor = :idPerson;");
+        $stmt = $this->connection->prepare("select Pre_Agreement.id, Pre_Agreement.created_at, User.nom, User.prenom from Pre_Agreement JOIN User ON Pre_Agreement.idStudent = User.id where idProfessor= :idPerson;");
         $stmt -> bindParam('idPerson', $idPerson);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
+
 
     public function getInputsPreAgreementForm($idPreAgreementForm){
         $stmt = $this->connection->prepare("SELECT inputs FROM Pre_Agreement WHERE id = :idPreAgreementForm;");
@@ -2188,6 +2191,15 @@ class Database
         $stmt = $this->connection->prepare("update Pre_Agreement set missions_status = 1 where id = :id;");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
+    }
+
+    public function getMissionsValidPreAgreement(int $id): int
+    {
+        $stmt = $this->connection->prepare("select missions_status from Pre_Agreement where id = :id;");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)$result['missions_status'];
     }
 
 

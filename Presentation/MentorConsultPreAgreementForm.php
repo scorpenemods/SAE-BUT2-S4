@@ -6,7 +6,7 @@ $senderId = $_SESSION['user_id'];
 
 <div id="preAgreementModal" class="modal-student" style="display: none">
     <div class="modal-content-student">
-        <span class="close-button">&times;</span>
+        <span class="close-button-m">&times;</span>
         <h2>Recherche de pré-conventions</h2>
 
         <!-- Barre de recherche -->
@@ -18,7 +18,7 @@ $senderId = $_SESSION['user_id'];
             $idPreAgreementForm = $database->getPreAgreementFormMentor($senderId);
             if (!$idPreAgreementForm == null) {
                 foreach ($idPreAgreementForm as $idPreAgreementForms) {
-                    echo '<a href="PreAgreementFormStudent.php?id=' . htmlspecialchars($idPreAgreementForms['id']) . '">'. htmlspecialchars($idPreAgreementForms['nom']).' '.htmlspecialchars($idPreAgreementForms['prenom']).' '.htmlspecialchars($idPreAgreementForms['created_at']) . '</a>';
+                    echo '<li><a href="PreAgreementFormStudent.php?id=' . htmlspecialchars($idPreAgreementForms['id']) . '">'. htmlspecialchars($idPreAgreementForms['nom']).' '.htmlspecialchars($idPreAgreementForms['prenom']).' '.htmlspecialchars($idPreAgreementForms['created_at']) . '</a></li>';
                 }
             }else {
                 echo "Vous n'avez pas encore de formulaire de pré-convention";
