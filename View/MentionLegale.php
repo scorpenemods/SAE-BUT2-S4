@@ -1,8 +1,29 @@
 <?php
+// Démarre une nouvelle session ou reprend une session existante
 session_start();
+// Inclusion des fichiers nécessaires pour la base de données et les objets Person
+require "../Model/Database.php";
+require "../Model/Person.php";
+// Création d'une nouvelle instance de la classe Database
+$database = (Database::getInstance());
+// Initialisation du nom d'utilisateur par défaut
+$userName = "Guest";
+// Vérifie si l'utilisateur est connecté et récupère ses données
+if (isset($_SESSION['user'])) {
+    $person = unserialize($_SESSION['user']);
+    // Vérifie si l'objet déserialisé est une instance de la classe Person
+    if ($person instanceof Person) {
+        // Sécurise et affiche le prénom et le nom de la personne connectée
+        $userName = htmlspecialchars($person->getPrenom()) . ' ' . htmlspecialchars($person->getNom());
+    }
+} else {
+    // Si aucune session d'utilisateur n'est trouvée, redirige vers la page de déconnexion
+    header("Location: Logout.php");
+    exit();
+}
+// Récupère le rôle de l'utilisateur et l'ID du destinataire des messages
+$userRole = $person->getRole();
 
-
-include_once'Header.php';
 function afficherMentionLegale() {
     // Récupérer la valeur de la mention depuis la session ou GET
     if (isset($_GET['mention'])) {
@@ -36,7 +57,7 @@ function afficherMentionLegale() {
 }
 function afficherInformations() {
     echo "<div class ='mention'><h1>Informations</h1>";
-    echo "<p>Nom des étudiants :</p>";
+    echo "<p class='nom'>Nom des étudiants :</p>";
     echo "<ul>";
     echo"<li>Boulet Rémy</li>";
     echo"<li>Héthuin Marion</li>";
@@ -83,16 +104,17 @@ function afficherConditionsUtilisation() {
         <title>Le Petit Stage - Modifier une offre</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/View/css/Create.css">
-        <link rel="stylesheet" href="/View/css/Header.css">
-        <link rel="stylesheet" href="/View/css/Footer.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
-
+    <?php include('Header.php'); ?>
     <?php
     echo "<body>";
+    echo "<section class='mentionsLegales'>";
     afficherMentionLegale();
+    echo "</section>";
     echo "</body>";
     echo "<footer>";
     include_once "Footer.php";
     echo "</footer>";
 ?>
+</html>

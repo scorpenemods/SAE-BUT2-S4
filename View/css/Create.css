@@ -18,21 +18,29 @@ body {
     color: var(--text-color);
     background-color: var(--background-color);
 }
-.container-principal {
+section.mentionsLegales{
+    text-align: center;
+    padding-top: 3%;
+    padding-bottom: 2%;
+}
+section.mentionsLegales .nom{
+    font-size: x-large;
+}
+section.mentionsLegales .container-principal {
     max-width: 1200px;
     margin: 0 auto;
     padding: 10px 1rem;
 }
-main {
+section.mentionsLegales main {
     padding: 2rem 0;
 }
-h1 {
+section.mentionsLegales h1 {
     color: var(--secondary-color);
     margin-bottom: 1.5rem;
     text-align: center;
     font-size: 2rem;
 }
-form {
+section.mentionsLegales form {
     background-color: white;
     padding: 2rem;
     border-radius: 10px;
@@ -40,17 +48,17 @@ form {
     max-width: 800px;
     margin: 0 auto;
 }
-.form-group {
+section.mentionsLegales .form-group {
     margin-bottom: 1.5rem;
 }
-label {
+section.mentionsLegales label {
     display: block;
     margin-bottom: 0.5rem;
     color: var(--secondary-color);
     font-weight: bold;
     font-size: 1rem;
 }
-input, textarea, select {
+section.mentionsLegales input, section.mentionsLegales textarea, section.mentionsLegales select {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid var(--input-border);
@@ -59,21 +67,21 @@ input, textarea, select {
     transition: all 0.3s ease;
     font-size: 0.9rem;
 }
-input:focus, textarea:focus, select:focus {
+section.mentionsLegales input:focus, section.mentionsLegales textarea:focus, section.mentionsLegales select:focus {
     outline: none;
     border-color: var(--input-focus);
     box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.25);
 }
-textarea {
+section.mentionsLegales textarea {
     min-height: 120px;
     resize: vertical;
 }
-.form-row {
+section.mentionsLegales .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
 }
-button {
+section.mentionsLegales button {
     background-color: var(--primary-color);
     color: white;
     padding: 0.75rem 1.5rem;
@@ -87,15 +95,15 @@ button {
     width: 100%;
     max-width: 250px;
 }
-button:hover {
+section.mentionsLegales button:hover {
     background-color: #2980b9;
     transform: translateY(-2px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-.tags-container {
+section.mentionsLegales .tags-container {
     position: relative;
 }
-.tags-dropdown-btn {
+section.mentionsLegales .tags-dropdown-btn {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid var(--input-border);
@@ -111,15 +119,15 @@ button:hover {
     align-items: center;
     margin-bottom: 0.5rem;
 }
-.tags-dropdown-btn:hover {
+section.mentionsLegales .tags-dropdown-btn:hover {
     border-color: var(--input-focus);
 }
-.tags-dropdown-btn:after {
+section.mentionsLegales .tags-dropdown-btn:after {
     content: '\25BC';
     font-size: 0.7em;
     margin-left: 10px;
 }
-.tags-dropdown-content {
+section.mentionsLegales .tags-dropdown-content {
     display: none;
     position: absolute;
     top: 100%;
@@ -133,42 +141,42 @@ button:hover {
     overflow-y: auto;
     margin-top: 0.25rem;
 }
-.tags-dropdown-content label {
+section.mentionsLegales .tags-dropdown-content label {
     display: flex;
     align-items: center;
     padding: 8px 12px;
     margin-bottom: 0;
     cursor: pointer;
 }
-.tags-dropdown-content label:hover {
+section.mentionsLegales .tags-dropdown-content label:hover {
     background-color: #f1f1f1;
 }
-.tags-dropdown-content input[type="checkbox"] {
+section.mentionsLegales .tags-dropdown-content input[type="checkbox"] {
     margin-right: 8px;
     width: auto;
 }
-.tag {
+section.mentionsLegales .tag {
     background-color: #f1f1f1;
     border-radius: 4px;
     padding: 0.25rem 0.5rem;
     margin-right: 0.5rem;
     margin-bottom: 0.5rem;
 }
-.tagsList {
+section.mentionsLegales .tagsList {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
-.show {
+section.mentionsLegales .show {
     display: block;
 }
-.selected-tags {
+section.mentionsLegales .selected-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: 0.5rem;
 }
-.selected-tag {
+section.mentionsLegales .selected-tag {
     background-color: var(--tag-color);
     color: white;
     padding: 0.25rem 0.5rem;
@@ -177,7 +185,7 @@ button:hover {
     display: flex;
     align-items: center;
 }
-.selected-tag button {
+section.mentionsLegales .selected-tag button {
     background: none;
     border: none;
     color: white;
@@ -187,7 +195,7 @@ button:hover {
     margin-left: 0.25rem;
     line-height: 1;
 }
-.file-upload {
+section.mentionsLegales .file-upload {
     border: 2px dashed var(--input-border);
     border-radius: 6px;
     padding: 2rem;
@@ -195,14 +203,14 @@ button:hover {
     transition: all 0.3s ease;
     background-color: var(--input-background);
 }
-.file-upload.dragover {
+section.mentionsLegales .file-upload.dragover {
     border-color: var(--primary-color);
     background-color: rgba(52, 152, 219, 0.1);
 }
-.file-upload input[type="file"] {
+section.mentionsLegales .file-upload input[type="file"] {
     display: none;
 }
-.file-upload label {
+section.mentionsLegales .file-upload label {
     display: inline-block;
     background-color: var(--primary-color);
     color: white;
@@ -213,57 +221,57 @@ button:hover {
     transition: background-color 0.3s ease;
     margin-bottom: 1rem;
 }
-.file-upload label:hover {
+section.mentionsLegales .file-upload label:hover {
     background-color: #2980b9;
 }
-.file-upload p {
+section.mentionsLegales .file-upload p {
     margin-bottom: 0;
     font-size: 0.9rem;
     color: var(--text-color);
 }
-.file-name {
+section.mentionsLegales .file-name {
     margin-top: 1rem;
     font-size: 0.9rem;
     color: var(--text-color);
 }
 @media (max-width: 768px) {
-    .form-row {
+    section.mentionsLegales .form-row {
         grid-template-columns: 1fr;
     }
-    nav ul {
+    section.mentionsLegales nav ul {
         flex-direction: column;
         align-items: flex-end;
     }
-    nav ul li {
+    section.mentionsLegales nav ul li {
         margin-left: 0;
         margin-bottom: 0.5rem;
     }
-    form {
+    section.mentionsLegales form {
         padding: 1.5rem;
     }
 }
-#distance {
+section.mentionsLegales #distance {
     width: 100%;
 }
-.dropdown-item {
+section.mentionsLegales .dropdown-item {
     padding: 10px;
     cursor: pointer;
 }
-.dropdown-item:hover {
+section.mentionsLegales .dropdown-item:hover {
     background-color: #f0f0f0;
 }
-.loading {
+section.mentionsLegales .loading {
     margin-top: 10px;
     color: #666;
 }
-.container {
+section.mentionsLegales .container {
     width: 100%;
     max-width: 400px;
 }
-.search-container {
+section.mentionsLegales .search-container {
     position: relative;
 }
-.search-input {
+section.mentionsLegales .search-input {
     width: 100%;
     padding: 10px;
     font-size: 16px;
@@ -271,7 +279,7 @@ button:hover {
     border-radius: 4px;
     box-sizing: border-box;
 }
-.dropdown2 {
+section.mentionsLegales .dropdown2 {
     position: absolute;
     width: 100%;
     max-height: 200px;

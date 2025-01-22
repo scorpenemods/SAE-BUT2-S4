@@ -1,6 +1,12 @@
+:root {
+    --text-color: #333;
+    --container-bg: white;
+    --text-gradient: #005c97, #00c6ff;
+}
 footer{
     margin-top: auto;
     background: var(--container-bg); /* dynamic background */
+    border: solid 1px;
     padding: 0.2rem 0;
     width: 100%;
 }
@@ -9,15 +15,12 @@ footer .container {
     margin: 0 auto;
     padding: 0 1rem;
 }
-footer .footer-content {
-    display: flex;
-    flex-direction: column;
-}
 footer .footer-row {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    flex-direction: column;
 }
 footer .nav-footer {
     display: flex;
