@@ -127,6 +127,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 }
 
                 if (!$secretariat_group && $company_id == 0) {
+                    echo '<div class="button" id="list_liked"><a href="/view/offer/list_favorites.php">Offres favories</i></a> </div>';
                     echo '<div class="button" id="manage_alerts" style="text-align: center"> <a href="/view/offer/manage_alerts.php">Gérer les alertes</i></a> </div>';
                     echo '<div class="button" id="manage_applications" style="text-align: center"> <a href="/view/offer/manage_application.php">Voir mes candidatures</a></div>';
                 }

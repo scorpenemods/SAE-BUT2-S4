@@ -53,7 +53,7 @@ $likedOffers = Offer::getFavorites($user);
                         <?php
                         foreach ($likedOffers as $offer) {
                             echo '<tr data-id="' . $offer->getId() . '">';
-                            echo '<td>' . $offer->getTitle() . '</td>';
+                            echo '<td><a href="/view/offer/detail.php?id=' . $offer->getId() . '">' . $offer->getTitle() . '</a></td>';
                             echo '<td>' . $offer->getCompany()->getName() . '</td>';
                             echo '<td>' . $offer->getDescription() . '</td>';
                             echo '<td>' . $offer->getRealDuration() . '</td>';
