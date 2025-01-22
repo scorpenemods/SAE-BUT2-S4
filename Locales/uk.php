@@ -17,6 +17,7 @@ return array(
     'register_button_index' => 'Зареєструватися',
     'validate_email_index' => "Вашу електронну пошту не підтверджено.",
     'validate_email_index_button' => 'Підтвердити зараз',
+    'register_button_index_button' => 'Підтвердіть вашу електронну пошту',
 
     // STUDENT/PRINCIPAL
 
@@ -155,7 +156,7 @@ return array(
     'tapez message' => 'Введіть повідомлення...',
     'welcome_admin' => "Ласкаво просимо на платформу Секретаріат!",
     'info_admin' => "Керуйте користувачами, переглядайте документи та отримуйте доступ до звітів про стажування.",
-    'nouveau secrétaire' => "Новий секретар",
+    'nouveau_secretaire' => "Новий секретар",
 
     // CONTACT SECRETARIAT
     'send_admin' => "Надіслати повідомлення до секретаріату",

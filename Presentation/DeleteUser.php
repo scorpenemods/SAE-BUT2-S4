@@ -1,4 +1,5 @@
 <?php
+error_log("DeleteUser.php");
 // Démarre une session pour gérer l'authentification et les données de session utilisateur
 session_start();
 
@@ -12,14 +13,15 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Vérification du rôle utilisateur pour restreindre l'accès
-if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 4) {
-    // Si l'utilisateur n'a pas le rôle requis (ici 4), on bloque l'accès
+if (!isset($_SESSION['user_role']) || !in_array($_SESSION['user_role'], [4, 5])) {
+    // Si l'utilisateur n'a pas les rôles requis (4 ou 5), on bloque l'accès
     header('location: AccessDenied.php');
     exit();
 }
 
 // Vérifie si la requête a été envoyée via la méthode POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log("DeleteUser.php POSTED");
     // Vérifie si l'ID de l'utilisateur à supprimer est passé dans le formulaire
     if (isset($_POST['user_id'])) {
         $userId = $_POST['user_id'];
@@ -31,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Si l'utilisateur existe et est supprimé avec succès
         if ($user && $db->deleteUser($userId)) {
+            error_log("DeleteUser.php DELETED");
             // Utilise la classe Email pour envoyer l'email
             $email = new Email();
             $subject = 'Suppression de votre compte';
@@ -40,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $logQuery = "INSERT INTO Logs (user_id, type, description, date) VALUES (:user_id, 'ACTION', :description, NOW())";
             $stmtLog = $db->getConnection()->prepare($logQuery);
             $stmtLog->bindParam(':user_id', $_SESSION['user_id']);
-            $description = "Deleted user account: ID {$userId}";
+            $description = "Rejected user account: ID {$userId}";
             $stmtLog->bindParam(':description', $description);
             $stmtLog->execute();
 

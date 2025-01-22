@@ -17,6 +17,7 @@ return array(
     'register_button_index' => 'Register',
     'validate_email_index' => "Your email address is not validated.",
     'validate_email_index_button' => 'Validate now',
+    'register_button_index_button' => 'Confirm Your Email',
 
     // STUDENT/PRINCIPAL
 
@@ -155,7 +156,7 @@ return array(
     'tapez message' => 'Type a message...',
     'welcome_admin' => "Welcome to the Administration platform!",
     'info_admin' => "Manage users, view documents, and access internship reports.",
-    'nouveau secrétaire' => "New administrator",
+    'nouveau_secretaire' => "New administrator",
 
     // CONTACT SECRETARIAT
     'send_admin' => "Send a message to the administration",

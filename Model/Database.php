@@ -515,7 +515,7 @@ class Database
      */
     public function deleteUser($userId)
     {
-        return $this->rejectUser($userId); // test and reusing same method
+        return $this->rejectUser($userId);
     }
 
     /**
@@ -1008,12 +1008,12 @@ class Database
         try {
             $this->connection->beginTransaction();
 
-            // Delete messages in MessageGroupe
+            // Supprimer les messages du groupe
             $stmt = $this->connection->prepare("DELETE FROM MessageGroupe WHERE groupe_id = :group_id");
             $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
             $stmt->execute();
 
-            // Delete entries in Document_Message related to the group's messages
+            // Supprimer les entrées dans Document_Message liées aux messages du groupe
             $stmt = $this->connection->prepare("
             DELETE dm FROM Document_Message dm
             JOIN MessageGroupe mg ON dm.message_id = mg.id
@@ -1022,15 +1022,17 @@ class Database
             $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
             $stmt->execute();
 
-            // Optionally delete documents if they are not linked to other messages
-            // (This requires additional logic to check if the document is linked elsewhere)
+            // Supprimer les entrées dans FollowUpBook liées au groupe
+            $stmt = $this->connection->prepare("DELETE FROM FollowUpBook WHERE group_id = :group_id");
+            $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
 
-            // Delete group members in Groupe
+            // Supprimer les membres du groupe dans la table Groupe
             $stmt = $this->connection->prepare("DELETE FROM Groupe WHERE conv_id = :group_id");
             $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
             $stmt->execute();
 
-            // Delete the group in Convention
+            // Supprimer le groupe dans Convention
             $stmt = $this->connection->prepare("DELETE FROM Convention WHERE id = :group_id");
             $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
             $stmt->execute();
@@ -1043,6 +1045,7 @@ class Database
             return false;
         }
     }
+
 
     /**
      * Update the member of a group

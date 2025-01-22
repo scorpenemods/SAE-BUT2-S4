@@ -69,9 +69,9 @@ $preferences = $database->getUserPreferences($person->getId());
 $darkModeEnabled = isset($preferences['darkmode']) && $preferences['darkmode'] == 1 ? true : false;
 
 // Creation des groupes recup les utilisateurs
-$students = $database->getAllStudents(true) ?? [];
-$professors = $database->getProfessor(true) ?? [];
-$maitres = $database->getTutor(true) ?? [];
+$studentsGroupe = $database->getAllStudents(true);
+$professorsGroupe = $database->getProfessor(true);
+$maitresGroupe = $database->getTutor(true);
 
 
 //------------------------------- Création de compte secrétaire -------------------------------//
@@ -79,8 +79,8 @@ $conn = $database->getConnection();
 
 $errorMessage = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_id']) && $_POST['form_id'] === 'create_secretary') {
+    error_log("Secretariat.php POSTED");
     // Initialise l'activité du user
     $function = isset($_POST['function']) ? htmlspecialchars(trim($_POST['function'])) : '';
 
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($stmtPass->execute()) {
                 $_SESSION['user_email'] = $email;
-                $_SESSION['user_id'] = $userID;
+                $userID = $_SESSION['user_id'];
                 $_SESSION['user_name'] = $name . " " . $firstname;
 
                 // Ajout de log pour vérifier que l'étape est atteinte
@@ -214,6 +214,10 @@ $translations = include $langFile;
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script JavaScript pour la gestion des utilisateurs -->
+    <script src="../View/Principal/userManagement.js"></script>
+    <script src="../View/Principal/GroupCreation.js"></script>
+    <script src="/View/Principal/GroupMessenger.js"></script>
 
 </head>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>">
@@ -225,16 +229,16 @@ $translations = include $langFile;
 
         <!-- Boutons de navigation entre les différents contenus de la section -->
         <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
+        <span onclick="widget(1)" class="widget-button"><?= $translations['rapports']?></span>
+        <span onclick="widget(2)" class="widget-button"><?= $translations['documents']?></span>
+        <span onclick="widget(3)" class="widget-button"><?= $translations['messagerie']?></span>
+        <span onclick="widget(4)" class="widget-button"><?= $translations['groupes']?></span>
+        <span onclick="widget(5)" class="widget-button"><?= $translations['offres']?></span>
+        <span onclick="widget(6)" class="widget-button">Logs</span>
         <?php if ($userRole == 5) { ?>
-        <span onclick="widget(1)" class="widget-button"><?= $translations['gestion secrétariat']?></span>
-        <span onclick="widget(2)" class="widget-button"><?= $translations['gestion utilisateurs']?></span>
+            <span onclick="widget(7)" class="widget-button"><?= $translations['gestion secrétariat']?></span>
+            <span onclick="widget(8)" class="widget-button"><?= $translations['gestion utilisateurs']?></span>
         <?php } ?>
-        <span onclick="widget(3)" class="widget-button"><?= $translations['rapports']?></span>
-        <span onclick="widget(4)" class="widget-button"><?= $translations['documents']?></span>
-        <span onclick="widget(5)" class="widget-button"><?= $translations['messagerie']?></span>
-        <span onclick="widget(6)" class="widget-button"><?= $translations['groupes']?></span>
-        <span onclick="widget(7)" class="widget-button"><?= $translations['offres']?></span>
-        <span onclick="widget(8)" class="widget-button">Logs</span>
 
     </nav>
     <div class="Contenus">
@@ -246,15 +250,177 @@ $translations = include $langFile;
         </div>
 
 
-        <!-- Section Gestion des secrétaires -->
+        <!-- Section Rapports -->
         <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">
+            Contenu Rapports
+        </div>
+
+        <!-- Section Documents -->
+        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2" data-section="documents">
+            <h2>Espace conventions :</h2>
+
+
+            <button id="PreAgreement">Consulter un formulaire de pré-convention</button>
+            <button id="PreAgreementToValidate">Consulter les pré-conventions à valider</button>
+
+            <?php //premier bouton
+            include_once("SecretariatConsultValidPreAgreementForm.php");
+            //second bouton
+            include_once("SecretariatConsultInvalidPreAgreementForm.php");
+            ?>
+            <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
+
+
+
+            <h2>Vos documents :</h2>
+            <?php include_once("Documents/Documents.php");?>
+
+            <h2>Gestion des Fichiers</h2>
+            <form class="box" method="post" action="" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                <input type="hidden" name="form_id" value="uploader_fichier">
+                <input type="hidden" name="upload_type" value="file">
+                <div class="box__input">
+                    <input type="file" name="files[]" id="file-doc" multiple>
+                    <button class="box__button" type="submit">Uploader Fichier</button>
+                </div>
+            </form>
+
+            <div class="file-list">
+                <h2>Fichiers Uploadés</h2>
+                <div class="file-grid">
+                    <?php foreach ($files as $file): ?>
+                        <div class="file-card">
+                            <div class="file-info">
+                                <strong><?= htmlspecialchars($file['name']) ?></strong>
+                                <p><?= round($file['size'] / 1024, 2) ?> KB</p>
+                            </div>
+                            <form method="get" action="Documents/Download.php">
+                                <input type="hidden" name="file" value="<?= htmlspecialchars($file['path']) ?>">
+                                <button type="submit" class="download-button">Télécharger</button>
+                            </form>
+                            <form method="post" action="" class="delete-form">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                <input type="hidden" name="form_id" value="delete_rapport">
+                                <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
+                                <button type="submit" class="delete-button">Supprimer</button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu de la Messagerie -->
+        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?> animate__animated animate__fadeIn" id="content-3">
+            <!-- Messenger Contents -->
+            <div class="messenger">
+                <div class="container mt-5">
+                    <h2 class="text-center mb-4 animate__animated animate__bounceIn">Envoyer un message à tous les utilisateurs</h2>
+                    <form id="broadcastMessageForm" enctype="multipart/form-data" method="POST" action="SendMessageToAll.php" class="animate__animated animate__fadeInUp">
+                        <div class="form-group">
+                            <label for="message" class="form-label">Message :</label>
+                            <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
+                        </div>
+                        <div class="form-group position-relative">
+                            <label for="file" class="form-label">Joindre un fichier :</label>
+                            <input type="file" class="form-control-file animated-file-input" id="file" name="file">
+                            <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné">✖️</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block animated-button">Envoyer à tous les utilisateurs</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Section Groupes -->
+        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4">
+            <!-- List of existing groups -->
+            <div class="group-list">
+                <h3>Groupes existants</h3>
+                <?php if (!empty($groupsWithMembers)): ?>
+                    <ul class="group-list-ul">
+                        <?php foreach ($groupsWithMembers as $group): ?>
+                            <li class="group-item">
+                                <div class="group-header">
+                                    <strong><?php echo htmlspecialchars($group['group_name']); ?></strong>
+                                    <!-- Buttons to modify or delete the group -->
+                                    <div class="group-actions">
+                                        <button onclick="openEditGroupModal(<?php echo $group['group_id']; ?>)">Modifier</button>
+                                        <button onclick="deleteGroup(<?php echo $group['group_id']; ?>)">Supprimer</button>
+                                        <button onclick="endStage(<?php echo $group['group_id']; ?>)">Terminer</button>
+                                    </div>
+                                </div>
+                                <ul class="member-list">
+                                    <?php foreach ($group['members'] as $member): ?>
+                                        <li><?php echo htmlspecialchars($member['first_name'] . ' ' . $member['last_name']); ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p>Aucun groupe n'a été créé pour le moment.</p>
+                <?php endif; ?>
+            </div>
+
+            <!-- Bouton pour ouvrir la fenêtre modale de création de groupe -->
+            <button class="open-create-group-modal">Créer un nouveau groupe</button>
+        </div>
+
+        <!-- Offres Content -->
+        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?>" id="content-5">
+            Contenu Offres
+            <a href="../View/List.php?type=all">
+                <button type="button">Voir les offres</button>
+            </a>
+        </div>
+
+        <!-- Logs Section -->
+        <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">
+            <h2>Journal des activités</h2>
+            <div class="logs-container">
+                <?php
+                // Fetch logs from the database
+                $conn = $database->getConnection();
+                $logsQuery = "SELECT Logs.*, User.nom, User.prenom FROM Logs JOIN User ON Logs.user_id = User.id ORDER BY Logs.date DESC";
+                $stmt = $conn->prepare($logsQuery);
+                $stmt->execute();
+                $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                if (!empty($logs)) {
+                    echo '<ul class="timeline">';
+                    foreach ($logs as $log) {
+                        echo '<li class="timeline-item">';
+                        echo '<div class="timeline-content">';
+                        echo '<h3 class="timeline-title">' . htmlspecialchars($log['prenom'] . ' ' . $log['nom']) . '</h3>';
+                        echo '<p class="timeline-description">' . htmlspecialchars($log['description']) . '</p>';
+                        echo '<span class="timeline-date">' . htmlspecialchars(date("d/m/Y H:i", strtotime($log['date']))) . '</span>';
+                        echo '</div>';
+                        echo '</li>';
+                    }
+                    echo '</ul>';
+                } else {
+                    echo '<p>Aucune activité enregistrée.</p>';
+                }
+                ?>
+            </div>
+        </div>
+
+        <!-- Section Gestion des secrétaires -->
+        <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
             <div class="user-management">
                 <!-- Section pour la création de nouveau secrétaire -->
                 <div class="pending-requests">
-                    <button id="showButton" onclick="showForm()"><?php $translations['nouveau secrétaire']?></button>
+                    <button id="showButton" onclick="showForm()"><?= $translations['nouveau_secretaire']?></button>
                     <!-- Form -->
                     <div id="secretariatCreation" style="display: none;">
-                        <form action="Secretariat.php" method="POST">
+                        <form action="" method="POST">
+
+                            <input type="hidden" name="form_id" value="create_secretary">
+
                             <!-- Hidden role input field (for secretariat role) -->
                             <input type="hidden" name="choice" value="secretariat">
 
@@ -306,43 +472,12 @@ $translations = include $langFile;
                         }
                     }
                     ?>
-                    </div>
-            </div>
-        </div>
-
-        <!-- Logs Section -->
-        <div class="Contenu <?php echo $activeSection == '8' ? 'Visible' : ''; ?>" id="content-8">
-            <h2>Journal des activités</h2>
-            <div class="logs-container">
-                <?php
-                // Fetch logs from the database
-                $conn = $database->getConnection();
-                $logsQuery = "SELECT Logs.*, User.nom, User.prenom FROM Logs JOIN User ON Logs.user_id = User.id ORDER BY Logs.date DESC";
-                $stmt = $conn->prepare($logsQuery);
-                $stmt->execute();
-                $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                if (!empty($logs)) {
-                    echo '<ul class="timeline">';
-                    foreach ($logs as $log) {
-                        echo '<li class="timeline-item">';
-                        echo '<div class="timeline-content">';
-                        echo '<h3 class="timeline-title">' . htmlspecialchars($log['prenom'] . ' ' . $log['nom']) . '</h3>';
-                        echo '<p class="timeline-description">' . htmlspecialchars($log['description']) . '</p>';
-                        echo '<span class="timeline-date">' . htmlspecialchars(date("d/m/Y H:i", strtotime($log['date']))) . '</span>';
-                        echo '</div>';
-                        echo '</li>';
-                    }
-                    echo '</ul>';
-                } else {
-                    echo '<p>Aucune activité enregistrée.</p>';
-                }
-                ?>
+                </div>
             </div>
         </div>
 
         <!-- Section Gestion des utilisateurs -->
-        <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-2">
+        <div class="Contenu <?php echo $activeSection == '8' ? 'Visible' : ''; ?>" id="content-8">
             <div class="user-management">
                 <!-- Section pour déposer un fichier CSV -->
                 <div class="csv-upload" style="padding-top: 25px">
@@ -434,136 +569,6 @@ $translations = include $langFile;
 
             </div>
         </div>
-        <!-- Section Rapports -->
-        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
-            Contenu Rapports
-        </div>
-
-
-
-
-        <!-- Section Documents -->
-        <div class="Contenu <?php echo $activeSection == '4' ? 'Visible' : ''; ?>" id="content-4" data-section="documents">
-            <h2>Espace conventions :</h2>
-
-
-            <button id="PreAgreement">Consulter un formulaire de pré-convention</button>
-            <button id="PreAgreementToValidate">Consulter les pré-conventions à valider</button>
-
-            <?php //premier bouton
-            include_once("SecretariatConsultValidPreAgreementForm.php");
-            //second bouton
-            include_once("SecretariatConsultInvalidPreAgreementForm.php");
-            ?>
-            <script src="../View/Agreement/SecretariatConsultPreAgreementForm.js"></script>
-
-
-
-            <h2>Vos documents :</h2>
-            <?php include_once("Documents/Documents.php");?>
-
-            <h2>Gestion des Fichiers</h2>
-            <form class="box" method="post" action="" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="<?php $_SESSION['csrf_token'] ?>">
-                <input type="hidden" name="form_id" value="uploader_fichier">
-                <input type="hidden" name="upload_type" value="file">
-                <div class="box__input">
-                    <input type="file" name="files[]" id="file-doc" multiple>
-                    <button class="box__button" type="submit">Uploader Fichier</button>
-                </div>
-            </form>
-
-            <div class="file-list">
-                <h2>Fichiers Uploadés</h2>
-                <div class="file-grid">
-<!--                    --><?php //foreach ($files as $file): ?>
-<!--                        <div class="file-card">-->
-<!--                            <div class="file-info">-->
-<!--                                <strong>--><?php //= htmlspecialchars($file['name']) ?><!--</strong>-->
-<!--                                <p>--><?php //= round($file['size'] / 1024, 2) ?><!-- KB</p>-->
-<!--                            </div>-->
-<!--                            <form method="get" action="Documents/Download.php">-->
-<!--                                <input type="hidden" name="file" value="--><?php //= htmlspecialchars($file['path']) ?><!--">-->
-<!--                                <button type="submit" class="download-button">Télécharger</button>-->
-<!--                            </form>-->
-<!--                            <form method="post" action="" class="delete-form">-->
-<!--                                <input type="hidden" name="csrf_token" value="--><?php //= $_SESSION['csrf_token'] ?><!--">-->
-<!--                                <input type="hidden" name="form_id" value="delete_rapport">-->
-<!--                                <input type="hidden" name="fileId" value="--><?php //= $file['id'] ?><!--">-->
-<!--                                <button type="submit" class="delete-button">Supprimer</button>-->
-<!--                            </form>-->
-<!--                        </div>-->
-<!--                    --><?php //endforeach; ?>
-                </div>
-            </div>
-        </div>
-
-
-
-        <!-- Contenu de la Messagerie -->
-        <div class="Contenu <?php echo $activeSection == '5' ? 'Visible' : ''; ?> animate__animated animate__fadeIn" id="content-5">
-            <!-- Messenger Contents -->
-            <div class="messenger">
-                <div class="container mt-5">
-                    <h2 class="text-center mb-4 animate__animated animate__bounceIn">Envoyer un message à tous les utilisateurs</h2>
-                    <form id="broadcastMessageForm" enctype="multipart/form-data" method="POST" action="SendMessageToAll.php" class="animate__animated animate__fadeInUp">
-                        <div class="form-group">
-                            <label for="message" class="form-label">Message :</label>
-                            <textarea class="form-control animated-input" id="message" name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
-                        </div>
-                        <div class="form-group position-relative">
-                            <label for="file" class="form-label">Joindre un fichier :</label>
-                            <input type="file" class="form-control-file animated-file-input" id="file" name="file">
-                            <button type="button" class="btn btn-danger btn-sm reset-file-btn" id="resetFileBtn" title="Annuler le fichier sélectionné">✖️</button>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block animated-button">Envoyer à tous les utilisateurs</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section Groupes -->
-        <div class="Contenu <?php echo $activeSection == '6' ? 'Visible' : ''; ?>" id="content-6">
-            <!-- List of existing groups -->
-            <div class="group-list">
-                <h3>Groupes existants</h3>
-                <?php if (!empty($groupsWithMembers)): ?>
-                    <ul class="group-list-ul">
-                        <?php foreach ($groupsWithMembers as $group): ?>
-                            <li class="group-item">
-                                <div class="group-header">
-                                    <strong><?php echo htmlspecialchars($group['group_name']); ?></strong>
-                                    <!-- Buttons to modify or delete the group -->
-                                    <div class="group-actions">
-                                        <button onclick="openEditGroupModal(<?php echo $group['group_id']; ?>)">Modifier</button>
-                                        <button onclick="deleteGroup(<?php echo $group['group_id']; ?>)">Supprimer</button>
-                                        <button onclick="endStage(<?php echo $group['group_id']; ?>)">Terminer</button>
-                                    </div>
-                                </div>
-                                <ul class="member-list">
-                                    <?php foreach ($group['members'] as $member): ?>
-                                        <li><?php echo htmlspecialchars($member['first_name'] . ' ' . $member['last_name']); ?></li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php else: ?>
-                    <p>Aucun groupe n'a été créé pour le moment.</p>
-                <?php endif; ?>
-            </div>
-
-            <!-- Bouton pour ouvrir la fenêtre modale de création de groupe -->
-            <button class="open-create-group-modal">Créer un nouveau groupe</button>
-        </div>
-
-        <!-- Offres Content -->
-        <div class="Contenu <?php echo $activeSection == '7' ? 'Visible' : ''; ?>" id="content-7">
-            Contenu Offres
-            <a href="../View/List.php?type=all">
-                <button type="button">Voir les offres</button>
-            </a>
-        </div>
 
     </div>
 </section>
@@ -583,8 +588,8 @@ $translations = include $langFile;
             <!-- Selection of students -->
             <label for="student-select">Étudiant(s):</label>
             <select id="student-select" name="student_ids[]" multiple required>
-                <?php foreach ($students as $student): ?>
-                    <option value="<?php echo $student->getId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                <?php foreach ($studentsGroupe as $studentGroupe): ?>
+                    <option value="<?php echo $studentGroupe->getId(); ?>"><?php echo htmlspecialchars($studentGroupe->getPrenom()) . ' ' . htmlspecialchars($studentGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -592,8 +597,8 @@ $translations = include $langFile;
             <label for="professor-select">Professeur :</label>
             <select id="professor-select" name="professor_id" required>
                 <option value="">Sélectionnez un professeur</option>
-                <?php foreach ($professors as $professor): ?>
-                    <option value="<?php echo $professor->getId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                <?php foreach ($professorsGroupe as $professorGroupe): ?>
+                    <option value="<?php echo $professorGroupe->getId(); ?>"><?php echo htmlspecialchars($professorGroupe->getPrenom()) . ' ' . htmlspecialchars($professorGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -601,8 +606,8 @@ $translations = include $langFile;
             <label for="maitre-select">Maître de stage :</label>
             <select id="maitre-select" name="maitre_id" required>
                 <option value="">Sélectionnez un maître de stage</option>
-                <?php foreach ($maitres as $maitre): ?>
-                    <option value="<?php echo $maitre->getId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                <?php foreach ($maitresGroupe as $maitreGroupe): ?>
+                    <option value="<?php echo $maitreGroupe->getId(); ?>"><?php echo htmlspecialchars($maitreGroupe->getPrenom()) . ' ' . htmlspecialchars($maitreGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -630,24 +635,24 @@ $translations = include $langFile;
             <!-- Fields for selecting new members -->
             <label for="edit-student-select">Étudiant(s):</label>
             <select id="edit-student-select" name="student_ids[]" multiple required>
-                <?php foreach ($students as $student): ?>
-                    <option value="<?php echo $student->getId(); ?>"><?php echo htmlspecialchars($student->getPrenom()) . ' ' . htmlspecialchars($student->getNom()); ?></option>
+                <?php foreach ($studentsGroupe as $studentGroupe): ?>
+                    <option value="<?php echo $studentGroupe->getId(); ?>"><?php echo htmlspecialchars($studentGroupe->getPrenom()) . ' ' . htmlspecialchars($studentGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
             <label for="edit-professor-select">Professeur :</label>
             <select id="edit-professor-select" name="professor_id" required>
                 <option value="">Sélectionnez un professeur</option>
-                <?php foreach ($professors as $professor): ?>
-                    <option value="<?php echo $professor->getId(); ?>"><?php echo htmlspecialchars($professor->getPrenom()) . ' ' . htmlspecialchars($professor->getNom()); ?></option>
+                <?php foreach ($professorsGroupe as $professorGroupe): ?>
+                    <option value="<?php echo $professorGroupe->getId(); ?>"><?php echo htmlspecialchars($professorGroupe->getPrenom()) . ' ' . htmlspecialchars($professorGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
             <label for="edit-maitre-select">Maître de stage :</label>
             <select id="edit-maitre-select" name="maitre_id" required>
                 <option value="">Sélectionnez un maître de stage</option>
-                <?php foreach ($maitres as $maitre): ?>
-                    <option value="<?php echo $maitre->getId(); ?>"><?php echo htmlspecialchars($maitre->getPrenom()) . ' ' . htmlspecialchars($maitre->getNom()); ?></option>
+                <?php foreach ($maitresGroupe as $maitreGroupe): ?>
+                    <option value="<?php echo $maitreGroupe->getId(); ?>"><?php echo htmlspecialchars($maitreGroupe->getPrenom()) . ' ' . htmlspecialchars($maitreGroupe->getNom()); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -662,12 +667,8 @@ $translations = include $langFile;
     <?php include '../View/Footer.php'; ?>
 </footer>
 
-<!-- Script JavaScript pour la gestion des utilisateurs -->
-<script src="../View/Principal/userManagement.js"></script>
-<script src="../View/Principal/GroupCreation.js"></script>
-<script src="/View/Principal/GroupMessenger.js"></script>
-
 <script>
+
     // Ajouter une classe d'animation
     document.querySelectorAll('.form-control, .form-control-file').forEach(element => {
         element.addEventListener('focus', () => {
