@@ -17,9 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($loginResult)) {
         $user = $loginResult['user'];
-        if ($email == "test2@iut.com") {
-            $_SESSION['company_id'] = 2;
-        }
+        $_SESSION['company_id'] = Database::getInstance()->getCompanyidbyUserId($user['id']) ;
+
 
         if ($loginResult['valid_email'] == 0) {
             setcookie('email_verification_pending', '1', time() + 3600, "/");
