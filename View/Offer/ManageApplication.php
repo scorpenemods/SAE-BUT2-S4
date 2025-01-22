@@ -11,7 +11,7 @@ require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 $returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 error_reporting(E_ALL ^ E_DEPRECATED);
-$user = $_SESSION["user"] ?? null;
+$user = $_SESSION["user_id"] ?? null;
 if ($user === null) {
     header("Location: " . $returnUrl);
     exit();
@@ -53,28 +53,26 @@ $applications = Application::get_all_for_user($_SESSION['user_id']);
                     </thead>
                     <tbody>
                         <?php
-                        if (isset($apply)){
-                                foreach ($applications as $apply) {
-                                $offer = Offer::get_by_id($apply->get_id_offer());
-                                echo "<tr>";
-                                echo "<td><a href='/View/Offer/Detail.php?id=" . $offer->get_id() . "'>" . $offer->get_title() . "</a></td>";
-                                echo "<td><a href='mailto:" . $offer->get_email() . "'>" . $offer->get_email() . "</a></td>";
-                                echo "<td><a href='tel:" . $offer->get_phone() . "'>" . $offer->get_phone() . "</a></td>";
-                                echo "<td>" . $offer->get_begin_date() . "</td>";
-                                switch ($apply->getStatus()) {
-                                    case "Pending":
-                                        echo "<td style='background: orange; text-align: center'>" . "En attente" . "</td>";
-                                        break;
-                                    case "Accepted":
-                                        echo "<td style='background: green; text-align: center'>" . "Accepté" . "</td>";
-                                        break;
-                                    case "Rejected":
-                                        echo "<td style='background: red; text-align: center'>" . "Refusé" . "</td>";
-                                        break;
-                                }
+                            foreach ($applications as $apply) {
+                            $offer = Offer::get_by_id($apply->get_id_offer());
+                            echo "<tr>";
+                            echo "<td><a href='/View/Offer/Detail.php?id=" . $offer->get_id() . "'>" . $offer->get_title() . "</a></td>";
+                            echo "<td><a href='mailto:" . $offer->get_email() . "'>" . $offer->get_email() . "</a></td>";
+                            echo "<td><a href='tel:" . $offer->get_phone() . "'>" . $offer->get_phone() . "</a></td>";
+                            echo "<td>" . $offer->get_begin_date() . "</td>";
+                            switch ($apply->get_status()) {
+                                case "Pending":
+                                    echo "<td style='background: orange; text-align: center'>" . "En attente" . "</td>";
+                                    break;
+                                case "Accepted":
+                                    echo "<td style='background: green; text-align: center'>" . "Accepté" . "</td>";
+                                    break;
+                                case "Rejected":
+                                    echo "<td style='background: red; text-align: center'>" . "Refusé" . "</td>";
+                                    break;
                             }
-                            echo "</tr>";
                         }
+                        echo "</tr>";
                         ?>
                     </tbody>
                 </table>
