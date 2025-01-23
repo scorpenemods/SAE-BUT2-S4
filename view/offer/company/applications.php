@@ -6,8 +6,8 @@ require '../../../models/Applications.php';
 require dirname(__FILE__) . '/../../../models/Offer.php';
 require dirname(__FILE__) . '/../../../presenter/offer/filter.php';
 
-$returnUrl = "/view/offer/list.php";
-if (isset($_SERVER["HTTP_REFERER"])) $returnUrl = $_SERVER["HTTP_REFERER"];
+$returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
+if (isset($_SERVER["HTTP_REFERER"])) $returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
 
 // Parameters validation
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);

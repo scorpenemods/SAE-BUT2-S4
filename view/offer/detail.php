@@ -10,7 +10,7 @@ require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? "all";
 if (!$offerId) {
-    $returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
     header("Location: " . $returnUrl);
     die();
 }

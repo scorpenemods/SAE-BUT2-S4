@@ -5,7 +5,7 @@ require dirname(__FILE__) . '/../../models/Company.php';
 require dirname(__FILE__) . '/../../models/PendingOffer.php';
 require dirname(__FILE__) . '/../../presenter/offer/filter.php';
 
-$returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
 
 // Verification of the user
 $secretariat_group = $_SESSION['secretariat'] ?? false;

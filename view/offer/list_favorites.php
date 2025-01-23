@@ -8,7 +8,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/models/Company.php';
 // Verification of the user
 $user = $_SESSION["user"] ?? null;
 if ($user === null) {
-    $returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
     header("Location: " . $returnUrl);
     exit();
 }
