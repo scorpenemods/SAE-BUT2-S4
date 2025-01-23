@@ -226,6 +226,7 @@ return array(
     'profActivitie' => "Activité professionnelle :",
     'noMasterInfo' => "Aucune information sur le maître de stage n'a été trouvée.",
     'selectStudDetails' => "Sélectionnez un étudiant pour voir les détails.",
+    'pasdestage' => "Vous n'avez pas de Stage",
     'noBook' => "Vous n'avez pas de livret de suivi ouvert pour le moment.",
 
     // CONTENT STUDENT MANAGMENT

@@ -75,115 +75,120 @@ if ($userRole === 1) {
             }
 
             if ($userIdChosen > 0) {
-                // Récupération des infos sur l'étudiant
-                $studentInfo = $database->getStudentInfo($userIdChosen);     // Doit renvoyer row avec role=1
-                $professorInfo = $database->getProfessorInfo($userIdChosen); // Prof du même conv_id
-                $mentorInfo = $database->getMentorInfo($userIdChosen);       // Maître du même conv_id
+                    // Récupération des infos sur l'étudiant
+                    $studentInfo = $database->getStudentInfo($userIdChosen);     // Doit renvoyer row avec role=1
+                    $professorInfo = $database->getProfessorInfo($userIdChosen); // Prof du même conv_id
+                    $mentorInfo = $database->getMentorInfo($userIdChosen);       // Maître du même conv_id
+                    if (!empty($professorInfo) && !isset($professorInfo['error']) && !empty($mentorInfo) && !isset($mentorInfo['error'])) {
+                    // On récupère le followUpId
+                    $group = $database->getGroupByUserId($userIdChosen);
+                    $followUpId = 0;
+                    if ($group && !empty($group['conv_id'])) {
+                        $followUpId = $database->getOrCreateFollowUpBook($group['conv_id']);
+                    }
 
-                // On récupère le followUpId
-                $group = $database->getGroupByUserId($userIdChosen);
-                $followUpId = 0;
-                if ($group && !empty($group['conv_id'])) {
-                    $followUpId = $database->getOrCreateFollowUpBook($group['conv_id']);
-                }
+                    // Vérifions s'il y a des meetings
+                    $meetings = [];
+                    if ($followUpId) {
+                        $meetings = $database->getMeetingsByFollowUp($followUpId);
+                    }
 
-                // Vérifions s'il y a des meetings
-                $meetings = [];
-                if ($followUpId) {
-                    $meetings = $database->getMeetingsByFollowUp($followUpId);
-                }
-
-                // Affichage étudiant
-                if (!empty($studentInfo) && !isset($studentInfo['error'])) {
-                    echo "<div class='participant-info student-info'>";
-                    echo "<h3>";
+                    // Affichage étudiant
+                    if (!empty($studentInfo) && !isset($studentInfo['error'])) {
+                        echo "<div class='participant-info student-info'>";
+                        echo "<h3>";
                         echo $translations['student'];
-                    echo "</h3>";
-                    echo "<p><strong>";
+                        echo "</h3>";
+                        echo "<p><strong>";
                         echo $translations['lastname'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
-                    echo "<p><strong>";
+                        echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
+                        echo "<p><strong>";
                         echo $translations['firstname'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
-                    echo "<p><strong>";
+                        echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
+                        echo "<p><strong>";
                         echo $translations['mail'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
-                    echo "<p><strong>";
+                        echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
+                        echo "<p><strong>";
                         echo $translations['phone'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
-                    echo "<p><strong>";
+                        echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                        echo "<p><strong>";
                         echo $translations['form'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
-                    echo "</div>";
-                } else {
-                    echo "<p>";
+                        echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
+                        echo "</div>";
+                    } else {
+                        echo "<p>";
                         echo $translations['noInfo'];
-                    echo "</p>";
-                }
+                        echo "</p>";
+                    }
 
-                // Affichage prof
-                if (!empty($professorInfo) && !isset($professorInfo['error'])) {
-                    echo "<div class='participant-info professor-info'>";
-                    echo "<h3>";
-                    echo $translations['prof'];
-                    echo "</h3>";
-                    echo "<p><strong>";
-                    echo $translations['lastname'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
-                    echo "<p><strong>";
-                    echo $translations['firstname'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
-                    echo "<p><strong>";
-                    echo $translations['mail'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
-                    echo "<p><strong>";
-                    echo $translations['phone'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
-                    echo "<p><strong>";
-                    echo $translations['specie'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
-                    echo "</div>";
-                } else {
-                    echo "<p>";
-                    echo $translations['noProfInfo'];
-                    echo "</p>";
-                }
+                    // Affichage prof
+                    if (!empty($professorInfo) && !isset($professorInfo['error'])) {
+                        echo "<div class='participant-info professor-info'>";
+                        echo "<h3>";
+                        echo $translations['prof'];
+                        echo "</h3>";
+                        echo "<p><strong>";
+                        echo $translations['lastname'];
+                        echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
+                        echo "<p><strong>";
+                        echo $translations['firstname'];
+                        echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
+                        echo "<p><strong>";
+                        echo $translations['mail'];
+                        echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
+                        echo "<p><strong>";
+                        echo $translations['phone'];
+                        echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                        echo "<p><strong>";
+                        echo $translations['specie'];
+                        echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
+                        echo "</div>";
+                    } else {
+                        echo "<p>";
+                        echo $translations['noProfInfo'];
+                        echo "</p>";
+                    }
 
-                // Affichage maître de stage
-                if (!empty($mentorInfo) && !isset($mentorInfo['error'])) {
-                    echo "<div class='participant-info mentor-info'>";
-                    echo "<h3>";
-                    echo $translations['master'];
-                    echo "</h3>";
-                    echo "<p><strong>";
-                    echo $translations['lastname'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
-                    echo "<p><strong>";
-                    echo $translations['firstname'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
-                    echo "<p><strong>";
-                    echo $translations['mail'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
-                    echo "<p><strong>";
-                    echo $translations['phone'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
-                    echo "<p><strong>";
-                    echo $translations['profActivitie'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
-                    echo "</div>";
-                } else {
+                    // Affichage maître de stage
+                    if (!empty($mentorInfo) && !isset($mentorInfo['error'])) {
+                        echo "<div class='participant-info mentor-info'>";
+                        echo "<h3>";
+                        echo $translations['master'];
+                        echo "</h3>";
+                        echo "<p><strong>";
+                        echo $translations['lastname'];
+                        echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
+                        echo "<p><strong>";
+                        echo $translations['firstname'];
+                        echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
+                        echo "<p><strong>";
+                        echo $translations['mail'];
+                        echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
+                        echo "<p><strong>";
+                        echo $translations['phone'];
+                        echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                        echo "<p><strong>";
+                        echo $translations['profActivitie'];
+                        echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
+                        echo "</div>";
+                    } else {
+                        echo "<div class='participant-container'>";
+                        echo $translations['noMasterInfo'];
+                        echo "</div>";
+                    }
+
+                    // Transmettre pour LivretSuiviContenu
+                    $GLOBALS['studentInfo'] = $studentInfo;
+                    $GLOBALS['professorInfo'] = $professorInfo;
+                    $GLOBALS['mentorInfo'] = $mentorInfo;
+                    $GLOBALS['followUpId'] = $followUpId;
+                    $GLOBALS['meetingsCount'] = is_array($meetings) ? count($meetings) : 0;
+                }
+                else{
                     echo "<div class='participant-container'>";
-                    echo $translations['noMasterInfo'];
+                    echo $translations['pasdestage'];
                     echo "</div>";
                 }
-
-                // Transmettre pour LivretSuiviContenu
-                $GLOBALS['studentInfo'] = $studentInfo;
-                $GLOBALS['professorInfo'] = $professorInfo;
-                $GLOBALS['mentorInfo'] = $mentorInfo;
-                $GLOBALS['followUpId'] = $followUpId;
-                $GLOBALS['meetingsCount'] = is_array($meetings) ? count($meetings) : 0;
-
             } else {
                 // Étudiant, mais pas de GET user_id => «pas de livret» ?
                 echo "<div class='participant-container'>";

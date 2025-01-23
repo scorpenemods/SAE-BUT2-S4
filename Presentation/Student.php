@@ -169,7 +169,9 @@ $translations = include $langFile;
         <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-5">
             <!-- Affichage du livret de suivi -->
 
-            <?php include_once("LivretSuivi.php");?>
+            <?php
+            include_once("LivretSuivi.php");
+            ?>
         </div>
 
         <!-- Offres Content -->
