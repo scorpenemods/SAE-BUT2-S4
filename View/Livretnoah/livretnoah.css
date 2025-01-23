@@ -1,11 +1,4 @@
-.content-livret {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
-    margin: 0 auto;
-}
+
 
 /* Titres */
 h2, h3, h4, h5 {
@@ -124,9 +117,6 @@ button.delete:hover {
 
 /* Responsive design */
 @media screen and (max-width: 768px) {
-    .content-livret {
-        padding: 15px;
-    }
 
     form input, form select, form textarea {
         font-size: 14px;
