@@ -1,11 +1,9 @@
 # SAE-BUT2
 
-### Boulet Rémy
-### Lemaire Noah
-### Bourgeois Julien
-### Newerkowitsch Lucien
-### Hethuin Marion 
-### Lohvinov Valerii
+### Boulet Rémy - Lemaire Noah
+### Bourgeois Julien - Newerkowitsch Lucien
+### Hethuin Marion - Lohvinov Valerii
+
 
 
 ##Sujet de la SAE : Gestion stages des étudiants
