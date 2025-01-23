@@ -245,11 +245,7 @@ $translations = include $langFile;
 </div>
 
 <!-- Pied de page avec logo et liens vers des pages d'informations -->
-<footer class="PiedDePage">
-    <img src="../Resources/Logo_UPHF.png" alt="Logo UPHF" width="9%"> <!-- Logo UPHF -->
-    <a href="Redirection.php"><?= $translations['information_settings'] ?></a> <!-- Lien vers une page d'informations -->
-    <a href="Redirection.php"><?= $translations['a_propos'] ?></a> <!-- Lien vers une page "À propos" -->
-</footer>
+<?php include '../View/Footer.php'; ?>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
