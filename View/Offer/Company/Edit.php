@@ -39,7 +39,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
         <?php include '../../../View/HeaderAlt.php'; ?>
         <main class="container-principal">
             <h1>Modifier une offre de stage</h1>
-            <form action="../../../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
+            <form action="/Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $offer->get_id(); ?>">
                 <input type="hidden" name="company_id" id="companyId" value="<?php echo $offer->get_company_id(); ?>">
                 <div class="form-group">
