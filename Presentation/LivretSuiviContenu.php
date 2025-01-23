@@ -74,16 +74,11 @@ $file = $database->getLivretFile($groupId);
         }
     </script>
 
-    <!-- BILAN / Finalisation -->
-    <div class="content-section" id="BilanSection">
-        <h3 style="padding: 10px"><?php echo $translations['bilan']?></h3>
         <div class="participants">
 
             <?php
             require_once "Livretnoah.php";
             ?>
-
-
 
             <style>
                 .meeting-item { margin-bottom:10px; }
@@ -283,7 +278,9 @@ $file = $database->getLivretFile($groupId);
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
-
+                <!-- BILAN / Finalisation -->
+                <div class="content-section" id="BilanSection">
+                    <h3 style="padding: 10px"><?php echo $translations['bilan']?></h3>
                 <!-- Gestion des compétences (Bilan) -->
                 <div class="content-section">
                     <h3>Bilan des Compétences</h3>
