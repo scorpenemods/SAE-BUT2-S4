@@ -24,16 +24,16 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Le Petit Stage - Proposer une offre</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="../css/Create.css">
-        <link rel="stylesheet" href="../css/HeaderAlt.css">
-        <link rel="stylesheet" href="../css/FooterAlt.css">
+        <link rel="stylesheet" href="/View/css/Create.css">
+        <link rel="stylesheet" href="/View/css/HeaderAlt.css">
+        <link rel="stylesheet" href="/View/css/FooterAlt.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <?php include dirname(__FILE__) . '/../HeaderAlt.php'; ?>
         <main class="container-principal">
             <h1>Proposer une offre de stage</h1>
-            <form action="../../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
+            <form action="/Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
                 <?php if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                     echo "<div class='form-group'>";
                     // Si l'utilisateur est un Secretariat, il avoir un menu déroulant avec les companies
@@ -131,7 +131,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 <button type="submit">Publier l'offre</button>
             </form>
         </main>
-        <?php include dirname(__FILE__) . '/../FooterAlt.php'; ?>
+        <?php require 'View/FooterAlt.php'; ?>
         <script>
             const dropdownBtn = document.getElementById('tagsDropdownBtn');
             const dropdown = document.getElementById("tagsDropdown");

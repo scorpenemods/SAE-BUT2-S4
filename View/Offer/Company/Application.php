@@ -38,16 +38,16 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des Candidatures</title>
-    <link rel="stylesheet" href="../../css/HeaderAlt.css">
-    <link rel="stylesheet" href="../../css/Application.css">
-    <link rel="stylesheet" href="../../css/FooterAlt.css">
-    <link rel="stylesheet" href="../../css/Notification.css">
-    <script src="../../Js/Notification.js"></script>
+    <link rel="stylesheet" href="/View/css/HeaderAlt.css">
+    <link rel="stylesheet" href="/View/css/Application.css">
+    <link rel="stylesheet" href="/View/css/FooterAlt.css">
+    <link rel="stylesheet" href="/View/css/Notification.css">
+    <script src="/View/Js/Notification.js"></script>
     <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-    <?php include '../../HeaderAlt.php' ?>
+    <?php require 'View/HeaderAlt.php' ?>
     <main>
         <div class="spacer">
             <div class="card">
@@ -69,11 +69,11 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
                             echo "<span class='date'>".$apply->get_created_at()."</span>";
                             if (!$groupeSecretariat) {
                                 echo "<div class='actions'>";
-                                    echo "<form action='../../../Presentation/Offer/Applications/Validate.php' method='post'>";
+                                    echo "<form action='/Presentation/Offer/Applications/Validate.php' method='post'>";
                                         echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
                                         echo "<input class='button accept' type='submit' name='Valider' value='Valider'>";
                                     echo "</form>";
-                                    echo "<form action='../../../Presentation/Offer/Applications/Validate.php' method='post'>";
+                                    echo "<form action='/Presentation/Offer/Applications/Validate.php' method='post'>";
                                         echo "<input type='hidden' name='id_offer' value='" . $offerId . "'>";
                                         echo "<input class='button refuse' id='refuseButton' type='submit' name='Refuser' value='Refuser'>";
                                     echo "</form>";
@@ -89,12 +89,12 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
             </div>
         </div>
     </main>
-    <?php include '../../FooterAlt.php'; ?>
+    <?php require 'View/FooterAlt.php'; ?>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function getFile(idUser, idOffer, typeStr) {
             $.ajax({
-                url: '../../../Presentation/Offer/GetFile.php',
+                url: '/Presentation/Offer/GetFile.php',
                 method: 'POST',
                 data: { user: idUser, offer: idOffer, type: typeStr },
                 xhrFields: {
