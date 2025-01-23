@@ -58,7 +58,7 @@ $likedOffers = Offer::getFavorites($user);
                             echo '<td>' . $offer->getDescription() . '</td>';
                             echo '<td>' . $offer->getRealDuration() . '</td>';
                             echo '<td>' . $offer->getStudyLevel() . '</td>';
-                            echo '<td><button class="button-delete" onclick="deleteAlert(' . $offer->getId() . ')">Supprimer</button></td>';
+                            echo '<td><button class="delete-btn" onclick="deleteAlert(' . $offer->getId() . ')">Supprimer</button></td>';
                             echo '</tr>';
                         }
                         ?>
