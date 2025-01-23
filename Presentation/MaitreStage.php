@@ -332,58 +332,58 @@ $translations = include $langFile;
 <script src="../View/Principal/deleteMessage.js"></script>
 <script src="/View/Principal/GroupMessenger.js"></script>
 <script>
-    // Obtenir la modale
-    var modal = document.getElementById("contact-secretariat-modal");
+    // Gestion de la modale "contact-secretariat"
+    (function () {
+        const modal = document.getElementById("contact-secretariat-modal");
+        const btn = document.getElementById("contact-secretariat-btn");
+        const span = document.querySelector(".close");
 
-    // Obtenir le bouton qui ouvre la modale
-    var btn = document.getElementById("contact-secretariat-btn");
+        // Ouvrir la modale au clic sur le bouton
+        btn.addEventListener("click", () => {
+            modal.style.display = "block";
+        });
 
-    // Obtenir l'élément <span> qui ferme la modale
-    var span = document.getElementsByClassName("close")[0];
-
-    // Quand l'utilisateur clique sur le bouton, ouvrir la modale
-    btn.onclick = function() {
-        modal.style.display = "block";
-    }
-
-    // Quand l'utilisateur clique sur <span> (x), fermer la modale
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    // Quand l'utilisateur clique en dehors de la modale, fermer la modale
-    window.onclick = function(event) {
-        if (event.target == modal) {
+        // Fermer la modale au clic sur le bouton de fermeture (X)
+        span.addEventListener("click", () => {
             modal.style.display = "none";
-        }
-    }
-
-    // Animation du gradient sur le champ de saisie
-    document.querySelectorAll('.form-control.animated-input').forEach(element => {
-        element.addEventListener('focus', () => {
-            element.classList.add('gradient-border');
         });
 
-        element.addEventListener('blur', () => {
-            element.classList.remove('gradient-border');
+        // Fermer la modale en cliquant en dehors du contenu
+        window.addEventListener("click", (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
         });
-    });
+    })();
+
+    // Animation du gradient sur les champs de saisie
+    (function () {
+        document.querySelectorAll('.form-control.animated-input').forEach(element => {
+            element.addEventListener('focus', () => {
+                element.classList.add('gradient-border');
+            });
+
+            element.addEventListener('blur', () => {
+                element.classList.remove('gradient-border');
+            });
+        });
+    })();
 
     // Gestion du bouton d'annulation du fichier
-    document.getElementById('file').addEventListener('change', function() {
-        if (this.files.length > 0) {
-            // Afficher le bouton d'annulation
-            document.getElementById('resetFileBtn').style.display = 'block';
-        } else {
-            document.getElementById('resetFileBtn').style.display = 'none';
-        }
-    });
-
-    document.getElementById('resetFileBtn').addEventListener('click', function() {
+    (function () {
         const fileInput = document.getElementById('file');
-        fileInput.value = ''; // Réinitialise le champ de fichier
-        this.style.display = 'none'; // Cache le bouton d'annulation
-    });
+        const resetFileBtn = document.getElementById('resetFileBtn');
+
+        fileInput.addEventListener('change', () => {
+            resetFileBtn.style.display = fileInput.files.length > 0 ? 'block' : 'none';
+        });
+
+        resetFileBtn.addEventListener('click', () => {
+            fileInput.value = '';  // Réinitialisation du champ de fichier
+            resetFileBtn.style.display = 'none';  // Cache le bouton d'annulation
+        });
+    })();
+
 </script>
 </body>
 
