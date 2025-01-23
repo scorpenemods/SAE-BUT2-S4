@@ -183,7 +183,7 @@ return array(
 
 
     // INFORMATION
-    'maison' => "Retour à la page d'accueil :",
+    'maison' => "Retour à la page d'accueil",
 
     // MAITRE STAGE
     'place' => "Espace conventions :",

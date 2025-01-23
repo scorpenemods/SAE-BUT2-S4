@@ -176,4 +176,49 @@ return array(
     'fichiers upload' => "Uploaded files",
     'download' => "Download",
     'delete' => "Delete",
+
+    // INFORMATION
+    'maison' => "Back to homepage",
+
+// MAITRE STAGE
+    'place' => "Agreements area:",
+    'consult' => "Consult a pre-agreement form",
+    'manage' => "File Management",
+    'uploadFile' => "Upload File",
+    'uploadedFile' => "Uploaded Files",
+    'accessForm' => "Access to the pre-agreement form",
+    'copy' => "Copy",
+    'selectChat' => "Select a chat to start.",
+    'seeOffers' => "See offers",
+    'cancelFile' => "Cancel selected file",
+
+// MISSION STAGE
+    'impossible' => "Impossible to retrieve data",
+    'noMission' => "No mission found for this preliminary agreement",
+    'noStudent' => "No student selected",
+
+// STUDENT MANAGMENT
+    'infoStudent' => "Student information:",
+    'lastname' => "Last name:",
+    'firstname' => "First name:",
+    'mail' => "Email:",
+    'phone' => "Phone:",
+    'activity' => "Activity:",
+    'endStage' => "End internship",
+    'noInfo' => "No information found for the student.",
+    'selectStudent' => "Select a student to manage.",
+
+// STUDENT MANAGMENT
+    'noCreated' => "The progress book has not yet been created for you. No meeting is available.",
+    'noConv' => "No agreement or associated group. The notebook is not available.",
+    'student' => "Student:",
+    'form' => "Training:",
+    'prof' => "Tutoring professor:",
+    'specie' => "Specialty:",
+    'noProfInfo' => "No information about the professor was found.",
+    'master' => "Internship supervisor:",
+    'profActivitie' => "Professional activity:",
+    'noMasterInfo' => "No information about the internship supervisor was found.",
+    'selectStudDetails' => "Select a student to see the details.",
+    'noBook' => "You do not currently have an open progress book."
 );
