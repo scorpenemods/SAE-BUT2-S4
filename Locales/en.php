@@ -179,6 +179,7 @@ return array(
 
     // INFORMATION
     'maison' => "Back to homepage",
+    'gestion_etu' => "Internship Management :",
 
 // MAITRE STAGE
     'place' => "Agreements area:",

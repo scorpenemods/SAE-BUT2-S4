@@ -180,6 +180,7 @@ return array(
 
     // INFORMATION
     'maison' => "Головна сторінка",
+    'gestion_etu' => "Управління стажуванням :",
 
 // MAITRE STAGE
     'place' => "Простір для угод:",

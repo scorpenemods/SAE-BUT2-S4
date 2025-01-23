@@ -184,7 +184,7 @@ return array(
 
     // INFORMATION
     'maison' => "Retour à la page d'accueil",
-
+    'gestion_etu' => "Gestion de Stage :",
     // MAITRE STAGE
     'place' => "Espace conventions :",
     'consult' => "Consulter un formulaire de pré-convention",
