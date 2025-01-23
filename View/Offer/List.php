@@ -11,6 +11,7 @@ require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 
 $secretariat_group = false;
 $_SESSION['secretariat'] = false;
+$user_id = 0;
 
 if (isset($_SESSION['company_id'])) {
     $company_id = $_SESSION['company_id'];
@@ -27,6 +28,12 @@ if ($_SESSION["user_role"]==4 || $_SESSION["user_role"]==5) {
 
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
+}
+
+$returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]";
+if ($user_id == 0) {
+    header("Location: " . $returnUrl);
+    die();
 }
 
 $pageId = filter_input(INPUT_GET, 'pageId', FILTER_VALIDATE_INT) ?? 1;
