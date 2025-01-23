@@ -11,3 +11,10 @@
 L’objectif de cette application est de suivre les stages des étudiants,
 à la fois en partie amont mais surtout sur les échanges entre
 l’étudiant, l’enseignant référent et l’entreprise.
+
+Les extensions instalés:
+-phpmailer
+-phpunit
+
+Gestionnaire de dépendances
+-Composer
