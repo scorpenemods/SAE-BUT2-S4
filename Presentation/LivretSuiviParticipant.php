@@ -70,7 +70,22 @@ if ($userRole === 1) {
             <?php
             // 2) Si GET['user_id'] est fourni => c'est qu'on veut afficher le Livret d'un étudiant
             //    (pour un Prof ou un Maître de stage)
-            $userIdChosen = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
+
+            $userIdFromGet = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
+
+            // Si la session n'existe pas encore, on l'initialise avec la valeur du GET (ou 0 si non défini)
+            if (!isset($_SESSION['register_suivie_livret'])) {
+                $_SESSION['register_suivie_livret'] = $userIdFromGet;
+            } else {
+                // Si un user_id est fourni via GET, on met à jour la session
+                if ($userIdFromGet > 0) {
+                    $_SESSION['register_suivie_livret'] = $userIdFromGet;
+                }
+            }
+
+            // Récupération de la valeur finale après mise à jour
+            $userIdChosen = $_SESSION['register_suivie_livret'];
+
             if ($userIdChosen == 0 && $person->getrole()==1){
                 $userIdChosen= $userId;
             }
