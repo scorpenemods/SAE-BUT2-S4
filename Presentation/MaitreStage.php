@@ -130,6 +130,16 @@ $translations = include $langFile;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.1/emojionearea.min.js"></script>
 </head>
+<script>
+    function toggleDetails(meetingId) {
+        let detailsDiv = document.getElementById('meeting-details-' + meetingId);
+        if (detailsDiv.classList.contains('hidden')) {
+            detailsDiv.classList.remove('hidden');
+        } else {
+            detailsDiv.classList.add('hidden');
+        }
+    }
+</script>
 <body class="<?php echo $darkModeEnabled ? 'dark-mode' : ''; ?>"> <!-- Ajout de la classe 'dark-mode' si activée -->
 <?php include_once("../View/Header.php");?>
 <div class="sidebar-toggle" id="sidebar-toggle" onclick="sidebar()">&#9664;</div>

@@ -308,7 +308,6 @@ $translations = include $langFile;
             })
             .catch(error => console.error('Erreur:', error));
     });
-
     function toggleDetails(meetingId) {
         let detailsDiv = document.getElementById('meeting-details-' + meetingId);
         if (detailsDiv.classList.contains('hidden')) {

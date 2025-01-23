@@ -57,6 +57,7 @@ if (!file_exists($langFile)) {
 $translations = include $langFile;
 $file = $database->getLivretFile($groupId);
 
+
 ?>
 
 <!-- Contenu dynamique généré par JS (Rencontres) + Bilan -->
@@ -95,7 +96,7 @@ $file = $database->getLivretFile($groupId);
                 <h2>Gestion du Livret de Suivi</h2>
 
                 <div class="actions">
-                    <?php if ($role == 2): ?>
+                    <?php if ($role == 2 || $role == 3): ?>
                         <!-- Professeur : peut ajouter une rencontre et ajouter une compétence -->
                         <button onclick="document.getElementById('addRencontre').style.display='block'">+ Ajouter une Rencontre</button>
                         <button onclick="document.getElementById('addCompetenceForm').style.display='block'">+ Ajouter Compétence</button>
@@ -147,7 +148,7 @@ $file = $database->getLivretFile($groupId);
                                 <strong><?= htmlspecialchars($m['name']) ?></strong>
                                 (du <?= $m['start_date'] ?> au <?= $m['end_date'] ?>)
 
-                                <?php if ($role == 2): ?>
+                                <?php if ($role == 2 || $role == 3): ?>
                                     <!-- Supprimer la rencontre (professeur) -->
                                     <form method="post" style="display:inline;" action="Livretnoah.php">
                                         <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
@@ -178,7 +179,6 @@ $file = $database->getLivretFile($groupId);
                                             <?= nl2br(htmlspecialchars($text['response'])) ?>
 
                                             <!-- Boutons éditer / supprimer (optionnel, selon role) -->
-                                            <?php if ($role == 2): ?>
                                                 <!-- Mettre à jour le texte -->
                                                 <form method="post" style="display:inline;" action="Livretnoah.php">
                                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
@@ -187,7 +187,7 @@ $file = $database->getLivretFile($groupId);
                                                     <input type="text" name="response" placeholder="Modifier la réponse">
                                                     <button type="submit">Mettre à jour</button>
                                                 </form>
-
+                                            <?php if ($role == 2 || $role == 3): ?>
                                                 <!-- Supprimer le texte -->
                                                 <form method="post" style="display:inline;" action="Livretnoah.php">
                                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
@@ -200,18 +200,16 @@ $file = $database->getLivretFile($groupId);
                                     <?php endforeach; ?>
                                 <?php endif; ?>
 
-                                <!-- Formulaire d'ajout d'un nouveau texte -->
+                                <?php if ($role == 2 || $role == 3): ?>
                                 <form method="post" action="Livretnoah.php">
                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                                     <input type="hidden" name="action" value="add_text">
                                     <input type="hidden" name="meeting_id" value="<?= $m['id'] ?>">
                                     <label>Titre :</label>
                                     <input type="text" name="title" required>
-                                    <label>Réponse :</label>
-                                    <textarea name="response" required></textarea>
                                     <button type="submit">Ajouter</button>
                                 </form>
-
+                                <?php endif; ?>
                                 <hr>
 
                                 <!-- QCM existants -->
@@ -225,8 +223,6 @@ $file = $database->getLivretFile($groupId);
                                         <div class="qcm-item">
                                             <strong><?= htmlspecialchars($qcm['title']) ?></strong><br>
                                             Réponse libre : <?= nl2br(htmlspecialchars($qcm['other_choice'])) ?>
-
-                                            <?php if ($role == 2): ?>
                                                 <!-- Update QCM -->
                                                 <form method="post" style="display:inline;" action="Livretnoah.php">
                                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
@@ -235,6 +231,8 @@ $file = $database->getLivretFile($groupId);
                                                     <input type="text" name="other_choice" placeholder="Modifier la réponse libre">
                                                     <button type="submit">Mettre à jour</button>
                                                 </form>
+
+                                            <?php if ($role == 2 || $role == 3): ?>
 
                                                 <!-- Delete QCM -->
                                                 <form method="post" style="display:inline;" action="Livretnoah.php">
@@ -248,32 +246,39 @@ $file = $database->getLivretFile($groupId);
                                     <?php endforeach; ?>
                                 <?php endif; ?>
 
-                                <!-- Formulaire d'ajout d'un nouveau QCM -->
+                                <?php if ($role == 2 || $role == 3): ?>
                                 <form method="post" action="Livretnoah.php">
                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                                     <input type="hidden" name="action" value="add_qcm">
                                     <input type="hidden" name="meeting_id" value="<?= $m['id'] ?>">
                                     <label>Question :</label>
                                     <input type="text" name="qcm_title" required>
-                                    <label>Réponse libre :</label>
-                                    <input type="text" name="other_choice" required>
                                     <button type="submit">Ajouter</button>
                                 </form>
+                                <?php endif; ?>
+                                <?php
+                                $comments = $database->getMeetingComments($m['id']);
 
-
+                                // Définir les valeurs des champs
+                                $tutorComment = $comments['tutor_comment'] ?? '';
+                                $mentorComment = $comments['mentor_comment'] ?? '';
+                                ?>
                                 <form method="post" action="Livretnoah.php">
                                     <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
                                     <input type="hidden" name="action" value="add_comments">
                                     <input type="hidden" name="meeting_id" value="<?= $m['id'] ?>">
 
                                     <strong>Commentaires du professeur tuteur :</strong><br>
-                                    <textarea name="remarque_prof" class="textareaLivret" required></textarea> <br><br>
+                                    <textarea name="remarque_prof" class="textareaLivret" required><?= htmlspecialchars($tutorComment); ?></textarea> <br><br>
 
                                     <strong>Commentaires du maître de stage :</strong><br>
-                                    <textarea name="remarque_maitre" class="textareaLivret" required></textarea> <br><br>
+                                    <textarea name="remarque_maitre" class="textareaLivret" required><?= htmlspecialchars($mentorComment); ?></textarea> <br><br>
 
-                                    <button type="submit">Enregistrer les commentaires</button>
+                                    <?php if ($role == 2 || $role == 3): ?>
+                                        <button type="submit">Enregistrer les commentaires</button>
+                                    <?php endif; ?>
                                 </form>
+
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -312,7 +317,10 @@ $file = $database->getLivretFile($groupId);
                             <?php endforeach; ?>
                             </tbody>
                         </table>
-                        <button type="submit" class="validate-bilan-btn">Valider le Bilan</button>
+
+                        <?php if ($role == 2 || $role == 3): ?>
+                            <button type="submit" class="validate-bilan-btn">Valider le Bilan des Compétences</button>
+                        <?php endif; ?>
                     </form>
                 </div>
 

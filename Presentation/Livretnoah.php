@@ -53,6 +53,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 break;
 
+            case 'add_comments':
+                if (!empty($_POST['meeting_id']) && !empty($_POST['remarque_prof']) && !empty($_POST['remarque_maitre'])) {
+                    $meetingId = $_POST['meeting_id'];
+                    $tutorComment = trim($_POST['remarque_prof']);
+                    $mentorComment = trim($_POST['remarque_maitre']);
+
+                    // Appel de la fonction pour insérer ou mettre à jour les commentaires
+                    $success = $database->insertOrUpdateMeetingComments($meetingId, $tutorComment, $mentorComment);
+
+                    // Gestion des messages avec session pour éviter les problèmes d'affichage après redirection
+                    if ($success) {
+                        $_SESSION['message'] = "Les commentaires ont été enregistrés avec succès.";
+                        $_SESSION['message_type'] = "success";
+                    } else {
+                        $_SESSION['message'] = "Erreur lors de l'enregistrement des commentaires.";
+                        $_SESSION['message_type'] = "error";
+                    }
+                } else {
+                    $_SESSION['message'] = "Des données manquent pour ajouter des commentaires.";
+                    $_SESSION['message_type'] = "warning";
+                }
+
+                break;
+
+
             // -- Gestion des compétences
             case 'add_competence':
                 if ($role == 2) {
