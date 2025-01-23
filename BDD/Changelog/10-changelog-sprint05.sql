@@ -227,3 +227,57 @@ ALTER TABLE Convention add constraint fk_pre_agreement
         on delete cascade;
 
 -- rollback  ALTER TABLE Convention DROP FOREIGN KEY fk_pre_agreement; ALTER TABLE Convention drop column id_pre_agreement;
+
+
+--changeset Noah-Rémy:8:Sprint5 labels:ajout de foreingn key
+--comment: Ajout de la derniere table
+
+CREATE TABLE Skill_Assessment(
+                                  id INT AUTO_INCREMENT PRIMARY KEY,
+                                  followup_id INT NOT NULL,
+                                  competence VARCHAR(255) NOT NULL,
+                                  niveau VARCHAR(50) DEFAULT 'Aucun niveau',
+                                  commentaire TEXT NULL,
+                                  FOREIGN KEY (followup_id) REFERENCES FollowUpBook(id) ON DELETE CASCADE
+);
+
+--rollback drop table Skill_Assessment;
+
+
+--changeset Rémy:9:Sprint5 labels:ajout de table role
+--comment: Ajout de table rendant plus clair le code
+CREATE Table Role (
+    id tinyint PRIMARY KEY ,
+    role text not null
+);
+INSERT into Role (id,role) values
+                               (1,'Etudiant'),
+                                (2, 'Professeur'),
+                                (3,'Maitre de Stage'),
+                                (4,'Secretaire'),
+                                (5,'Super Secretaire');
+
+ALTER TABLE User add constraint fk_role
+    foreign key (role)
+        references Role(id)
+
+-- rollback  ALTER TABLE User DROP FOREIGN KEY fk_role;drop table Role;
+
+--changeset Rémy:10:Sprint5 labels:ajout de table
+--comment: ajout de table
+CREATE TABLE MeetingComments (
+                                 id INT AUTO_INCREMENT PRIMARY KEY,
+                                 meeting_id INT NOT NULL,
+                                 tutor_comment TEXT NOT NULL,
+                                 mentor_comment TEXT NOT NULL,
+                                 CONSTRAINT fk_meeting_comments FOREIGN KEY (meeting_id) REFERENCES MeetingBook (id) ON DELETE CASCADE
+);
+
+
+-- rollback  ALTER TABLE MeetingComments DROP FOREIGN KEY fk_meeting_comments;drop table MeetingComments;
+
+--changeset Rémy:11:Sprint5 labels:changement de type
+--comment: changement de type
+alter table MeetingBook MODIFY start_date datetime not null;
+alter table MeetingBook MODIFY end_date datetime not null;
+--rollback alter table MeetingBook MODIFY start_date date not null;alter table MeetingBook MODIFY end_date date not null;
