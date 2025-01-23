@@ -7,7 +7,7 @@ require dirname(__FILE__) . '/../../Model/PendingOffer.php';
 require dirname(__FILE__) . '/../../Model/Company.php';
 require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 
-$returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]";
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 $offer_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -113,18 +113,18 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Détails de l'offre - Le Petit Stage</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="../css/Detail.css">
-        <link rel="stylesheet" href="../css/Button.css">
-        <link rel="stylesheet" href="../css/HeaderAlt.css">
-        <link rel="stylesheet" href="../css/FooterAlt.css">
-        <link rel="stylesheet" href="../css/Apply.css">
-        <link rel="stylesheet" href="../css/Notification.css">
-        <script src="../Js/Notification.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="/View/css/Detail.css">
+        <link rel="stylesheet" href="/View/css/Button.css">
+        <link rel="stylesheet" href="/View/css/HeaderAlt.css">
+        <link rel="stylesheet" href="/View/css/FooterAlt.css">
+        <link rel="stylesheet" href="/View/css/Apply.css">
+        <link rel="stylesheet" href="/View/css/Notification.css">
+        <script src="/View/Js/Notification.js" crossorigin="anonymous"></script>
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../HeaderAlt.php'; ?>
+        <?php require 'View/HeaderAlt.php'; ?>
         <main>
             <div class='offer-card' style='margin-bottom: 10px'>
                 <div class='offer-header'>
@@ -166,11 +166,11 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                                             echo "<button class='apply-button-edit' id='edit-button'". ($isAlreadyPending ? "disabled=true> Modification en attente" : ">Modification") . "</button>";
                                         echo "</form>";
 
-                                        echo "<form action='../../Presentation/Offer/Company/Hide.php' method='post' id='hide-form'>";
+                                        echo "<form action='/Presentation/Offer/Company/Hide.php' method='post' id='hide-form'>";
                                             echo "<input type='hidden' name='id' value='" . $offer->get_id() . "'>";
                                             echo "<button class='apply-button-edit'>Cacher " . ($offer->get_is_active() ? "(Actif)" : "(Inactif)") . "</button>";
                                         echo "</form>";
-                                        echo "<form action='../../Presentation/Offer/Delete.php' method='post' id='hide-form'>";
+                                        echo "<form action='/Presentation/Offer/Delete.php' method='post' id='hide-form'>";
                                         echo "<input type='hidden' name='id' value='" . $offer->get_id() . "'>";
                                             echo "<button class='apply-button-edit'>Supprimer</button>";
                                         echo "</form>";
@@ -248,7 +248,7 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                 }
             ?>
         </main>
-        <?php include dirname(__FILE__) . '/../FooterAlt.php'; ?>
+        <?php require '/View/FooterAlt.php'; ?>
         <script type="text/javascript">
             document.querySelectorAll('.Offer-header').forEach(element => {
                 element.style.backgroundImage = `url(<?php echo $offer->get_image(); ?>)`;

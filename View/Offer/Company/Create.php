@@ -28,7 +28,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../../HeaderAlt.php'; ?>
+        <?php require 'View/HeaderAlt.php'; ?>
         <main class="container-principal">
             <h1>Créer une entreprise</h1>
             <?php if (!empty($errors)): ?>
@@ -40,7 +40,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                     </ul>
                 </div>
             <?php endif; ?>
-            <form action="../../../Presentation/Offer/Company/Create.php" method="post" enctype="multipart/form-data">
+            <form action="/Presentation/Offer/Company/Create.php" method="post" enctype="multipart/form-data">
 
                 <div class="form-group">
                     <label for="title">Nom de l'entreprise</label>
@@ -72,7 +72,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 <button type="submit">Créer l'entreprise</button>
             </form>
         </main>
-        <?php include dirname(__FILE__) . '/../../FooterAlt.php'; ?>
+        <?php require 'View/FooterAlt.php'; ?>
         <script>
             /*
                Manage the visibility of the tags dropdown.

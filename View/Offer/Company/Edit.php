@@ -31,15 +31,15 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
         <title>Le Petit Stage - Modifier une offre</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/View/css/Create.css">
-        <link rel="stylesheet" href="/View//css/HeaderAlt.css">
-        <link rel="stylesheet" href="/View//css/FooterAlt.css">
+        <link rel="stylesheet" href="/View/css/HeaderAlt.css">
+        <link rel="stylesheet" href="/View/css/FooterAlt.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../../HeaderAlt.php'; ?>
+        <?php require 'View/HeaderAlt.php'; ?>
         <main class="container-principal">
             <h1>Modifier une offre de stage</h1>
-            <form action="../../../Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
+            <form action="/Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $offer->get_id(); ?>">
                 <input type="hidden" name="company_id" id="companyId" value="<?php echo $offer->get_company_id(); ?>">
                 <div class="form-group">
@@ -125,7 +125,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
                 <button type="submit">Publier l'offre</button>
             </form>
         </main>
-        <?php include dirname(__FILE__) . '/../../FooterAlt.php'; ?>
+        <?php require 'View/FooterAlt.php'; ?>
         <script>
             const dropdownBtn = document.getElementById('tagsDropdownBtn');
             const dropdown = document.getElementById("tagsDropdown");
