@@ -28,7 +28,7 @@ $alerts = $database->getAlertByUser($userId);
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../HeaderAlt.php'; ?>
+        <?php include '../../View/HeaderAlt.php'; ?>
         <main>
             <div class="container-table">
                 <h1>Liste des alertes</h1>
@@ -60,7 +60,7 @@ $alerts = $database->getAlertByUser($userId);
                 </table>
             </div>
         </main>
-        <?php include dirname(__FILE__) . '/../FooterAlt.php'; ?>
+        <?php include '../../View/FooterAlt.php'; ?>
         <script type="text/javascript">
             function deleteAlert (id) {
                 $.ajax({

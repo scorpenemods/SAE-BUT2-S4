@@ -36,7 +36,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <?php require 'View/HeaderAlt.php'; ?>
+        <?php include '../../../View/HeaderAlt.php'; ?>
         <main class="container-principal">
             <h1>Modifier une offre de stage</h1>
             <form action="/Presentation/Offer/Create.php" method="post" enctype="multipart/form-data">
@@ -125,7 +125,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
                 <button type="submit">Publier l'offre</button>
             </form>
         </main>
-        <?php require 'View/FooterAlt.php'; ?>
+        <?php include '../../../View/FooterAlt.php'; ?>
         <script>
             const dropdownBtn = document.getElementById('tagsDropdownBtn');
             const dropdown = document.getElementById("tagsDropdown");

@@ -106,7 +106,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body>
-    <?php require 'View/HeaderAlt.php' ?>
+    <?php include '../../View/HeaderAlt.php' ?>
         <div class="blur-overlay" id="blurOverlay"></div>
         <main>
             <form method="GET">
@@ -264,7 +264,7 @@ $totalPages = $filteredOffers["totalPages"] ?? 1;
                 </form>
             </div>
         </div>
-        <?php require 'View/FooterAlt.php'; ?>
+        <?php include '../../View/FooterAlt.php'; ?>
         <script>
             const filterPanel = document.getElementById('filterPanel');
             const blurOverlay = document.getElementById('blurOverlay');

@@ -36,7 +36,7 @@ $companies = Company::get_all();
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body>
-        <?php include dirname(__FILE__) . '/../HeaderAlt.php'; ?>
+        <?php include '../../View/HeaderAlt.php'; ?>
         <main>
             <div class="container-table">
                 <h1>Liste des entreprises</h1>
@@ -66,7 +66,7 @@ $companies = Company::get_all();
                 </table>
             </div>
         </main>
-        <?php include dirname(__FILE__) . '/../FooterAlt.php'; ?>
+        <?php include '../../View/FooterAlt.php'; ?>
         <script type="text/javascript">
             function deleteCompany (id) {
                 $.ajax({
