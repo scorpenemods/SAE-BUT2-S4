@@ -1,6 +1,9 @@
 # SAE n°1 - BUT2
 
-## Équipe Principale
+## Sujet n°2 - Gestion des stages étudiants
+
+## Notre groupe 
+### Équipe Principale
 - BOULET Rémy
 - LEMAIRE Noah
 - BOURGEOIS Julien
@@ -8,8 +11,16 @@
 - HETHUIN Marion 
 - LOHVINOV Valerii
 
-## Équipe Sous-traitant
+### Équipe Sous-traitant
 - WARNIER Lorenzo 
 - MASSY Thibaut
 - TERRIER Margot
-- TCHIMOU Acka
+
+## Nos dossiers
+- docker - stockage déploiement
+- liquibase - changelogs sql
+- misc - diagrammes de base de données
+- models - récupération de l'information
+- presenter - traitement des données
+- tests - tests du code
+- view - affichage et formatage des données
