@@ -63,6 +63,7 @@ if ($userRole === 1) {
 }
 
 ?>
+<link rel="stylesheet" href="../View/Livretnoah/livretnoah.css">
 <div style="width: 100%;">
     <div>
         <div style="display: flex; justify-content: center;" id="student-details">

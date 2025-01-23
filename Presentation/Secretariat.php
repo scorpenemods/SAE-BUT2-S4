@@ -132,6 +132,7 @@ $translations = include $langFile;
     <script src="../View/Principal/Principal.js"></script>
     <link rel="stylesheet" href="../View/Principal/Modals.css">
     <link rel="stylesheet" href="../View/Documents/Documents.css">
+    <link rel="stylesheet" href="../View/Livretnoah/livretnoah.css">
     <link rel="stylesheet" href="../View/Agreement/SecretariatConsultPreAgreementForm.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

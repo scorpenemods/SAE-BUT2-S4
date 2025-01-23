@@ -278,9 +278,6 @@ $file = $database->getLivretFile($groupId);
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
-                <!-- BILAN / Finalisation -->
-                <div class="content-section" id="BilanSection">
-                    <h3 style="padding: 10px"><?php echo $translations['bilan']?></h3>
                 <!-- Gestion des compétences (Bilan) -->
                 <div class="content-section">
                     <h3>Bilan des Compétences</h3>
@@ -320,12 +317,11 @@ $file = $database->getLivretFile($groupId);
                         <?php endif; ?>
                     </form>
                 </div>
-
-            </div>
+                <div class="content-section" id="BilanSection">
+                    <h3 style="padding: 10px"><?php echo $translations['bilan']?></h3>
 
             <?php include_once("Documents/Documents.php");?>
 
-            <h2>Gestion des Rapports</h2>
             <form class="box" method="post" action="" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 <input type="hidden" name="form_id" value="uploader_rapport">
@@ -362,6 +358,7 @@ $file = $database->getLivretFile($groupId);
                     <?php endforeach; ?>
                 </div>
             </div>
+                </div>
         </div>
     </div> <!-- fin #BilanSection -->
 </div>
