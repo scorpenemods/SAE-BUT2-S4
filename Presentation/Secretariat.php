@@ -277,7 +277,7 @@ $translations = include $langFile;
                                     <strong><?php echo htmlspecialchars($group['group_name']); ?></strong>
                                     <!-- Buttons to modify or delete the group -->
                                     <div class="group-actions">
-                                        <button onclick="openEditGroupModal(<?php echo $group['group_id']; ?>)">Modifier</button>
+                                        <!-- Fonction Desactiver <button onclick="openEditGroupModal(<?php echo $group['group_id']; ?>)">Modifier</button>-->
                                         <button onclick="deleteGroup(<?php echo $group['group_id']; ?>)">Supprimer</button>
                                         <button onclick="endStage(<?php echo $group['group_id']; ?>)">Terminer</button>
                                     </div>
