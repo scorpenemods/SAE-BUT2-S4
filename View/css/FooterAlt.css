@@ -7,7 +7,7 @@ footer {
     padding: 2rem 0;
 
     position: sticky;
-    top: 100vh;
+    margin-top: auto;
 }
 .container {
     max-width: 1200px;
