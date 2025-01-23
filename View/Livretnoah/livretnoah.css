@@ -1,12 +1,5 @@
 
 
-/* Titres */
-h2, h3, h4, h5 {
-    color: #007BFF;
-    border-bottom: 2px solid #007BFF;
-    padding-bottom: 5px;
-}
-
 /* Sections de contenu */
 .content-section {
     border: 1px solid #ddd;

@@ -72,7 +72,7 @@ if ($userRole === 1) {
             //    (pour un Prof ou un Maître de stage)
             $userIdChosen = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
             if ($userIdChosen == 0 && $person->getrole()==1){
-                $userIdChosen= $person->getId();
+                $userIdChosen= $userId;
             }
 
             if ($userIdChosen > 0) {
@@ -130,19 +130,19 @@ if ($userRole === 1) {
                         echo "</h3>";
                         echo "<p><strong>";
                         echo $translations['lastname'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
+                        echo "</strong> " . htmlspecialchars($professorInfo['nom']) . "</p>";
                         echo "<p><strong>";
                         echo $translations['firstname'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
+                        echo "</strong> " . htmlspecialchars($professorInfo['prenom']) . "</p>";
                         echo "<p><strong>";
                         echo $translations['mail'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
+                        echo "</strong> " . htmlspecialchars($professorInfo['email']) . "</p>";
                         echo "<p><strong>";
                         echo $translations['phone'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                        echo "</strong> " . htmlspecialchars($professorInfo['telephone']) . "</p>";
                         echo "<p><strong>";
                         echo $translations['specie'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
+                        echo "</strong> " . htmlspecialchars($professorInfo['activite']) . "</p>";
                         echo "</div>";
                     } else {
                         echo "<p>";
@@ -158,19 +158,19 @@ if ($userRole === 1) {
                         echo "</h3>";
                         echo "<p><strong>";
                         echo $translations['lastname'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
+                        echo "</strong> " . htmlspecialchars($mentorInfo['nom']) . "</p>";
                         echo "<p><strong>";
                         echo $translations['firstname'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
+                        echo "</strong> " . htmlspecialchars($mentorInfo['prenom']) . "</p>";
                         echo "<p><strong>";
                         echo $translations['mail'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
+                        echo "</strong> " . htmlspecialchars($mentorInfo['email']) . "</p>";
                         echo "<p><strong>";
                         echo $translations['phone'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                        echo "</strong> " . htmlspecialchars($mentorInfo['telephone']) . "</p>";
                         echo "<p><strong>";
                         echo $translations['profActivitie'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
+                        echo "</strong> " . htmlspecialchars($mentorInfo['activite']) . "</p>";
                         echo "</div>";
                     } else {
                         echo "<div class='participant-container'>";
