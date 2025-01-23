@@ -63,9 +63,9 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                         <input type="text" id="searchInput" class="search-input" placeholder="Entrez une adresse exemple : 123 Rue de la Paix, 75000 Paris" required>
                         <div id="dropdown" class="dropdown2"></div>
                     </div>
+                    <input type="hidden" id="address" name="address">
                     <input type="hidden" id="latitude" name="latitude">
                     <input type="hidden" id="longitude" name="longitude">
-
                 </div>
 
                 <div class="form-group">
@@ -141,6 +141,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
             const dropdownBtn = document.getElementById('tagsDropdownBtn');
             const dropdown = document.getElementById("tagsDropdown");
             const checkboxes = document.querySelectorAll('input[name="tags"]');
+            const addressInput = document.getElementById('address');
 
             function toggleDropdown() {
                 dropdown.classList.toggle("show");
@@ -216,6 +217,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                             searchInput.value = result.display_name;
                             latitudeInput.value = result.lat;
                             longitudeInput.value = result.lon;
+                            addressInput.value = result.display_name;
                             dropdown2.style.display = 'none';
                         });
                         dropdown2.appendChild(item);

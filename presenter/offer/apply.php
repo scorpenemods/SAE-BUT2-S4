@@ -17,7 +17,7 @@ if (!is_dir($uploadDir)) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $offer = $_POST['offre'];
+    $offer = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
 
     if (!isset($_SESSION["user"])) {
         echo json_encode(array("status" => "not_logged"));

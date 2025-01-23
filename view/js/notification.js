@@ -16,3 +16,30 @@ function sendNotification(type, title, description, duration = 5000) {
 
     setTimeout(() => notification.remove(), duration);
 }
+
+function parseNotification() {
+    const params = new URLSearchParams(window.location.search);
+    const notification = params.get('notification');
+
+    console.log(notification);
+
+    if (notification) {
+        const [type, title, body] = notification.split('/');
+
+        return {
+            type: decodeURIComponent(type),
+            title: decodeURIComponent(title),
+            body: decodeURIComponent(body)
+        }
+    }
+
+    return null;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const notification = parseNotification();
+
+    if (notification) {
+        sendNotification(notification.type, notification.title, notification.body);
+    }
+});

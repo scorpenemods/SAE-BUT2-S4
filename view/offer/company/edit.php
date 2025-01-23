@@ -103,6 +103,7 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
                         <div id="tagsDropdown" class="tags-dropdown-content">
                             <?php
                             $tags = Offer::getAllTags();
+
                             foreach ($tags as $tag) {
                                 echo "<label><input type='checkbox' name='tag_" . $tag . "' value='" . $tag . "'> " . $tag . "</label>";
                             }

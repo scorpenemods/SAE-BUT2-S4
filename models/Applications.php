@@ -12,6 +12,8 @@ class Applications {
     private string $status;
 
     /**
+     * __construct
+     * Constructor used to instantiate the object, used only internally
      * @param int $id_user
      * @param int $id_offer
      * @param string $created_at
@@ -53,7 +55,7 @@ class Applications {
 
     /**
      * getStatus
-     * getStatus of an apply
+     * get the status of an application
      * @return string
      */
     public function getStatus(): string {
@@ -165,7 +167,7 @@ class Applications {
 
     /**
      * refuse
-     * Refuse an Application
+     * Deny an application
      * @param int $id_offer
      * @return bool|null
      */

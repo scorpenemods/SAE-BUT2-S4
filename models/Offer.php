@@ -48,6 +48,8 @@ class Offer {
      * @param string $created_at
      * @param string $updated_at
      * @param bool $supress
+     * @param float $latitude
+     * @param float $longitude
      */
     protected function __construct(int $id, int $company_id, Company $company, string $title, string $description, string $job, int $duration, string $begin_date, int $salary, string $address, string $study_level, bool $is_active, string $email, string $phone, string $website, string $created_at, string $updated_at, bool $supress, float $latitude, float $longitude) {
         $this->id = $id;
@@ -81,6 +83,7 @@ class Offer {
     private static function instantiateRows(false|PDOStatement $stmt): array {
         $result = $stmt->fetchAll();
 
+/*
         $offers = [];
         foreach ($result as $row) {
             $company = Company::getById($row["company_id"]);
@@ -112,8 +115,9 @@ class Offer {
                 $row["longitude"]
             );
         }
+ */
 
-        return $offers;
+        return self::instantiateRows($result);
     }
 
     /**

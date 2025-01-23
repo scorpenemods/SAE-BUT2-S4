@@ -11,6 +11,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/models/Company.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/models/Database.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/presenter/offer/notify.php';
 
+$returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
+
 function getCoordinates($address): ?array {
     $base_url = "https://nominatim.openstreetmap.org/search";
     $params = [
@@ -20,7 +22,7 @@ function getCoordinates($address): ?array {
     ];
     $options = [
         'http' => [
-            'header' => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36	\r\n"
+            'header' => "User-Agent: YourApp/1.0 (your@email.com)\r\n"
         ]
     ];
 
@@ -30,24 +32,19 @@ function getCoordinates($address): ?array {
     try {
         $response = file_get_contents($url, false, $context);
         $http_response_header = $http_response_header ?? [];
-        $status_code = intval(substr($http_response_header[0], 9, 3));
-        echo "Status Code: $status_code\n";
 
-        if ($status_code === 200) {
-            $data = json_decode($response, true);
-            if ($data) {
-                return [floatval($data[0]['lat']), floatval($data[0]['lon'])];
-            } else {
-                echo "Aucune donnée trouvée pour cette adresse.\n";
-                return null;
-            }
-        } else {
-            echo "Erreur HTTP: $status_code\n";
-            echo "Réponse: $response\n";
+        $data = json_decode($response, true);
+        $status_code = intval(substr($http_response_header[0], 9, 3));
+        if ($status_code != 200 || !$data) {
+            error_log("Error fetching coordinates: " . $response);
+
             return null;
         }
+
+        return [floatval($data[0]['lat']), floatval($data[0]['lon'])];
     } catch (Exception $e) {
-        echo "Erreur de requête: " . $e->getMessage() . "\n";
+        error_log("Error fetching coordinates: " . $e->getMessage());
+
         return null;
     }
 }
@@ -58,11 +55,16 @@ if (isset($_SESSION['secretariat']) && isset($_POST['id']) && isset($_SERVER["HT
         if ($offer->getOfferId() == 0) {
             $company_id = $offer->getCompanyId();
             $coordinates = getCoordinates($offer->getAddress());
+            if (!$coordinates) {
+                header("Location: " . $returnUrl . "?notification=failure/Erreur/Coordonnées+manquantes");
+                exit();
+            }
             $latitude = $coordinates[0];
             $longitude = $coordinates[1];
+
             $offer_notify = Offer::create($company_id, $offer->getTitle(), $offer->getDescription(), $offer->getJob(), $offer->getDuration(), $offer->getSalary(), $offer->getAddress(), $offer->getStudyLevel(), $offer->getBeginDate(), $offer->getTags(), $offer->getEmail(), $offer->getPhone(), $offer->getWebsite(), $latitude, $longitude);
+
             sendNotification($offer_notify);
-            error_log("apres lappel de sendNotification");
         } else {
             $coordinates = getCoordinates($offer->getAddress());
             $latitude = $coordinates[0];

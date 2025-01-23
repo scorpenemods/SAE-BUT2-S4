@@ -47,8 +47,8 @@ if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['addre
     $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING) ?? false;
     $website = filter_input(INPUT_POST, 'website', FILTER_SANITIZE_URL) ?? false;
 
-    if (!$id || !$title || !$latitude || !$longitude || !$job || !$description || !$duration || !$salary || !$education || !$startDate || !$email || !$phone || !$website) {
-        header("Location: ../../view/offer/create.php?failure");
+    if (!$company_id || !$title || !$address || !$job || !$description || !$duration || !$salary || !$education || !$startDate || !$email || !$phone || !$website) {
+        header("Location: ../../view/offer/create.php?notification=failure/Erreur/Un champ est manquant");
         exit();
     }
 
@@ -67,6 +67,8 @@ if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['addre
     // If the offer is created, redirect to the list of pending offers
     if ($offer) {
         header("Location: $returnUrl");
-        exit();
+    } else {
+        header("Location: $returnUrl?notification=failure/Erreur/Une+erreur+est+survenue");
     }
+    exit();
 }
