@@ -73,7 +73,7 @@ if ($userRole === 1) {
             if ($userIdChosen == 0 && $person->getrole()==1){
                 $userIdChosen= $person->getId();
             }
-            echo $userIdChosen;
+
             if ($userIdChosen > 0) {
                 // Récupération des infos sur l'étudiant
                 $studentInfo = $database->getStudentInfo($userIdChosen);     // Doit renvoyer row avec role=1

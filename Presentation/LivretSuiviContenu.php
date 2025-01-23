@@ -113,10 +113,10 @@ $file = $database->getLivretFile($groupId);
                         <input type="text" name="meeting_name" required>
 
                         <label>Date de début :</label>
-                        <input type="date" name="start_date" value="<?= date('Y-m-d') ?>" required>
+                        <input type="datetime-local" name="start_date" value="<?= date('Y-m-d\TH:i') ?>" required>
 
                         <label>Date de fin :</label>
-                        <input type="date" name="end_date" value="<?= date('Y-m-d', strtotime('+1 month')) ?>" required>
+                        <input type="datetime-local" name="end_date" value="<?= date('Y-m-d\TH:i') ?>" required>
 
                         <button type="submit">Ajouter</button>
                         <button type="button" onclick="document.getElementById('addRencontre').style.display='none'">Annuler</button>
@@ -269,10 +269,10 @@ $file = $database->getLivretFile($groupId);
                                     <input type="hidden" name="meeting_id" value="<?= $m['id'] ?>">
 
                                     <strong>Commentaires du professeur tuteur :</strong><br>
-                                    <textarea name="remarque_prof" class="textareaLivret" required><?= htmlspecialchars($tutorComment); ?></textarea> <br><br>
+                                    <textarea name="remarque_prof" class="textareaLivret" required ><?= htmlspecialchars($tutorComment); ?></textarea> <br><br>
 
                                     <strong>Commentaires du maître de stage :</strong><br>
-                                    <textarea name="remarque_maitre" class="textareaLivret" required><?= htmlspecialchars($mentorComment); ?></textarea> <br><br>
+                                    <textarea name="remarque_maitre" class="textareaLivret" onmousedown="" required><?= htmlspecialchars($mentorComment); ?></textarea> <br><br>
 
                                     <?php if ($role == 2 || $role == 3): ?>
                                         <button type="submit">Enregistrer les commentaires</button>

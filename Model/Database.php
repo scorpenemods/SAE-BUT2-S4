@@ -1751,8 +1751,8 @@ class Database
         if ($f) {
             return $f['id'];
         } else {
-            $start_date = date('Y-m-d');
-            $end_date = date('Y-m-d', strtotime('+3 months'));
+            $start_date = date('Y-m-d\TH:i');
+            $end_date = date('Y-m-d\TH:i');
             $stmt = $this->connection->prepare("INSERT INTO FollowUpBook (status, start_date, end_date, group_id) 
                                          VALUES ('En cours', :start, :end, :cid)");
             $stmt->execute(['start' => $start_date, 'end' => $end_date, 'cid' => $conv_id]);
