@@ -84,7 +84,6 @@ $file = $database->getLivretFile($groupId);
 
 
 
-
             <style>
                 .meeting-item { margin-bottom:10px; }
                 .texte-item, .qcm-item { margin: 5px 0; }
@@ -259,6 +258,21 @@ $file = $database->getLivretFile($groupId);
                                     <label>Réponse libre :</label>
                                     <input type="text" name="other_choice" required>
                                     <button type="submit">Ajouter</button>
+                                </form>
+
+
+                                <form method="post" action="Livretnoah.php">
+                                    <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
+                                    <input type="hidden" name="action" value="add_comments">
+                                    <input type="hidden" name="meeting_id" value="<?= $m['id'] ?>">
+
+                                    <strong>Commentaires du professeur tuteur :</strong><br>
+                                    <textarea name="remarque_prof" class="textareaLivret" required></textarea> <br><br>
+
+                                    <strong>Commentaires du maître de stage :</strong><br>
+                                    <textarea name="remarque_maitre" class="textareaLivret" required></textarea> <br><br>
+
+                                    <button type="submit">Enregistrer les commentaires</button>
                                 </form>
                             </div>
                         <?php endforeach; ?>

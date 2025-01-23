@@ -2414,5 +2414,47 @@ class Database
         return $stmt->execute(['textId' => $textId]);
     }
 
+    public function insertOrUpdateMeetingComments(int $meetingId, string $tutorComment, string $mentorComment): bool
+    {
+        try {
+            // Vérifier si un enregistrement existe déjà pour ce meeting_id
+            $sql = "SELECT COUNT(*) FROM MeetingComments WHERE meeting_id = :meeting_id";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(':meeting_id', $meetingId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Si l'enregistrement existe, on fait un UPDATE
+            if ($stmt->fetchColumn() > 0) {
+                $updateSql = "
+                UPDATE MeetingComments
+                SET tutor_comment = :tutor_comment,
+                    mentor_comment = :mentor_comment
+                WHERE meeting_id = :meeting_id
+            ";
+                $updateStmt = $this->connection->prepare($updateSql);
+                $updateStmt->bindValue(':tutor_comment', $tutorComment, PDO::PARAM_STR);
+                $updateStmt->bindValue(':mentor_comment', $mentorComment, PDO::PARAM_STR);
+                $updateStmt->bindValue(':meeting_id', $meetingId, PDO::PARAM_INT);
+                return $updateStmt->execute();
+            }
+            // Sinon, on fait un INSERT
+            else {
+                $insertSql = "
+                INSERT INTO MeetingComments (meeting_id, tutor_comment, mentor_comment)
+                VALUES (:meeting_id, :tutor_comment, :mentor_comment)
+            ";
+                $insertStmt = $this->connection->prepare($insertSql);
+                $insertStmt->bindValue(':meeting_id', $meetingId, PDO::PARAM_INT);
+                $insertStmt->bindValue(':tutor_comment', $tutorComment, PDO::PARAM_STR);
+                $insertStmt->bindValue(':mentor_comment', $mentorComment, PDO::PARAM_STR);
+                return $insertStmt->execute();
+            }
+        } catch (PDOException $e) {
+            echo "Database error (insertOrUpdateMeetingComments) : " . $e->getMessage();
+            return false;
+        }
+    }
+
+
 
 }

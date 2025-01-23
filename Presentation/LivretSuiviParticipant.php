@@ -16,6 +16,26 @@ $person = unserialize($_SESSION['user']);
 $userId = $person->getId();
 $userRole = $person->getRole();
 
+
+//TRADUCTION
+
+// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+} else {
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+}
+
+// Vérification si le fichier de langue existe, sinon charger le français par défaut
+$langFile = "../Locales/{$lang}.php";
+if (!file_exists($langFile)) {
+    $langFile = "../Locales/fr.php";
+}
+
+// Charger les traductions
+$translations = include $langFile;
+
 $followUpId = 0;
 $meetings   = [];
 // Если это студент (role=1), пытаемся récupérer son FollowUpBook
@@ -42,25 +62,6 @@ if ($userRole === 1) {
     }
 }
 
-//TRADUCTION
-
-// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
-if (isset($_GET['lang'])) {
-    $lang = $_GET['lang'];
-    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
-} else {
-    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
-}
-
-// Vérification si le fichier de langue existe, sinon charger le français par défaut
-$langFile = "../Locales/{$lang}.php";
-if (!file_exists($langFile)) {
-    $langFile = "../Locales/fr.php";
-}
-
-// Charger les traductions
-$translations = include $langFile;
-
 ?>
 <div style="width: 100%;">
     <div>
@@ -69,7 +70,7 @@ $translations = include $langFile;
             // 2) Si GET['user_id'] est fourni => c'est qu'on veut afficher le Livret d'un étudiant
             //    (pour un Prof ou un Maître de stage)
             $userIdChosen = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
-            if ($userIdChosen > 0) {
+            if ($userIdChosen > 0 || $person->getrole() === 1) {
                 // Récupération des infos sur l'étudiant
                 $studentInfo = $database->getStudentInfo($userIdChosen);     // Doit renvoyer row avec role=1
                 $professorInfo = $database->getProfessorInfo($userIdChosen); // Prof du même conv_id
@@ -180,17 +181,10 @@ $translations = include $langFile;
                 $GLOBALS['meetingsCount'] = is_array($meetings) ? count($meetings) : 0;
 
             } else {
-                // Si user_id=0 => peut-être c'est un prof/maître qui n'a pas encore cliqué sur un étudiant
-                if ($userRole != 1) {
-                    echo "<div class='participant-container'>";
-                    echo $translations['selectStudDetails'];
-                    echo "</div>";
-                } else {
-                    // Étudiant, mais pas de GET user_id => «pas de livret» ?
-                    echo "<div class='participant-container'>";
-                    echo $translations['selectStudDetails'];
-                    echo "</div>";
-                }
+                // Étudiant, mais pas de GET user_id => «pas de livret» ?
+                echo "<div class='participant-container'>";
+                echo $translations['selectStudDetails'];
+                echo "</div>";
             } echo "<script>window.followUpId = ".(int)$followUpId.";</script>";
             ?>
         </div>
