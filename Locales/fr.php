@@ -227,4 +227,20 @@ return array(
     'noMasterInfo' => "Aucune information sur le maître de stage n'a été trouvée.",
     'selectStudDetails' => "Sélectionnez un étudiant pour voir les détails.",
     'noBook' => "Vous n'avez pas de livret de suivi ouvert pour le moment.",
+
+    // CONTENT STUDENT MANAGMENT
+    'bilan' => "Bilan / Dépôt du rapport",
+    'addSee+' => "+ Ajouter une Rencontre",
+    'addComp+' => "+ Ajouter Compétence",
+    'manageBook' => "Gestion du Livret de Suivi",
+    'newSee' => "Ajouter une nouvelle rencontre",
+    'createMeeting' => "Créer un meeting",
+    'meetName' => "Nom de la rencontre :",
+    'add' => "Ajouter",
+    'cancel' => "Annuler",
+    'beginDate' => "Date de début :",
+    'endDate' => "Date de fin :",
+    'addComp' => "Ajouter une Compétence",
+    'compName' => "Nom de la compétence :",
+
 );

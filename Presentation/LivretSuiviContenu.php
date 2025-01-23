@@ -76,7 +76,7 @@ $file = $database->getLivretFile($groupId);
 
     <!-- BILAN / Finalisation -->
     <div class="content-section" id="BilanSection">
-        <h3 style="padding: 10px">Bilan / Dépôt du rapport</h3>
+        <h3 style="padding: 10px"><?php echo $translations['bilan']?></h3>
         <div class="participants">
 
             <?php
@@ -93,47 +93,47 @@ $file = $database->getLivretFile($groupId);
             </style>
 
             <div class="content-livret">
-                <h2>Gestion du Livret de Suivi</h2>
+                <h2><?php echo $translations['manageBook']?></h2>
 
                 <div class="actions">
                     <?php if ($role == 2 || $role == 3): ?>
                         <!-- Professeur : peut ajouter une rencontre et ajouter une compétence -->
-                        <button onclick="document.getElementById('addRencontre').style.display='block'">+ Ajouter une Rencontre</button>
-                        <button onclick="document.getElementById('addCompetenceForm').style.display='block'">+ Ajouter Compétence</button>
+                        <button onclick="document.getElementById('addRencontre').style.display='block'"><?php echo $translations['addSee+']?></button>
+                        <button onclick="document.getElementById('addCompetenceForm').style.display='block'"><?php echo $translations['addComp+']?></button>
                     <?php endif; ?>
                 </div>
 
                 <!-- Formulaire : Ajouter une rencontre -->
                 <div id="addRencontre" class="hidden">
-                    <h3>Ajouter une nouvelle rencontre</h3>
+                    <h3><?php echo $translations['newSee']?></h3>
                     <form method="post" action="Livretnoah.php">
                         <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
-                        <input type="hidden" name="action" value="create_meeting">
-                        <label>Nom de la rencontre :</label>
+                        <input type="hidden" name="action" value="<?php echo $translations['createMeeting']?>">
+                        <label><?php echo $translations['meetName']?></label>
                         <input type="text" name="meeting_name" required>
 
-                        <label>Date de début :</label>
+                        <label><?php echo $translations['beginDate']?></label>
                         <input type="datetime-local" name="start_date" value="<?= date('Y-m-d\TH:i') ?>" required>
 
-                        <label>Date de fin :</label>
+                        <label><?php echo $translations['endDate']?></label>
                         <input type="datetime-local" name="end_date" value="<?= date('Y-m-d\TH:i') ?>" required>
 
-                        <button type="submit">Ajouter</button>
-                        <button type="button" onclick="document.getElementById('addRencontre').style.display='none'">Annuler</button>
+                        <button type="submit"><?php echo $translations['add']?></button>
+                        <button type="button" onclick="document.getElementById('addRencontre').style.display='none'"><?php echo $translations['cancel']?></button>
                     </form>
                 </div>
 
                 <!-- Formulaire : Ajouter une compétence -->
                 <div id="addCompetenceForm" class="hidden">
-                    <h3>Ajouter une Compétence</h3>
+                    <h3><?php echo $translations['addComp']?></h3>
                     <form method="post" action="Livretnoah.php">
                         <input type="hidden" name="redirect_url" value="<?= $_SERVER['REQUEST_URI']; ?>">
-                        <input type="hidden" name="action" value="add_competence">
-                        <label>Nom de la compétence :</label>
+                        <input type="hidden" name="action" value="<?php echo $translations['addComp+']?>">
+                        <label><?php echo $translations['compName']?></label>
                         <input type="text" name="competence_name" required>
 
-                        <button type="submit">Ajouter</button>
-                        <button type="button" onclick="document.getElementById('addCompetenceForm').style.display='none'">Annuler</button>
+                        <button type="submit"><?php echo $translations['add']?></button>
+                        <button type="button" onclick="document.getElementById('addCompetenceForm').style.display='none'"><?php echo $translations['cancel']?></button>
                     </form>
                 </div>
 
