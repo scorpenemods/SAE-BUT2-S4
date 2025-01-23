@@ -1,4 +1,4 @@
-# SAE n°1 - BUT2
+# SAE 3.01 - BUT2 DACS
 
 ## Équipe Principale
 - BOULET Rémy

@@ -1,9 +1,9 @@
 <?php
-require dirname(__FILE__) . '/../presenter/database.php';
+require $_SERVER['DOCUMENT_ROOT'] . "/presenter/database.php";
 
 /**
  * Offer
- * Represents a Offer in the database
+ * Represents an Offer in the database
  */
 class Offer {
     private int $id;
@@ -480,6 +480,8 @@ class Offer {
      * @param string $email
      * @param string $phone
      * @param string $website
+     * @param float $latitude
+     * @param float $longitude
      * @return Offer|null
      */
     public static function create(int $company_id, string $title, string $description, string $job, int $duration, int $salary, string $address, string $education, string $begin_date, array $tags, string $email, string $phone, string $website, float $latitude, float $longitude): ?Offer {

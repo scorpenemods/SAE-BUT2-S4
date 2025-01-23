@@ -1,5 +1,5 @@
 <?php
-require dirname(__FILE__)."/../presenter/database.php";
+require $_SERVER['DOCUMENT_ROOT'] . "/presenter/database.php";
 
 /**
  * Company

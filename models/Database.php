@@ -1,31 +1,30 @@
 <?php
-/*
- * database.php
+date_default_timezone_set('Europe/Paris');
+
+/**
+ * Database
  * Handles database connection and queries to the database
  *
  * NOTE: Imported from the OTHER group, used only for integration purpose
  */
-
-date_default_timezone_set('Europe/Paris');
-
 class Database {
     private static ?Database $instance = null;
     private ?PDO $connection;
     private function __construct(){}
 
-    public static function getInstance(): Database
-    {
+    public static function getInstance(): Database {
         if (self::$instance === null) {
             self::$instance = new Database();
             self::$instance->connect();
         }
+
         return self::$instance;
     }
 
-    private function connect(): void
-    {
+    private function connect(): void {
         try {
-            require_once __DIR__ . '/Config.php';
+            require_once $_SERVER['DOCUMENT_ROOT'] . '/presenter/utils.php';
+
             $this->connection = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->connection->exec("SET time_zone = '+01:00'");
@@ -36,9 +35,7 @@ class Database {
     }
 
     // User login verification
-    public function verifyLogin($email, $password): array
-    {
-        $message = "";
+    public function verifyLogin($email, $password): array {
         $sql = "SELECT User.*, Password.password_hash FROM User
             JOIN Password ON User.id = Password.user_id
             WHERE User.email = :email AND Password.actif = 1";
@@ -47,8 +44,8 @@ class Database {
             $stmt = $this->connection->prepare($sql);
             $stmt->bindParam(':email', $email);
             $stmt->execute();
-            $result = $stmt->fetch();
 
+            $result = $stmt->fetch();
             if ($result) {
                 if (password_verify($password, $result['password_hash'])) {
                     return [
@@ -68,15 +65,15 @@ class Database {
         }
     }
 
-
     // Adding a new user
-    public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom, $status)
-    {
+    public function addUser($email, $password, $telephone, $prenom, $activite, $role, $nom, $status): bool {
         // Hash the password
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
         // Define the SQL query for inserting a new user
         $sqlUser = "INSERT INTO User (email, telephone, prenom, activite, role, nom, status_user, valid_email, account_creation) 
                 VALUES (:email, :telephone, :prenom, :activite, :role, :nom, :status_user, 0, NOW())";
+
         try {
             // Prepare and execute the user insert statement
             $stmt = $this->connection->prepare($sqlUser);
@@ -89,8 +86,10 @@ class Database {
                 ':nom' => $nom,
                 ':status_user' => $status
             ]);
+
             // Get the last inserted user ID
             $userId = $this->connection->lastInsertId();
+
             // Insert the password with user_id reference
             $sqlPassword = "INSERT INTO Password (user_id, password_hash, actif) VALUES (:user_id, :password_hash, 1)";
             $stmt = $this->connection->prepare($sqlPassword);
@@ -98,12 +97,14 @@ class Database {
                 ':user_id' => $userId,
                 ':password_hash' => $passwordHash
             ]);
+
             // Insert default preferences for the new user
             $sqlPreference = "INSERT INTO Preference (user_id, notification, a2f, darkmode) VALUES (:user_id, 1, 0, 0)";
             $stmt = $this->connection->prepare($sqlPreference);
             $stmt->execute([
                 ':user_id' => $userId
             ]);
+
             return true;
         } catch (PDOException $e) {
             echo "Insert error: " . $e->getMessage();
@@ -111,22 +112,18 @@ class Database {
         }
     }
 
-
-
     // Getting user information
-    public function getPersonByUsername($email)
-    {
+    public function getPersonByUsername($email): ?Person {
         $sql = "SELECT nom, prenom, telephone, email, role, activite, id as user_id FROM User WHERE email = :email";
 
         try {
             $stmt = $this->connection->prepare($sql);
-            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email);
             $stmt->execute();
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($result) {
-                require_once "Person.php";
-                return new \Person(
+                return new Person(
                     $result['nom'],
                     $result['prenom'],
                     $result['telephone'],
@@ -163,7 +160,7 @@ class Database {
 
             $messageId = $this->connection->lastInsertId();
 
-            // Si un fichier est associé, insérer dans Document et Document_Message
+            // If a file is attached, insert it into Document and Document_Message
             if ($filePath) {
                 // Insertion dans Document
                 $stmt = $this->connection->prepare("
@@ -172,6 +169,7 @@ class Database {
                 ");
                 $stmt->bindParam(':filepath', $filePath);
                 $stmt->execute();
+
                 $documentId = $this->connection->lastInsertId();
 
                 // Insertion dans Document_Message
@@ -186,10 +184,12 @@ class Database {
 
             $this->connection->commit();
 
-            return $messageId; // Retourne l'ID du message
+            return $messageId;
         } catch (PDOException $e) {
             $this->connection->rollBack();
-            error_log("Erreur lors de l'envoi du message : " . $e->getMessage());
+
+            error_log("Error while sending message: " . $e->getMessage());
+
             return false;
         }
     }
@@ -219,12 +219,14 @@ class Database {
 
     public function deleteMessage($messageId): bool {
         $sql = "DELETE FROM Message WHERE id = :message_id";
+
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->bindParam(':message_id', $messageId, PDO::PARAM_INT);
             return $stmt->execute();
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            error_log("Error while deleting message: " . $e->getMessage());
+
             return false;
         }
     }
@@ -236,14 +238,16 @@ class Database {
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            error_log("Error while fetching message by ID: " . $e->getMessage());
+
             return false;
         }
     }
 
     // ====== Messagerie Contacts ======= //
 
-    // Récupérer les contacts du même groupe que l'utilisateur
-    public function getGroupContacts($userId) {
+    // Get contacts from the same group as the user
+    public function getGroupContacts($userId): array {
         $query = "
             SELECT DISTINCT User.id, User.nom, User.prenom, User.role
             FROM User
@@ -255,13 +259,14 @@ class Database {
             ) AS UserGroups ON Groupe.conv_id = UserGroups.conv_id
             WHERE User.id != :user_id;
         ";
+
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getMessagesBetweenUsers($userId1, $userId2) {
+    public function getMessagesBetweenUsers($userId1, $userId2): false | array {
         $stmt = $this->connection->prepare("
         SELECT m.*, d.filepath, CONVERT_TZ(m.timestamp, '+00:00', '+02:00') as timestamp_local
         FROM Message m
@@ -271,97 +276,106 @@ class Database {
            OR (m.sender_id = :userId2 AND m.receiver_id = :userId1)
         ORDER BY m.timestamp ASC
     ");
-        $stmt->execute([':userId1' => $userId1, ':userId2' => $userId2]);
+        $stmt->execute([
+            ':userId1' => $userId1,
+            ':userId2' => $userId2
+        ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getPendingUsers()
-    {
+    public function getPendingUsers(): false | array {
         $sql = "SELECT * FROM User WHERE status_user = 0";
+
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            error_log("Error fetching pending users: " . $e->getMessage());
+
             return [];
         }
     }
 
-    public function getActiveUsers()
-    {
+    public function getActiveUsers(): false | array {
         $sql = "SELECT * FROM User WHERE status_user = 1";
+
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            error_log("Error fetching active users: " . $e->getMessage());
+
             return [];
         }
     }
 
-    public function approveUser($userId): bool
-    {
+    public function approveUser($userId): bool {
         $sql = "UPDATE User SET status_user = 1 WHERE id = :id";
+
         try {
             $stmt = $this->connection->prepare($sql);
             return $stmt->execute([':id' => $userId]);
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            error_log("Error approving user: " . $e->getMessage());
+
             return false;
         }
     }
 
-    public function rejectUser($userId)
-    {
+    public function rejectUser($userId): bool {
         $sql = "DELETE FROM User WHERE id = :id";
+
         try {
             $stmt = $this->connection->prepare($sql);
             return $stmt->execute([':id' => $userId]);
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            error_log("Error rejecting user: " . $e->getMessage());
+
             return false;
         }
     }
 
-    public function deleteUser($userId)
-    {
-        return $this->rejectUser($userId); // test and reusing same method
+    public function deleteUser($userId): bool {
+        return $this->rejectUser($userId);
     }
 
-    public function getUserById($userId)
-    {
+    public function getUserById($userId): null | array {
         $sql = "SELECT * FROM User WHERE id = :id";
+
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([':id' => $userId]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            error_log("Error fetching user by ID: " . $e->getMessage());
+
             return null;
         }
     }
 
-    public function getLastMessageId() {
+    public function getLastMessageId(): false | string {
         return $this->connection->lastInsertId();
     }
+
     // ------------------------- Forgot password functions --------------- //
 
-    public function getUserByEmail($email)
-    {
+    public function getUserByEmail($email): false | array {
         $sql = "SELECT * FROM User WHERE email = :email";
+
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([':email' => $email]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
+            error_log("Error fetching user by email: " . $e->getMessage());
+
             return false;
         }
     }
 
-    public function storeEmailVerificationCode($userId, $code, $expires_at) {
+    public function storeEmailVerificationCode($userId, $code, $expires_at): bool {
         try {
             // Start transaction
             $this->connection->beginTransaction();
@@ -376,39 +390,37 @@ class Database {
             $sqlInsert = "INSERT INTO Verification_Code (user_id, code, expires_at) VALUES (:user_id, :code, :expires_at)";
             $stmt = $this->connection->prepare($sqlInsert);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-            $stmt->bindParam(':code', $code, PDO::PARAM_STR);
-            $stmt->bindParam(':expires_at', $expires_at, PDO::PARAM_STR);
+            $stmt->bindParam(':code', $code);
+            $stmt->bindParam(':expires_at', $expires_at);
             $stmt->execute();
 
             // Commit transaction
             $this->connection->commit();
             return true;
         } catch (PDOException $e) {
-            // Rollback if any error occurs
             $this->connection->rollBack();
-            echo "Error storing verification code: " . $e->getMessage();
+
+            error_log("Error storing verification code: " . $e->getMessage());
+
             return false;
         }
     }
 
-
-
-
-    public function getPasswordResetRequest($email, $verification_code)
-    {
+    public function getPasswordResetRequest($email, $verification_code): array {
         $sql = "SELECT * FROM password_resets WHERE email = :email AND verification_code = :verification_code";
+
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([':email' => $email, ':verification_code' => $verification_code]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
-            return false;
+            error_log("Error fetching password reset request: " . $e->getMessage());
+
+            return [];
         }
     }
 
-    public function updateUserPasswordByEmail($email, $hashedPassword): bool
-    {
+    public function updateUserPasswordByEmail($email, $hashedPassword): bool {
         $sql = "UPDATE Password 
             JOIN User ON Password.user_id = User.id
             SET Password.password_hash = :password
@@ -416,17 +428,17 @@ class Database {
 
         try {
             $stmt = $this->connection->prepare($sql);
-            $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
-            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->bindParam(':password', $hashedPassword);
+            $stmt->bindParam(':email', $email);
             return $stmt->execute();
         } catch (PDOException $e) {
-            error_log("Erreur lors de la mise à jour du mot de passe : " . $e->getMessage());
+            error_log("Error updating user password: " . $e->getMessage());
+
             return false;
         }
     }
 
-    public function deleteVerificationCode($userId): bool
-    {
+    public function deleteVerificationCode($userId): bool {
         $sql = "DELETE FROM Verification_Code WHERE user_id = :user_id";
 
         try {
@@ -434,80 +446,78 @@ class Database {
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             return $stmt->execute();
         } catch (PDOException $e) {
-            error_log("Erreur lors de la suppression du code de vérification : " . $e->getMessage());
+            error_log("Error deleting verification code: " . $e->getMessage());
+
             return false;
         }
     }
-
-
-    // ------------------------------------------------------------------- //
 
     // -------------------- Email verification ------------------------------------------
 
     public function getVerificationCode($userId) {
+        $currentTime = date("Y-m-d H:i:s");
         $sql = "SELECT * FROM Verification_Code WHERE user_id = :user_id AND expires_at > :current_time";
+
         try {
             $stmt = $this->connection->prepare($sql);
-            $currentTime = date("Y-m-d H:i:s"); // Heure actuelle en PHP
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmt->bindParam(':current_time', $currentTime);
             $stmt->execute();
-
-            $rowCount = $stmt->rowCount();
-            error_log("Nombre de codes de vérification trouvés pour l'utilisateur ID $userId : " . $rowCount);
-
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log("Erreur lors de la récupération du code de vérification : " . $e->getMessage());
+            error_log("Error fetching verification code: " . $e->getMessage());
+
             return false;
         }
     }
 
-
-    public function isEmailValidated($userId) {
+    public function isEmailValidated($userId): bool {
         $query = "SELECT valid_email FROM User WHERE id = :id";
+
         $stmt = $this->connection->prepare($query);
         $stmt->bindValue(':id', $userId);
         $stmt->execute();
+
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return ($result && $result['valid_email'] == '1') ? true : false;
+        return $result && $result['valid_email'] == '1';
     }
 
-    public function updateEmailValidationStatus($userId, $status) {
+    public function updateEmailValidationStatus($userId, $status): bool {
         $sql = "UPDATE User SET valid_email = :status WHERE id = :user_id";
+
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':status', $status, PDO::PARAM_INT);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
-
-    public function getUserIdByEmail($email) {
+    public function getUserIdByEmail($email): ?int {
         $query = "SELECT id FROM User WHERE email = :email";
+
         $stmt = $this->connection->prepare($query);
         $stmt->bindValue(':email', $email);
         $stmt->execute();
+
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['id'] ?? null;
     }
 
-    public function getUserPreferences($userId)
-    {
+    public function getUserPreferences($userId): ?array {
         $sql = "SELECT notification, a2f, darkmode FROM Preference WHERE user_id = :user_id";
 
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmt->execute();
-            return $stmt->fetch(PDO::FETCH_ASSOC);  // Use FETCH_ASSOC for associative array
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Error fetching preferences: " . $e->getMessage();
-            return false;
+            error_log("Error fetching user preferences: " . $e->getMessage());
+
+            return null;
         }
     }
 
-    public function setUserPreferences($userId, $notification, $a2f, $darkmode): bool
-    {
+    public function setUserPreferences($userId, $notification, $a2f, $darkmode): bool {
         $sql = "INSERT INTO Preference (user_id, notification, a2f, darkmode) 
             VALUES (:user_id, :notification, :a2f, :darkmode)
             ON DUPLICATE KEY UPDATE notification = :notification, a2f = :a2f, darkmode = :darkmode";
@@ -520,32 +530,32 @@ class Database {
                 ':a2f' => $a2f,
                 ':darkmode' => $darkmode
             ]);
+
             return true;
         } catch (PDOException $e) {
-            echo "Error updating preferences: " . $e->getMessage();
+            error_log("Error updating user preferences: " . $e->getMessage());
+
             return false;
         }
     }
 
-    public function getConnection() {
+    public function getConnection(): ?PDO {
         return $this->connection;
     }
 
-    public function closeConnection(): void
-    {
+    public function closeConnection(): void {
         $this->connection = null;
     }
 
-    // ------------------------------------------------------------------- //
+    //========================     Group methods        ================================== //
 
-
-    //========================     Gropes methods        ================================== //
-    public function getAllStudents(): array
-    {
+    public function getAllStudents(): array {
         $query = "SELECT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id FROM User
               WHERE User.role = 1";
+
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
+
         $students = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $students[] = new Person(
@@ -558,37 +568,40 @@ class Database {
                 $row['id']
             );
         }
+
         return $students;
     }
 
-    //Get the groups a user belongs to.
-    public function getUserGroups($userId) {
+    // Get the groups a user belongs to
+    public function getUserGroups($userId): false|array {
         $sql = "SELECT DISTINCT Groupe.conv_id AS id, Convention.convention
                 FROM Groupe
                 JOIN Convention ON Groupe.conv_id = Convention.id
                 WHERE Groupe.user_id = :user_id";
+
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // get a message from a group
-    public function getGroupMessages($groupId) {
+    // Get a message from a group
+    public function getGroupMessages($groupId): false|array {
         $sql = "SELECT MessageGroupe.*, Document.filepath
                 FROM MessageGroupe
                 LEFT JOIN Document_Message ON MessageGroupe.id = Document_Message.message_id
                 LEFT JOIN Document ON Document_Message.document_id = Document.id
                 WHERE MessageGroupe.groupe_id = :group_id
                 ORDER BY MessageGroupe.timestamp ASC";
+
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // message to a group
-    public function sendGroupMessage($groupId, $senderId, $message, $filePath = null) {
+    // Send a message to a group
+    public function sendGroupMessage($groupId, $senderId, $message, $filePath = null): bool {
         try {
             $this->connection->beginTransaction();
 
@@ -613,6 +626,7 @@ class Database {
                 ");
                 $stmt->bindParam(':filepath', $filePath);
                 $stmt->execute();
+
                 $documentId = $this->connection->lastInsertId();
 
                 // Insert into Document_Message
@@ -630,23 +644,26 @@ class Database {
             return true;
         } catch (PDOException $e) {
             $this->connection->rollBack();
+
             error_log("Error sending group message: " . $e->getMessage());
+
             return false;
         }
     }
 
-    // get all groups with their members
-    public function getAllGroupsWithMembers() {
+    // Get all groups with their members
+    public function getAllGroupsWithMembers(): array {
         $sql = "SELECT c.id AS group_id, c.convention AS group_name, u.id AS user_id, u.nom AS last_name, u.prenom AS first_name
                 FROM Groupe g
                 JOIN Convention c ON g.conv_id = c.id
                 JOIN User u ON g.user_id = u.id
                 ORDER BY c.id";
+
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $groups = [];
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($results as $row) {
             $groupId = $row['group_id'];
             if (!isset($groups[$groupId])) {
@@ -662,10 +679,11 @@ class Database {
                 'last_name' => $row['last_name']
             ];
         }
+
         return $groups;
     }
 
-    public function deleteGroup($groupId) {
+    public function deleteGroup($groupId): bool {
         try {
             $this->connection->beginTransaction();
 
@@ -686,7 +704,7 @@ class Database {
             // Optionally delete documents if they are not linked to other messages
             // (This requires additional logic to check if the document is linked elsewhere)
 
-            // Delete group members in Groupe
+            // Delete group members
             $stmt = $this->connection->prepare("DELETE FROM Groupe WHERE conv_id = :group_id");
             $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
             $stmt->execute();
@@ -700,12 +718,14 @@ class Database {
             return true;
         } catch (PDOException $e) {
             $this->connection->rollBack();
+
             error_log("Error deleting group: " . $e->getMessage());
+
             return false;
         }
     }
 
-    public function updateGroupMembers($groupId, $memberIds) {
+    public function updateGroupMembers($groupId, $memberIds): bool {
         try {
             $this->connection->beginTransaction();
 
@@ -724,13 +744,16 @@ class Database {
             return true;
         } catch (PDOException $e) {
             $this->connection->rollBack();
+
             error_log("Error updating group members: " . $e->getMessage());
+
             return false;
         }
     }
 
-    public function getGroupMembers($groupId) {
+    public function getGroupMembers($groupId): false|array {
         $sql = "SELECT user_id FROM Groupe WHERE conv_id = :group_id";
+
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
         if ($stmt->execute()) {
@@ -749,6 +772,7 @@ class Database {
             WHERE MessageGroupe.groupe_id = :group_id
             AND MessageGroupe.timestamp > :last_timestamp
             ORDER BY MessageGroupe.timestamp ASC";
+
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':group_id', $groupId, PDO::PARAM_INT);
         $stmt->bindParam(':last_timestamp', $lastTimestamp);
@@ -757,8 +781,7 @@ class Database {
     }
 
     // -------------------- Student list in professor home ------------------------------------------ //
-    public function getStudentsProf($professorId): array
-    {
+    public function getStudentsProf($professorId): array {
         $query = "SELECT User.nom, User.prenom
                     FROM User
                     JOIN Groupe ON User.id = Groupe.user_id
@@ -789,8 +812,7 @@ class Database {
         return $students;
     }
 
-    public function getStudentsMaitreDeStage($maitreStageId): array
-    {
+    public function getStudentsMaitreDeStage($maitreStageId): array {
         $query = "SELECT User.nom, User.prenom
                     FROM User
                         JOIN Groupe ON User.id = Groupe.user_id
@@ -822,30 +844,29 @@ class Database {
     }
     // -------------------- Add Note in Database ------------------------------------------ //
 
-    function addNotes($userId, $notesData, $pdo)
-    {
+    function addNotes($userId, $notesData, $pdo): void {
         try {
-            // Préparation de la requête d'insertion
+            // Prepare the insertion query
             $query = $pdo->prepare("INSERT INTO Note (sujet, appreciation, note, coeff, user_id)
         VALUES (:sujet, :appreciation, :note, :coeff, :user_id)");
 
-
             foreach ($notesData as $note) {
-                // Validation de la note (conversion en float)
+                // Validate the note (convert to float)
                 $noteValue = $note['note'];
                 if ($noteValue === '' || !is_numeric($noteValue)) {
-                    continue; // Ignorer cette note si elle est invalide
+                    continue; // Ignore this note if it's invalid
                 } else {
-                    $noteValue = floatval($noteValue); // Convertir en float
+                    $noteValue = floatval($noteValue); // Convert to float
                 }
 
-                // Validation de la coefficient (conversion en float)
+                // Validate the coefficient (convert to float)
                 $coeffValue = $note['coeff'];
                 if ($coeffValue === '' || !is_numeric($coeffValue)) {
-                    continue; // Ignorer ce coefficient s'il est invalide
+                    continue; // Ignore this coefficient if it's invalid
                 } else {
-                    $coeffValue = floatval($coeffValue); // Convertir en float
+                    $coeffValue = floatval($coeffValue); // Convert to float
                 }
+
                 $query->execute([
                     ':sujet' => $note['sujet'],
                     ':appreciation' => $note['appreciation'],
@@ -855,13 +876,14 @@ class Database {
                 ]);
             }
         } catch (PDOException $e) {
-            echo "Erreur : " . $e->getMessage();
+            error_log("Error adding notes: " . $e->getMessage());
         }
     }
 
     public function updateNotes($userId, $notesData, $pdo): void {
         try {
             $pdo->beginTransaction();
+
             foreach ($notesData as $note) {
                 $stmt = $pdo->prepare("UPDATE Note SET sujet = :sujet, appreciation = :appreciation, note = :note, coeff = :coeff WHERE user_id = :user_id");
                 $stmt->execute([
@@ -872,9 +894,13 @@ class Database {
                     ':user_id' => $userId
                 ]);
             }
+
             $pdo->commit();
         } catch (PDOException $e) {
             $pdo->rollBack();
+
+            error_log("Error updating notes: " . $e->getMessage());
+
             throw $e;
         }
     }
@@ -882,12 +908,13 @@ class Database {
 
     // ------------------------------------------------------------------------------------------------------- //
 
-    public function getProfessor(): array
-    {
+    public function getProfessor(): array {
         $query = "SELECT DISTINCT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id from User
                     where role = 2";
+
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
+
         $professor = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $professor[] = new Person(
@@ -903,8 +930,7 @@ class Database {
         return $professor;
     }
 
-    public function getTutor(): array
-    {
+    public function getTutor(): array {
         $query = "SELECT DISTINCT User.nom, User.prenom, User.telephone, User.role, User.activite, User.email, User.id from User
                     where role = 3";
         $stmt = $this->connection->prepare($query);
@@ -924,8 +950,7 @@ class Database {
         return $tutor;
     }
 
-    public function storeVerificationCode($userId, $code, $expires_at): bool
-    {
+    public function storeVerificationCode($userId, $code, $expires_at): bool {
         try {
             // Commence une transaction
             $this->connection->beginTransaction();
@@ -942,8 +967,8 @@ class Database {
             $sqlInsert = "INSERT INTO Verification_Code (user_id, code, expires_at) VALUES (:user_id, :code, :expires_at)";
             $stmt = $this->connection->prepare($sqlInsert);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-            $stmt->bindParam(':code', $code, PDO::PARAM_STR);
-            $stmt->bindParam(':expires_at', $expires_at, PDO::PARAM_STR);
+            $stmt->bindParam(':code', $code);
+            $stmt->bindParam(':expires_at', $expires_at);
 
             // Ajout de logs pour vérifier l'exécution
             if ($stmt->execute()) {
@@ -963,8 +988,7 @@ class Database {
         }
     }
 
-    public function getVerificationByCode($code)
-    {
+    public function getVerificationByCode($code) {
         $sql = "SELECT Verification_Code.user_id, Verification_Code.expires_at, User.email 
             FROM Verification_Code 
             JOIN User ON Verification_Code.user_id = User.id
@@ -972,7 +996,7 @@ class Database {
 
         try {
             $stmt = $this->connection->prepare($sql);
-            $stmt->bindParam(':code', $code, PDO::PARAM_STR);
+            $stmt->bindParam(':code', $code);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -981,8 +1005,7 @@ class Database {
         }
     }
 
-    public function updateLastConnexion($userId): bool
-    {
+    public function updateLastConnexion($userId): bool {
         $currentTime = date('Y-m-d H:i:s');
 
         $sql = "UPDATE User SET last_connexion = :currentTime WHERE id = :id";
@@ -1020,8 +1043,7 @@ class Database {
     }
 
 
-    public function getUnreadNotificationCount($userId): int
-    {
+    public function getUnreadNotificationCount($userId): int {
         $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id AND seen = 0";
         try {
             $stmt = $this->connection->prepare($sql);
@@ -1033,8 +1055,7 @@ class Database {
         }
     }
 
-    public function markAllNotificationsAsSeen($userId): bool
-    {
+    public function markAllNotificationsAsSeen($userId): bool {
         $sql = "UPDATE Notification SET seen = 1 WHERE user_id = :user_id AND seen = 0";
 
         try {
@@ -1050,13 +1071,13 @@ class Database {
         }
     }
 
-    public function getNotifications($userId): array
-    {
+    public function getNotifications($userId): array {
         $sql = "SELECT content, type, seen, created_at FROM Notification WHERE user_id = :user_id ORDER BY created_at DESC";
 
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([':user_id' => $userId]);
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Erreur lors de la récupération des notifications : " . $e->getMessage());
@@ -1064,10 +1085,11 @@ class Database {
         }
     }
 
-    public function addNotification(int $userId, string $content, string $type): bool
-    {
-        require_once __DIR__ . '/Config.php';
+    public function addNotification(int $userId, string $content, string $type): bool {
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/presenter/config.php';
+
         $sql = "INSERT INTO Notification (user_id, content, type, seen, created_at) VALUES (:user_id, :content, :type, 0, NOW())";
+
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([
             ':user_id' => $userId,

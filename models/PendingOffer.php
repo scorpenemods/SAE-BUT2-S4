@@ -1,7 +1,6 @@
 <?php
-
-require dirname(__FILE__) . '/../presenter/database.php';
-require dirname(__FILE__) . '/../models/Offer.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/presenter/database.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Offer.php';
 
 /**
  * PendingOffer
