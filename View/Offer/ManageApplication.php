@@ -8,7 +8,7 @@ require dirname(__FILE__) . '/../../Model/Offer.php';
 require dirname(__FILE__) . '/../../Model/Company.php';
 require dirname(__FILE__) . '/../../Presentation/Offer/Filter.php';
 
-$returnUrl = $_SERVER["HTTP_REFERER"] ?? (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]";
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 $user = $_SESSION["user_id"] ?? null;

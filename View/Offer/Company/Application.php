@@ -7,9 +7,9 @@ session_start();
 require dirname(__FILE__) . '/../../../Model/Offer.php';
 require dirname(__FILE__) . '/../../../Presentation/Offer/Filter.php';
 
-$returnUrl = "/View/Offer/List.php";
+$returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]";
 if (isset($_SERVER["HTTP_REFERER"])) {
-    $returnUrl = $_SERVER["HTTP_REFERER"];
+    $returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]";
 }
 
 

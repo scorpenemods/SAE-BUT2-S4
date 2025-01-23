@@ -31,8 +31,8 @@ if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset(
         <title>Le Petit Stage - Modifier une offre</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/View/css/Create.css">
-        <link rel="stylesheet" href="/View//css/HeaderAlt.css">
-        <link rel="stylesheet" href="/View//css/FooterAlt.css">
+        <link rel="stylesheet" href="/View/css/HeaderAlt.css">
+        <link rel="stylesheet" href="/View/css/FooterAlt.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
