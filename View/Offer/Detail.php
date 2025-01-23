@@ -124,7 +124,7 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body>
-        <?php require 'View/HeaderAlt.php'; ?>
+        <?php include '../../View/HeaderAlt.php'; ?>
         <main>
             <div class='offer-card' style='margin-bottom: 10px'>
                 <div class='offer-header'>
@@ -248,7 +248,7 @@ function render_form($action, $id, $buttonText, $typeForm, array $hiddenFields =
                 }
             ?>
         </main>
-        <?php require '/View/FooterAlt.php'; ?>
+        <?php include '../../View/FooterAlt.php'; ?>
         <script type="text/javascript">
             document.querySelectorAll('.Offer-header').forEach(element => {
                 element.style.backgroundImage = `url(<?php echo $offer->get_image(); ?>)`;

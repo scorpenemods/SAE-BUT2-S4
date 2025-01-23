@@ -82,7 +82,7 @@ function afficherConditionsUtilisation() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Le Petit Stage - Modifier une offre</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="/View/css/Create.css">
+        <link rel="stylesheet" href="/View/css/MentionLegal.css">
         <link rel="stylesheet" href="/View/css/Header.css">
         <link rel="stylesheet" href="/View/css/Footer.css">
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>

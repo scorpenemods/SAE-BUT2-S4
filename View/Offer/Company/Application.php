@@ -47,7 +47,7 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-    <?php require 'View/HeaderAlt.php' ?>
+    <?php include '../../../View/HeaderAlt.php' ?>
     <main>
         <div class="spacer">
             <div class="card">
@@ -89,7 +89,7 @@ if ($groupeSecretariat || ($companyId != 0 && Offer::is_company_offer($offerId, 
             </div>
         </div>
     </main>
-    <?php require 'View/FooterAlt.php'; ?>
+    <?php include '../../../View/FooterAlt.php'; ?>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function getFile(idUser, idOffer, typeStr) {

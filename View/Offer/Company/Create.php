@@ -28,7 +28,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
         <script src="https://kit.fontawesome.com/166cd842ba.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <?php require 'View/HeaderAlt.php'; ?>
+        <?php include '../../../View/HeaderAlt.php'; ?>
         <main class="container-principal">
             <h1>Créer une entreprise</h1>
             <?php if (!empty($errors)): ?>
@@ -72,7 +72,7 @@ if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
                 <button type="submit">Créer l'entreprise</button>
             </form>
         </main>
-        <?php require 'View/FooterAlt.php'; ?>
+        <?php include '../../../View/FooterAlt.php'; ?>
         <script>
             /*
                Manage the visibility of the tags dropdown.
