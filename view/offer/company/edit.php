@@ -1,23 +1,31 @@
 <?php
+/*
+ * edit.php
+ * Allows the user to (suggest) an edit to an offer, must be validated by the secretariat (if not done by the secretariat itself).
+ */
+
 session_start();
 global $tags;
 
-require dirname(__FILE__) . '/../../../models/Offer.php';
-require dirname(__FILE__) . '/../../../models/Company.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Offer.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Company.php';
+
+$returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
 
 // Check if user has a company
 if (isset($_SESSION['secretariat']) || (isset($_SESSION['company_id']) && isset($_GET['id']))) {
     $company_id = $_SESSION['company_id'];
     $offer = Offer::getById($_GET['id']);
-    if ($company_id!= null && !Offer::isCompanyOffer($_GET['id'], $company_id)) {
-        header("Location: ../../offer/list.php");
-        die();
+
+    if ($company_id != null && !Offer::isCompanyOffer($_GET['id'], $company_id)) {
+        header("Location: " . $returnUrl);
+        exit();
     } else {
         $company_id = $offer->getCompanyId();
     }
 } else {
-    header("Location: ../../offer/list.php");
-    die();
+    header("Location: " . $returnUrl);
+    exit();
 }
 
 ?>

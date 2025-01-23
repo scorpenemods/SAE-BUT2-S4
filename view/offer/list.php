@@ -1,10 +1,15 @@
 <?php
+/*
+ * list.php
+ * List all the offers & contains redirections to other pages.
+ */
+
 session_start();
 
-require dirname(__FILE__) . '/../../models/Company.php';
-require dirname(__FILE__) . '/../../models/PendingOffer.php';
-require dirname(__FILE__) . '/../../presenter/utils.php';
-require dirname(__FILE__) . '/../../presenter/offer/filter.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Company.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/PendingOffer.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/presenter/utils.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/presenter/offer/filter.php';
 
 // Definition of the user (standalone version)
 $_SESSION['user'] = 1;

@@ -13,7 +13,7 @@ if (isset($_SESSION['user']) && isset($id)) {
     } else {
         Offer::makeFavorite($_POST['id'], $user_id);
     }
-    die(json_encode(array("status" => "success")));
+    exit(json_encode(array("status" => "success")));
 } else {
-    die(json_encode(array("status" => "error")));
+    exit(json_encode(array("status" => "error")));
 }

@@ -8,7 +8,7 @@ $user_id = $_SESSION['user'] ?? false;
 $returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
 if (!$user_id) {
     header("Location: " . $returnUrl);
-    die();
+    exit();
 }
 
 if (isset($_POST['name']) && isset($_POST['size']) && isset($_POST['address']) && isset($_POST['siren'])) {
@@ -19,7 +19,7 @@ if (isset($_POST['name']) && isset($_POST['size']) && isset($_POST['address']) &
 
     if (!$name || !$size || !$address || !$siren) {
         header("Location: ../../../view/offer/company/create.php");
-        die();
+        exit();
     }
 
     // Create the company
@@ -28,6 +28,6 @@ if (isset($_POST['name']) && isset($_POST['size']) && isset($_POST['address']) &
     // If the company is created, redirect to the list of companies
     if ($company) {
         header("Location: $returnUrl");
-        die();
+        exit();
     }
 }

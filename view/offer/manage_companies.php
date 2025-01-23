@@ -1,9 +1,13 @@
 <?php
+/*
+ * manage_companies.php
+ * Display the list of companies, and allow to delete them.
+ */
 session_start();
 
-require dirname(__FILE__) . '/../../models/Company.php';
-require dirname(__FILE__) . '/../../models/PendingOffer.php';
-require dirname(__FILE__) . '/../../presenter/offer/filter.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Company.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/PendingOffer.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/presenter/offer/filter.php';
 
 $returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
 
@@ -11,6 +15,7 @@ $returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_H
 $secretariat_group = $_SESSION['secretariat'] ?? false;
 if (!$secretariat_group) {
     header('Location : '. $returnUrl);
+    exit();
 }
 
 // Load all companies from the database

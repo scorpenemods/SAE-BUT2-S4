@@ -22,10 +22,10 @@ if ($duration == null && $address == null && $study_level == null && $salary == 
 }
 
 try {
-    $database = (Database::getInstance());
+    $database = Database::getInstance();
     $database->addAlert($userId, $duration, $address, $study_level, $salary, $begin_date);
 
     echo json_encode(["status" => "success", "message" => "Notification créée avec succès."]);
 } catch (Exception $e) {
-    echo json_encode(["status" => "error", "message" => "Erreur serveur : " . $e->getMessage()]);
+    echo json_encode(["status" => "error", "message" => "Une erreur est survenue, veuillez réessayer plus tard."]);
 }

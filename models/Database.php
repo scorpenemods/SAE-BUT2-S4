@@ -1,8 +1,14 @@
 <?php
+/*
+ * database.php
+ * Handles database connection and queries to the database
+ *
+ * NOTE: Imported from the OTHER group, used only for integration purpose
+ */
+
 date_default_timezone_set('Europe/Paris');
 
-class Database
-{
+class Database {
     private static ?Database $instance = null;
     private ?PDO $connection;
     private function __construct(){}
@@ -141,7 +147,7 @@ class Database
 
     // ----------------------- Messenger realisation ------------------------------------------ //
 
-    public function sendMessage($senderId, $receiverId, $message, $filePath = null) {
+    public function sendMessage($senderId, $receiverId, $message, $filePath = null): false | string {
         try {
             $this->connection->beginTransaction();
 
@@ -189,7 +195,7 @@ class Database
     }
 
 
-    public function getMessages($senderId, $receiverId) {
+    public function getMessages($senderId, $receiverId): false | array {
         $sql = "SELECT Message.*, Document.filepath FROM Message
             LEFT JOIN Document_Message ON Message.id = Document_Message.message_id
             LEFT JOIN Document ON Document_Message.document_id = Document.id
@@ -211,7 +217,7 @@ class Database
     }
 
 
-    public function deleteMessage($messageId) {
+    public function deleteMessage($messageId): bool {
         $sql = "DELETE FROM Message WHERE id = :message_id";
         try {
             $stmt = $this->connection->prepare($sql);
@@ -223,7 +229,7 @@ class Database
         }
     }
 
-    public function getMessageById($messageId) {
+    public function getMessageById($messageId): false | array {
         try {
             $stmt = $this->connection->prepare("SELECT * FROM Message WHERE id = :id");
             $stmt->bindParam(':id', $messageId, PDO::PARAM_INT);
@@ -734,7 +740,7 @@ class Database
         }
     }
 
-    public function getGroupMessagesSince($groupId, $lastTimestamp) {
+    public function getGroupMessagesSince($groupId, $lastTimestamp): false | array {
         $sql = "SELECT MessageGroupe.*, Document.filepath, User.prenom, User.nom
             FROM MessageGroupe
             LEFT JOIN Document_Message ON MessageGroupe.id = Document_Message.message_id
@@ -853,7 +859,7 @@ class Database
         }
     }
 
-    public function updateNotes($userId, $notesData, $pdo) {
+    public function updateNotes($userId, $notesData, $pdo): void {
         try {
             $pdo->beginTransaction();
             foreach ($notesData as $note) {
@@ -977,7 +983,6 @@ class Database
 
     public function updateLastConnexion($userId): bool
     {
-        date_default_timezone_set('Europe/Paris');
         $currentTime = date('Y-m-d H:i:s');
 
         $sql = "UPDATE User SET last_connexion = :currentTime WHERE id = :id";
@@ -1061,7 +1066,6 @@ class Database
 
     public function addNotification(int $userId, string $content, string $type): bool
     {
-        date_default_timezone_set('Europe/Paris');
         require_once __DIR__ . '/Config.php';
         $sql = "INSERT INTO Notification (user_id, content, type, seen, created_at) VALUES (:user_id, :content, :type, 0, NOW())";
         $stmt = $this->connection->prepare($sql);
@@ -1082,18 +1086,18 @@ class Database
         return true;
     }
 
-    public function getTotalNotifications($userId): int
-    {
+    public function getTotalNotifications($userId): int {
         $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id";
+
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([':user_id' => $userId]);
+
         return (int) $stmt->fetchColumn();
     }
 
-    public function deleteOldNotifications($userId, $numberToDelete)
-    {
-        date_default_timezone_set('Europe/Paris');
+    public function deleteOldNotifications($userId, $numberToDelete): void {
         $sql = "DELETE FROM Notification WHERE user_id = :user_id ORDER BY created_at ASC LIMIT :limit";
+
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':limit', $numberToDelete, PDO::PARAM_INT);
@@ -1101,12 +1105,13 @@ class Database
     }
 
 
-    public function hasNewNotifications($userId): bool
-    {
+    public function hasNewNotifications($userId): bool {
         $sql = "SELECT COUNT(*) FROM Notification WHERE user_id = :user_id AND seen = 0";
+
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([':user_id' => $userId]);
+
             $count = $stmt->fetchColumn();
             return $count > 0;
         } catch (PDOException $e) {
@@ -1115,34 +1120,34 @@ class Database
         }
     }
 
-    public function emailExists($email): bool
-    {
+    public function emailExists($email): bool {
         $sql = "SELECT COUNT(*) FROM User WHERE email = :email";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([':email' => $email]);
         return (bool) $stmt->fetchColumn();
     }
 
-    public function getStages(): array
-    {
+    public function getStages(): array {
         $query = "SELECT User.nom, User.prenom
                     FROM User
                     Join Groupe g on User.id = g.user_id
                     WHERE g.user_id = 4 and User.role = 1";
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
+
         $stages = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
             $stages[] = $row['nom'] . ' ' . $row['prenom'];
         }
+
         return $stages;
     }
 
     /**
      * @throws Exception
      */
-    public function addAlert($userId, $duration, $address, $study_level, $salary, $begin_date){
-
+    public function addAlert($userId, $duration, $address, $study_level, $salary, $begin_date): void {
         $query = 'insert into Alert (user_id, duration, address, study_level, salary, begin_date) VALUES (:user_id, :duration, :address, :study_level, :salary, :begin_date);';
         $stmt = $this->getConnection()->prepare($query);
         $stmt->bindParam(':user_id', $userId);
@@ -1151,22 +1156,22 @@ class Database
         $stmt->bindParam(':study_level', $study_level);
         $stmt->bindParam(':salary', $salary, is_null($salary) ? PDO::PARAM_NULL : PDO::PARAM_INT);
         $stmt->bindParam(':begin_date', $begin_date);
+
         try {
             $stmt->execute();
         } catch (PDOException $e) {
             throw new Exception("Erreur lors de l'insertion : " . $e->getMessage());
         }
-
     }
 
     /**
      * @throws Exception
      */
-    public function deleteAlert($id){
-
+    public function deleteAlert($id): void {
         $query = 'delete from Alert where id = :id;';
         $stmt = $this->getConnection()->prepare($query);
         $stmt->bindParam(':id', $id);
+
         try {
             $stmt->execute();
         } catch (PDOException $e) {
@@ -1174,11 +1179,10 @@ class Database
         }
     }
 
-
-    public function getAlert(): array
-    {
+    public function getAlert(): array {
         $stmt = $this->getConnection()->prepare('select * from Alert;');
         $stmt->execute();
+
         $alerts = [];
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -1188,17 +1192,17 @@ class Database
         return $alerts;
     }
 
-    public function getAlertByUser($user_id): array
-    {
+    public function getAlertByUser($user_id): array {
         $stmt = $this->getConnection()->prepare('select * from Alert where user_id = :user_id;');
         $stmt->bindParam(':user_id', $user_id);
         $stmt->execute();
+
         $alerts = [];
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
             $alerts[] = $row;
         }
+
         return $alerts;
     }
-
 }

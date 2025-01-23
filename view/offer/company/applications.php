@@ -14,7 +14,7 @@ $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? 'Pending';
 if (!$offerId) {
     header("Location: " . $returnUrl);
-    die();
+    exit();
 }
 
 // Verification of the user
@@ -25,7 +25,7 @@ if ($groupeSecretariat || ($company_id != 0 && Offer::isCompanyOffer($offerId, $
     $applications = Applications::getAllForOffer($offerId, $type);
 } else {
     header("Location: ../../offer/list.php");
-    die();
+    exit();
 }
 ?>
 <!DOCTYPE html>

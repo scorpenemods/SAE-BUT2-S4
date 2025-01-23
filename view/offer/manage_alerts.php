@@ -1,18 +1,24 @@
 <?php
+/*
+ * manage_alerts.php
+ * Display the list of active alerts criteria for the user, and allow him to delete them.
+ */
+
 session_start();
 
 require $_SERVER['DOCUMENT_ROOT'] . '/models/Database.php';
 
+$returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
+
 // Verification of the user
 $user = $_SESSION["user"] ?? null;
-if ($user === null) {
-    $returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
+if ($user == null) {
     header("Location: " . $returnUrl);
     exit();
 }
 
 // Load database instance & data from it
-$database = (Database::getInstance());
+$database = Database::getInstance();
 $alerts = $database->getAlertByUser($user);
 ?>
 <!DOCTYPE html>

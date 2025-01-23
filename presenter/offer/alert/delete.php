@@ -18,7 +18,7 @@ if ($id == null || $id == 0) {
 }
 
 try {
-    $database = (Database::getInstance());
+    $database = Database::getInstance();
     $database->deleteAlert($id);
 
     echo json_encode(["status" => "success", "message" => "Notification supprimée avec succès."]);

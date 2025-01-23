@@ -1,10 +1,15 @@
 <?php
+/*
+ * manage_application.php
+ * Display the list of applications for the user, and allow him to delete them.
+ */
+
 session_start();
 
-require dirname(__FILE__) . '/../../models/Applications.php';
-require dirname(__FILE__) . '/../../models/Offer.php';
-require dirname(__FILE__) . '/../../models/Company.php';
-require dirname(__FILE__) . '/../../presenter/offer/filter.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Applications.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Offer.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Company.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/presenter/offer/filter.php';
 
 // Verification of the user
 $user = $_SESSION["user"] ?? null;

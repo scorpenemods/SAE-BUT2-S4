@@ -9,9 +9,10 @@ $http_referer = $_SERVER["HTTP_REFERER"];
 if ((isset($_SESSION['company']) || isset($_SESSION['secretariat'])) && isset($_POST['id_offer'])) {
     $user_id = $_SESSION['user'];
     Applications::validate($_POST['id_offer']);
+
     header("Location: " . $http_referer);
-    echo $http_referer;
-    die();
+    exit();
 } else {
     header("Location: " . $returnUrl);
+    exit();
 }

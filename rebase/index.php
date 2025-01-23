@@ -3,9 +3,9 @@
 
 <?php
 
-require_once '../Class/Database.php';
+require_once '../models/Database.php';
 
-$database = new Database();
+$database = Database::getInstance();
 
 $isValid = $database->verifyLogin("sae","sae");
 

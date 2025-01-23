@@ -11,6 +11,7 @@ $returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_H
 $user_id = $_SESSION['user'] ?? false;
 if (!$user_id) {
     header("Location: " . $returnUrl);
+    exit();
 }
 
 // Check the Offer type
@@ -23,7 +24,7 @@ if (isset($id)) {
 
         if ($status == "Pending") {
             header("Location: " . $returnUrl);
-            die();
+            exit();
         }
     }
 }
@@ -48,7 +49,7 @@ if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['addre
 
     if (!$id || !$title || !$latitude || !$longitude || !$job || !$description || !$duration || !$salary || !$education || !$startDate || !$email || !$phone || !$website) {
         header("Location: ../../view/offer/create.php?failure");
-        die();
+        exit();
     }
 
     // Get the tags
@@ -66,6 +67,6 @@ if (isset($_POST['company_id']) && isset($_POST['title']) && isset($_POST['addre
     // If the offer is created, redirect to the list of pending offers
     if ($offer) {
         header("Location: $returnUrl");
-        die();
+        exit();
     }
 }

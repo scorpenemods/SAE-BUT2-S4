@@ -1,4 +1,9 @@
 <?php
+/*
+ * utils.php
+ * Contains some useful functions for the application.
+ */
+
 function truncateUTF8($string, $length) {
     if (strlen($string) <= $length) {
         return $string;

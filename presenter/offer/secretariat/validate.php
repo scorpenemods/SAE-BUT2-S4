@@ -1,12 +1,17 @@
 <?php
+/*
+ * validate.php
+ * Allows the secretariat to validate an offer.
+ */
+
 session_start();
 
-require dirname(__FILE__) . '/../../../models/PendingOffer.php';
-require dirname(__FILE__) . '/../../../models/Company.php';
-require dirname(__FILE__) . '/../../../models/Database.php';
-require dirname(__FILE__) . '/../../../presenter/offer/notify.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/PendingOffer.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Company.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Database.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/presenter/offer/notify.php';
 
-function get_coordinates($address) {
+function getCoordinates($address): ?array {
     $base_url = "https://nominatim.openstreetmap.org/search";
     $params = [
         'q' => $address,
@@ -15,7 +20,7 @@ function get_coordinates($address) {
     ];
     $options = [
         'http' => [
-            'header' => "User-Agent: YourApp/1.0 (your@email.com)\r\n"
+            'header' => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36	\r\n"
         ]
     ];
 
@@ -52,14 +57,14 @@ if (isset($_SESSION['secretariat']) && isset($_POST['id']) && isset($_SERVER["HT
     if ($offer->getStatus() == "Pending") {
         if ($offer->getOfferId() == 0) {
             $company_id = $offer->getCompanyId();
-            $coordinates = get_coordinates($offer->getAddress());
+            $coordinates = getCoordinates($offer->getAddress());
             $latitude = $coordinates[0];
             $longitude = $coordinates[1];
             $offer_notify = Offer::create($company_id, $offer->getTitle(), $offer->getDescription(), $offer->getJob(), $offer->getDuration(), $offer->getSalary(), $offer->getAddress(), $offer->getStudyLevel(), $offer->getBeginDate(), $offer->getTags(), $offer->getEmail(), $offer->getPhone(), $offer->getWebsite(), $latitude, $longitude);
             sendNotification($offer_notify);
             error_log("apres lappel de sendNotification");
         } else {
-            $coordinates = get_coordinates($offer->getAddress());
+            $coordinates = getCoordinates($offer->getAddress());
             $latitude = $coordinates[0];
             $longitude = $coordinates[1];
             Offer::update($offer->getOfferId(), $offer->getTitle(), $offer->getDescription(), $offer->getJob(), $offer->getDuration(), $offer->getSalary(), $offer->getAddress(), $offer->getStudyLevel(), $offer->getBeginDate(), $offer->getTags(), $offer->getEmail(), $offer->getPhone(), $offer->getWebsite(), $latitude, $longitude);

@@ -1,15 +1,19 @@
 <?php
+/*
+* apply.php
+* Allows the user to apply for an offer.
+*/
 session_start();
 
-require dirname(__DIR__) . '/../presenter/database.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/presenter/database.php';
 
 global $db;
 
 $idUser = $_SESSION["user"];
-$uploadDir = 'uploads/';
 
+$uploadDir = 'uploads/';
 if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
+    mkdir($uploadDir, 0644, true);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

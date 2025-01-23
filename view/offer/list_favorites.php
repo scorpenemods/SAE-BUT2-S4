@@ -1,4 +1,9 @@
 <?php
+/*
+ * list_favorites.php
+ * List all the offers that the user has favorited, contains redirections to these offers, and allows the user to delete them.
+ */
+
 session_start();
 
 require $_SERVER['DOCUMENT_ROOT'] . '/models/Database.php';

@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * getPageOffers
  * Get offers filtered by $filters, and paginated by 12 at page $n

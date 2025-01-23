@@ -1,20 +1,24 @@
 <?php
+/*
+ * create.php
+ * Allows the user to create a new company on the website, to then create an offer for it.
+ */
+
 session_start();
 
-include dirname(__FILE__) . '/../../models/Offer.php';
-require dirname(__FILE__) . '/../../models/Company.php';
+require $_SERVER["DOCUMENT_ROOT"] . '/models/Offer.php';
+require $_SERVER["DOCUMENT_ROOT"] . '/models/Company.php';
 
 global $tags;
 
-// Verification of the user
-if (isset($_SESSION['secretariat']) || isset($_SESSION['company_id'])) {
-    $company_id = $_SESSION['company_id'];
-    $groupeSecretariat = $_SESSION['secretariat'];
-}
+$returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
 
 // Check if the user is allowed to create a company
 if (!(isset($_SESSION['company_id'])) || $_SESSION['company_id'] == 0) {
     $companies = Company::getAll();
+} else {
+    header("Location: " . $returnUrl);
+    exit();
 }
 ?>
 <!DOCTYPE html>

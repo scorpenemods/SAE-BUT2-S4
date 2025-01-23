@@ -1,4 +1,9 @@
 <?php
+/*
+ * database.php
+ * Contains the database connection & instance variable.
+ */
+
 global $db;
 
 try {
@@ -7,12 +12,5 @@ try {
     }
 } catch(PDOException $ex) {
     echo $ex->getMessage();
-    die(
-        json_encode(
-            array(
-                'outcome' => false,
-                'message' => 'Unable to connect'
-            )
-        )
-    );
+    exit(json_encode(array('outcome' => false, 'message' => 'Unable to connect')));
 }

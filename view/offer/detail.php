@@ -1,10 +1,15 @@
 <?php
+/*
+ * detail.php
+ * Display the details of an offer, allow the user to apply, edit, show/hide, delete the offer.
+ */
+
 session_start();
 error_reporting(E_ALL ^ E_DEPRECATED);
 
-require dirname(__FILE__) . '/../../models/PendingOffer.php';
-require dirname(__FILE__) . '/../../models/Company.php';
-require dirname(__FILE__) . '/../../presenter/offer/filter.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/PendingOffer.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Company.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/presenter/offer/filter.php';
 
 // Parameters validation
 $offerId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -12,14 +17,14 @@ $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? "all";
 if (!$offerId) {
     $returnUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/view/offer/list.php";
     header("Location: " . $returnUrl);
-    die();
+    exit();
 }
 
 // Verification of the user
 $company_id = $_SESSION['company_id'] ?? 0;
 if ($company_id != 0 && Offer::isCompanyOffer($offerId, $company_id)) {
     header("Location: ../offer/list.php");
-    die();
+    exit();
 }
 $secretariat_group = $_SESSION['secretariat'] ?? false;
 
@@ -37,11 +42,10 @@ switch ($type) {
         break;
 }
 
-// Check if an offer is "supressed"
+// Check if an offer is "suppressed" & error is so
 if ($offer->getSupress() && !$secretariat_group) {
-    //Make a 403 error
     header("HTTP/1.1 403 Forbidden");
-    die();
+    exit();
 }
 
 $isAlreadyPending = Offer::isAlreadyPending($offerId);

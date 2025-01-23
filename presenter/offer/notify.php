@@ -1,8 +1,11 @@
 <?php
+/*
+ * notify.php
+ * Contains the function to send notifications to the user.
+ */
 
-function sendNotification($offer): void
-{
-    $database = (Database::getInstance());
+function sendNotification($offer): void {
+    $database = Database::getInstance();
     $alerts = $database->getAlert();
 
     foreach ($alerts as $alert) {
@@ -25,24 +28,27 @@ function sendNotification($offer): void
             $params['begin_date'] = $alert['begin_date'];
         }
 
-        $comparaison = true;
+        $comparison = true;
         foreach ($params as $key => $value) {
             $method = 'get' . ucfirst($key);
+
             if (method_exists($offer, $method)) {
                 $value2 = $offer->$method();
             }
-            if (isset($value2)) {
-                if (!($value == $value2)){
-                    $comparaison = false;
-                }
+
+            if (isset($value2) && ($value != $value2)) {
+                $comparison = false;
             }
         }
 
-        if ($comparaison) {
+        if ($comparison) {
             $database->addNotification($user_id, "une offre correspond", "alerte d'offre");
+
+            $user = User::getById($user_id);
+            if ($user) {
+                $user->likeOffer($offer->getId());
+            }
         }
-
     }
-
 }
 

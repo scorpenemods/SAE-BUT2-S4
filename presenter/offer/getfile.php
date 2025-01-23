@@ -1,7 +1,12 @@
 <?php
-require '../../models/Applications.php';
+/*
+ * getfile.php
+ * Allows the user to download a file from the server.
+ */
 
-function downloadFile($user, $offer, $type) {
+require $_SERVER['DOCUMENT_ROOT'] . '/models/Applications.php';
+
+function downloadFile($user, $offer, $type): bool {
     error_reporting(E_ALL ^ E_DEPRECATED);
     $user = filter_var($user, FILTER_SANITIZE_NUMBER_INT);
     $offer = filter_var($offer, FILTER_SANITIZE_NUMBER_INT);
@@ -19,9 +24,11 @@ function downloadFile($user, $offer, $type) {
         readfile($file_path);
         return true;
     } else {
-        header("HTTP/1.0 404 Not Found");
+        header("HTTP/1.1 404 Not Found");
+
         echo "File not found.";
         echo "User : " . $user . ", Offer : " . $offer . ", Type : " . $type . ", name : " . $name . ".pdf";
+
         return false;
     }
 }

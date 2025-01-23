@@ -9,6 +9,6 @@ if ((isset($_SESSION['company']) || isset($_SESSION['secretariat'])) && isset($_
     Applications::refuse($_POST['id_offer']);
     header("Location: " . $http_referer);
     echo $http_referer;
-    die();
+    exit();
 }
 
