@@ -243,4 +243,11 @@ return array(
     'addComp' => "Ajouter une Compétence",
     'compName' => "Nom de la compétence :",
 
+
+    //Footer
+    'mentionLegalesInfos' => "Informations",
+    'propos' => "À propos",
+    'confid' => "Confidentialité",
+    "condit" => "Conditions d'utilisation",
+    "reserved" => "Tous droits réservés",
 );

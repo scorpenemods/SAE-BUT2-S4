@@ -221,5 +221,12 @@ return array(
     'profActivitie' => "Professional activity:",
     'noMasterInfo' => "No information about the internship supervisor was found.",
     'selectStudDetails' => "Select a student to see the details.",
-    'noBook' => "You do not currently have an open progress book."
+    'noBook' => "You do not currently have an open progress book.",
+
+    //Footer
+    'mentionLegalesInfos' => "Information",
+    'propos' => "About",
+    'confid' => "Privacy",
+    'condit' => "Terms of Use",
+    'reserved' => "All rights reserved",
 );
