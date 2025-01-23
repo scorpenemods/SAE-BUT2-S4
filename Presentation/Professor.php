@@ -354,7 +354,9 @@ $translations = include $langFile;
             <h2><?= $translations['welcome_prof']?></h2><br>
             <p><?= $translations['info_prof']?></p><br>
         </div>
-        <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">Contenu des missions de stage</div>
+        <div class="Contenu <?php echo ($activeSection == '1') ? 'Visible' : 'Contenu'; ?>" id="content-1">
+            <?php include('./MissionStage.php')?>
+        </div>
         <div class="Contenu <?php echo ($activeSection == '2') ? 'Visible' : 'Contenu'; ?>" id="content-2">
 
             <?php include_once("StudentManagment.php") ?>

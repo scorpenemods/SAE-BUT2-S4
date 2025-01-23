@@ -161,7 +161,9 @@ $translations = include $langFile;
 
 
         <!-- Missions Content -->
-        <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">Contenu Missions</div>
+        <div class="Contenu <?php echo $activeSection == '1' ? 'Visible' : ''; ?>" id="content-1">
+            <?php include('./MissionStage.php')?>
+        </div>
 
         <!-- Livret de suivi Content -->
         <div class="Contenu <?php echo $activeSection == '2' ? 'Visible' : ''; ?>" id="content-5">
