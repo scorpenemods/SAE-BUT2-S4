@@ -70,6 +70,38 @@ if ($userRole === 1) {
 }
 
 ?>
+
+<script>
+    // Animation du gradient sur les champs de saisie
+    (function () {
+        document.querySelectorAll('.form-control.animated-input').forEach(element => {
+            element.addEventListener('focus', () => {
+                element.classList.add('gradient-border');
+            });
+
+            element.addEventListener('blur', () => {
+                element.classList.remove('gradient-border');
+            });
+        });
+    })();
+
+    // Gestion du bouton d'annulation du fichier
+    (function () {
+        const fileInput = document.getElementById('file');
+        const resetFileBtn = document.getElementById('resetFileBtn');
+
+        fileInput.addEventListener('change', () => {
+            resetFileBtn.style.display = fileInput.files.length > 0 ? 'block' : 'none';
+        });
+
+        resetFileBtn.addEventListener('click', () => {
+            fileInput.value = '';  // Réinitialisation du champ de fichier
+            resetFileBtn.style.display = 'none';  // Cache le bouton d'annulation
+        });
+    })();
+
+</script>
+
 <link rel="stylesheet" href="../View/Livretnoah/livretnoah.css">
 <div style="width: 100%;">
     <div>
@@ -79,7 +111,9 @@ if ($userRole === 1) {
             //    (pour un Prof ou un Maître de stage)
 
             $userIdChosen = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
-
+            if ($userIdChosen == 0 && $person->getrole()==1){
+                $userIdChosen= $person->getId();
+            }
 
             if ($userIdChosen > 0) {
                     // Récupération des infos sur l'étudiant
