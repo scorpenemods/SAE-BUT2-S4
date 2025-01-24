@@ -1,5 +1,9 @@
 <?php
 // get message of one group
+/*
+ * Vérifie la session utilisateur et récupère les messages d'un groupe.
+ * Affiche chaque message avec l'expéditeur, le contenu, les fichiers joints et l'heure.
+ */
 session_start();
 require "../../Model/Database.php";
 require "../../Model/Person.php";

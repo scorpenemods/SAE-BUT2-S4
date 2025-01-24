@@ -1,75 +1,92 @@
 <?php
-// manage student
+// Connecter les fichiers nécessaires
+/*
+ * Ce script affiche les informations d'un étudiant.
+ * Il gère les traductions, récupère les données de l'étudiant et de son groupe,
+ * et affiche les détails ou des messages d'erreur si nécessaire.
+ */
+
 require_once '../Model/Database.php';
 $database = Database::getInstance();
-//TRADUCTION
 
-// Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
+// --- [ LOGIQUE DES TRADUCTIONS / MULTI-LANG ] ---
 if (isset($_GET['lang'])) {
     $lang = $_GET['lang'];
-    $_SESSION['lang'] = $lang; // Enregistrer la langue en session
+    $_SESSION['lang'] = $lang;
 } else {
-    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr'; // Langue par défaut
+    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'fr';
 }
 
-// Vérification si le fichier de langue existe, sinon charger le français par défaut
 $langFile = "../Locales/{$lang}.php";
 if (!file_exists($langFile)) {
     $langFile = "../Locales/fr.php";
 }
 
-// Charger les traductions
+// Chargement de la traduction
 $translations = include $langFile;
+
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management</title>
+</head>
+<body>
+
 <section>
     <div id="student-infos">
         <?php
-            if (isset($_GET['user_id'])) {
-                $userId = intval($_GET['user_id']); // Assurez-vous que l'ID est un entier
+        // Vérification si user_id est transmis dans GET
+        if (isset($_GET['user_id'])) {
+            $userId = intval($_GET['user_id']);
 
-                // Appeler les méthodes pour obtenir les informations nécessaires
-                $studentInfo = $database->getStudentInfo($userId);
+            // information about the student
+            $studentInfo = $database->getStudentInfo($userId);
 
-                $studentId = $studentInfo['id'];
+            if (!empty($studentInfo) && !isset($studentInfo['error'])) {
 
-                // Vérifier si des informations ont été trouvées pour l'étudiant
-                if (!empty($studentInfo) && !isset($studentInfo['error'])) {
-                    echo "<div class='participant-info student-info'>";
-                    echo "<h3>";
-                        echo $translations['uploadedFile'];
-                    echo "</h3>";
-                    echo "<p><strong>";
-                        echo $translations['lastname'];
-                    echo "</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
-                    echo "<p><strong>";
-                        echo $translations['firstname'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
-                    echo "<p><strong>";
-                        echo $translations['mail'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
-                    echo "<p><strong>";
-                        echo $translations['phone'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
-                    echo "<p><strong>";
-                        echo $translations['activity'];
-                        echo "</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
-                    echo "<form method='POST' action='Professor.php'>";
-                    echo "<button type='submit' name='stage' value=$studentId>";
-                        echo $translations['endStage'];
-                        echo "</button>";
-                    echo "</form>";
-                    echo "</div>";
+                // Trying to get information about the group
+                $convInfo = $database->getGroupByUserId($userId);
+
+                // We check that the returned array is not empty (and there is a group_id key)
+                if (!empty($convInfo) && isset($convInfo['conv_id'])) {
+                    $convId = $convInfo['conv_id'];
                 } else {
-                    echo "<p>";
-                        echo $translations['noInfo'];
-                    echo "</p>";
+                    // if not found
+                    $convId = null;
                 }
+
+                // Displaying information about a student
+                echo "<div class='participant-info student-info'>";
+                echo "<h3>" . $translations['uploadedFile'] . "</h3>";
+                echo "<p><strong>" . $translations['lastname'] . ":</strong> " . htmlspecialchars($studentInfo['nom']) . "</p>";
+                echo "<p><strong>" . $translations['firstname'] . ":</strong> " . htmlspecialchars($studentInfo['prenom']) . "</p>";
+                echo "<p><strong>" . $translations['mail'] . ":</strong> " . htmlspecialchars($studentInfo['email']) . "</p>";
+                echo "<p><strong>" . $translations['phone'] . ":</strong> " . htmlspecialchars($studentInfo['telephone']) . "</p>";
+                echo "<p><strong>" . $translations['activity'] . ":</strong> " . htmlspecialchars($studentInfo['activite']) . "</p>";
+
+                // End internship button (only if $groupId could be retrieved)
+                if ($convId) {
+                    echo "<button onclick='endStage(" . $convId . ")'>";
+                    echo $translations['endStage'];
+                    echo "</button>";
+                } else {
+                    echo "<p style='color: red;'>"
+                        . "Impossible de déterminer la groupe de l'étudiant."
+                        . "</p>";
+                }
+                echo "</div>";
+            } else {
+                echo "<p>" . $translations['noInfo'] . "</p>";
             }
-            else {
-                echo "<p>";
-                    echo $translations['selectStudent'];
-                echo "</p>";
-            }
+        } else {
+            // if not transferred user_id
+            echo "<p>" . $translations['selectStudent'] . "</p>";
+        }
         ?>
     </div>
 </section>
+
+</body>
+</html>

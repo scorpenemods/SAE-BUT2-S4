@@ -1,5 +1,11 @@
 <?php
-// Manage group delete
+/*
+ * Vérifie la session et les permissions.
+ * Supprime un groupe basé sur l'ID fourni.
+ * Enregistre l'action dans les logs et retourne une réponse JSON.
+ */
+
+
 session_start();
 require_once "../../Model/Database.php";
 require_once "../../Model/Person.php";

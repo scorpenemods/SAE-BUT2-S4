@@ -1,5 +1,15 @@
 <?php
 // Manage notes for professor
+/*
+ * Ce script gère les notes pour le professeur.
+ * Il permet de sélectionner un étudiant, de créer des notes principales,
+ * d'enregistrer les évaluations à l'aide de curseurs pour différentes compétences,
+ * de récupérer et afficher les notes existantes,
+ * ainsi que de calculer les moyennes pondérées.
+ * Le formulaire HTML permet au professeur de saisir les évaluations
+ * pour les aptitudes intellectuelles, opérationnelles et relationnelles
+ * de l'étudiant et de confirmer l'enregistrement des notes.
+ */
 
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';

@@ -1,4 +1,9 @@
 // Show context menu
+/*
+ * Gère l'affichage du menu contextuel sur les messages.
+ * Permet de copier le texte du message ou de le supprimer.
+ * Cache le menu lorsqu'on clique en dehors.
+ */
 document.addEventListener("contextmenu", function (e) {
     const messageElement = e.target.closest('.message');
     if (messageElement) {

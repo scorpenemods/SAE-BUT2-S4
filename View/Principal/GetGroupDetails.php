@@ -1,5 +1,9 @@
 <?php
-// Get group details
+/*
+ * Obtient les membres d'un groupe spécifié.
+ * Classe les membres en étudiant, professeur et maître de stage.
+ * Retourne les données au format JSON.
+ */
 session_start();
 require_once '../../Model/Database.php';
 

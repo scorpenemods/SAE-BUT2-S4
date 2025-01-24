@@ -1,5 +1,19 @@
 <?php
 // manage internship book contain
+/*
+ * Ce script gère le contenu du livret de stage.
+ * Il initialise la session et vérifie le rôle de l'utilisateur.
+ * Génère un jeton CSRF pour sécuriser les formulaires.
+ * Gère la sélection de la langue et charge les traductions appropriées.
+ * Récupère les informations sur l'étudiant, le professeur et le mentor,
+ * et détermine le groupe associé.
+ * Permet aux professeurs et mentors d'ajouter, modifier ou supprimer des rencontres,
+ * des compétences, des textes et des QCM (Questionnaires à Choix Multiples).
+ * Gère également l'upload, le téléchargement et la suppression de fichiers de rapport.
+ * Intègre des formulaires sécurisés pour l'ajout de commentaires et l'évaluation des compétences.
+ * Utilise JavaScript pour afficher ou masquer les détails des rencontres.
+ * Assure la protection contre les attaques CSRF et valide les entrées utilisateur.
+ */
 
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';

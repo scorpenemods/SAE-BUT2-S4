@@ -1,5 +1,14 @@
 <?php
-// Manage group creation
+/*
+ * Ce script gère la création de groupes.
+ * Il vérifie la session et le rôle de l'utilisateur,
+ * valide les utilisateurs sélectionnés,
+ * crée une convention unique basée sur les étudiants,
+ * assigne les utilisateurs au groupe dans la base de données,
+ * et enregistre l'action dans les logs.
+ * Retourne une réponse JSON indiquant le succès ou l'échec.
+ */
+
 session_start();
 require_once "../../Model/Database.php";
 require_once "../../Model/Person.php";

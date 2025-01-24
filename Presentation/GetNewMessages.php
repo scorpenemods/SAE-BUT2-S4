@@ -1,5 +1,11 @@
 <?php
 // manage to get new messages
+/*
+ * Ce script gère la récupération des nouveaux messages entre deux utilisateurs.
+ * Il vérifie la session de l'utilisateur, valide les paramètres requis (contact_id et last_timestamp),
+ * interroge la base de données pour obtenir les messages récents,
+ * sécurise les données avant de les renvoyer au format JSON.
+ */
 session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";

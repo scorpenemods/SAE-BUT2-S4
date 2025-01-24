@@ -1,5 +1,15 @@
 <?php
 // manage professor's page
+/*
+ * Ce script gère la page du professeur.
+ * Il vérifie la session et le rôle de l'utilisateur,
+ * récupère les étudiants associés,
+ * gère les préférences utilisateur comme le mode sombre,
+ * charge les traductions selon la langue sélectionnée,
+ * et contrôle l'accès aux différentes sections de la page.
+ * Il inclut également les fonctionnalités de messagerie et de gestion de fichiers.
+ */
+
 global $files;
 ob_start();
 global $database;

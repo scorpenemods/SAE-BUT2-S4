@@ -1,5 +1,9 @@
 <?php
 // manage right email
+/*
+ * Ce script gère la vérification de l'email utilisateur.
+ * Il valide le code de vérification et met à jour le statut de l'utilisateur.
+ */
 session_start();
 require "../Model/Database.php";
 

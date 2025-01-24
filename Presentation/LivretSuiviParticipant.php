@@ -1,5 +1,12 @@
 <?php
 // get people internship book
+/*
+ * Ce script gère l'affichage du livret de stage.
+ * Il initialise la session, gère les traductions,
+ * récupère les informations de l'utilisateur (étudiant, professeur, mentor),
+ * et affiche les rencontres associées.
+ * Si un suivi est disponible, il inclut le contenu détaillé du livret.
+ */
 
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';

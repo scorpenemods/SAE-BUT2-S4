@@ -1,5 +1,9 @@
 <?php
-// manage mail verification code
+/*
+ * Ce script gère la vérification du code de réinitialisation de mot de passe.
+ * Il valide le code, met à jour le mot de passe de l'utilisateur,
+ * envoie une notification par email et affiche des messages de succès ou d'erreur.
+ */
 session_start();
 require "../Model/Database.php";
 

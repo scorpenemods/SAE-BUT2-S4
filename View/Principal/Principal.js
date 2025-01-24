@@ -1,3 +1,12 @@
+/*
+ * Ce script gère les fonctionnalités liées aux groupes et à la messagerie :
+ * - Ouvre et ferme les modales de création et d'édition de groupes.
+ * - Soumet les formulaires pour créer ou mettre à jour des groupes via des requêtes fetch.
+ * - Supprime les groupes et termine les stages après confirmation de l'utilisateur.
+ * - Gère l'envoi de messages, y compris l'ajout de fichiers joints.
+ * - Met à jour l'interface utilisateur en fonction des actions effectuées.
+ */
+
 // Vérifier au chargement si la classe doit être ajoutée
 document.addEventListener("DOMContentLoaded", function() {
     if (sessionStorage.getItem("lastPage") === "index.php") {

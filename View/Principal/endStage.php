@@ -1,12 +1,18 @@
 <?php
-// Manage end stage
+/*
+ * Ce fichier gère la fin de stage pour un groupe.
+ * Il vérifie la session utilisateur et les permissions,
+ * reçoit une requête POST avec l'ID du groupe,
+ * et met à jour le statut de fin de stage dans la base de données.
+ * Répond en JSON avec le succès ou l'échec de l'opération.
+ */
 session_start();
 require_once "../../Model/Database.php";
 require_once "../../Model/Person.php";
 
 header('Content-Type: application/json; charset=utf-8');
 
-// Проверка сессии пользователя
+// Check user's session
 if (!isset($_SESSION['user'])) {
     echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté.']);
     exit();
@@ -22,7 +28,7 @@ $userId = $person->getId();
 $userRole = $person->getRole();
 
 // Check user's role
-if ($userRole != 4 && $userRole != 5) {
+if ($userRole != 2 && $userRole != 3 && $userRole != 4 && $userRole != 5) {
     echo json_encode(['success' => false, 'message' => 'Accès refusé.']);
     exit();
 }

@@ -1,3 +1,9 @@
+/* Gère les interactions liées aux groupes :
+    * - Ouvre et ferme les modales de création et d'édition de groupe.
+* - Soumet les formulaires pour créer ou mettre à jour des groupes via fetch.
+* - Supprime les groupes et termine les stages avec confirmation utilisateur.
+* - Charge les détails des groupes pour l'édition.
+*/
 // =============================== Groupes ==================================== //
 document.addEventListener('DOMContentLoaded', function () {
     const openModalButton = document.querySelector('.open-create-group-modal');

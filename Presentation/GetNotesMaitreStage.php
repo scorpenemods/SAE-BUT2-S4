@@ -1,5 +1,14 @@
 <?php
 // Manage notes for internship supervisor
+/*
+ * Ce script gère les notes pour le maître de stage.
+ * Il permet de créer des notes principales pour un étudiant,
+ * d'enregistrer les évaluations à l'aide de curseurs,
+ * de récupérer et afficher les notes existantes,
+ * ainsi que de calculer les moyennes pondérées.
+ * Le formulaire HTML permet au maître de stage de saisir les évaluations
+ * pour différentes compétences de l'étudiant et de confirmer l'enregistrement.
+ */
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';
 require_once '../Model/Note.php';

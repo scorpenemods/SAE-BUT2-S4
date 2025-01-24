@@ -1,5 +1,11 @@
 <?php
 // manage group message
+/*
+ * Ce script gère la récupération des messages de groupe.
+ * Il vérifie la session utilisateur, valide l'utilisateur connecté,
+ * traite les requêtes GET pour obtenir les messages récents d'un groupe spécifique
+ * et renvoie les données au format JSON après les avoir sécurisées.
+ */
 session_start();
 require "../Model/Database.php";
 require "../Model/Person.php";

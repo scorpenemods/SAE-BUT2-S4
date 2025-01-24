@@ -1,5 +1,9 @@
 <?php
-// get all messages
+/*
+ * Ce fichier récupère et affiche tous les messages entre l'utilisateur connecté et un contact spécifique.
+ * Il vérifie la session, récupère les messages depuis la base de données,
+ * marque les messages comme lus, et affiche le contenu, les fichiers joints et les horodatages.
+ */
 session_start();
 require "../../Model/Database.php";
 require "../../Model/Person.php";

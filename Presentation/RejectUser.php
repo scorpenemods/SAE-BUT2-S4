@@ -1,5 +1,9 @@
 <?php
-// manage rejected users
+/*
+ * Ce script gère le rejet des utilisateurs.
+ * Il vérifie le rôle de l'utilisateur, traite les requêtes POST pour rejeter un compte,
+ * envoie un email de notification via PHPMailer et enregistre l'action dans les logs.
+ */
 session_start();
 require "../Model/Database.php";
 require '../vendor/autoload.php';

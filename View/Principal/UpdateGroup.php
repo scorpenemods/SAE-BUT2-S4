@@ -1,5 +1,10 @@
 <?php
-// update group
+/*
+ * Supprime un groupe spécifique après vérification des permissions de l'utilisateur.
+ * Traite les requêtes POST contenant l'ID du groupe à supprimer.
+ * Met à jour la base de données en supprimant le groupe et enregistre l'action dans les logs.
+ * Retourne une réponse JSON indiquant le succès ou l'échec de l'opération.
+ */
 session_start();
 require "../../Model/Database.php";
 require "../../Model/Person.php";

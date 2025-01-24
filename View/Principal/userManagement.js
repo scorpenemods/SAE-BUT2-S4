@@ -1,3 +1,10 @@
+/*
+ * Fonctions administratives pour gérer les utilisateurs :
+ * - approveUser : Approuve un utilisateur après confirmation.
+ * - rejectUser : Rejette un utilisateur suite à une confirmation.
+ * - deleteUser : Supprime un utilisateur après confirmation.
+ * Chaque fonction envoie une requête POST au serveur et traite la réponse pour informer l'administrateur.
+ */
 function approveUser(userId) {
     if (confirm("Êtes-vous sûr de vouloir approuver cet utilisateur ?")) {
         const xhr = new XMLHttpRequest();

@@ -1,4 +1,4 @@
-/* Основные настройки */
+/* Main config */
 * {
     margin: 0;
     padding: 0;
@@ -21,7 +21,7 @@ body {
     color: var(--text-color);
 }
 
-/* Темы */
+/* Themes */
 :root {
     --background-gradient: linear-gradient(120deg, #ffffff, #f5f5f5, #eaeaea);
     --text-color: #333;

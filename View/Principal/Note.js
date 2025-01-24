@@ -1,3 +1,9 @@
+/*
+ * Ce script gère l'affichage des sous-tableaux, la mise à jour des valeurs des curseurs
+ * et la gestion des formulaires de notation avec une confirmation modale.
+ * Il permet d'afficher/masquer des détails, de mettre à jour dynamiquement les valeurs
+ * des curseurs et d'assurer que les utilisateurs confirment leurs actions avant de soumettre les formulaires.
+ */
 // Fonction pour afficher/masquer le sous-tableau
 function showUnderTable(button, idUnderTable) {
     const sousTableau = document.getElementById(idUnderTable);
