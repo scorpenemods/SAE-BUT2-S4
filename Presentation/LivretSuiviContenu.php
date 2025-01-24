@@ -281,10 +281,6 @@ $file = $database->getLivretFile($groupId);
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
-                <div class="content-section" id="BilanSection">
-                    <h3 style="padding: 10px">Bilan / Dépôt du rapport</h3>
-                <!-- Gestion des compétences (Bilan) -->
-                <div class="content-section">
                     <form method="post" action="Livretnoah.php">
                         <input type="hidden" name="action" value="valider_bilan">
                         <table class="tableau">

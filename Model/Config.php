@@ -3,11 +3,11 @@
 <?php
 // Configuration of the database connection
 
-const DB_HOST = 'db.liruz.fr';
+const DB_HOST = 'localhost';
 const DB_PORT = '3306';
 const DB_NAME = 'sae';
-const DB_USER = 'sae';
-const DB_PASSWORD = 'sae2024';
+const DB_USER = 'root';
+const DB_PASSWORD = '8172';
 
 const MAX_NOTIFICATIONS = 6;
 
