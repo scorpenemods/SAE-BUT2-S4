@@ -1,0 +1,16 @@
+# Données confidentielles
+.env
+
+# Dossier des dépendances du Composer
+/vendor/
+
+# Logs et Cache
+*.log
+/cache/
+storage/
+
+# IDE et systèmes d'assemblage
+.idea/
+.vscode/
+.DS_Store
+*.iml
