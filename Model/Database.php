@@ -4,6 +4,14 @@
 // Initialisation of Database objects
 date_default_timezone_set('Europe/Paris');
 
+// init .env variables
+require __DIR__ . '/../vendor/autoload.php';
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
+
 class Database
 {
     private static ?Database $instance = null;
@@ -33,8 +41,7 @@ class Database
     private function connect(): void
     {
         try {
-            require_once __DIR__ . '/Config.php';
-            $this->connection = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
+            $this->connection = new PDO("mysql:host=" . $_ENV['DB_HOST'] . ";port=" . $_ENV['DB_PORT'] . ";dbname=" . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->connection->exec("SET time_zone = '+01:00'");
         } catch (PDOException $e) {
@@ -2092,7 +2099,7 @@ class Database
     }
 
 
-    public function insertInputsPreAgreementStudent($json, int $idStudent, int $idMentor = null, int $idProfessor = null): void {
+    public function insertInputsPreAgreementStudent($json, ?int $idStudent, ?int $idMentor = null, ?int $idProfessor = null): void {
         if (is_array($json)) {
             $json = json_encode($json);
         }

@@ -15,6 +15,7 @@ l’étudiant, l’enseignant référent et l’entreprise.
 Les extensions instalés:
 -phpmailer
 -phpunit
+-phpdotenv
 
 Gestionnaire de dépendances
 -Composer
