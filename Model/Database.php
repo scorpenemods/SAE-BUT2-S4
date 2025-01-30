@@ -2418,12 +2418,25 @@ class Database
     {
         try {
             $sql = "
-            INSERT INTO MeetingComments (meeting_id, tutor_comment, mentor_comment)
-            VALUES (:meeting_id, :tutor_comment, :mentor_comment)
-            ON DUPLICATE KEY UPDATE 
-                tutor_comment = VALUES(tutor_comment),
-                mentor_comment = VALUES(mentor_comment)
-        ";
+    SELECT COUNT(*) FROM MeetingComments WHERE meeting_id = :meeting_id
+";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(':meeting_id', $meetingId, PDO::PARAM_INT);
+            $stmt->execute();
+            $exists = $stmt->fetchColumn();
+
+            if ($exists) {
+                $sql = "
+        UPDATE MeetingComments 
+        SET tutor_comment = :tutor_comment, mentor_comment = :mentor_comment
+        WHERE meeting_id = :meeting_id
+    ";
+            } else {
+                $sql = "
+        INSERT INTO MeetingComments (meeting_id, tutor_comment, mentor_comment)
+        VALUES (:meeting_id, :tutor_comment, :mentor_comment)
+    ";
+            }
 
             $stmt = $this->connection->prepare($sql);
             $stmt->bindValue(':meeting_id', $meetingId, PDO::PARAM_INT);
@@ -2431,6 +2444,7 @@ class Database
             $stmt->bindValue(':mentor_comment', $mentorComment, PDO::PARAM_STR);
 
             return $stmt->execute();
+
         } catch (PDOException $e) {
             echo "Database error (insertOrUpdateMeetingComments) : " . $e->getMessage();
             return false;
