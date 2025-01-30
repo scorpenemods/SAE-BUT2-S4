@@ -280,7 +280,9 @@ $file = $database->getLivretFile($groupId);
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
-                </div>
+                    </div>
+                    <!-- Gestion des compétences (Bilan) -->
+                    <div class="content-section">
                     <form method="post" action="Livretnoah.php">
                         <input type="hidden" name="action" value="valider_bilan">
                         <table class="tableau">
@@ -359,7 +361,6 @@ $file = $database->getLivretFile($groupId);
                     <?php endforeach; ?>
                 </div>
             </div>
-                </div>
         </div>
     </div> <!-- fin #BilanSection -->
 </div>
