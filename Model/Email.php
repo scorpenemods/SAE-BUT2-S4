@@ -3,6 +3,13 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+// init .env variables
+require __DIR__ . '/../vendor/autoload.php';
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
 class Email
 {
     private PHPMailer $mail;
@@ -23,12 +30,12 @@ class Email
 
         // Server settings
         $this->mail->isSMTP();
-        $this->mail->Host = 'smtp.gmail.com';
+        $this->mail->Host = $_ENV['SMTP_HOST'];
         $this->mail->SMTPAuth = true;
-        $this->mail->Username = 'Secretariat.lps.official@gmail.com'; // Email address
-        $this->mail->Password = 'xtdu vchi sldx qmyi'; // Replace with environment variable in production
-        $this->mail->SMTPSecure = 'tls'; // Encryption
-        $this->mail->Port = 587; // SMTP port
+        $this->mail->Username = $_ENV['MAIL_USERNAME']; // Email address
+        $this->mail->Password = $_ENV['MAIL_PASSWORD'];
+        $this->mail->SMTPSecure = $_ENV['SMTP_SECURE']; // Encryption
+        $this->mail->Port = $_ENV['SMTP_PORT']; // SMTP port
     }
 
 
