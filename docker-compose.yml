@@ -1,0 +1,39 @@
+version: '3.8'
+
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: lps_nginx
+    ports:
+      - "80:80"                      # Port for public access
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d  # Nginx config
+      - ./app:/var/www/html               #
+    depends_on:
+      - php
+
+  php:
+    image: php:8.1-fpm
+    container_name: lps_php
+    volumes:
+      - ./app:/var/www/html               # Php treatment
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:latest
+    container_name: lps_db
+    restart: always
+    ports:
+      - "${DB_PORT}:3306"  #
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql          # Spot to save the data
+
+volumes:
+  db_data:
