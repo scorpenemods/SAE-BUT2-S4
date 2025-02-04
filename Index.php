@@ -5,92 +5,111 @@ session_start();
 define('BASE_PATH', dirname(__DIR__));
 require_once 'Model/Database.php';
 require_once 'Model/Person.php';
+
+$database = Database::getInstance();
 $errorMessage = '';
 
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+    $_SESSION['login_block_time'] = 0;
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    // Vérifier si le reCAPTCHA a été rempli
-    if (isset($_POST['g-recaptcha-response'])) {
-        $recaptchaResponse = $_POST['g-recaptcha-response'];
-        $secretKey = "6LfAW8wqAAAAAIy6rB05WZLe65QMMMHipPZVk5Zr";
-        $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
-
-        // Vérification avec Google
-        $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
-        $responseKeys = json_decode($response, true);
-
-        if (!$responseKeys["success"]) {
-            $errorMessage = "Veuillez valider le reCAPTCHA.";
-        }
+    if ($_SESSION['login_attempts'] >= 3 && time() < $_SESSION['login_block_time']) {
+        $errorMessage = "Trop de tentatives ! Veuillez réessayer dans 5 secondes.";
     } else {
-        $errorMessage = "Veuillez cocher le reCAPTCHA.";
-    }
+        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+        $password = $_POST['password'];
 
-    // Si le reCAPTCHA est validé, on continue la connexion
-    if (empty($errorMessage)) {
-        $database = (Database::getInstance());
-        $loginResult = $database->verifyLogin($email, $password);
-
-        if (!empty($loginResult)) {
-            $user = $loginResult['user'];
-            $_SESSION['company_id'] = Database::getInstance()->getCompanyidbyUserId($user['id']);
-
-            if ($loginResult['valid_email'] == 0) {
-                setcookie('email_verification_pending', '1', time() + 3600, "/");
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_email'] = $user['email'];
-                $_SESSION['user_name'] = $user['prenom'] . ' ' . $user['nom'];
-                header("Location: Index.php");
-                exit();
-            }
-
-            if ($loginResult['status_user'] == 0) {
-                $errorMessage = "Votre compte est en attente d'activation par l'administration.";
-            } else {
-                $database->updateLastConnexion($user['id']);
-                $person = new Person(
-                    $user['nom'],
-                    $user['prenom'],
-                    $user['telephone'],
-                    $user['role'],
-                    $user['activite'],
-                    $user['email'],
-                    $user['id']
-                );
-
-                $_SESSION['personne'] = $person;
-                $_SESSION['user_id'] = $person->getId();
-                $_SESSION['user'] = serialize($person);
-                $_SESSION['user_role'] = $person->getRole();
-                $_SESSION['user_name'] = $person->getPrenom() . ' ' . $person->getNom();
-
-                switch ($_SESSION['user_role']) {
-                    case 1:
-                        header("Location: Presentation/Student.php");
-                        break;
-                    case 2:
-                        header("Location: Presentation/Professor.php");
-                        break;
-                    case 3:
-                        header("Location: Presentation/MaitreStage.php");
-                        break;
-                    case 4:
-                    case 5:
-                        header("Location: Presentation/Secretariat.php");
-                        break;
-                    default:
-                        header("Location: Presentation/Redirection.php");
-                        break;
-                }
-                exit();
-            }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errorMessage = 'Adresse email invalide.';
         } else {
-            $errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
+            // Vérification reCAPTCHA
+            if (isset($_POST['g-recaptcha-response'])) {
+                $recaptchaResponse = $_POST['g-recaptcha-response'];
+                $secretKey = "6LfAW8wqAAAAAIy6rB05WZLe65QMMMHipPZVk5Zr";
+                $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
+
+                $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
+                $responseKeys = json_decode($response, true);
+
+                if (!$responseKeys["success"]) {
+                    $errorMessage = "Veuillez valider le reCAPTCHA.";
+                }
+            } else {
+                $errorMessage = "Veuillez cocher le reCAPTCHA.";
+            }
+
+            if (empty($errorMessage)) {
+                $loginResult = $database->verifyLogin($email, $password);
+
+                if (!empty($loginResult)) {
+                    $_SESSION['login_attempts'] = 0;
+                    $user = $loginResult['user'];
+                    $_SESSION['company_id'] = Database::getInstance()->getCompanyidbyUserId($user['id']);
+
+                    if ($loginResult['valid_email'] == 0) {
+                        setcookie('email_verification_pending', '1', time() + 3600, "/");
+                        $_SESSION['user_id'] = $user['id'];
+                        $_SESSION['user_email'] = $user['email'];
+                        $_SESSION['user_name'] = $user['prenom'] . ' ' . $user['nom'];
+                        header("Location: Index.php");
+                        exit();
+                    }
+
+                    if ($loginResult['status_user'] == 0) {
+                        $errorMessage = "Votre compte est en attente d'activation par l'administration.";
+                    } else {
+                        $database->updateLastConnexion($user['id']);
+                        $person = new Person(
+                            $user['nom'],
+                            $user['prenom'],
+                            $user['telephone'],
+                            $user['role'],
+                            $user['activite'],
+                            $user['email'],
+                            $user['id']
+                        );
+
+                        $_SESSION['personne'] = $person;
+                        $_SESSION['user_id'] = $person->getId();
+                        $_SESSION['user'] = serialize($person);
+                        $_SESSION['user_role'] = $person->getRole();
+                        $_SESSION['user_name'] = $person->getPrenom() . ' ' . $person->getNom();
+
+                        switch ($_SESSION['user_role']) {
+                            case 1:
+                                header("Location: Presentation/Student.php");
+                                break;
+                            case 2:
+                                header("Location: Presentation/Professor.php");
+                                break;
+                            case 3:
+                                header("Location: Presentation/MaitreStage.php");
+                                break;
+                            case 4:
+                            case 5:
+                                header("Location: Presentation/Secretariat.php");
+                                break;
+                            default:
+                                header("Location: Presentation/Redirection.php");
+                                break;
+                        }
+                        exit();
+                    }
+                } else {
+                    $_SESSION['login_attempts']++;
+                    if ($_SESSION['login_attempts'] >= 3) {
+                        $_SESSION['login_block_time'] = time() + 5;
+                        $errorMessage = 'Trop de tentatives ! Veuillez réessayer dans 5 secondes.';
+                    } else {
+                        $errorMessage = 'Identifiants incorrects. Tentative ' . $_SESSION['login_attempts'] . ' sur 3.';
+                    }
+                }
+            }
         }
-        $database->closeConnection();
     }
+    $database->closeConnection();
 }
 
 
