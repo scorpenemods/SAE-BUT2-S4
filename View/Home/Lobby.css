@@ -317,3 +317,11 @@ a:hover{
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
+
+
+.g-recaptcha {
+    display: flex;
+    justify-content: center;
+    margin: 10px auto;
+}

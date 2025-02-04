@@ -5,77 +5,92 @@ session_start();
 define('BASE_PATH', dirname(__DIR__));
 require_once 'Model/Database.php';
 require_once 'Model/Person.php';
-
-$database = (Database::getInstance());
 $errorMessage = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Appel de la méthode verifyLogin
-    $loginResult = $database->verifyLogin($email, $password);
+    // Vérifier si le reCAPTCHA a été rempli
+    if (isset($_POST['g-recaptcha-response'])) {
+        $recaptchaResponse = $_POST['g-recaptcha-response'];
+        $secretKey = "6LfAW8wqAAAAAIy6rB05WZLe65QMMMHipPZVk5Zr";
+        $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
 
-    if (!empty($loginResult)) {
-        $user = $loginResult['user'];
-        $_SESSION['company_id'] = Database::getInstance()->getCompanyidbyUserId($user['id']) ;
+        // Vérification avec Google
+        $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
+        $responseKeys = json_decode($response, true);
 
-
-        if ($loginResult['valid_email'] == 0) {
-            setcookie('email_verification_pending', '1', time() + 3600, "/");
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_email'] = $user['email'];
-            $_SESSION['user_name'] = $user['prenom'] . ' ' . $user['nom'];
-            header("Location: Index.php");
-            exit();
-        }
-
-        if ($loginResult['status_user'] == 0) {
-            $errorMessage = "Votre compte est en attente d'activation par l'administration.";
-        } else {
-
-            $database->updateLastConnexion($user['id']);
-            $person = new Person(
-                $user['nom'],
-                $user['prenom'],
-                $user['telephone'],
-                $user['role'],
-                $user['activite'],
-                $user['email'],
-                $user['id']
-            );
-
-            $_SESSION['personne'] = $person;
-
-            $_SESSION['user_id'] = $person->getId();
-            $_SESSION['user'] = serialize($person);
-            $_SESSION['user_role'] = $person->getRole();
-            $_SESSION['user_name'] = $person->getPrenom() . ' ' . $person->getNom();
-
-            switch ($_SESSION['user_role']) {
-                case 1:
-                    header("Location: Presentation/Student.php");
-                    break;
-                case 2:
-                    header("Location: Presentation/Professor.php");
-                    break;
-                case 3:
-                    header("Location: Presentation/MaitreStage.php");
-                    break;
-                case 4 and 5:
-                    header("Location: Presentation/Secretariat.php");
-                    break;
-                default:
-                    header("Location: Presentation/Redirection.php");
-                    break;
-            }
-            exit();
+        if (!$responseKeys["success"]) {
+            $errorMessage = "Veuillez valider le reCAPTCHA.";
         }
     } else {
-        $errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
+        $errorMessage = "Veuillez cocher le reCAPTCHA.";
     }
 
-    $database->closeConnection();
+    // Si le reCAPTCHA est validé, on continue la connexion
+    if (empty($errorMessage)) {
+        $database = (Database::getInstance());
+        $loginResult = $database->verifyLogin($email, $password);
+
+        if (!empty($loginResult)) {
+            $user = $loginResult['user'];
+            $_SESSION['company_id'] = Database::getInstance()->getCompanyidbyUserId($user['id']);
+
+            if ($loginResult['valid_email'] == 0) {
+                setcookie('email_verification_pending', '1', time() + 3600, "/");
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_email'] = $user['email'];
+                $_SESSION['user_name'] = $user['prenom'] . ' ' . $user['nom'];
+                header("Location: Index.php");
+                exit();
+            }
+
+            if ($loginResult['status_user'] == 0) {
+                $errorMessage = "Votre compte est en attente d'activation par l'administration.";
+            } else {
+                $database->updateLastConnexion($user['id']);
+                $person = new Person(
+                    $user['nom'],
+                    $user['prenom'],
+                    $user['telephone'],
+                    $user['role'],
+                    $user['activite'],
+                    $user['email'],
+                    $user['id']
+                );
+
+                $_SESSION['personne'] = $person;
+                $_SESSION['user_id'] = $person->getId();
+                $_SESSION['user'] = serialize($person);
+                $_SESSION['user_role'] = $person->getRole();
+                $_SESSION['user_name'] = $person->getPrenom() . ' ' . $person->getNom();
+
+                switch ($_SESSION['user_role']) {
+                    case 1:
+                        header("Location: Presentation/Student.php");
+                        break;
+                    case 2:
+                        header("Location: Presentation/Professor.php");
+                        break;
+                    case 3:
+                        header("Location: Presentation/MaitreStage.php");
+                        break;
+                    case 4:
+                    case 5:
+                        header("Location: Presentation/Secretariat.php");
+                        break;
+                    default:
+                        header("Location: Presentation/Redirection.php");
+                        break;
+                }
+                exit();
+            }
+        } else {
+            $errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
+        }
+        $database->closeConnection();
+    }
 }
 
 
@@ -118,6 +133,7 @@ $translations = include $langFile;
     <link rel="stylesheet" href="./View/Home/Lobby.css">
     <link rel="stylesheet" href="./View/Home/Login.css">
     <script src="./View/Home/Lobby.js" defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         .notification {
             position: fixed;
@@ -215,6 +231,8 @@ $translations = include $langFile;
                         <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
                     </div>
                 </div>
+                <div class="g-recaptcha" data-sitekey="6LfAW8wqAAAAAJ1cccAUFIkXK-U2lru-c4qlIijx"></div>
+
                 <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
                 <p><?= $translations['connexion_problem']?></p>
                 <a href="Presentation/ForgotPasswordMail.php"><?= $translations['changed_mdp_index'] ?></a>
