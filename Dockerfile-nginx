@@ -1,14 +1,14 @@
 # Dockerfile.nginx
 FROM nginx:latest
 
-# Install the envsubst utility (from the gettext-base package) – in case dynamic substitution is needed in the future
+# Install envsubst utility from gettext-base (if dynamic substitution is needed)
 RUN apt-get update && apt-get install -y gettext-base
 
-# Copy the nginx configuration from the ./nginx/conf.d folder to the container
+# Copy Nginx configuration files into the container
 COPY ./nginx/conf.d /etc/nginx/conf.d
 
-# Copy the application files
+# Copy application files into the container (served by nginx)
 COPY . /var/www/html
 
-# launch nginx in foreground
+# Start Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]

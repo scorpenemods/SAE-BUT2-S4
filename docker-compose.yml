@@ -6,12 +6,12 @@ services:
       context: .
       dockerfile: Dockerfile-nginx
     ports:
-      - "9000:9000"
+      - "9000:9000"      # External port 9000 mapped to container port 9000
     environment:
-      - PORT=9000
+      - PORT=9000         # Set the PORT environment variable (used if dynamic substitution is needed)
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d  # Mount Nginx configuration files
+      - ./:/var/www/html                  # Mount the application files
     depends_on:
       - php
 
