@@ -6,7 +6,13 @@ session_start();
 // Inclure les fichiers nécessaires pour les classes Database et Person
 require_once "../Model/Database.php";
 require_once "../Model/Person.php";
-require_once "../Model/Config.php";
+
+// init .env variables
+require __DIR__ . '/../vendor/autoload.php';
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 // Initialiser le nom d'utilisateur comme 'Guest' au cas où aucun utilisateur n'est connecté
 $userName = "Guest";
@@ -16,7 +22,7 @@ if (isset($_SESSION['last_activity'])) {
     $inactive_time = time() - $_SESSION['last_activity'];
 
     // Si le temps d'inactivité dépasse le délai autorisé
-    if ($inactive_time > SESSION_TIMEOUT) {
+    if ($inactive_time > $_ENV['SESSION_TIMEOUT']) {
         // Détruire la session et rediriger vers la page de connexion
         session_unset();
         session_destroy();
