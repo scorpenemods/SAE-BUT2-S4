@@ -1,5 +1,4 @@
 # Dockerfile-php
-# This image runs PHP-FPM and listens on port 9000
 FROM php:8.1-fpm
 
 # Install required libraries and PHP extensions
@@ -8,11 +7,16 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     zip \
-    unzip \
- && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    unzip
+
+# Configure and install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
  && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
 
-# Set working directory
+# Override the default PHP-FPM configuration to listen on TCP port 9000
+# By default, PHP-FPM listens on /var/run/php-fpm.sock
+RUN sed -i 's|^listen = /var/run/php-fpm.sock|listen = 0.0.0.0:9000|' /usr/local/etc/php-fpm.d/www.conf
+
 WORKDIR /var/www/html
 
 # Expose port 9000 for PHP-FPM
