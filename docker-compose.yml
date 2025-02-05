@@ -4,19 +4,19 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "${PORT}:80"                      # Используем переменную PORT (Railway её задаёт)
+      - "${PORT}:80"                      # Используем переменную PORT (например, 8080)
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d    # Монтирование конфигурации Nginx
-      - ./:/var/www/html                    # Монтирование корневой директории (Index.php находится в корне)
+      - ./nginx/conf.d:/etc/nginx/conf.d    # Конфигурация Nginx
+      - ./:/var/www/html                    # Корневая директория проекта (Index.php находится в корне)
     depends_on:
       - php
 
   php:
     build:
       context: .
-      dockerfile: Dockerfile-php
+      dockerfile: Dockerfile   # Файл теперь называется Dockerfile (переименован)
     volumes:
-      - ./:/var/www/html                    # Монтирование корневой директории проекта
+      - ./:/var/www/html                    # Корневая директория проекта
     depends_on:
       - db
 
@@ -32,7 +32,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - db_data:/var/lib/mysql             # Том для хранения данных
+      - db_data:/var/lib/mysql
 
 volumes:
   db_data:
