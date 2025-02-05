@@ -1,15 +1,13 @@
 version: '3.8'
 
-
 services:
   nginx:
     image: nginx:latest
-    container_name: lps_nginx
     ports:
-      - "80:80"                      # Port for public access
+      - "${PORT}:80"                      # Используем переменную PORT (Railway её задаёт)
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d  # Nginx config
-      - ./:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d    # Монтирование конфигурации Nginx
+      - ./:/var/www/html                    # Монтирование корневой директории (Index.php находится в корне)
     depends_on:
       - php
 
@@ -17,27 +15,24 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-php
-    container_name: lps_php
     volumes:
-      - ./:/var/www/html              # Php treatment
+      - ./:/var/www/html                    # Монтирование корневой директории проекта
     depends_on:
       - db
 
   db:
     image: mariadb:latest
-    container_name: lps_db
-    restart: always
     env_file:
       - .env
     ports:
-      - "42756:3306"
+      - "42756:3306"                       # Внешний порт 42756 -> внутренний 3306
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - db_data:/var/lib/mysql          # Spot to save the data
+      - db_data:/var/lib/mysql             # Том для хранения данных
 
 volumes:
   db_data:
