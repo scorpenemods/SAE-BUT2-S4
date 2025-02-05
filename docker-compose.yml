@@ -14,7 +14,9 @@ services:
       - php
 
   php:
-    image: php:8.1-fpm
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: lps_php
     volumes:
       - ./:/var/www/html              # Php treatment
