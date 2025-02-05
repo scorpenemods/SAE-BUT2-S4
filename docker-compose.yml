@@ -9,7 +9,7 @@ services:
       - "80:80"                      # Port for public access
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d  # Nginx config
-      - ./app:/var/www/html               #
+      - ./:/var/www/html
     depends_on:
       - php
 
@@ -17,7 +17,7 @@ services:
     image: php:8.1-fpm
     container_name: lps_php
     volumes:
-      - ./app:/var/www/html               # Php treatment
+      - ./:/var/www/html              # Php treatment
     depends_on:
       - db
 
@@ -25,6 +25,8 @@ services:
     image: mariadb:latest
     container_name: lps_db
     restart: always
+    env_file:
+      - .env
     ports:
       - "${DB_PORT}:3306"
     environment:
