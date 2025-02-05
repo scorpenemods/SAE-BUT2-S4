@@ -3,20 +3,23 @@ version: '3.8'
 services:
   nginx:
     image: nginx:latest
+    # Пробрасываем внешний порт, равный значению PORT, на внутренний порт, тоже равный PORT
     ports:
-      - "${PORT}:80"                      # Используем переменную PORT (например, 8080)
+      - "${PORT}:${PORT}"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d    # Конфигурация Nginx
-      - ./:/var/www/html                    # Корневая директория проекта (Index.php находится в корне)
+      - ./nginx/conf.d:/etc/nginx/conf.d    # Монтирование конфигурации Nginx
+      - ./:/var/www/html                    # Монтирование корневой директории (Index.php находится в корне)
     depends_on:
       - php
+    # Выполняем envsubst для замены ${PORT} в default.conf и затем запускаем nginx
+    command: /bin/sh -c "envsubst '$$PORT' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
 
   php:
     build:
       context: .
-      dockerfile: Dockerfile   # Файл теперь называется Dockerfile (переименован)
+      dockerfile: Dockerfile-php-php
     volumes:
-      - ./:/var/www/html                    # Корневая директория проекта
+      - ./:/var/www/html                    # Монтирование корневой директории проекта
     depends_on:
       - db
 
@@ -25,7 +28,7 @@ services:
     env_file:
       - .env
     ports:
-      - "42756:3306"                       # Внешний порт 42756 -> внутренний 3306
+      - "42756:3306"                       # Внешний порт 42756 -> внутренний 3306 (стандартный порт MariaDB)
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
