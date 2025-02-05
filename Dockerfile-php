@@ -1,4 +1,4 @@
-# Dockerfile-php
+# Dockerfile-php-php
 FROM php:8.1-fpm
 
 # Update the package list and install dependencies
