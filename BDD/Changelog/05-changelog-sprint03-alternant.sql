@@ -29,8 +29,8 @@ CREATE TABLE Application (
 
 --changeset Thibaut:17 labels:alter-table
 --comment: delete useless columns
-ALTER TABLE Application DROP COLUMN IF EXISTS cv;
-ALTER TABLE Application DROP COLUMN IF EXISTS motivation_letter;
+ALTER TABLE Application DROP COLUMN cv;
+ALTER TABLE Application DROP COLUMN motivation_letter;
 /* liquibase rollback
 ALTER TABLE Application ADD COLUMN cv VARCHAR(255) NOT NULL ;
 ALTER TABLE Application ADD COLUMN motivation_letter VARCHAR(255) NOT NULL;
@@ -44,7 +44,7 @@ Alter table Alert
     modify column duration integer NULL,
     modify column address Varchar(255) NULL,
     modify column study_level Varchar(255) NULL,
-drop column IF EXISTS title,
-drop column IF EXISTS job,
-drop column IF EXISTS distance;
+drop column  title,
+drop column  job,
+drop column  distance;
 --rollback ALTER TABLE alerts DROP COLUMN salary, DROP COLUMN begin_date, MODIFY COLUMN duration INTEGER NOT NULL, MODIFY COLUMN address VARCHAR(255) NOT NULL, MODIFY COLUMN study_level VARCHAR(255) NOT NULL, ADD COLUMN title VARCHAR(255), ADD COLUMN job VARCHAR(255), ADD COLUMN distance INTEGER;

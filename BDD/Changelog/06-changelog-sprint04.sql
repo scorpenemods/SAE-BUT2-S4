@@ -1,4 +1,4 @@
---liquibase formatted sql
+    --liquibase formatted sql
 
 
 --changeset Noa:1:sprint4 labels:Documents context: Depot document
@@ -41,7 +41,7 @@ ALTER TABLE LivretSuivi
     ADD COLUMN start_date DATE NOT NULL,
     ADD COLUMN end_date DATE NOT NULL,
     ADD COLUMN group_id INT NOT NULL,
-    ADD CONSTRAINT fk_group_id FOREIGN KEY (group_id) REFERENCES Groupe(conv_id);
+    ADD CONSTRAINT fk_group_id FOREIGN KEY (group_id) REFERENCES Convention(id);
 
 -- Create MeetingBook table
 CREATE TABLE MeetingBook (
@@ -145,7 +145,7 @@ alter table Sous_Note add note int not null;
 
 alter table File
     ADD COLUMN conv_id INT NULL,
-    ADD CONSTRAINT fk_conv_id9 FOREIGN KEY (conv_id) REFERENCES Groupe(conv_id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_conv_id9 FOREIGN KEY (conv_id) REFERENCES Convention(id) ON DELETE CASCADE;
 --rollback ALTER TABLE File Drop Foreign key fk_conv_id9; alter table File drop COLUMN conv_id;
 
 --changeset Lucine:10:sprint4 labels:sous note id dnas file
