@@ -6,12 +6,12 @@ services:
       context: .
       dockerfile: Dockerfile-nginx
     ports:
-      - "${PORT}:${PORT}"    # Railway направит трафик на порт 9000, если PORT=9000
+      - "9000:9000"
     environment:
-      - PORT=${PORT}         # На Railway переменная PORT будет установлена (например, 9000)
+      - PORT=9000
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d  # Монтируем конфигурацию nginx
-      - ./:/var/www/html                  # Монтируем корень проекта
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./:/var/www/html
     depends_on:
       - php
 
