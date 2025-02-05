@@ -2,23 +2,23 @@ version: '3.8'
 
 services:
   nginx:
-    image: nginx:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
     ports:
-      - "${PORT}:${PORT}"
+      - "${PORT}:${PORT}"    # Railway направит трафик на порт 9000, если PORT=9000
     environment:
-      - PORT=${PORT}          # Передаём переменную PORT внутрь контейнера
+      - PORT=${PORT}         # На Railway переменная PORT будет установлена (например, 9000)
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d  # Монтируем конфигурацию nginx
+      - ./:/var/www/html                  # Монтируем корень проекта
     depends_on:
       - php
-    # Перед запуском подставляем значение PORT в конфигурационный файл
-    command: /bin/sh -c "envsubst '$$PORT' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
 
   php:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-php
     volumes:
       - ./:/var/www/html
     depends_on:

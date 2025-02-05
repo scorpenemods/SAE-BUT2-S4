@@ -1,0 +1,18 @@
+# Dockerfile.nginx
+FROM nginx:latest
+
+# Устанавливаем утилиту envsubst
+RUN apt-get update && apt-get install -y gettext-base
+
+# Копируем конфигурационные файлы nginx из локальной папки в контейнер
+COPY ./nginx/conf.d /etc/nginx/conf.d
+
+# Копируем файлы приложения (если необходимо)
+COPY . /var/www/html
+
+# Если хотите использовать динамическую подстановку переменной PORT,
+# используйте следующую команду CMD:
+# CMD ["/bin/sh", "-c", "envsubst '$$PORT' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"]
+
+# Если для удобства (и чтобы не возникали ошибки в IDE) фиксировать порт 9000, используйте:
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,6 +1,7 @@
+# Dockerfile.php
 FROM php:8.1-fpm
 
-# Обновляем список пакетов и устанавливаем необходимые зависимости
+# Обновляем список пакетов и устанавливаем зависимости для PHP
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
