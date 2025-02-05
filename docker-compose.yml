@@ -26,7 +26,7 @@ services:
     container_name: lps_db
     restart: always
     ports:
-      - "21838:21838"    #
+      - "${DB_PORT}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}

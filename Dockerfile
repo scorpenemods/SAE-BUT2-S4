@@ -14,11 +14,6 @@ RUN apt-get update && apt-get install -y \
 # set work directory
 WORKDIR /var/www/html
 
-# (test) install Composer:
-# COPY composer.lock composer.json /var/www/html/
-# RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-# RUN composer install
-
 # Port 9000 for PHP-FPM (default)
 EXPOSE 9000
 
