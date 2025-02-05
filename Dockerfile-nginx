@@ -1,14 +1,19 @@
-# Dockerfile.nginx
+# Dockerfile-nginx
+# This image runs Nginx.
+# We install gettext-base to provide the envsubst utility (if needed for dynamic substitution)
 FROM nginx:latest
 
-# Install envsubst utility from gettext-base (if dynamic substitution is needed)
+# Install envsubst (from gettext-base)
 RUN apt-get update && apt-get install -y gettext-base
 
-# Copy Nginx configuration files into the container
+# Copy the Nginx configuration files into the container
 COPY ./nginx/conf.d /etc/nginx/conf.d
 
-# Copy application files into the container (served by nginx)
+# Copy application files into /var/www/html
 COPY . /var/www/html
+
+# Expose port 9000 (so Railway can forward traffic)
+EXPOSE 9000
 
 # Start Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]

@@ -1,7 +1,8 @@
-# Dockerfile.php
+# Dockerfile-php
+# This image runs PHP-FPM and listens on port 9000
 FROM php:8.1-fpm
 
-# Install required dependencies and PHP extensions
+# Install required libraries and PHP extensions
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -11,10 +12,11 @@ RUN apt-get update && apt-get install -y \
  && docker-php-ext-configure gd --with-freetype --with-jpeg \
  && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
 
+# Set working directory
 WORKDIR /var/www/html
 
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000
 
-# Start PHP-FPM process
+# Start PHP-FPM
 CMD ["php-fpm"]
