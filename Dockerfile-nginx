@@ -1,16 +1,16 @@
 # Dockerfile-nginx
 FROM nginx:latest
 
-# Install envsubst utility from gettext-base (in case dynamic substitution is needed)
+# Install envsubst (from gettext-base) if dynamic substitution is needed in the future
 RUN apt-get update && apt-get install -y gettext-base
 
 # Copy Nginx configuration files into the container
 COPY ./nginx/conf.d /etc/nginx/conf.d
 
-# Copy application files into the container
+# Copy application files into /var/www/html
 COPY . /var/www/html
 
-# Expose port 9000 (so Railway can forward traffic to the container)
+# Expose port 9000 (so that Railway can forward traffic)
 EXPOSE 9000
 
 # Start Nginx in the foreground
