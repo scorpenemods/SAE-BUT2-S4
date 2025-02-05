@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /var/www/html
 
-# PHP-FPM слушает на порту 9000 (внутренний для связи с Nginx)
+# PHP-FPM слушает на порту 9000 (для связи с Nginx)
 EXPOSE 9000
 
 CMD ["php-fpm"]
