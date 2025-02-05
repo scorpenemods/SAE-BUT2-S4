@@ -23,7 +23,7 @@ unset($_SESSION['user_id']);
         <p>Votre compte est maintenant en attente de validation par le secrétariat.</p>
         <p>Vous recevrez un email une fois que votre compte sera approuvé.</p>
         <div class="link">
-            <a href="../Index.php">Retour à la connexion</a>
+            <a href="../index.php">Retour à la connexion</a>
         </div>
     </div>
 </div>

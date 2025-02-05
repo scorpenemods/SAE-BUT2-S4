@@ -240,7 +240,7 @@ $translations = include $langFile;
         <!-- Bouton de validation -->
         <button type="submit"><?= $translations['validate'] ?></button>
 
-        <a href="../Index.php"><?= $translations['annuler'] ?></a>
+        <a href="../index.php"><?= $translations['annuler'] ?></a>
     </form>
 </div>
 

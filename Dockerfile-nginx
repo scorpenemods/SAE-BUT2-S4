@@ -1,14 +1,14 @@
 # Dockerfile.nginx
 FROM nginx:latest
 
-# Устанавливаем утилиту envsubst (из пакета gettext-base) – если в будущем понадобится динамическая подстановка
+# Install the envsubst utility (from the gettext-base package) – in case dynamic substitution is needed in the future
 RUN apt-get update && apt-get install -y gettext-base
 
-# Копируем конфигурацию nginx из папки ./nginx/conf.d в контейнер
+# Copy the nginx configuration from the ./nginx/conf.d folder to the container
 COPY ./nginx/conf.d /etc/nginx/conf.d
 
-# Копируем файлы приложения (если требуется)
+# Copy the application files
 COPY . /var/www/html
 
-# Запускаем nginx в foreground
+# launch nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]
