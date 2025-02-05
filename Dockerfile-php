@@ -9,20 +9,17 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip
 
-# Configure and install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
 
 WORKDIR /var/www/html
 
-# Remove the default www.conf so that our custom configuration is used
-RUN rm /usr/local/etc/php-fpm.d/www.conf
-
-# Copy our custom PHP-FPM configuration (listening on TCP 0.0.0.0:9000)
-COPY php-fpm.conf /usr/local/etc/php-fpm.d/
+# Modify the default PHP-FPM configuration to listen on TCP port 9000 instead of the Unix socket.
+# This changes the line "listen = /var/run/php-fpm.sock" to "listen = 0.0.0.0:9000"
+RUN sed -i 's|listen = /var/run/php-fpm.sock|listen = 0.0.0.0:9000|' /usr/local/etc/php-fpm.d/www.conf
 
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000
 
-# Start PHP-FPM
+# Start PHP-FPM in foreground
 CMD ["php-fpm"]
