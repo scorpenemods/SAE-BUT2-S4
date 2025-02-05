@@ -1,7 +1,6 @@
-# Dockerfile-php
 FROM php:8.1-fpm
 
-# Обновляем пакеты и устанавливаем зависимости
+# Обновляем список пакетов и устанавливаем необходимые зависимости
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -11,11 +10,9 @@ RUN apt-get update && apt-get install -y \
  && docker-php-ext-configure gd --with-freetype --with-jpeg \
  && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
 
-# Устанавливаем рабочую директорию
 WORKDIR /var/www/html
 
-# Открываем порт 9000 для PHP-FPM (внутреннее соединение с Nginx)
+# PHP-FPM слушает на порту 9000 (внутренний для связи с Nginx)
 EXPOSE 9000
 
-# Запускаем PHP-FPM
 CMD ["php-fpm"]
