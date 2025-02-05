@@ -15,6 +15,13 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     else{
         widget(localStorage.getItem('classAdded'));
+        let savedStudent = localStorage.getItem('classAdded2');
+        if (savedStudent) {
+            let tempDiv = document.createElement("div"); // Créer un conteneur temporaire
+            tempDiv.innerHTML = savedStudent; // Injecter le HTML
+            let restoredElement = tempDiv.firstElementChild; // Extraire le vrai élément
+            selectStudent(restoredElement)
+        }
     }
 });
 
@@ -442,7 +449,6 @@ document.getElementById('notification-icon').addEventListener('click', function 
 });
 
 //Reset notifications if user have seen it
-
 function resetNotifications() {
     // Cacher la pastille sur la cloche
     const notificationCountElement = document.getElementById('notification-count');
@@ -560,6 +566,9 @@ function fetchStudentInfo(userId) {
 }
 
 function selectStudent(element) {
+    console.log("type : " + typeof element)
+    localStorage.setItem('classAdded2', element.outerHTML);
+    console.log("le storage : " + typeof localStorage.getItem('classAdded2'))
     console.log("Élément sélectionné : ", element);
 
     // Supprimer la classe 'selected' de tous les étudiants
@@ -570,6 +579,7 @@ function selectStudent(element) {
 
     // Ajouter la classe 'selected' à l'étudiant cliqué
     element.classList.add('selected');
+    console.log("selectionné")
 
     // Récupérer l'ID de l'étudiant
     const studentId = element.getAttribute('data-student-id');
@@ -602,7 +612,6 @@ function selectStudent(element) {
     fetchStudentInfoManage(studentId);
     fetchNotes(studentId);
     fetchStage(studentId)
-
 }
 
 function fetchStage(stageId){

@@ -26,14 +26,14 @@ ALTER TABLE Pending_Offer
 --changeset Valerii:3:sprint5 labels:modify groupe message context:example-context: table groupe message
 -- comment: erreur de clé étrangere
 
-ALTER TABLE MessageGroupe DROP FOREIGN KEY fk_sender_id;
+
 ALTER TABLE MessageGroupe
-    ADD CONSTRAINT fk_sender_id FOREIGN KEY (sender_id) REFERENCES Groupe(user_id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_sender_id FOREIGN KEY (sender_id) REFERENCES User(id) ON DELETE CASCADE;
 
 
 --rollback ALTER TABLE MessageGroupe DROP FOREIGN KEY fk_sender_id; ALTER TABLE MessageGroupe ADD CONSTRAINT fk_sender_id FOREIGN KEY (sender_id) REFERENCES User(id) ON DELETE CASCADE;
 
---changeset Lucien:4:sprint5 labels:modify groupe message context:example-context: table Note
+--changeset Lucien:4:sprint5 labels:modify groupe  message context:example-context: table Note
 -- comment: colonne inutile pour le moment
 ALTER TABLE Note
     DROP COLUMN appreciation;
@@ -44,7 +44,7 @@ ALTER TABLE Note
 -- comment: erreur de clé étrangere
 
 ALTER TABLE MessageGroupe DROP FOREIGN KEY fk_groupe_id;
-ALTER TABLE MessageGroupe ADD CONSTRAINT fk_groupe_id FOREIGN KEY (groupe_id) REFERENCES Groupe(conv_id) ON DELETE CASCADE;
+ALTER TABLE MessageGroupe ADD CONSTRAINT fk_groupe_id FOREIGN KEY (groupe_id) REFERENCES Convention(id) ON DELETE CASCADE;
 
 
 --rollback ALTER TABLE MessageGroupe DROP FOREIGN KEY fk_groupe_id;ALTER TABLE MessageGroupe ADD CONSTRAINT fk_groupe_id FOREIGN KEY (groupe_id) REFERENCES Groupe(id) ON DELETE CASCADE;

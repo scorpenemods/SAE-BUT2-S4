@@ -21,7 +21,7 @@ ALTER TABLE Message
 --changeset Rémy/Valerii:1 context:create-groupe-new
 --comment: Create a new Groupe table with id as auto-increment and user_id as part of the primary key
 CREATE TABLE Groupe_New (
-                            id INT AUTO_INCREMENT,
+                            id INT AUTO_INCREMENT unique,
                             user_id INT NOT NULL,
                             conv_id INT NULL,
                             PRIMARY KEY (id, user_id),
