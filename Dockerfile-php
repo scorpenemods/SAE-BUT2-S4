@@ -14,12 +14,15 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
 
 WORKDIR /var/www/html
 
-# Modify the default PHP-FPM configuration to listen on TCP port 9000 instead of the Unix socket.
-# This changes the line "listen = /var/run/php-fpm.sock" to "listen = 0.0.0.0:9000"
-RUN sed -i 's|listen = /var/run/php-fpm.sock|listen = 0.0.0.0:9000|' /usr/local/etc/php-fpm.d/www.conf
+# Modify PHP-FPM configuration to listen on TCP port 9000 instead of the Unix socket.
+# This uses a robust regex to match the listen directive.
+RUN sed -ri 's|^listen\s*=\s*/var/run/php-fpm.sock|listen = 0.0.0.0:9000|' /usr/local/etc/php-fpm.d/www.conf
+
+# (Optional) Output the configuration for debugging purposes:
+# RUN cat /usr/local/etc/php-fpm.d/www.conf
 
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000
 
-# Start PHP-FPM in foreground
-CMD ["php-fpm"]
+# Start PHP-FPM in foreground (-F flag)
+CMD ["php-fpm", "-F"]
