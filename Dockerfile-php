@@ -16,11 +16,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
 
 WORKDIR /var/www/html
 
-# Remove the default php-fpm.conf
-RUN rm /usr/local/etc/php-fpm.d/php-fpm.conf
-
-# Copy our custom php-fpm.conf
-COPY www.conf /usr/local/etc/php-fpm.d/php-fpm.conf
+# Remove all default PHP-FPM configuration files and copy our custom www.conf
+RUN rm -f /usr/local/etc/php-fpm.d/*.conf
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000
