@@ -16,13 +16,14 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
 
 WORKDIR /var/www/html
 
-# Force PHP-FPM to listen on 0.0.0.0:9000 (IPv4)
-# The default www.conf may have a listen directive for a Unix socket.
-# This sed command replaces any "listen = ..." line with "listen = 0.0.0.0:9000".
-RUN sed -ri 's|^listen\s*=.*|listen = 0.0.0.0:9000|' /usr/local/etc/php-fpm.d/www.conf
+# Remove the default php-fpm.conf
+RUN rm /usr/local/etc/php-fpm.d/php-fpm.conf
+
+# Copy our custom php-fpm.conf
+COPY www.conf /usr/local/etc/php-fpm.d/php-fpm.conf
 
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000
 
-# Start PHP-FPM in the foreground
+# Start PHP-FPM in foreground (-F flag)
 CMD ["php-fpm", "-F"]
