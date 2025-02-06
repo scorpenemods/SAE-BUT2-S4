@@ -1,7 +1,7 @@
 # Dockerfile-php
 FROM php:8.1-fpm
 
-# Install required libraries, PHP extensions, and net-tools (for diagnostics)
+# Install required libraries and PHP extensions
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -16,8 +16,13 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
 
 WORKDIR /var/www/html
 
-# Expose port 9000 for PHP-FPM (FastCGI)
+# Force PHP-FPM to listen on 0.0.0.0:9000 (IPv4)
+# The default www.conf may have a listen directive for a Unix socket.
+# This sed command replaces any "listen = ..." line with "listen = 0.0.0.0:9000".
+RUN sed -ri 's|^listen\s*=.*|listen = 0.0.0.0:9000|' /usr/local/etc/php-fpm.d/www.conf
+
+# Expose port 9000 for PHP-FPM
 EXPOSE 9000
 
-# Start PHP-FPM (it listens on port 9000 by default)
-CMD ["php-fpm"]
+# Start PHP-FPM in the foreground
+CMD ["php-fpm", "-F"]
