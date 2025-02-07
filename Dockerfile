@@ -11,29 +11,32 @@ RUN apt-get update && apt-get install -y \
 # Установка Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Установка PHP‑расширений
+# Настройка и установка PHP‑расширений
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
 
 # Удаляем стандартные конфигурационные файлы PHP‑FPM
 RUN rm -f /usr/local/etc/php-fpm.d/*.conf
 
-# Копируем конфигурации для php‑fpm, nginx и supervisor
+# Копирование конфигурационных файлов:
+# - www.conf для php‑fpm
+# - default.conf для nginx
+# - supervisord.conf для supervisor
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR /var/www/html
 
-# Копируем composer файлы и устанавливаем зависимости
+# Копирование файлов composer и установка зависимостей
 COPY composer.json composer.lock ./
 COPY . /var/www/html
 
-# Копируем entrypoint и даём права на выполнение
+# Копирование entrypoint.sh и выдача прав на выполнение
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Открываем порт, который будет слушать приложение
+# Приложение будет слушать на порту 9000
 EXPOSE 9000
 
 ENTRYPOINT ["/entrypoint.sh"]

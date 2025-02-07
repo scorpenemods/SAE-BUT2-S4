@@ -1,28 +1,12 @@
 version: '3.8'
 
 services:
-  nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile-nginx
+  app:
+    build: .
     ports:
-      - "9000:9000"         # Map external port 9000 to container port 9000
-    environment:
-      - PORT=9000           # Set the PORT environment variable
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./:/var/www/html
-      - vendor_data:/var/www/html/vendor
-    depends_on:
-      - php
-
-  php:
-    build:
-      context: .
-      dockerfile: Dockerfile
+      - "9000:9000"
     volumes:
       - ./:/var/www/html
-
   db:
     image: mariadb:latest
     env_file:
