@@ -10,18 +10,19 @@ RUN apt-get update && apt-get install -y \
     unzip \
     net-tools
 
-# Configure and install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
 
 WORKDIR /var/www/html
 
-# Remove all default PHP-FPM configuration files and copy our custom www.conf
+# Remove ALL default PHP-FPM configuration files in the pool directory
 RUN rm -f /usr/local/etc/php-fpm.d/*.conf
+
+# Copy our custom www.conf into PHP-FPM configuration directory
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 
-# Expose port 9000 for PHP-FPM
+# Expose port 9000 for PHP-FPM (FastCGI)
 EXPOSE 9000
 
-# Start PHP-FPM in foreground (-F flag)
+# Start PHP-FPM in the foreground (-F)
 CMD ["php-fpm", "-F"]

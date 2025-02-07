@@ -8,7 +8,7 @@ services:
     ports:
       - "9000:9000"         # Map external port 9000 to container port 9000
     environment:
-      - PORT=9000
+      - PORT=9000           # Set PORT environment variable
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./:/var/www/html
