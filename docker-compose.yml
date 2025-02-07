@@ -11,7 +11,7 @@ services:
       - PORT=9000           # Set the PORT environment variable
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./:/var/www/html
+    #  - ./:/var/www/html
     depends_on:
       - php
 
