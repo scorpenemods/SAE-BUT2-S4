@@ -1,9 +1,11 @@
 FROM php:8.1-fpm
 
-# Установка необходимых пакетов
+# Обновляем пакеты и устанавливаем необходимые утилиты,
+# включая nginx, supervisor, gettext-base (для envsubst) и остальные зависимости.
 RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
+    gettext-base \
     libpng-dev libjpeg-dev libfreetype6-dev \
     zip unzip \
     curl
