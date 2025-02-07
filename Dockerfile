@@ -1,35 +1,38 @@
-# image PHP-FPM
 FROM php:8.1-fpm
 
-# Install: nginx, supervisor and PHP dependencies
+# Install the necessary dependencies and tools
 RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
     libpng-dev libjpeg-dev libfreetype6-dev \
-    zip unzip
+    zip unzip \
+    curl
 
-# Setting PHP extensions
+# Install Composer globally
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Configuring and installing PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
 
-# Deleting default PHP‑FPM config
+# Removing default PHP-FPM configuration files
 RUN rm -f /usr/local/etc/php-fpm.d/*.conf
 
-# Copy our custom PHP-FPM configuration (note: listening on 127.0.0.1:9001)
+# Copying PHP‑FPM, nginx and supervisor configuration files
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf
-
-# Copy nginx config
 COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
-
-# supervisor config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Copy the application files to the working directory
+# Copy composer files and install dependencies
 WORKDIR /var/www/html
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader
+
+# Copy the remaining project files
 COPY . /var/www/html
 
 # Open port 9000 (the one that Railway expects)
 EXPOSE 9000
 
-# Start supervisord, which will start both nginx and PHP‑FPM
+# We launch supervisord, which starts nginx and PHP‑FPM
 CMD ["/usr/bin/supervisord", "-n"]
