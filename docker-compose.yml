@@ -12,6 +12,7 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./:/var/www/html
+      - vendor_data:/var/www/html/vendor
     depends_on:
       - php
 
