@@ -2,7 +2,7 @@
 set -e
 
 # Install and set dependencies
-if [ ! -d "/var/www/html/vendor" ]; then
+if [ ! -d "/var/www/html/vendor" ] || [ -z "$(ls -A /var/www/html/vendor)" ]; then
     composer install --no-dev --optimize-autoloader
 fi
 

@@ -40,3 +40,5 @@ EXPOSE 9000
 
 # Launch by entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["php-fpm", "-F"]
