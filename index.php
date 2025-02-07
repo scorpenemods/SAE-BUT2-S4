@@ -16,7 +16,7 @@ if (!isset($_SESSION['login_attempts'])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_SESSION['login_attempts'] >= 3 && time() < $_SESSION['login_block_time']) {
-        $errorMessage = "Trop de tentatives ! Veuillez réessayer dans 5 secondes.";
+        $errorMessage = "Trop de tentatives ! Veuillez réessayer dans 10 secondes.";
     } else {
         $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
         $password = $_POST['password'];
@@ -100,10 +100,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } else {
                     $_SESSION['login_attempts']++;
                     if ($_SESSION['login_attempts'] >= 3) {
-                        $_SESSION['login_block_time'] = time() + 5;
-                        $errorMessage = 'Trop de tentatives ! Veuillez réessayer dans 5 secondes.';
+                        $_SESSION['login_block_time'] = time() + 10;
+                        $errorMessage = 'Trop de tentatives ! Veuillez réessayer dans 10 secondes.';
                     } else {
-                        $errorMessage = 'Identifiants incorrects. Tentative ' . $_SESSION['login_attempts'] . ' sur 3.';
+                        $errorMessage = 'Mot de passe incorrects. Tentative ' . $_SESSION['login_attempts'] . ' sur 3.';
                     }
                 }
             }
