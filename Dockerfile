@@ -23,7 +23,7 @@ RUN rm -f /usr/local/etc/php-fpm.d/*.conf
 # - default.conf для nginx
 # - supervisord.conf для supervisor
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf
-COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+COPY nginx/conf.d/default.conf.template /etc/nginx/conf.d/default.conf.template
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR /var/www/html
