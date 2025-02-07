@@ -22,8 +22,8 @@ RUN rm -f /usr/local/etc/php-fpm.d/*.conf
 # Copy our custom www.conf into the PHP-FPM configuration directory
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 
-# Expose port 9000 for PHP-FPM
-EXPOSE 9000
+# Expose port 9001 for PHP-FPM
+EXPOSE 9001
 
 # Start PHP-FPM in the foreground (-F flag)
 CMD ["php-fpm", "-F"]
