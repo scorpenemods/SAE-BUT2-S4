@@ -22,6 +22,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./:/var/www/html
+      - vendor_data:/var/www/html/vendor
+
 
   db:
     image: mariadb:latest
