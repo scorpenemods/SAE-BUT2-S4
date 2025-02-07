@@ -23,16 +23,20 @@ COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Copy composer files and install dependencies
 WORKDIR /var/www/html
+
+# Copy composer files and install dependencies
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader
 
 # Copy the remaining project files
 COPY . /var/www/html
 
+# Copying entrypoint.sh and run to install vendor
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Open port 9000 (the one that Railway expects)
 EXPOSE 9000
 
-# We launch supervisord, which starts nginx and PHP‑FPM
-CMD ["/usr/bin/supervisord", "-n"]
+# Launch by entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
