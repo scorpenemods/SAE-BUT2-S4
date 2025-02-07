@@ -19,7 +19,7 @@ RUN rm -f /usr/local/etc/php-fpm.d/*.conf
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 
 # Copy nginx config
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 
 # supervisor config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
