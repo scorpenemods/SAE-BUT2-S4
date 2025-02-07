@@ -1,6 +1,6 @@
 FROM php:8.1-fpm
 
-# Install the necessary dependencies and tools
+# Установка необходимых пакетов
 RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
@@ -8,37 +8,32 @@ RUN apt-get update && apt-get install -y \
     zip unzip \
     curl
 
-# Install Composer globally
+# Установка Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Configuring and installing PHP extensions
+# Установка PHP‑расширений
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
 
-# Removing default PHP-FPM configuration files
+# Удаляем стандартные конфигурационные файлы PHP‑FPM
 RUN rm -f /usr/local/etc/php-fpm.d/*.conf
 
-# Copying PHP‑FPM, nginx and supervisor configuration files
+# Копируем конфигурации для php‑fpm, nginx и supervisor
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR /var/www/html
 
-# Copy composer files and install dependencies
+# Копируем composer файлы и устанавливаем зависимости
 COPY composer.json composer.lock ./
-
-# Copy the remaining project files
 COPY . /var/www/html
 
-# Copying entrypoint.sh and run to install vendor
+# Копируем entrypoint и даём права на выполнение
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Open port 9000 (the one that Railway expects)
+# Открываем порт, который будет слушать приложение
 EXPOSE 9000
 
-# Launch by entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
-
-CMD ["php-fpm", "-F"]
