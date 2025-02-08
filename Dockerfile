@@ -1,41 +1,48 @@
 FROM php:8.1-fpm
 
-# Обновляем пакеты и устанавливаем необходимые утилиты,
-# включая nginx, supervisor, gettext-base (для envsubst) и остальные зависимости.
+# Обновляем пакеты и устанавливаем необходимые утилиты
 RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
     gettext-base \
     libpng-dev libjpeg-dev libfreetype6-dev \
     zip unzip \
-    curl
+    curl \
+  && rm -rf /var/lib/apt/lists/*
 
 # Установка Composer глобально
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- \
+    --install-dir=/usr/local/bin \
+    --filename=composer
 
 # Настройка и установка PHP‑расширений
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
 
-# Удаляем дефолтные конфигурационные файлы PHP‑FPM
+# Удаляем дефолтные конфиги PHP-FPM
 RUN rm -f /usr/local/etc/php-fpm.d/*.conf
 
-# Копирование файлов конфигурации
-COPY www.conf /usr/local/etc/php-fpm.d/www.conf
-COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+# Копируем наши конфиги (Nginx, Supervisord, PHP-FPM)
+COPY nginx/conf.d/default.conf.template /etc/nginx/conf.d/default.conf.template
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 
-WORKDIR /var/www/html
-
-# Копирование файлов проекта и composer файлов
-COPY composer.json composer.lock ./
-COPY . /var/www/html
-
-# Копирование скрипта запуска
+# Копируем entrypoint
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Приложение будет слушать на порту, заданном переменной PORT (9000)
+# Копируем файлы приложения в /var/www/html
+WORKDIR /var/www/html
+COPY composer.json composer.lock ./
+# Установка зависимостей на этапе билдера (если нужно/полезно)
+# но обычно полезнее ставить в entrypoint, чтобы не залип кэш
+# RUN composer install --no-dev --optimize-autoloader
+
+COPY . /var/www/html
+
+# Порт, который будем слушать внутри контейнера.
+# Railway сам пробросит этот порт во внешний мир,
+# при этом задав переменную среды PORT=<какой-то_динамический>.
 EXPOSE 9000
 
 ENTRYPOINT ["/entrypoint.sh"]

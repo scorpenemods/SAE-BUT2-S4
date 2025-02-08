@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 
-# Подстановка значения переменной PORT в конфигурацию nginx
-envsubst '$PORT' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
+# Генерируем конфиг nginx из шаблона
+envsubst '${PORT}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
 
-# Если папка vendor пуста, устанавливаем зависимости
+# Если vendor не существует или пуст, устанавливаем зависимости (production-режим)
 if [ ! -d "/var/www/html/vendor" ] || [ -z "$(ls -A /var/www/html/vendor)" ]; then
     composer install --no-dev --optimize-autoloader
 fi
 
-# Запуск supervisord, который поднимет php‑fpm и nginx
-exec /usr/bin/supervisord -n
+# Запускаем supervisord
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
