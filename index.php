@@ -13,7 +13,7 @@ $errorMessage = '';
 require __DIR__ . '/vendor/autoload.php';
 use Dotenv\Dotenv;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/');
+$dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 if (!isset($_SESSION['login_attempts'])) {
@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Vérification reCAPTCHA
             if (isset($_POST['g-recaptcha-response'])) {
                 $recaptchaResponse = $_POST['g-recaptcha-response'];
-                $secretKey = $_ENV['CAPTCHA_SECRET'];
+                $secretKey = getenv('CAPTCHA_SECRET');
                 $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
 
                 $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
@@ -257,7 +257,7 @@ $translations = include $langFile;
                         <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
                     </div>
                 </div>
-                <div class="g-recaptcha" data-sitekey="<?php echo getenv('CAPTCHA_SITEKEY'); ?>"></div>
+                <div class="g-recaptcha" data-sitekey="<?= getenv('CAPTCHA_SITEKEY') ?>"></div>
 
                 <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
                 <p><?= $translations['connexion_problem']?></p>
