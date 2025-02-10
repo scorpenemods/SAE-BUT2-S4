@@ -2,16 +2,6 @@
 // Affichage menu de connexion
 // Démarrage d'une nouvelle session ou reprise d'une session existante
 session_start();
-
-// ПОЛУЧАЕМ КЛЮЧИ из окружения
-$siteKey   = getenv('MY_CAPTCHA_SITE_KEY');    // Открытый (Site key)
-$secretKey = getenv('MY_CAPTCHA_SECRET_KEY');  // Секретный
-
-// Если хотите — сделайте проверку, вдруг переменные не заданы
-if (!$siteKey || !$secretKey) {
-    die('reCAPTCHA keys are not set in environment variables!');
-}
-
 define('BASE_PATH', dirname(__DIR__));
 require_once 'Model/Database.php';
 require_once 'Model/Person.php';
@@ -42,19 +32,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errorMessage = 'Adresse email invalide.';
         } else {
             // Vérification reCAPTCHA
-            if (!empty($_POST['g-recaptcha-response'])) {
+            if (isset($_POST['g-recaptcha-response'])) {
                 $recaptchaResponse = $_POST['g-recaptcha-response'];
+                $secretKey = "6LfFBNEqAAAAAK9Ysfx2WsakloQLjFvAkvcgMY3q";
+                $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
 
-                // secretKey у нас уже есть из getenv('MY_CAPTCHA_SECRET_KEY')
-                $verifyURL  = "https://www.google.com/recaptcha/api/siteverify";
-                $params     = "?secret={$secretKey}&response={$recaptchaResponse}";
-
-                // Отправляем запрос на проверку
-                $response   = file_get_contents($verifyURL . $params);
+                $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
                 $responseKeys = json_decode($response, true);
 
-                if (!isset($responseKeys['success']) || !$responseKeys['success']) {
-                    // Проверка не пройдена
+                if (!$responseKeys["success"]) {
                     $errorMessage = "Veuillez valider le reCAPTCHA.";
                 }
             } else {
@@ -265,7 +251,7 @@ $translations = include $langFile;
                     </div>
                 </div>
 
-                <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($siteKey) ?>"></div>
+                <div class="g-recaptcha" data-sitekey="6LfFBNEqAAAAAEp-LTer6T6GICYukcpXLQXPjNgg"></div>
 
                 <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
                 <p><?= $translations['connexion_problem']?></p>
