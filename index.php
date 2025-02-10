@@ -21,6 +21,7 @@ if (!isset($_SESSION['login_attempts'])) {
     $_SESSION['login_block_time'] = 0;
 }
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_SESSION['login_attempts'] >= 3 && time() < $_SESSION['login_block_time']) {
         $errorMessage = "Trop de tentatives ! Veuillez réessayer dans 10 secondes.";
@@ -31,21 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errorMessage = 'Adresse email invalide.';
         } else {
-            // Vérification reCAPTCHA
-            if (isset($_POST['g-recaptcha-response'])) {
-                $recaptchaResponse = $_POST['g-recaptcha-response'];
-                $secretKey = getenv('CAPTCHA_SECRET');
-                $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
 
-                $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
-                $responseKeys = json_decode($response, true);
-
-                if (!$responseKeys["success"]) {
-                    $errorMessage = "Veuillez valider le reCAPTCHA.";
-                }
-            } else {
-                $errorMessage = "Veuillez cocher le reCAPTCHA.";
-            }
 
             if (empty($errorMessage)) {
                 $loginResult = $database->verifyLogin($email, $password);
@@ -228,7 +215,6 @@ $translations = include $langFile;
         </label>
     </div>
 </nav>
-
 <article>
     <!-- Contenu principal avec une introduction et formulaire de connexion -->
     <div class="main-content">
