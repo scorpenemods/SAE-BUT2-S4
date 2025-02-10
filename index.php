@@ -32,20 +32,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errorMessage = 'Adresse email invalide.';
         } else {
             // Vérification reCAPTCHA
-            if (isset($_POST['g-recaptcha-response'])) {
-                $recaptchaResponse = $_POST['g-recaptcha-response'];
-                $secretKey = getenv('CAPTCHA_SECRET');
-                $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
-
-                $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
-                $responseKeys = json_decode($response, true);
-
-                if (!$responseKeys["success"]) {
-                    $errorMessage = "Veuillez valider le reCAPTCHA.";
-                }
-            } else {
-                $errorMessage = "Veuillez cocher le reCAPTCHA.";
-            }
+//            if (isset($_POST['g-recaptcha-response'])) {
+//                $recaptchaResponse = $_POST['g-recaptcha-response'];
+//                $secretKey = getenv('CAPTCHA_SECRET');
+//                $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
+//
+//                $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
+//                $responseKeys = json_decode($response, true);
+//
+//                if (!$responseKeys["success"]) {
+//                    $errorMessage = "Veuillez valider le reCAPTCHA.";
+//                }
+//            } else {
+//                $errorMessage = "Veuillez cocher le reCAPTCHA.";
+//            }
 
             if (empty($errorMessage)) {
                 $loginResult = $database->verifyLogin($email, $password);
