@@ -138,6 +138,9 @@ if (!file_exists($langFile)) {
 // Charger les traductions
 $translations = include $langFile;
 
+var_dump($_ENV['CAPTCHA_SITEKEY'] ?? 'не найдено');
+var_dump($_ENV['CAPTCHA_SECRET'] ?? 'не найдено');
+exit;
 
 ?>
 
