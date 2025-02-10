@@ -21,7 +21,6 @@ if (!isset($_SESSION['login_attempts'])) {
     $_SESSION['login_block_time'] = 0;
 }
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_SESSION['login_attempts'] >= 3 && time() < $_SESSION['login_block_time']) {
         $errorMessage = "Trop de tentatives ! Veuillez réessayer dans 10 secondes.";
