@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Vérification reCAPTCHA
             if (isset($_POST['g-recaptcha-response'])) {
                 $recaptchaResponse = $_POST['g-recaptcha-response'];
-                $secretKey = getenv('CAPTCHA_SECRET_KEY');
+                $secretKey = $_ENV['MY_CAPTCHA_SECRET_KEY'];
                 $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
 
                 $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
@@ -250,7 +250,9 @@ $translations = include $langFile;
                         <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
                     </div>
                 </div>
-                <?php $siteKey = $siteKey = getenv('CAPTCHA_SE_KEY'); ?>
+                <?php
+                $siteKey = $_ENV['MY_CAPTCHA_SITE_KEY'];
+                ?>
                 <div class="g-recaptcha" data-sitekey="<?php echo htmlspecialchars($siteKey); ?>"></div>
 
                 <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
