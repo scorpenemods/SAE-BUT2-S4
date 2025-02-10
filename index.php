@@ -31,7 +31,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errorMessage = 'Adresse email invalide.';
         } else {
+            // Vérification reCAPTCHA
+            if (isset($_POST['g-recaptcha-response'])) {
+                $recaptchaResponse = $_POST['g-recaptcha-response'];
+                $secretKey = $_ENV['CAPTCHA_SECRET'];
+                $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
 
+                $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
+                $responseKeys = json_decode($response, true);
+
+                if (!$responseKeys["success"]) {
+                    $errorMessage = "Veuillez valider le reCAPTCHA.";
+                }
+            } else {
+                $errorMessage = "Veuillez cocher le reCAPTCHA.";
+            }
 
             if (empty($errorMessage)) {
                 $loginResult = $database->verifyLogin($email, $password);
@@ -105,11 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $database->closeConnection();
 }
 
-
-
-
 // LANGAGE NOAH
-
 
 // Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
 if (isset($_GET['lang'])) {
@@ -241,7 +251,7 @@ $translations = include $langFile;
                         <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
                     </div>
                 </div>
-                <!--<div class="g-recaptcha" data-sitekey="<?php echo $_ENV['CAPTCHA_SITEKEY'] ?>"></div>-->
+                <div class="g-recaptcha" data-sitekey="<?php echo $_ENV['CAPTCHA_SITEKEY'] ?>"></div>
 
                 <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
                 <p><?= $translations['connexion_problem']?></p>
