@@ -3,12 +3,14 @@
 // Démarrage d'une nouvelle session ou reprise d'une session existante
 session_start();
 
-// init .env variables and vendor
-require_once __DIR__ . '/vendor/autoload.php';
-use Dotenv\Dotenv;
+// ПОЛУЧАЕМ КЛЮЧИ из окружения
+$siteKey   = getenv('MY_CAPTCHA_SITE_KEY');    // Открытый (Site key)
+$secretKey = getenv('MY_CAPTCHA_SECRET_KEY');  // Секретный
 
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+// Если хотите — сделайте проверку, вдруг переменные не заданы
+if (!$siteKey || !$secretKey) {
+    die('reCAPTCHA keys are not set in environment variables!');
+}
 
 define('BASE_PATH', dirname(__DIR__));
 require_once 'Model/Database.php';
@@ -16,6 +18,13 @@ require_once 'Model/Person.php';
 
 $database = Database::getInstance();
 $errorMessage = '';
+
+// init .env variables
+require __DIR__ . '/vendor/autoload.php';
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 if (!isset($_SESSION['login_attempts'])) {
     $_SESSION['login_attempts'] = 0;
@@ -33,15 +42,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errorMessage = 'Adresse email invalide.';
         } else {
             // Vérification reCAPTCHA
-            if (isset($_POST['g-recaptcha-response'])) {
+            if (!empty($_POST['g-recaptcha-response'])) {
                 $recaptchaResponse = $_POST['g-recaptcha-response'];
-                $secretKey = $_ENV['MY_CAPTCHA_SECRET_KEY'] ?? '';
-                $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
 
-                $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
+                // secretKey у нас уже есть из getenv('MY_CAPTCHA_SECRET_KEY')
+                $verifyURL  = "https://www.google.com/recaptcha/api/siteverify";
+                $params     = "?secret={$secretKey}&response={$recaptchaResponse}";
+
+                // Отправляем запрос на проверку
+                $response   = file_get_contents($verifyURL . $params);
                 $responseKeys = json_decode($response, true);
 
-                if (!$responseKeys["success"]) {
+                if (!isset($responseKeys['success']) || !$responseKeys['success']) {
+                    // Проверка не пройдена
                     $errorMessage = "Veuillez valider le reCAPTCHA.";
                 }
             } else {
@@ -252,7 +265,7 @@ $translations = include $langFile;
                     </div>
                 </div>
 
-                <div class="g-recaptcha" data-sitekey="<?php echo $_ENV['MY_CAPTCHA_SITE_KEY'] ?? ''; ?>"></div>
+                <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($siteKey) ?>"></div>
 
                 <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
                 <p><?= $translations['connexion_problem']?></p>
