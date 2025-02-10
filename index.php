@@ -2,19 +2,20 @@
 // Affichage menu de connexion
 // Démarrage d'une nouvelle session ou reprise d'une session existante
 session_start();
+
+// init .env variables and vendor
+require_once __DIR__ . '/vendor/autoload.php';
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 define('BASE_PATH', dirname(__DIR__));
 require_once 'Model/Database.php';
 require_once 'Model/Person.php';
 
 $database = Database::getInstance();
 $errorMessage = '';
-
-// init .env variables
-require __DIR__ . '/vendor/autoload.php';
-use Dotenv\Dotenv;
-
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
 
 if (!isset($_SESSION['login_attempts'])) {
     $_SESSION['login_attempts'] = 0;
@@ -34,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Vérification reCAPTCHA
             if (isset($_POST['g-recaptcha-response'])) {
                 $recaptchaResponse = $_POST['g-recaptcha-response'];
-                $secretKey = "6LfFBNEqAAAAAK9Ysfx2WsakloQLjFvAkvcgMY3q";
+                $secretKey = $_ENV['MY_CAPTCHA_SECRET_KEY'] ?? '';
                 $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
 
                 $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
@@ -251,7 +252,7 @@ $translations = include $langFile;
                     </div>
                 </div>
 
-                <div class="g-recaptcha" data-sitekey="6LfFBNEqAAAAAEp-LTer6T6GICYukcpXLQXPjNgg"></div>
+                <div class="g-recaptcha" data-sitekey="<?php echo $_ENV['MY_CAPTCHA_SITE_KEY'] ?? ''; ?>"></div>
 
                 <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
                 <p><?= $translations['connexion_problem']?></p>
