@@ -31,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errorMessage = 'Adresse email invalide.';
         } else {
+            /*
             // Vérification reCAPTCHA
             if (isset($_POST['g-recaptcha-response'])) {
                 $recaptchaResponse = $_POST['g-recaptcha-response'];
@@ -46,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $errorMessage = "Veuillez cocher le reCAPTCHA.";
             }
-
+            */
             if (empty($errorMessage)) {
                 $loginResult = $database->verifyLogin($email, $password);
 
@@ -251,7 +252,7 @@ $translations = include $langFile;
                     </div>
                 </div>
 
-                <div class="g-recaptcha" data-sitekey="6LfFBNEqAAAAAEp-LTer6T6GICYukcpXLQXPjNgg"></div>
+                <!--<div class="g-recaptcha" data-sitekey="6LfFBNEqAAAAAEp-LTer6T6GICYukcpXLQXPjNgg"></div>-->
 
                 <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
                 <p><?= $translations['connexion_problem']?></p>
