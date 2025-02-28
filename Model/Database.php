@@ -5,13 +5,13 @@
 date_default_timezone_set('Europe/Paris');
 
 // init .env variables
-
+/*
 require __DIR__ . '/../vendor/autoload.php';
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
-
+*/
 
 class Database
 {
@@ -41,8 +41,13 @@ class Database
      */
     private function connect(): void
     {
+        $host = getenv('DB_HOST');
+        $port = getenv('DB_PORT');
+        $user = getenv('DB_USER');
+        $pass = getenv('DB_PASSWORD');
+        $db   = getenv('DB_NAME');
         try {
-            $this->connection = new PDO("mysql:host=" . $_ENV['DB_HOST'] . ";port=" . $_ENV['DB_PORT'] . ";dbname=" . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
+            $this->connection = new PDO("mysql:host=" . $host . ";port=" . $port . ";dbname=" . $db, $user, $pass);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->connection->exec("SET time_zone = '+01:00'");
         } catch (PDOException $e) {
