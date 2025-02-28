@@ -121,6 +121,7 @@ $translations = include $langFile;
 
 
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -129,6 +130,162 @@ $translations = include $langFile;
     <script src="../View/Home/Lobby.js" defer></script>
     <title>Création du compte</title>
 </head>
+<style>
+    #password-strength {
+        width: 100%;
+        height: 8px;
+        background-color: #ddd;
+        margin-top: 5px;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    #password-strength div {
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s ease-in-out;
+    }
+
+    .weak { background-color: red; }
+    .medium { background-color: orange; }
+    .strong { background-color: green; }
+
+    #password-message {
+        font-size: 14px;
+        margin-top: 5px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const phoneInput = document.getElementById('phone');
+        const submitButton = document.getElementById('submit-button');
+        const strengthBar = document.getElementById('password-strength');
+        const strengthIndicator = document.createElement('div');
+        strengthBar.appendChild(strengthIndicator);
+        const passwordMessage = document.createElement('p');
+        passwordMessage.id = 'password-message';
+        strengthBar.after(passwordMessage);
+        const phoneError = document.getElementById('phone-error');
+
+        function checkPasswordStrength() {
+            const password = passwordInput.value;
+            let strength = 0;
+            let criteria = [];
+
+            if (password.length >= 8) { strength++; criteria.push('Longueur ≥ 8 caractères'); }
+            if (/[A-Z]/.test(password)) { strength++; criteria.push('Une majuscule'); }
+            if (/[a-z]/.test(password)) { strength++; criteria.push('Une minuscule'); }
+            if (/[0-9]/.test(password)) { strength++; criteria.push('Un chiffre'); }
+            if (/[\W_]/.test(password)) { strength++; criteria.push('Un caractère spécial'); }
+
+            let strengthText = '';
+            let strengthClass = '';
+            let strengthPercentage = "0%";
+
+            switch (strength) {
+                case 1:
+                case 2:
+                    strengthText = "Mot de passe faible ❌";
+                    strengthClass = "weak";
+                    strengthPercentage = "20%";
+                    break;
+                case 3:
+                    strengthText = "Mot de passe moyen ⚠️";
+                    strengthClass = "medium";
+                    strengthPercentage = "50%";
+                    break;
+                case 4:
+                    strengthText = "Bon mot de passe ✅";
+                    strengthClass = "strong";
+                    strengthPercentage = "80%";
+                    break;
+                case 5:
+                    strengthText = "Mot de passe sécurisé 🔒";
+                    strengthClass = "strong";
+                    strengthPercentage = "100%";
+                    break;
+                default:
+                    strengthText = "";
+            }
+
+            strengthIndicator.className = strengthClass;
+            strengthIndicator.style.width = strengthPercentage;
+            passwordMessage.innerHTML = `${strengthText} <br> Critères remplis : ${criteria.join(', ')}`;
+
+            validateForm();
+        }
+
+        function validatePhoneNumber() {
+            const phone = phoneInput.value.trim();
+            const phoneRegex = /^[0-9]{10,15}$/; // Accepte entre 10 et 15 chiffres
+            if (!phoneRegex.test(phone)) {
+                phoneError.textContent = "Numéro de téléphone invalide. Il doit contenir entre 10 et 15 chiffres.";
+                return false;
+            } else {
+                phoneError.textContent = "";
+                return true;
+            }
+        }
+
+        function validateForm() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            const isPhoneValid = validatePhoneNumber();
+            const isPasswordStrong = strengthIndicator.style.width === "100%";
+            const isPasswordMatching = password === confirmPassword;
+
+            if (isPhoneValid && isPasswordStrong && isPasswordMatching) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+
+        function handleSubmit(event) {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            const isPhoneValid = validatePhoneNumber();
+            const isPasswordStrong = strengthIndicator.style.width === "100%";
+            const isPasswordMatching = password === confirmPassword;
+
+            if (!isPhoneValid) {
+                alert("Le numéro de téléphone est invalide. Il doit contenir entre 10 et 15 chiffres.");
+                event.preventDefault();
+                return;
+            }
+
+            if (!isPasswordStrong) {
+                alert("Votre mot de passe n'est pas assez sécurisé. Veuillez suivre les recommandations.");
+                event.preventDefault();
+                return;
+            }
+
+            if (!isPasswordMatching) {
+                alert("Les mots de passe ne correspondent pas !");
+                event.preventDefault();
+                return;
+            }
+        }
+
+        // Vérifier en temps réel
+        passwordInput.addEventListener('input', checkPasswordStrength);
+        confirmPasswordInput.addEventListener('input', checkPasswordStrength);
+        phoneInput.addEventListener('input', function() {
+            validatePhoneNumber();
+            validateForm();
+        });
+
+        // Bloquer l'envoi du formulaire si les conditions ne sont pas remplies
+        document.querySelector("form").addEventListener("submit", handleSubmit);
+    });
+</script>
+
+
+
+
 <body>
 <header class="navbar">
     <div class="navbar-left">
@@ -223,7 +380,9 @@ $translations = include $langFile;
         <p>
             <label for="phone"><?= $translations['telephone_register'] ?><span class="required">*</span></label>
             <input name="phone" id="phone" type="text" required/>
+        <div id="phone-error" style="color: red; font-size: 14px; margin-top: 5px;"></div>
         </p>
+
 
         <!-- Champ pour le mot de passe -->
         <p>
@@ -236,9 +395,13 @@ $translations = include $langFile;
             <label for="confirm_password"><?= $translations['confirmed_mdp_register'] ?><span class="required">*</span></label>
             <input name="confirm_password" id="confirm_password" type="password" required/>
         </p>
+        <div id="password-strength"></div>
+
 
         <!-- Bouton de validation -->
-        <button type="submit"><?= $translations['validate'] ?></button>
+        <button type="submit" id="submit-button" disabled><?= $translations['validate'] ?></button>
+
+
 
         <a href="../index.php"><?= $translations['annuler'] ?></a>
     </form>
