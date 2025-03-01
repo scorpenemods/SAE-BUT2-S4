@@ -137,6 +137,7 @@ $files = [];
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <link rel="stylesheet" href="../View/Livretnoah/livretnoah.css">
     <link rel="stylesheet" href="../View/Agreement/SecretariatConsultPreAgreementForm.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include EmojiOneArea -->
@@ -145,8 +146,8 @@ $files = [];
 
     <!-- Test styles from bootstrap | delete or adjust  -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- Script JavaScript pour la gestion des utilisateurs -->
     <script src="../View/Principal/userManagement.js"></script>
     <script src="../View/Principal/GroupCreation.js"></script>
