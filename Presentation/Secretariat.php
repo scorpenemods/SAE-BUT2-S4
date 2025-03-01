@@ -118,6 +118,8 @@ if (!file_exists($langFile)) {
 // Charger les traductions
 $translations = include $langFile;
 
+$files = [];
+
 ?>
 
 
