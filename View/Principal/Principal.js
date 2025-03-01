@@ -77,27 +77,38 @@ function toggleTheme() {
 
 // Code menus principaux
 function widget(x) {
-    // Элемент, который в данный момент отображается (класс Visible)
-    var see = document.querySelector(".Visible");
-    // Сначала убираем у него класс "Visible" и добавляем "Contenu"
+    // Найдём текущий видимый блок
+    let see = document.querySelector(".Visible");
+    // Если почему-то не найден .Visible, прерываем
+    if (!see) return;
+
+    // Спрячем его, заменим класс Visible на Contenu
     see.classList.remove("Visible");
     see.classList.add("Contenu");
 
-    // Находим все элементы с классом "Contenu"
+    // Найдём все блоки .Contenu
     let contents = document.querySelectorAll(".Contenu");
-    // Для того, на который мы кликаем, делаем наоборот: снимаем "Contenu", ставим "Visible"
+    // Если нет contents[x], значит вышли за пределы
+    if (!contents[x]) return;
+
     contents[x].classList.remove("Contenu");
     contents[x].classList.add("Visible");
 
-    // Аналогично для кнопок меню: убираем "Current" у текущей и проставляем "Current" той, по которой кликнули
-    var now = document.querySelector(".Current");
-    now.classList.remove("Current");
-    let span = document.querySelectorAll("section span");
-    span[x].classList.add("Current");
+    // Аналогично для текущего пункта меню
+    let now = document.querySelector(".Current");
+    if (now) {
+        now.classList.remove("Current");
+    }
+    // Обращаемся только к элементу span[x], если он есть
+    let spans = document.querySelectorAll("section.Menus nav span");
+    if (spans[x]) {
+        spans[x].classList.add("Current");
+    }
 
-    // Сохраняем состояние (необязательно)
+    // (необязательно) Записываем в localStorage
     localStorage.setItem('classAdded', x);
 }
+
 
 // Fonction pour envoyer un message
 function sendMessage(event) {
