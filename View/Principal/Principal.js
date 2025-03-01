@@ -77,32 +77,28 @@ function toggleTheme() {
 
 // Code menus principaux
 function widget(x) {
-    // 1. Снимаем "Visible" со старого контента ...
-    var see = document.querySelector(".Visible");
+    // 1) Найти текущий видимый блок
+    let see = document.querySelector(".Visible");
+    if (!see) return;
     see.classList.remove("Visible");
     see.classList.add("Contenu");
 
-    // 2. Показываем нужный блок ...
+    // 2) Найти все секции .Contenu и сделать Visible ту, что по индексу x
     let contents = document.querySelectorAll(".Contenu");
+    if (!contents[x]) return;
     contents[x].classList.remove("Contenu");
     contents[x].classList.add("Visible");
 
-    // 3. Снимаем "Current" со старой кнопки и даём "Current" новой
+    // 3) Снять .Current с предыдущей кнопки меню и повесить на нужную
     let now = document.querySelector(".Current");
-    if (now) {
-        now.classList.remove("Current");
-    }
+    if (now) now.classList.remove("Current");
 
-    // ВНИМАНИЕ: ищем только кнопки навигации
-    let menuButtons = document.querySelectorAll("section.Menus nav span");
+    // ВАЖНО: ищем только кнопки внутри <nav>, а не все <span>
+    let menuButtons = document.querySelectorAll("section.Menus nav span.widget-button");
     if (menuButtons[x]) {
         menuButtons[x].classList.add("Current");
     }
-
-    // (по желанию) сохраняем выбор в localStorage
-    localStorage.setItem('classAdded', x);
 }
-
 
 
 // Fonction pour envoyer un message
