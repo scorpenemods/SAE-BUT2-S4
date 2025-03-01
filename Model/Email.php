@@ -25,17 +25,24 @@ class Email
 
     public function __construct()
     {
+        $smtp_host = getenv('SMTP_HOST');
+        $smtp_port = getenv('SMTP_PORT');
+        $user = getenv('MAIL_USERNAME');
+        $password = getenv('MAIL_PASSWORD');
+        $smtp_secure = getenv('SMTP_SECURE');
+
+
         // Create an instance of PHPMailer
         $this->mail = new PHPMailer(true);
 
         // Server settings
         $this->mail->isSMTP();
-        $this->mail->Host = $_ENV['SMTP_HOST'];
+        $this->mail->Host = $smtp_host;
         $this->mail->SMTPAuth = true;
-        $this->mail->Username = $_ENV['MAIL_USERNAME']; // Email address
-        $this->mail->Password = $_ENV['MAIL_PASSWORD'];
-        $this->mail->SMTPSecure = $_ENV['SMTP_SECURE']; // Encryption
-        $this->mail->Port = $_ENV['SMTP_PORT']; // SMTP port
+        $this->mail->Username = $user; // Email address
+        $this->mail->Password = $password;
+        $this->mail->SMTPSecure = $smtp_secure; // Encryption
+        $this->mail->Port = $smtp_port; // SMTP port
     }
 
 
