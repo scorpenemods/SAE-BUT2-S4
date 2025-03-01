@@ -1,6 +1,7 @@
 <?php
 // manage secretariat's page
 // Démarre une nouvelle session ou reprend une session existante
+global $files;
 session_start();
 
 // Inclusion des fichiers nécessaires pour la base de données et les objets Person
