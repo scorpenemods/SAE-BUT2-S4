@@ -15,12 +15,13 @@ $database = Database::getInstance();
 $pdo = $database->getConnection();
 
 // init .env variables
+/*
 require __DIR__ . '/../vendor/autoload.php';
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
-
+*/
 // Initialiser le nom d'utilisateur comme 'Guest' au cas où aucun utilisateur n'est connecté
 $userName = "Guest";
 $session_timeout = getenv('SESSION_TIMEOUT');
