@@ -60,7 +60,7 @@ if (!in_array($userRole, $allowedRoles)) {
 if (isset($_GET['section'])) {
     $_SESSION['active_section'] = $_GET['section'];
 }
-// Définit la section active par défaut (Accueil) si aucune n'est spécifiée
+// By default section = 0 (Accueil)
 $activeSection = isset($_SESSION['active_section']) ? $_SESSION['active_section'] : '0';
 
 // Récupérer les préférences de l'utilisateur
@@ -156,20 +156,37 @@ $translations = include $langFile;
 <!-- Section principale contenant les différents modules de l'application -->
 <section class="Menus">
     <nav>
-
-        <!-- Boutons de navigation entre les différents contenus de la section -->
-        <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
-        <span onclick="widget(1)" class="widget-button"><?= $translations['rapports']?></span>
-        <span onclick="widget(2)" class="widget-button"><?= $translations['documents']?></span>
-        <span onclick="widget(3)" class="widget-button"><?= $translations['messagerie']?></span>
-        <span onclick="widget(4)" class="widget-button"><?= $translations['groupes']?></span>
-        <span onclick="widget(5)" class="widget-button"><?= $translations['offres']?></span>
-        <span onclick="widget(6)" class="widget-button">Logs</span>
+        <!-- Кнопки меню, вызывают widget(x) -->
+        <span onclick="widget(0)" class="widget-button <?php echo ($activeSection == '0') ? 'Current' : ''; ?>">
+            <?= $translations['accueil'] ?>
+        </span>
+        <span onclick="widget(1)" class="widget-button <?php echo ($activeSection == '1') ? 'Current' : ''; ?>">
+            <?= $translations['rapports'] ?>
+        </span>
+        <span onclick="widget(2)" class="widget-button <?php echo ($activeSection == '2') ? 'Current' : ''; ?>">
+            <?= $translations['documents'] ?>
+        </span>
+        <span onclick="widget(3)" class="widget-button <?php echo ($activeSection == '3') ? 'Current' : ''; ?>">
+            <?= $translations['messagerie'] ?>
+        </span>
+        <span onclick="widget(4)" class="widget-button <?php echo ($activeSection == '4') ? 'Current' : ''; ?>">
+            <?= $translations['groupes'] ?>
+        </span>
+        <span onclick="widget(5)" class="widget-button <?php echo ($activeSection == '5') ? 'Current' : ''; ?>">
+            <?= $translations['offres'] ?>
+        </span>
+        <span onclick="widget(6)" class="widget-button <?php echo ($activeSection == '6') ? 'Current' : ''; ?>">
+            Logs
+        </span>
+        <!-- Дополнительные пункты, если userRole == 5 -->
         <?php if ($userRole == 5) { ?>
-            <span onclick="widget(7)" class="widget-button"><?= $translations['gestion secrétariat']?></span>
-            <span onclick="widget(8)" class="widget-button"><?= $translations['gestion utilisateurs']?></span>
+            <span onclick="widget(7)" class="widget-button <?php echo ($activeSection == '7') ? 'Current' : ''; ?>">
+                <?= $translations['gestion secrétariat'] ?>
+            </span>
+            <span onclick="widget(8)" class="widget-button <?php echo ($activeSection == '8') ? 'Current' : ''; ?>">
+                <?= $translations['gestion utilisateurs'] ?>
+            </span>
         <?php } ?>
-
     </nav>
     <div class="Contenus">
         <!-- Contenu de la section Accueil -->

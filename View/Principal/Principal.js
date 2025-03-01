@@ -77,21 +77,25 @@ function toggleTheme() {
 
 // Code menus principaux
 function widget(x) {
-    // Récupère la ligne ayant la classe "Visible" pour la supprimer et la remplacer par la classe "Contenu"
+    // Элемент, который в данный момент отображается (класс Visible)
     var see = document.querySelector(".Visible");
+    // Сначала убираем у него класс "Visible" и добавляем "Contenu"
     see.classList.remove("Visible");
     see.classList.add("Contenu");
-    // Liste toutes les lignes ayant la classe "Contenu"
+
+    // Находим все элементы с классом "Contenu"
     let contents = document.querySelectorAll(".Contenu");
-    // Supprime de la ligne ayant la meme position que le nombre en paramètre la classe "Contenu" pour la remplacer par "Visible"
+    // Для того, на который мы кликаем, делаем наоборот: снимаем "Contenu", ставим "Visible"
     contents[x].classList.remove("Contenu");
     contents[x].classList.add("Visible");
 
-    var now = document.querySelector(".Current")
+    // Аналогично для кнопок меню: убираем "Current" у текущей и проставляем "Current" той, по которой кликнули
+    var now = document.querySelector(".Current");
     now.classList.remove("Current");
     let span = document.querySelectorAll("section span");
-    span[x].classList.add("Current")
+    span[x].classList.add("Current");
 
+    // Сохраняем состояние (необязательно)
     localStorage.setItem('classAdded', x);
 }
 
