@@ -5,13 +5,13 @@
 date_default_timezone_set('Europe/Paris');
 
 // init .env variables
-
+/*
 require __DIR__ . '/../vendor/autoload.php';
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
-
+*/
 
 class Database
 {
@@ -41,11 +41,11 @@ class Database
      */
     private function connect(): void
     {
-        $host = $_ENV['DB_HOST'];
-        $port = $_ENV['DB_PORT'];
-        $user = $_ENV['DB_USER'];
-        $pass = $_ENV['DB_PASSWORD'];
-        $db   = $_ENV['DB_NAME'];
+        $host = getenv('DB_HOST');
+        $port = getenv('DB_PORT');
+        $user = getenv('DB_USER');
+        $pass = getenv('DB_PASSWORD');
+        $db   = getenv('DB_NAME');
         try {
             $this->connection = new PDO("mysql:host=" . $host . ";port=" . $port . ";dbname=" . $db, $user, $pass);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -1156,23 +1156,23 @@ class Database
               AND User.role = 1
               AND Groupe.onStage = 1";
 
-    $stmt = $this->connection->prepare($query);
-    $stmt->bindParam(':professor_id', $professorId, PDO::PARAM_INT);
-    $stmt->execute();
-    $students = [];
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $students[] = new Person(
-            $row['nom'] ?? '',
-            $row['prenom'] ?? '',
-            $row['telephone'] ?? 0,
-            $row['role'] ?? '',
-            $row['activite'] ?? '',
-            $row['email'] ?? '',
-            $row['id'] ?? 0
-        );
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':professor_id', $professorId, PDO::PARAM_INT);
+        $stmt->execute();
+        $students = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $students[] = new Person(
+                $row['nom'] ?? '',
+                $row['prenom'] ?? '',
+                $row['telephone'] ?? 0,
+                $row['role'] ?? '',
+                $row['activite'] ?? '',
+                $row['email'] ?? '',
+                $row['id'] ?? 0
+            );
+        }
+        return $students;
     }
-    return $students;
-}
 
 
     /**
@@ -1862,7 +1862,7 @@ class Database
      * @return mixed
      */
     public function getFollowUpBook($id) {
-            $stmt = $this->connection->prepare("SELECT * FROM FollowUpBook WHERE id = :id");
+        $stmt = $this->connection->prepare("SELECT * FROM FollowUpBook WHERE id = :id");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch();
     }
