@@ -32,19 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Enregistrement des curseurs
-    if (isset($_POST['sliders'])) {
-        $studentId = (int)$_POST['student_id']; // Récupérer l'ID de l'étudiant
-        foreach ($_POST['sliders'] as $noteId => $sliders) {
-            foreach ($sliders as $description => $value) {
-                $database->saveSliderValue((int)$noteId, $description, (int)$value);
-            }
-        }
-
-        // Redirection après enregistrement
-        header("Location: Professor.php?student_id=$studentId");
-        exit;
-    }
 }
 
 // Gérer le cas où un étudiant est sélectionné via la redirection

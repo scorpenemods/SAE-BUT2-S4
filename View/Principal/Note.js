@@ -34,38 +34,43 @@ function updateValue(spanId, val) {
 }
 
 
+function saveNoteProf(noteId, description, value, studentId) {
+    fetch("GetNotesProf.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            student_id: studentId,
+            note_id: noteId,
+            description: description,
+            value: value
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Succès :", data);
+        })
+        .catch(error => {
+            console.error("Erreur :", error);
+        });
+}
 
-document.addEventListener('DOMContentLoaded', function () {
-    const noteForm = document.getElementById('noteForm');
-    const modal = document.getElementById('confirmationModal');
-    const confirmButton = document.getElementById('confirmButton');
-    const cancelButton = document.getElementById('cancelButton');
+document.addEventListener("DOMContentLoaded", function () {
+    const sliders = document.querySelectorAll("input[type=range]");
 
-    noteForm.addEventListener('submit', function (event) {
-        // Empêche la soumission par défaut
-        event.preventDefault();
-        // Affiche la boîte modale
-        modal.style.display = 'block';
-    });
+    sliders.forEach(slider => {
+        slider.addEventListener("input", function () {
+            const noteId = this.name.match(/\d+/)[0]; // Extraire l'ID de la note
+            const description = this.name.match(/\[([a-z]+)\]/i)[1]; // Extraire la compétence évaluée
+            const value = this.value;
+            const studentId = document.getElementById("student-id").value;
 
-    // Confirme l'action
-    confirmButton.addEventListener('click', function () {
-        modal.style.display = 'none';
-        noteForm.submit(); // Soumet le formulaire
-    });
-
-    // Annule l'action
-    cancelButton.addEventListener('click', function () {
-        modal.style.display = 'none';
-    });
-
-    // Ferme la boîte si l'utilisateur clique en dehors de celle-ci
-    window.addEventListener('click', function (event) {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
+            saveNoteProf(noteId, description, value, studentId);
+        });
     });
 });
+
 
 
 
