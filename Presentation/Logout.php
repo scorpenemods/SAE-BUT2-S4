@@ -63,7 +63,7 @@ session_destroy();
 
     <!-- Lien vers la page d'accueil avec un bouton stylisé -->
     <p class="text-center">
-        <a href="../Index.php" class="home-button"><?= $translations['return_home'] ?></a>
+        <a href="../index.php" class="home-button"><?= $translations['return_home'] ?></a>
     </p>
 
     <!-- Information pour fermer la page pour des raisons de sécurité -->

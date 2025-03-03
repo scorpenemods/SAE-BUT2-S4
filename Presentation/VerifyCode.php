@@ -87,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
     <?php } ?>
     <div class="link">
-        <a href="../Index.php">Retour à la connexion</a>
+        <a href="../index.php">Retour à la connexion</a>
     </div>
 </div>
 </body>

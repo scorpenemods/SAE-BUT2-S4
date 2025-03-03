@@ -9,7 +9,7 @@
 
 // Vérifier au chargement si la classe doit être ajoutée
 document.addEventListener("DOMContentLoaded", function() {
-    if (sessionStorage.getItem("lastPage") === "Index.php") {
+    if (sessionStorage.getItem("lastPage") === "index.php") {
         sessionStorage.setItem("lastPage", "main");
         widget(0);
     }

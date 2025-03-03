@@ -26,7 +26,7 @@ $userId = $_SESSION['user_id'] ?? null;        // ID de l'utilisateur (null si n
 
 // Si l'utilisateur n'est pas authentifié, redirige vers la page de connexion
 if (!$userId || !$userEmail) {
-    header("Location: ../Index.php");
+    header("Location: ../index.php");
     exit(); // S'assurer que le script s'arrête après la redirection
 }
 
