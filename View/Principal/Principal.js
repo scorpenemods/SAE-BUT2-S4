@@ -77,23 +77,40 @@ function toggleTheme() {
 
 // Code menus principaux
 function widget(x) {
-    // Récupère la ligne ayant la classe "Visible" pour la supprimer et la remplacer par la classe "Contenu"
-    var see = document.querySelector(".Visible");
-    see.classList.remove("Visible");
-    see.classList.add("Contenu");
-    // Liste toutes les lignes ayant la classe "Contenu"
-    let contents = document.querySelectorAll(".Contenu");
-    // Supprime de la ligne ayant la meme position que le nombre en paramètre la classe "Contenu" pour la remplacer par "Visible"
-    contents[x].classList.remove("Contenu");
-    contents[x].classList.add("Visible");
+    // Получаем текущую видимую панель внутри контейнера, предполагается, что панель имеет классы "Contenu Visible"
+    var visiblePanel = document.querySelector(".Contenus > div.Visible");
+    // Если видимая панель найдена, убираем у неё класс "Visible"
+    if (visiblePanel) {
+        visiblePanel.classList.remove("Visible");
+    } else {
+        // Если не найдена, пробуем получить первую панель как запасной вариант
+        visiblePanel = document.querySelector(".Contenus > div");
+    }
 
-    var now = document.querySelector(".Current")
-    now.classList.remove("Current");
-    let span = document.querySelectorAll("section span");
-    span[x].classList.add("Current")
+    // Получаем список всех панелей (предполагается, что они являются прямыми потомками контейнера с классом "Contenus")
+    let panels = document.querySelectorAll(".Contenus > div");
+    if (panels[x]) {
+        // Добавляем выбранной панели класс "Visible"
+        panels[x].classList.add("Visible");
+    } else {
+        console.warn("Панель с индексом " + x + " не найдена.");
+    }
+
+    // Обновляем выделение для кнопок меню
+    var currentButton = document.querySelector("nav .Current");
+    if (currentButton) {
+        currentButton.classList.remove("Current");
+    }
+    let buttons = document.querySelectorAll("nav span");
+    if (buttons[x]) {
+        buttons[x].classList.add("Current");
+    } else {
+        console.warn("Кнопка с индексом " + x + " не найдена.");
+    }
 
     localStorage.setItem('classAdded', x);
 }
+
 
 // Fonction pour envoyer un message
 function sendMessage(event) {
