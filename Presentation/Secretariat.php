@@ -244,7 +244,7 @@ $files = [];
         </div>
 
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
+        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?> animate__animated animate__fadeIn" id="content-3">
             <!-- Messenger Contents -->
             <div class="messenger">
                 <div class="container mt-5">

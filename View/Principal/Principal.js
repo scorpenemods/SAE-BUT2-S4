@@ -77,23 +77,20 @@ function toggleTheme() {
 
 // Code menus principaux
 function widget(x) {
-    // Получаем текущую видимую панель внутри контейнера, предполагается, что панель имеет классы "Contenu Visible"
+    // Получаем текущую видимую панель
     var visiblePanel = document.querySelector(".Contenus > div.Visible");
-    // Если видимая панель найдена, убираем у неё класс "Visible"
     if (visiblePanel) {
         visiblePanel.classList.remove("Visible");
-    } else {
-        // Если не найдена, пробуем получить первую панель как запасной вариант
-        visiblePanel = document.querySelector(".Contenus > div");
     }
 
-    // Получаем список всех панелей (предполагается, что они являются прямыми потомками контейнера с классом "Contenus")
+    // Получаем все панели
     let panels = document.querySelectorAll(".Contenus > div");
     if (panels[x]) {
-        // Добавляем выбранной панели класс "Visible"
         panels[x].classList.add("Visible");
     } else {
-        console.warn("Панель с индексом " + x + " не найдена.");
+        console.warn("Панель с индексом " + x + " не найдена. Отображается панель по умолчанию.");
+        // Если нужной панели нет, можно отобразить первую панель
+        if (panels[0]) panels[0].classList.add("Visible");
     }
 
     // Обновляем выделение для кнопок меню
@@ -110,6 +107,7 @@ function widget(x) {
 
     localStorage.setItem('classAdded', x);
 }
+
 
 
 // Fonction pour envoyer un message
