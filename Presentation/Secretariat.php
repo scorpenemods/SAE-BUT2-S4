@@ -160,8 +160,6 @@ $files = [];
 <!-- Section principale contenant les différents modules de l'application -->
 <section class="Menus">
     <nav>
-
-        <!-- Boutons de navigation entre les différents contenus de la section -->
         <span onclick="widget(0)" class="widget-button Current"><?= $translations['accueil']?></span>
         <span onclick="widget(1)" class="widget-button"><?= $translations['rapports']?></span>
         <span onclick="widget(2)" class="widget-button"><?= $translations['documents']?></span>
@@ -173,8 +171,8 @@ $files = [];
             <span onclick="widget(7)" class="widget-button"><?= $translations['gestion secrétariat']?></span>
             <span onclick="widget(8)" class="widget-button"><?= $translations['gestion utilisateurs']?></span>
         <?php } ?>
-
     </nav>
+
     <div class="Contenus">
         <!-- Contenu de la section Accueil -->
         <div class="Contenu <?php echo $activeSection == '0' ? 'Visible' : ''; ?>" id="content-0">
@@ -246,7 +244,7 @@ $files = [];
         </div>
 
         <!-- Contenu de la Messagerie -->
-        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?> animate__animated animate__fadeIn" id="content-3">
+        <div class="Contenu <?php echo $activeSection == '3' ? 'Visible' : ''; ?>" id="content-3">
             <!-- Messenger Contents -->
             <div class="messenger">
                 <div class="container mt-5">
