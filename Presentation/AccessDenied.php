@@ -22,7 +22,7 @@
     <p>You do not have sufficient permissions to view this page.</p> <!-- Explanation for the access denial -->
 
     <!-- Redirect link to the login page -->
-    <a href="../index.php">Log in with another account</a> <!-- Allows the user to log in with another account -->
+    <a href="../Index.php">Log in with another account</a> <!-- Allows the user to log in with another account -->
 </div> <!-- End of the centered container -->
 </body>
 

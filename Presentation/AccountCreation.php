@@ -403,7 +403,7 @@ $translations = include $langFile;
 
 
 
-        <a href="../index.php"><?= $translations['annuler'] ?></a>
+        <a href="../Index.php"><?= $translations['annuler'] ?></a>
     </form>
 </div>
 

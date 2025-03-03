@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="submit" class="btn">Valider</button>
         </form>
         <div class="link">
-            <a href="../index.php">Retour à l'accueil</a>
+            <a href="../Index.php">Retour à l'accueil</a>
         </div>
     </div>
 </div>

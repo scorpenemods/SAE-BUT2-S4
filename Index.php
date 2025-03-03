@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $_SESSION['user_id'] = $user['id'];
                         $_SESSION['user_email'] = $user['email'];
                         $_SESSION['user_name'] = $user['prenom'] . ' ' . $user['nom'];
-                        header("Location: index.php");
+                        header("Location: Index.php");
                         exit();
                     }
 
@@ -307,7 +307,7 @@ $translations = include $langFile;
         notification.classList.remove('show');
     }
 
-    sessionStorage.setItem("lastPage", "index.php");
+    sessionStorage.setItem("lastPage", "Index.php");
 
 </script>
 </body>

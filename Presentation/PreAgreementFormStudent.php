@@ -55,14 +55,14 @@ if (isset($_SESSION['personne'])){
         if (isset($_GET['tutor'])) { // on récup le tuteur séléctionné
             $tutor = htmlspecialchars($_GET['tutor']);
         } else{
-            header('Location: ../index.php'); //on renvoie à index car pas possible qu'il n'y ai pas eu de séléction
+            header('Location: ../Index.php'); //on renvoie à index car pas possible qu'il n'y ai pas eu de séléction
             exit();
         }
     }*/
 
 
 }else{
-    header('Location: ../index.php');
+    header('Location: ../Index.php');
     exit();
 }
 

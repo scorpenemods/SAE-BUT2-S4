@@ -117,7 +117,7 @@ $translations = include $langFile;
 
     <!-- Lien pour revenir à la page de connexion -->
     <div class="link">
-        <a href="../index.php"><?= $translations['retour_connexion'] ?></a>
+        <a href="../Index.php"><?= $translations['retour_connexion'] ?></a>
     </div>
 </div>
 
