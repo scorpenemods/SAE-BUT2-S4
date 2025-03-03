@@ -132,7 +132,7 @@ $files = [];
     <!-- Lien vers la feuille de style CSS principale -->
     <link rel="stylesheet" href="../View/Principal/Principal.css">
     <!-- Lien vers le script JavaScript principal -->
-    <script src="../View/Principal/Principal.js"></script>
+    <script src="../View/Principal/Principal.js" defer></script>
     <link rel="stylesheet" href="../View/Principal/Modals.css">
     <link rel="stylesheet" href="../View/Documents/Documents.css">
     <link rel="stylesheet" href="../View/Livretnoah/livretnoah.css">
