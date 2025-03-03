@@ -94,14 +94,14 @@ foreach ($notes as $data) {
     <input type="hidden" id="student-id" name="student_id" value="<?= htmlspecialchars($studentId ?? '') ?>">
 
 
-    <table id="notesTable" class="notes-table">
+    <table id="notesTable" class="tableau">
         <thead>
-        <tr>
+        <tr class="trEdit">
 
-            <th>Sujet</th>
-            <th>Note /20</th>
-            <th>Coefficient</th>
-            <th>Actions</th>
+            <th class="thEdit">Sujet</th>
+            <th class="thEdit">Note /20</th>
+            <th class="thEdit">Coefficient</th>
+            <th class="thEdit">Actions</th>
         </tr>
         </thead>
         <tbody>
