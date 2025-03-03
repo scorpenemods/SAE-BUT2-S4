@@ -1,5 +1,6 @@
 <?php
 // Manage student page
+global $files;
 date_default_timezone_set('Europe/Paris');
 // Démarre la session au début du script pour gérer les informations utilisateur
 session_start();
@@ -8,17 +9,17 @@ require_once "../Model/Database.php";
 require_once "../Model/Person.php";
 
 // init .env variables
-/*
+
 require __DIR__ . '/../vendor/autoload.php';
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
-*/
+
 
 // Initialiser le nom d'utilisateur comme 'Guest' au cas où aucun utilisateur n'est connecté
 $userName = "Guest";
-$session_timeout = getenv('SESSION_TIMEOUT');
+$session_timeout = $_ENV["SESSION_TIMEOUT"];
 
 if (isset($_SESSION['last_activity'])) {
     // Calculer le temps d'inactivité
