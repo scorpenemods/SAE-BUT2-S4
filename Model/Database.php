@@ -2255,14 +2255,14 @@ class Database
 
     public function getStudentsWithPreAgreementFormValid(): false|array
     {
-        $stmt = $this->connection->prepare("select PA.id, User.nom, User.prenom from User Join sae.Pre_Agreement PA on User.id = PA.idStudent where PA.status=1;");
+        $stmt = $this->connection->prepare("select PA.id, User.nom, User.prenom from User Join Pre_Agreement PA on User.id = PA.idStudent where PA.status=1;");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getStudentsWithPreAgreementFormInvalid(): false|array
     {
-        $stmt = $this->connection->prepare("select PA.id, User.nom, User.prenom from User Join sae.Pre_Agreement PA on User.id = PA.idStudent where PA.status=0;");
+        $stmt = $this->connection->prepare("select PA.id, User.nom, User.prenom from User Join Pre_Agreement PA on User.id = PA.idStudent where PA.status=0;");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
