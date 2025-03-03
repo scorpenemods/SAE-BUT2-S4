@@ -174,7 +174,6 @@ $translations = include $langFile;
             const password = passwordInput.value;
             let strength = 0;
             let criteria = [];
-
             if (password.length >= 8) { strength++; criteria.push('Longueur ≥ 8 caractères'); }
             if (/[A-Z]/.test(password)) { strength++; criteria.push('Une majuscule'); }
             if (/[a-z]/.test(password)) { strength++; criteria.push('Une minuscule'); }
@@ -385,6 +384,13 @@ $translations = include $langFile;
 
 
         <!-- Champ pour le mot de passe -->
+        <ul>
+            <li id="length" > Minimum 8 caractères</li>
+            <li id="uppercase" > Une majuscule</li>
+            <li id="lowercase" class="invalid"> Une minuscule</li>
+            <li id="number" > Un chiffre</li>
+            <li id="special" > Un caractère spécial (@$!%*?&)</li>
+        </ul>
         <p>
             <label for="password"><?= $translations['mdp_register'] ?><span class="required">*</span></label>
             <input name="password" id="password" type="password" required/>
