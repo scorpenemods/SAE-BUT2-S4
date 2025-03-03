@@ -77,36 +77,48 @@ function toggleTheme() {
 
 // Code menus principaux
 function widget(x) {
-    // Получаем текущую видимую панель
-    var visiblePanel = document.querySelector(".Contenus > div.Visible");
-    if (visiblePanel) {
-        visiblePanel.classList.remove("Visible");
+    // Сужаем область поиска: находим контейнер, в котором находятся панели навигации
+    const container = document.querySelector("section.Menus > .Contenus");
+    if (!container) {
+        console.warn("Контейнер для панелей не найден.");
+        return;
     }
 
-    // Получаем все панели
-    let panels = document.querySelectorAll(".Contenus > div");
+    // Получаем все прямые дочерние элементы с классом "Contenu" внутри этого контейнера
+    const panels = container.querySelectorAll("div.Contenu");
+
+    // Снимаем класс "Visible" с текущей видимой панели
+    const currentPanel = container.querySelector("div.Visible");
+    if (currentPanel) {
+        currentPanel.classList.remove("Visible");
+    }
+
+    // Если панель с индексом x существует, делаем её видимой
     if (panels[x]) {
         panels[x].classList.add("Visible");
     } else {
         console.warn("Панель с индексом " + x + " не найдена. Отображается панель по умолчанию.");
-        // Если нужной панели нет, можно отобразить первую панель
         if (panels[0]) panels[0].classList.add("Visible");
     }
 
-    // Обновляем выделение для кнопок меню
-    var currentButton = document.querySelector("nav .Current");
-    if (currentButton) {
-        currentButton.classList.remove("Current");
-    }
-    let buttons = document.querySelectorAll("nav span");
-    if (buttons[x]) {
-        buttons[x].classList.add("Current");
-    } else {
-        console.warn("Кнопка с индексом " + x + " не найдена.");
+    // Обновляем выделение в навигационном меню
+    const nav = document.querySelector("section.Menus > nav");
+    if (nav) {
+        const buttons = nav.querySelectorAll("span");
+        const currentButton = nav.querySelector("span.Current");
+        if (currentButton) {
+            currentButton.classList.remove("Current");
+        }
+        if (buttons[x]) {
+            buttons[x].classList.add("Current");
+        } else {
+            console.warn("Кнопка с индексом " + x + " не найдена.");
+        }
     }
 
     localStorage.setItem('classAdded', x);
 }
+
 
 
 
