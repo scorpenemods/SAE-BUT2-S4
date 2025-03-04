@@ -18,18 +18,18 @@ require "../Model/Database.php";
 require "../Model/Person.php";
 
 $database = (Database::getInstance());
+$session_timeout = $_ENV['SESSION_TIMEOUT'] ?? getenv('SESSION_TIMEOUT');
 
 // init .env variables
-/*
-require __DIR__ . '/../vendor/autoload.php';
-use Dotenv\Dotenv;
+if (file_exists(__DIR__ . '/../.env')) {
+    require __DIR__ . '/../vendor/autoload.php';
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+    $dotenv->load();
+}
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
-*/
 // Initialiser le nom d'utilisateur comme 'Guest' au cas où aucun utilisateur n'est connecté
 $userName = "Guest";
-$session_timeout = getenv('SESSION_TIMEOUT');
+
 if (isset($_SESSION['last_activity'])) {
     // Calculer le temps d'inactivité
     $inactive_time = time() - $_SESSION['last_activity'];

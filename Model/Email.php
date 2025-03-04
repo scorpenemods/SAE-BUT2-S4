@@ -4,13 +4,11 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // init .env variables
-/*
-require __DIR__ . '/../vendor/autoload.php';
-use Dotenv\Dotenv;
-
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
-*/
+if (file_exists(__DIR__ . '/../.env')) {
+    require __DIR__ . '/../vendor/autoload.php';
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+    $dotenv->load();
+}
 
 class Email
 {
@@ -27,11 +25,11 @@ class Email
 
     public function __construct()
     {
-        $smtp_host = getenv('SMTP_HOST');
-        $smtp_port = getenv('SMTP_PORT');
-        $user = getenv('MAIL_USERNAME');
-        $password = getenv('MAIL_PASSWORD');
-        $smtp_secure = getenv('SMTP_SECURE');
+        $smtp_host = $_ENV['SMTP_HOST'] ?? getenv('SMTP_HOST');
+        $smtp_port = $_ENV['SMTP_PORT'] ?? getenv('SMTP_PORT');
+        $user = $_ENV['MAIL_USERNAME'] ?? getenv('MAIL_USERNAME');
+        $password = $_ENV['MAIL_PASSWORD'] ?? getenv('MAIL_PASSWORD');
+        $smtp_secure = $_ENV['SMTP_SECURE'] ?? getenv('SMTP_SECURE');
 
 
         // Create an instance of PHPMailer

@@ -1,6 +1,6 @@
 server {
-    # Railway передаёт PORT в контейнер,
-    # поэтому слушаем на 0.0.0.0:$PORT
+    # Railway is passing PORT in container,
+    # so listen on 0.0.0.0:$PORT
     listen 0.0.0.0:${PORT};
     server_name _;
 
@@ -11,13 +11,13 @@ server {
         try_files $uri $uri/ /index.php?$query_string;
     }
 
-    # Настройка обработки PHP
+    # Setting PHP treatment
     location ~ \.php$ {
         fastcgi_pass 127.0.0.1:9001;
         fastcgi_index index.php;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
-        # (опционально) fastcgi_param PATH_INFO $fastcgi_path_info;
+        # (test opt) fastcgi_param PATH_INFO $fastcgi_path_info;
         fastcgi_read_timeout 300;
     }
 }

@@ -12,9 +12,17 @@ require "../Model/Person.php";
 // Création d'une nouvelle instance de la classe Database
 $database = (Database::getInstance());
 
+// init .env variables
+if (file_exists(__DIR__ . '/../.env')) {
+    require __DIR__ . '/../vendor/autoload.php';
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+    $dotenv->load();
+}
+
+
 // Initialisation du nom d'utilisateur par défaut
 $userName = "Guest";
-$session_timeout = getenv('SESSION_TIMEOUT');
+$session_timeout = $_ENV['SESSION_TIMEOUT'] ?? getenv('SESSION_TIMEOUT');
 require_once "../Model/Config.php";
 
 if (isset($_SESSION['last_activity'])) {

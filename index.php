@@ -10,13 +10,12 @@ $database = Database::getInstance();
 $errorMessage = '';
 
 // init .env variables
-/*
-require __DIR__ . '/vendor/autoload.php';
-use Dotenv\Dotenv;
+if (file_exists(__DIR__ . '/.env')) {
+    require __DIR__ . '/vendor/autoload.php';
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->load();
+}
 
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-*/
 if (!isset($_SESSION['login_attempts'])) {
     $_SESSION['login_attempts'] = 0;
     $_SESSION['login_block_time'] = 0;
