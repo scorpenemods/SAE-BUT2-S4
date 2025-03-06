@@ -303,7 +303,7 @@ $translations = include $langFile;
                     </div>
                 </div>
 
-                <div class="g-recaptcha" data-sitekey="6LfFBNEqAAAAAEp-LTer6T6GICYukcpXLQXPjNgg"></div>
+                <!--<div class="g-recaptcha" data-sitekey="6LfFBNEqAAAAAEp-LTer6T6GICYukcpXLQXPjNgg"></div>-->
 
                 <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
                 <p><?= $translations['connexion_problem']?></p>

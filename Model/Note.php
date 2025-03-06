@@ -1,5 +1,3 @@
-
-
 <?php
 //Class to manage Notes
 class Note
