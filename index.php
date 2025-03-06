@@ -241,6 +241,37 @@ $translations = include $langFile;
             </span>
         </label>
     </div>
+    <!-- Menu burger pour format tel -->
+    <div class="navbar-right-tel">
+        <div id="mySidenav" class="sidenav">
+            <ul>
+                <li><a href="#" class="switcher">
+                        <label class="switch">
+                            <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
+                            <span class="slider round">
+                                <span class="switch-sticker switch-sticker-right">🌙</span> <!-- Sticker Dark Mode -->
+                                <span class="switch-sticker">☀️</span>
+                            </span>
+                        </label></a>
+                </li>
+                <li>
+                    <a href="#">
+                        <?php include 'Model/LanguageSelection.php'; ?>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <a href="#" id="openBtn">
+          <span class="burger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </a>
+
+
+    </div>
 </nav>
 
 <article>
@@ -328,6 +359,31 @@ $translations = include $langFile;
 
     sessionStorage.setItem("lastPage", "index.php");
 
+
+
+    // Gestion du menu burger
+    var sidenav = document.getElementById("mySidenav");
+    var openBtn = document.getElementById("openBtn");
+    var closeBtn = document.getElementById("closeBtn");
+
+    openBtn.onclick = Nav;
+
+    function Nav(){
+        if(sidenav.classList.contains("active")) {
+            closeNav();
+        }
+        else {
+            openNav();
+        }
+    }
+
+    function openNav() {
+        sidenav.classList.add("active");
+    }
+
+    function closeNav() {
+        sidenav.classList.remove("active");
+    }
 </script>
 </body>
 </html>

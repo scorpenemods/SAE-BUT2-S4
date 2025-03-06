@@ -102,3 +102,7 @@ footer.dark-mode *{
         font-size: 0.75rem;
     }
 }
+@media (max-width: 768px) {
+
+    width: 50%;
+}
