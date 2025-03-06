@@ -32,9 +32,4 @@ server {
         frame-src https://www.google.com/recaptcha/;
     ";
 
-
-
-
-
-
 }
