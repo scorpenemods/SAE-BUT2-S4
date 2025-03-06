@@ -2479,4 +2479,35 @@ class Database
         }
     }
 
+    public function updateSessionToken($userId, $token) {
+        $sql = "UPDATE User SET session_token = :token WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function isUserAlreadyConnected($userId) {
+        $sql = "SELECT session_token FROM User WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result['session_token']; // Retourne `true` si le token existe (donc déjà connecté)
+    }
+
+    public function getLastConnection($userId): ?string
+    {
+        $sql = "SELECT last_connexion FROM user WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result['last_connexion'] ?? null;
+    }
+
+
+
 }
