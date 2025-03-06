@@ -1,6 +1,7 @@
 <?php
 // Manage student page
 date_default_timezone_set('Europe/Paris');
+ob_start();
 // Démarre la session au début du script pour gérer les informations utilisateur
 session_start();
 // Inclure les fichiers nécessaires pour les classes Database et Person
@@ -410,3 +411,6 @@ $translations = include $langFile;
 </script>
 </body>
 </html>
+<?php
+ob_end_flush();
+?>

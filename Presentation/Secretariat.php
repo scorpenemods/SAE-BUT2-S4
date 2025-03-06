@@ -2,6 +2,7 @@
 // manage secretariat's page
 // Démarre une nouvelle session ou reprend une session existante
 global $files;
+ob_start();
 session_start();
 
 // Inclusion des fichiers nécessaires pour la base de données et les objets Person
@@ -649,4 +650,6 @@ $files = [];
 </script>
 </body>
 </html>
-
+<?php
+ob_end_flush();
+?>
