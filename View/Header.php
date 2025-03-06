@@ -1,4 +1,5 @@
 <?php
+ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -100,3 +101,4 @@ $translations = include $langFile;
 
     </div>
 </header>
+<?php ob_end_flush(); ?>
