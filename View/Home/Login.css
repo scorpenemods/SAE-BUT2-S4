@@ -35,3 +35,17 @@ input[type="text"], input[type="password"] {
 }
 
 input[type="password"] {width: 280px !important;}
+
+
+@media (max-width: 768px) {
+    .login-container {
+        width: 95%;
+    }
+
+    input[type="text"], input[type="password"] {
+        width: 90%;
+    }
+    input[type="password"] {
+        width: 70% !important;
+    }
+}

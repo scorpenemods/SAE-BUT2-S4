@@ -8,8 +8,7 @@ $database = Database::getInstance();
 
 // Vérifier si l'utilisateur est connecté ailleurs
 if ($database->isUserAlreadyConnected($_SESSION['user_id']) !== $_SESSION['session_token']) {
-    header("Location: logout.php");
-    error_log("fézczefezfce");
+    header("Location: Logout.php");
     exit();
 }
 
