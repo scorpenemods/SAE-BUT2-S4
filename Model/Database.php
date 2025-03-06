@@ -2499,7 +2499,7 @@ class Database
 
     public function getLastConnection($userId): ?string
     {
-        $sql = "SELECT last_connexion FROM user WHERE id = :id";
+        $sql = "SELECT last_connexion FROM User WHERE id = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
         $stmt->execute();
