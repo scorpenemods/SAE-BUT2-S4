@@ -8,9 +8,12 @@ function toggleLanguage() {
 }
 
 function toggleTheme() {
-    const themeSwitch = document.getElementById('theme-switch');
+    let switches = document.querySelectorAll("input[type='checkbox']#theme-switch");
+
+    const themeSwitch1 = switches[0];
+    const themeSwitch2 = switches[1];
     const footerSwitch = document.getElementById('footer');
-    if (themeSwitch.checked) {
+    if (themeSwitch1.checked || themeSwitch2.checked) {
         const footerSwitch = document.getElementById('footer');
         document.body.classList.remove('light-mode');
         document.body.classList.add('dark-mode');
@@ -23,3 +26,4 @@ function toggleTheme() {
         console.log('Light theme enabled');
     }
 }
+
