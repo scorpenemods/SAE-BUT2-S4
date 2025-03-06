@@ -1,5 +1,6 @@
 <?php
 // Manage student page
+global $files;
 date_default_timezone_set('Europe/Paris');
 ob_start();
 // Démarre la session au début du script pour gérer les informations utilisateur
@@ -100,7 +101,6 @@ if (!file_exists($langFile)) {
 $translations = include $langFile;
 
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>

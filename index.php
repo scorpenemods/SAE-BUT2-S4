@@ -278,7 +278,7 @@ $translations = include $langFile;
     <!-- Contenu principal avec une introduction et formulaire de connexion -->
     <div class="main-content">
 
-        <h1 class="main-heading"><?= $translations['welcome_message'] ?><br> <?= $translations['welcome_message2'] ?></h1>
+        <h1 class="main-heading"><?= $translations['welcome_message'] ?><br> <?= $translations['welcome_message1'] ?> <br> <?= $translations['welcome_message2'] ?></h1>
         <p class="sub-text">
             <?= $translations['description_index'] ?>
         </p>

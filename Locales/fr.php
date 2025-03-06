@@ -6,6 +6,7 @@ return array(
     //INDEX
 
     'welcome_message' => 'Bienvenue sur Le Petit Stage !',
+    'welcome_message1' => 'Vous êtes un étudiant en stage à UPHF?',
     'welcome_message2' => 'Nous avons la solution!',
     'description_index' => "Une application innovante pour les étudiants, enseignants et personnel de l'UPHF. Gérez vos stages et restez connectés avec toutes les parties prenantes facilement et efficacement.",
     'connexion_index' => "Connexion",
