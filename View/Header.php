@@ -1,4 +1,19 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+require_once '../Model/Database.php';
+
+$database = Database::getInstance();
+
+// Vérifier si l'utilisateur est connecté ailleurs
+if ($database->isUserAlreadyConnected($_SESSION['user_id']) !== $_SESSION['session_token']) {
+    header("Location: logout.php");
+    error_log("fézczefezfce");
+    exit();
+}
+
+
 // Affichage du Header
 // Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
 if (isset($_GET['lang'])) {

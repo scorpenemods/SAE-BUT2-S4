@@ -1,6 +1,11 @@
 <?php
 // manage logout
 session_start(); // Démarre ou reprend la session
+require_once '../Model/Database.php';
+
+// Supprimer le token en base de données si l'utilisateur est connecté
+$database = Database::getInstance();
+$database->updateSessionToken($_SESSION['user_id'], null);
 
 // Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
 if (isset($_GET['lang'])) {

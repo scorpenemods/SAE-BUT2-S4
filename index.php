@@ -1,7 +1,12 @@
 <?php
+
+date_default_timezone_set('Europe/Paris');
 // Affichage menu de connexion
 // Démarrage d'une nouvelle session ou reprise d'une session existante
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 define('BASE_PATH', dirname(__DIR__));
 require_once 'Model/Database.php';
 require_once 'Model/Person.php';
@@ -32,28 +37,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errorMessage = 'Adresse email invalide.';
         } else {
             // Vérification reCAPTCHA
-            if (isset($_POST['g-recaptcha-response'])) {
-                $recaptchaResponse = $_POST['g-recaptcha-response'];
-                $secretKey = "6LfFBNEqAAAAAK9Ysfx2WsakloQLjFvAkvcgMY3q";
-                $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
-
-                $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
-                $responseKeys = json_decode($response, true);
-
-                if (!$responseKeys["success"]) {
-                    $errorMessage = "Veuillez valider le reCAPTCHA.";
-                }
-            } else {
-                $errorMessage = "Veuillez cocher le reCAPTCHA.";
-            }
+//            if (isset($_POST['g-recaptcha-response'])) {
+//                $recaptchaResponse = $_POST['g-recaptcha-response'];
+//                $secretKey = "6LfFBNEqAAAAAK9Ysfx2WsakloQLjFvAkvcgMY3q";
+//                $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
+//
+//                $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
+//                $responseKeys = json_decode($response, true);
+//
+//                if (!$responseKeys["success"]) {
+//                    $errorMessage = "Veuillez valider le reCAPTCHA.";
+//                }
+//            } else {
+//                $errorMessage = "Veuillez cocher le reCAPTCHA.";
+//            }
             if (empty($errorMessage)) {
                 $loginResult = $database->verifyLogin($email, $password);
 
                 if (!empty($loginResult)) {
                     $_SESSION['login_attempts'] = 0;
                     $user = $loginResult['user'];
-                    $_SESSION['company_id'] = Database::getInstance()->getCompanyidbyUserId($user['id']);
+                    $_SESSION['company_id'] = $database->getCompanyidbyUserId($user['id']);
 
+                    // Vérification de l'email validé
                     if ($loginResult['valid_email'] == 0) {
                         setcookie('email_verification_pending', '1', time() + 3600, "/");
                         $_SESSION['user_id'] = $user['id'];
@@ -63,45 +69,60 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         exit();
                     }
 
+                    // Vérification du statut utilisateur (compte activé)
                     if ($loginResult['status_user'] == 0) {
                         $errorMessage = "Votre compte est en attente d'activation par l'administration.";
                     } else {
-                        $database->updateLastConnexion($user['id']);
-                        $person = new Person(
-                            $user['nom'],
-                            $user['prenom'],
-                            $user['telephone'],
-                            $user['role'],
-                            $user['activite'],
-                            $user['email'],
-                            $user['id']
-                        );
+                        // Vérifier si un `session_token` existe déjà en base
+                        // Récupérer la dernière connexion
+                        $lastConnection = $database->getLastConnection($user['id']);
+                        $lastConnectionTimestamp = strtotime($lastConnection);
 
-                        $_SESSION['personne'] = $person;
-                        $_SESSION['user_id'] = $person->getId();
-                        $_SESSION['user'] = serialize($person);
-                        $_SESSION['user_role'] = $person->getRole();
-                        $_SESSION['user_name'] = $person->getPrenom() . ' ' . $person->getNom();
+                        // Vérifier si le token existe et si la dernière connexion est trop récente
+                        if ($database->isUserAlreadyConnected($user['id']) && $lastConnectionTimestamp > (time() - 20)) {
+                            $errorMessage = "Ce compte est déjà connecté ailleurs.";
+                        } else {
+                            // Générer un jeton unique pour cette session
+                            $sessionToken = bin2hex(random_bytes(32));
 
-                        switch ($_SESSION['user_role']) {
-                            case 1:
-                                header("Location: Presentation/Student.php");
-                                break;
-                            case 2:
-                                header("Location: Presentation/Professor.php");
-                                break;
-                            case 3:
-                                header("Location: Presentation/MaitreStage.php");
-                                break;
-                            case 4:
-                            case 5:
-                                header("Location: Presentation/Secretariat.php");
-                                break;
-                            default:
-                                header("Location: Presentation/Redirection.php");
-                                break;
+                            // Enregistrer le jeton en base
+                            $database->updateSessionToken($user['id'], $sessionToken);
+
+                            // Stocker le jeton en session
+                            $_SESSION['user_id'] = $user['id'];
+                            $_SESSION['session_token'] = $sessionToken;
+
+                            // Mise à jour de la dernière connexion
+                            $database->updateLastConnexion($user['id']);
+
+                            // Création de l'objet Person
+                            $person = new Person(
+                                $user['nom'],
+                                $user['prenom'],
+                                $user['telephone'],
+                                $user['role'],
+                                $user['activite'],
+                                $user['email'],
+                                $user['id']
+                            );
+
+                            $_SESSION['personne'] = $person;
+                            $_SESSION['user'] = serialize($person);
+                            $_SESSION['user_role'] = $person->getRole();
+                            $_SESSION['user_name'] = $person->getPrenom() . ' ' . $person->getNom();
+
+                            // Redirection selon le rôle
+                            switch ($_SESSION['user_role']) {
+                                case 1: header("Location: Presentation/Student.php"); break;
+                                case 2: header("Location: Presentation/Professor.php"); break;
+                                case 3: header("Location: Presentation/MaitreStage.php"); break;
+                                case 4:
+                                case 5: header("Location: Presentation/Secretariat.php"); break;
+                                default: header("Location: Presentation/Redirection.php"); break;
+                            }
+                            exit();
                         }
-                        exit();
+
                     }
                 } else {
                     $_SESSION['login_attempts']++;
@@ -109,9 +130,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $_SESSION['login_block_time'] = time() + 10;
                         $errorMessage = 'Trop de tentatives ! Veuillez réessayer dans 10 secondes.';
                     } else {
-                        $errorMessage = 'Mot de passe incorrects. Tentative ' . $_SESSION['login_attempts'] . ' sur 3.';
+                        $errorMessage = 'Mot de passe incorrect. Tentative ' . $_SESSION['login_attempts'] . ' sur 3.';
                     }
                 }
+
             }
         }
     }
