@@ -328,17 +328,22 @@ window.currentGroupId = null;
 document.addEventListener('DOMContentLoaded', function () {
     const messageForm = document.getElementById('messageForm');
 
-    messageForm.addEventListener('submit', function (event) {
-        event.preventDefault();
-        if (window.currentGroupId) {
-            sendGroupMessage(event);
-        } else if (window.currentChatContactId) {
-            sendMessage(event);
-        } else {
-            alert('Veuillez sélectionner un chat pour envoyer un message.');
-        }
-    });
+    if (messageForm) {
+        messageForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            if (window.currentGroupId) {
+                sendGroupMessage(event);
+            } else if (window.currentChatContactId) {
+                sendMessage(event);
+            } else {
+                alert('Veuillez sélectionner un chat pour envoyer un message.');
+            }
+        });
+    } else {
+        console.error('Formulaire avec l\'ID messageForm non trouvé.');
+    }
 });
+
 
 // Assign sendMessage to window for global access
 window.sendMessage = sendMessage;
@@ -388,9 +393,17 @@ function openChat(contactId, contactName) {
 
 function showDefaultChatMessage() {
     const chatBody = document.getElementById('chat-body');
-    chatBody.innerHTML = '<div class="default-message">Sélectionnez un chat pour commencer la conversation.</div>';
-    document.getElementById('chat-header-title').innerText = 'Messagerie';
+    if (chatBody) {
+        chatBody.innerHTML = '<div class="default-message">Sélectionnez un chat pour commencer la conversation.</div>';
+        const chatHeaderTitle = document.getElementById('chat-header-title');
+        if (chatHeaderTitle) {
+            chatHeaderTitle.innerText = 'Messagerie';
+        }
+    } else {
+        console.error('Élément avec l\'ID "chat-body" non trouvé.');
+    }
 }
+
 
 // Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', function () {
@@ -700,11 +713,18 @@ function fetchNotes(studentId) {
 
 // -----------------------------------------------------------------------//
 // send a message only by clicking the button
-document.getElementById('message-input').addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
+document.addEventListener('DOMContentLoaded', function () {
+    const messageInput = document.getElementById('message-input');
+
+    if (messageInput) {
+        messageInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Empêche l'action par défaut (par exemple, soumettre un formulaire)
+            }
+        });
     }
 });
+
 
 
 // ---------------------------------- Close the session -------------------------------------//
