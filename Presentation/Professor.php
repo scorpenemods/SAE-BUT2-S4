@@ -202,7 +202,7 @@ $translations = include $langFile;
 
 
         <div class="Contenus">
-            <div class="<?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">
+            <div class="Contenu <?php echo ($activeSection == '0') ? 'Visible' : 'Contenu'; ?>" id="content-0">
                 <h2><?= $translations['welcome_prof']?></h2><br>
                 <p><?= $translations['info_prof']?></p><br>
             </div>
