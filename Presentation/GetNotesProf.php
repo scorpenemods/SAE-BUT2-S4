@@ -1,16 +1,4 @@
 <?php
-// Manage notes for professor
-/*
- * Ce script gère les notes pour le professeur.
- * Il permet de sélectionner un étudiant, de créer des notes principales,
- * d'enregistrer les évaluations à l'aide de curseurs pour différentes compétences,
- * de récupérer et afficher les notes existantes,
- * ainsi que de calculer les moyennes pondérées.
- * Le formulaire HTML permet au professeur de saisir les évaluations
- * pour les aptitudes intellectuelles, opérationnelles et relationnelles
- * de l'étudiant et de confirmer l'enregistrement des notes.
- */
-
 require_once '../Model/Database.php';
 require_once '../Model/Person.php';
 require_once '../Model/Note.php';
@@ -32,6 +20,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Enregistrement des curseurs
+    if (isset($_POST['sliders'])) {
+        $studentId = (int)$_POST['student_id']; // Récupérer l'ID de l'étudiant
+        foreach ($_POST['sliders'] as $noteId => $sliders) {
+            foreach ($sliders as $description => $value) {
+                $database->saveSliderValue((int)$noteId, $description, (int)$value);
+            }
+        }
+
+        // Redirection après enregistrement
+        header("Location: Professor.php?student_id=$studentId");
+        exit;
+    }
 }
 
 // Gérer le cas où un étudiant est sélectionné via la redirection
@@ -81,14 +82,14 @@ foreach ($notes as $data) {
     <input type="hidden" id="student-id" name="student_id" value="<?= htmlspecialchars($studentId ?? '') ?>">
 
 
-    <table id="notesTable" class="tableau">
+    <table id="notesTable" class="notes-table">
         <thead>
-        <tr class="trEdit">
+        <tr>
 
-            <th class="thEdit">Sujet</th>
-            <th class="thEdit">Note /20</th>
-            <th class="thEdit">Coefficient</th>
-            <th class="thEdit">Actions</th>
+            <th>Sujet</th>
+            <th>Note /20</th>
+            <th>Coefficient</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -107,8 +108,6 @@ foreach ($notes as $data) {
             foreach ($sliderValues as $slider) {
                 $sliderValuesMap[$slider['description']] = $slider['note'];
             }
-
-            $isEnterpriseEvaluation = ($sujet !== 'Évaluation de l\'entreprise');
             ?>
             <!-- Ligne principale -->
             <tr>
@@ -119,17 +118,17 @@ foreach ($notes as $data) {
                 <td><?= $average !== null ? number_format($average, 2) : 'N/A' ?></td>
                 <td><?= number_format($coeff) ?></td>
                 <td>
-                    <?php if (!$isEnterpriseEvaluation): ?>
-                        <p style="color: red; font-weight: bold;">Vous ne pouvez pas modifier cette note</p>
-                    <?php else: ?>
-                        <button type="button" onclick="showUnderTable(this, 'desc<?= $noteId ?>')">Afficher Détails</button>
-                    <?php endif; ?>
+                    <button
+                            type="button"
+                            onclick="showUnderTable(this, 'desc<?= $noteId ?>')"
+                    >
+                        Afficher Détails
+                    </button>
                 </td>
             </tr>
 
             <!-- Sous-ligne, cachée par défaut -->
             <tr id="desc<?= $noteId ?>" class="idUnderTable" style="display: none;">
-
                 <td colspan="5">
                     <table>
                         <thead>
@@ -407,6 +406,7 @@ foreach ($notes as $data) {
             </tr>
 
         <?php endforeach; ?>
+
         </tbody>
     </table>
     <button type="submit">Enregistrer la note</button>

@@ -1,9 +1,3 @@
-/*
- * Ce script gère l'affichage des sous-tableaux, la mise à jour des valeurs des curseurs
- * et la gestion des formulaires de notation avec une confirmation modale.
- * Il permet d'afficher/masquer des détails, de mettre à jour dynamiquement les valeurs
- * des curseurs et d'assurer que les utilisateurs confirment leurs actions avant de soumettre les formulaires.
- */
 // Fonction pour afficher/masquer le sous-tableau
 function showUnderTable(button, idUnderTable) {
     const sousTableau = document.getElementById(idUnderTable);
@@ -33,44 +27,49 @@ function updateValue(spanId, val) {
     }
 }
 
+function submitSlider(slider) {
+    const noteId = slider.getAttribute('data-note-id');
+    const description = slider.getAttribute('data-description');
+    const value = slider.value;
 
-function saveNoteProf(noteId, description, value, studentId) {
-    fetch("GetNotesProf.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            student_id: studentId,
-            note_id: noteId,
-            description: description,
-            value: value
-        })
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Succès :", data);
-        })
-        .catch(error => {
-            console.error("Erreur :", error);
-        });
+    document.getElementById('sliderNoteId').value = noteId;
+    document.getElementById('sliderDescription').value = description;
+    document.getElementById('sliderValue').value = value;
+
+    document.getElementById('sliderForm').submit();
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const sliders = document.querySelectorAll("input[type=range]");
+document.addEventListener('DOMContentLoaded', function () {
+    const noteForm = document.getElementById('noteForm');
+    const modal = document.getElementById('confirmationModal');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.getElementById('cancelButton');
 
-    sliders.forEach(slider => {
-        slider.addEventListener("input", function () {
-            const noteId = this.name.match(/\d+/)[0]; // Extraire l'ID de la note
-            const description = this.name.match(/\[([a-z]+)\]/i)[1]; // Extraire la compétence évaluée
-            const value = this.value;
-            const studentId = document.getElementById("student-id").value;
+    noteForm.addEventListener('submit', function (event) {
+        // Empêche la soumission par défaut
+        event.preventDefault();
+        // Affiche la boîte modale
+        modal.style.display = 'block';
+    });
 
-            saveNoteProf(noteId, description, value, studentId);
-        });
+    // Confirme l'action
+    confirmButton.addEventListener('click', function () {
+        modal.style.display = 'none';
+        noteForm.submit(); // Soumet le formulaire
+    });
+
+    // Annule l'action
+    cancelButton.addEventListener('click', function () {
+        modal.style.display = 'none';
+    });
+
+    // Ferme la boîte si l'utilisateur clique en dehors de celle-ci
+    window.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
     });
 });
-
 
 
 
