@@ -664,13 +664,20 @@ function isNotesTabActive() {
     return notesTab && notesTab.classList.contains('Visible');
 }
 
-document.getElementById('studentForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // Empêche le rechargement de la page
-    const studentId = document.getElementById('student-id').value;
+document.addEventListener('DOMContentLoaded', function () {
+    const studentForm = document.getElementById('studentForm');
 
-    // Rechargez dynamiquement les données pour l'étudiant sélectionné
-    window.location.href = `?student_id=${studentId}`;
+    if (studentForm) {
+        studentForm.addEventListener('submit', function (e) {
+            e.preventDefault(); // Empêche le rechargement de la page
+            const studentId = document.getElementById('student-id').value;
+
+            // Rechargez dynamiquement les données pour l'étudiant sélectionné
+            window.location.href = `?student_id=${studentId}`;
+        });
+    }
 });
+
 
 function fetchNotes(studentId) {
     fetch(`GetNotes.php?student_id=${studentId}`)
