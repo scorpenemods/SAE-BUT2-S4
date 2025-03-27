@@ -1,17 +1,19 @@
 server {
-    # Railway is passing PORT in container,
-    # so listen on 0.0.0.0:$PORT
+    # Railway passe la variable PORT dans le conteneur,
+    # donc on écoute sur 0.0.0.0:$PORT
     listen 0.0.0.0:${PORT};
     server_name _;
 
+    # Répertoire racine et fichiers index
     root /var/www/html;
     index index.php index.html;
 
+    # Redirection des requêtes vers index.php si le fichier n'existe pas
     location / {
         try_files $uri $uri/ /index.php?$query_string;
     }
 
-    # Setting PHP treatment
+    # Traitement des fichiers PHP
     location ~ \.php$ {
         fastcgi_pass 127.0.0.1:9001;
         fastcgi_index index.php;
@@ -20,27 +22,37 @@ server {
         fastcgi_read_timeout 300;
     }
 
-    # --- Безопасные заголовки ---
+    # --- CSP pour les headers (Security Headers) ---
+    # Forcer le HTTPS et empêcher le downgrade
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    # Interdire l'intégration dans un iframe hors du domaine
     add_header X-Frame-Options "SAMEORIGIN" always;
+    # Empêcher le navigateur de deviner le type MIME
     add_header X-Content-Type-Options "nosniff" always;
-    add_header X-XSS-Protection "1; mode=block" always; # Deprecated, но полезно для сканеров
+    # Protection XSS dépréciée mais utile pour certains scanners
+    add_header X-XSS-Protection "1; mode=block" always;
+    # Politique de référence (Referer)
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    # Politique des permissions (caméra, micro, géolocalisation, etc.)
     add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
 
     # --- Content-Security-Policy ---
+    # Limite les sources autorisées pour scripts, styles, etc.
+    # Ajout de 'stackpath.bootstrapcdn.com' pour supporter Bootstrap
     add_header Content-Security-Policy "
         default-src 'self';
         script-src 'self' 'unsafe-inline' 'unsafe-eval'
             https://code.jquery.com
             https://cdnjs.cloudflare.com
             https://cdn.jsdelivr.net
+            https://stackpath.bootstrapcdn.com
             https://www.google.com/recaptcha/
             https://www.gstatic.com/recaptcha/;
         style-src 'self' 'unsafe-inline'
             https://fonts.googleapis.com
             https://cdnjs.cloudflare.com
-            https://cdn.jsdelivr.net;
+            https://cdn.jsdelivr.net
+            https://stackpath.bootstrapcdn.com;
         font-src 'self'
             https://fonts.gstatic.com
             https://cdnjs.cloudflare.com
@@ -54,3 +66,4 @@ server {
         base-uri 'self';
     " always;
 }
+
