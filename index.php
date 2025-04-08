@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Vérification reCAPTCHA
             if (isset($_POST['g-recaptcha-response'])) {
                 $recaptchaResponse = $_POST['g-recaptcha-response'];
-                $secretKey = "6LfFBNEqAAAAAK9Ysfx2WsakloQLjFvAkvcgMY3q";
+                $secretKey = getenv('MY_CAPTCHA_SECRET_KEY') ?: ($_ENV['MY_CAPTCHA_SECRET_KEY'] ?? '');
                 $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
 
                 $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
@@ -303,7 +303,7 @@ $translations = include $langFile;
                     </div>
                 </div>
 
-                <div class="g-recaptcha" data-sitekey="6LfFBNEqAAAAAEp-LTer6T6GICYukcpXLQXPjNgg"></div>
+                <div class="g-recaptcha" data-sitekey="<?php echo htmlspecialchars(getenv('MY_CAPTCHA_SITE_KEY') ?: ($_ENV['MY_CAPTCHA_SITE_KEY'] ?? '')); ?>"></div>
 
                 <button class="primary-button" type="submit"><?= $translations['connected_index'] ?></button>
                 <p><?= $translations['connexion_problem']?></p>
