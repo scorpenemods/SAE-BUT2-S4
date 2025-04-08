@@ -22,7 +22,7 @@ server {
         fastcgi_read_timeout 300;
     }
 
-    # --- CSP pour les headers (Security Headers) ---
+    # --- CSP pour les headers (Security Headers) && other policies ---
     # Forcer le HTTPS et empêcher le downgrade
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
     # Interdire l'intégration dans un iframe hors du domaine
