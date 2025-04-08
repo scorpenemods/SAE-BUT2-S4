@@ -4,8 +4,13 @@ session_start(); // Démarre ou reprend la session
 require_once '../Model/Database.php';
 
 // Supprimer le token en base de données si l'utilisateur est connecté
-$database = Database::getInstance();
-$database->updateSessionToken($_SESSION['user_id'], null);
+if (isset($_SESSION['user_id'])) {
+    // Supprimer le token en base de données si l'utilisateur est connecté
+    $database = Database::getInstance();
+    $database->updateSessionToken($_SESSION['user_id'], null);
+} else {
+    error_log("ID user non défini dans la session lors de la déconnexion.");
+}
 
 // Vérifier si une langue est définie dans l'URL, sinon utiliser la session ou le français par défaut
 if (isset($_GET['lang'])) {
@@ -30,7 +35,6 @@ $_SESSION = array();
 // Détruit le cookie de session si l'option "session.use_cookies" est activée
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
-    // Crée un cookie avec une date d'expiration passée pour supprimer le cookie
     setcookie(session_name(), '', time() - 42000,
         $params["path"], $params["domain"],
         $params["secure"], $params["httponly"]
