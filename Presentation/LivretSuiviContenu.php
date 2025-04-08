@@ -144,7 +144,7 @@ $file = $database->getLivretFile($groupId);
                         <?php foreach ($meetings as $m): ?>
                             <div class="meeting-item">
                                 <strong><?= htmlspecialchars($m['name']) ?></strong>
-                                (du <?= $m['start_date'] ?> au <?= $m['end_date'] ?>)
+                                (du <?= $m['start_date'] ?> au <?= $m['end_date']; ?>)
 
                                 <?php if ($role == 2 || $role == 3): ?>
                                     <!-- Supprimer la rencontre (professeur) -->

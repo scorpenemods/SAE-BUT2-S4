@@ -1896,10 +1896,24 @@ class Database
      * @return array|false
      */
     public function getMeetingsByFollowUp($followUpId) {
-        $stmt = $this->connection->prepare("SELECT * FROM MeetingBook WHERE followup_id = :fid");
+        $stmt = $this->connection->prepare("
+        SELECT 
+            id,
+            followup_id,
+            name,
+            DATE_FORMAT(start_date, '%Y-%m-%d %H:%i') AS start_date,
+            DATE_FORMAT(end_date, '%Y-%m-%d %H:%i') AS end_date,
+            meeting_date,
+            validation
+        FROM MeetingBook
+        WHERE followup_id = :fid
+    ");
         $stmt->execute(['fid' => $followUpId]);
         return $stmt->fetchAll();
     }
+
+
+
 
     /**
      * Insert a new meeting QCM in a meeting
