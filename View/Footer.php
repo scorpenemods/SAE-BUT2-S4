@@ -13,10 +13,10 @@
                 <div class="logo-container">
                     <img src="../Resources/iut2.png" alt="Logo" class="logo">
                 <nav class="nav-footer">
-                    <a href="../View/MentionLegale.php?mention=informations"><?= $translations['mentionLegalesInfos'] ?></a>
-                    <a href="../View/MentionLegale.php?mention=a-propos"><?= $translations['propos'] ?></a>
-                    <a href="../View/MentionLegale.php?mention=confidentialite"><?= $translations['confid'] ?></a>
-                    <a href="../View/MentionLegale.php?mention=conditions-utilisation"><?= $translations['condit'] ?></a>
+                    <a href="Presentation/InformationsFooter.php"><?= $translations['mentionLegalesInfos'] ?></a>
+                    <a href="Presentation/Apropos.php"><?= $translations['propos'] ?></a>
+                    <a href="Presentation/Confidentialité.php"><?= $translations['confid'] ?></a>
+                    <a href="Presentation/conditions-utilisation.php"><?= $translations['condit'] ?></a>
 
                 </nav>
                 <div class="logo-container">
