@@ -10,7 +10,31 @@ require_once "../Model/Database.php"; // Include the Database class
 
 $database = Database::getInstance();
 
+if (file_exists(__DIR__ . '/.env')) {
+    require __DIR__ . '/vendor/autoload.php';
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->load();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Vérification reCAPTCHA
+    if (isset($_POST['g-recaptcha-response'])) {
+        $recaptchaResponse = $_POST['g-recaptcha-response'];
+        $secretKey = getenv('MY_CAPTCHA_SECRET_KEY') ?: ($_ENV['MY_CAPTCHA_SECRET_KEY'] ?? '');
+        $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
+
+        $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $recaptchaResponse);
+        $responseKeys = json_decode($response, true);
+
+        if (!$responseKeys["success"]) {
+            echo "<script>alert('Veuillez valider le reCAPTCHA.');</script>";
+            exit();
+        }
+    } else {
+        echo "<script>alert('Veuillez cocher le reCAPTCHA.');</script>";
+        exit();
+    }
     // Retrieve selected role and initialize function variable
     $role = $_POST['choice'];
     $function = '';
@@ -128,6 +152,8 @@ $translations = include $langFile;
     <!-- Lien vers la feuille de style par défaut -->
     <link rel="stylesheet" href="../View/AccountCreation/AccountCreation.css">
     <script src="../View/Home/Lobby.js" defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <title>Création du compte</title>
 </head>
 <style>
@@ -403,6 +429,7 @@ $translations = include $langFile;
         </p>
         <div id="password-strength"></div>
 
+        <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars(getenv('MY_CAPTCHA_SITE_KEY') ?: ($_ENV['MY_CAPTCHA_SITE_KEY'] ?? '')) ?>"></div>
 
         <!-- Bouton de validation -->
         <button type="submit" id="submit-button" disabled><?= $translations['validate'] ?></button>
